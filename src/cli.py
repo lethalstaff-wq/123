@@ -87,17 +87,24 @@ def cmd_init_grid(args) -> int:
         if geo.get("priority", 9) > 3 and not args.all_geos:
             continue
         for platform_name, slots in grid.get("per_platform", {}).items():
+            taken_games: set[str] = set()
             for i, tmpl in enumerate(slots, start=1):
                 slot_id = f"{geo_code}-{grid['platform_codes'][platform_name]}-{i:02d}"
                 token = f"{geo_code}{grid['platform_codes'][platform_name]}{i:02d}"
+                game = _resolve_game(tmpl, geo, taken_games)
+                if game and tmpl.get("game_rank"):
+                    taken_games.add(game)
+                theme = (tmpl.get("theme_pattern") or tmpl["theme"]).format(game=game or "PC")
+                bio_tmpl = tmpl.get("bio_pattern") or tmpl.get("bio") or ""
                 handle = (tmpl.get("handle_pattern") or "{geo}{n}").format(
-                    geo=geo_code, n=i, game=(tmpl.get("target_game") or "fps").lower().replace(" ", "")
+                    geo=geo_code, n=i, game=(game or "fps").lower().replace(" ", "")
                 )
                 st.upsert_slot(ChannelSlot(
                     slot_id=slot_id, geo=geo_code, platform=Platform(platform_name),
-                    theme=tmpl["theme"], target_game=tmpl.get("target_game"),
+                    theme=theme, target_game=game,
                     content_formats=tmpl.get("formats", []),
-                    handle=handle, bio=(tmpl.get("bio") or "").format(cta=geo.get("entry_point", "link in bio")),
+                    handle=handle,
+                    bio=bio_tmpl.format(cta=geo.get("entry_point", "link in bio"), game=game or "PC"),
                     persona=tmpl.get("persona", "faceless"),
                     posts_per_day=int(tmpl.get("posts_per_day", 2)),
                     publish_mode=PublishMode(tmpl.get("publish_mode", "kit")),
@@ -106,6 +113,31 @@ def cmd_init_grid(args) -> int:
                 created += 1
     print(f"слотов записано: {created}")
     return 0
+
+
+def _resolve_game(tmpl: dict, geo: dict, taken: set[str]) -> str | None:
+    """Какая игра достаётся слоту в этом гео.
+
+    Игровой слот занимает игру по её месту в geos.json -> top_games этого гео:
+    канал про популярную здесь игру сильнее канала про игру, в которую тут не
+    играют, — и хуков под неё в банке больше. Если у гео игр меньше, чем игровых
+    слотов, добираем из общего списка. Внутри одного гео и платформы игра не
+    повторяется: два канала про одну игру каннибализируют друг друга.
+    """
+    rank = tmpl.get("game_rank")
+    if not rank:
+        return tmpl.get("target_game")
+
+    for candidate in (
+        (geo.get("top_games") or [])[rank - 1:rank],     # своё место в топе гео
+        [tmpl.get("target_game")],                        # игра из шаблона
+        geo.get("top_games") or [],                       # любая из топа гео
+        content_bank().get("games", []),                   # общий список
+    ):
+        for g in candidate:
+            if g and g not in taken:
+                return g
+    return tmpl.get("target_game")
 
 
 def cmd_slots(args) -> int:

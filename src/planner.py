@@ -93,13 +93,23 @@ def _hook_index(geo_code: str, game: str | None, format_id: str) -> tuple[tuple[
     def fits(h: dict) -> bool:
         return not h.get("formats") or format_id in h["formats"]
 
-    tiers = [
-        [h for h in pool if fits(h) and game and game in (h.get("games") or [])],
-        [h for h in pool if fits(h) and not h.get("games")],
-        [h for h in pool if not h.get("games")],
-        pool,
-        [h for h in all_hooks if not h.get("games")],
-    ]
+    if game:
+        # канал про одну игру: хуки про другие игры ломают позиционирование
+        tiers = [
+            [h for h in pool if fits(h) and game in (h.get("games") or [])],
+            [h for h in pool if fits(h) and not h.get("games")],
+            [h for h in pool if game in (h.get("games") or []) or not h.get("games")],
+            pool,
+        ]
+    else:
+        # канал без привязки к игре (диагностика, бенчмарки, железо, мифы):
+        # ему подходят хуки про ЛЮБУЮ игру, и это резко расширяет пул —
+        # иначе остаются только шаблоны без упоминания игры, а их мало
+        tiers = [
+            [h for h in pool if fits(h)],
+            pool,
+            list(all_hooks),
+        ]
     hooks = next((t for t in tiers if t), list(all_hooks))
     by_template: dict[str, list[str]] = {}
     for h in hooks:
@@ -107,7 +117,8 @@ def _hook_index(geo_code: str, game: str | None, format_id: str) -> tuple[tuple[
     return tuple(tuple(v) for k, v in sorted(by_template.items()))
 
 
-def pick_hook(geo_code: str, game: str | None, fmt: dict, seed: int) -> str:
+def pick_hook(geo_code: str, game: str | None, fmt: dict, seed: int,
+              exclude: frozenset[str] = frozenset()) -> str:
     """Хук под язык гео, формат и игру слота.
 
     Если слот заявлен как канал про одну игру, хук про другую игру ломает
@@ -119,7 +130,11 @@ def pick_hook(geo_code: str, game: str | None, fmt: dict, seed: int) -> str:
     if not groups:
         return ""
     rng = random.Random(seed)
-    text = rng.choice(rng.choice(groups))
+    # исключаем уже использованные этим слотом: повторяющийся хук на канале —
+    # прямой сигнал однотипного контента и для зрителя, и для площадки
+    fresh = tuple(tuple(t for t in grp if t not in exclude) for grp in groups)
+    fresh = tuple(grp for grp in fresh if grp)
+    text = rng.choice(rng.choice(fresh or groups))
 
     bank = content_bank()
     geo = geos()[geo_code]
@@ -218,12 +233,8 @@ def plan_days(store: Store, assets: list[Asset], days: int = 7,
                 seed = _seed_for(slot.slot_id, day, i)
                 fmt = pick_format(slot, seed)
                 seen_for_slot = used_hooks.setdefault(slot.slot_id, set())
-                hook = ""
-                for attempt in range(6):
-                    fmt = pick_format(slot, seed + attempt * 7919)
-                    hook = pick_hook(slot.geo, slot.target_game, fmt, seed + attempt * 7919)
-                    if hook not in seen_for_slot:
-                        break
+                hook = pick_hook(slot.geo, slot.target_game, fmt, seed,
+                                 exclude=frozenset(seen_for_slot))
                 seen_for_slot.add(hook)
                 caption, title, tags = build_caption(slot, hook, fmt, seed)
                 window = windows[i % len(windows)]
