@@ -2,6 +2,11 @@
   "platform": {
     "confirmed": 19,
     "refuted": 0,
-    "sources_checked": "19"
+    "size": 42709
+  },
+  "product": {
+    "confirmed": 20,
+    "refuted": 0,
+    "size": 25615
   }
 }
