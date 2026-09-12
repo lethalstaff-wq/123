@@ -867,6 +867,8 @@ def build() -> str:
     ]
     if confirmed:
         meta.append((f"{confirmed}/{confirmed + refuted}", "проверок сошлось"))
+    if st.get("double_checked"):
+        meta.append((st["double_checked"], "стран посчитаны дважды"))
     meta_html = "".join(
         f'<div class="meta__cell"><div class="meta__num">{n}</div>'
         f'<div class="meta__lab">{e(lab)}</div></div>' for n, lab in meta)

@@ -65,7 +65,9 @@ def reports() -> dict[str, dict]:
 
 def stats() -> dict:
     reps = reports()
-    geo = [k for k in reps if k.startswith("geo__")]
+    # повторные расчёты (__alt) не считаются отдельными странами
+    geo = [k for k in reps if k.startswith("geo__") and not k.endswith("__alt")]
+    alts = [k for k in reps if k.endswith("__alt")]
     topics = [k for k in reps if k.startswith("r__")]
     # часть отчётов (сводные агенты) возвращает не структуру, а текст —
     # такие пропускаем, иначе статистика падает на первом же из них
@@ -89,6 +91,7 @@ def stats() -> dict:
         "countries": len(geo),
         "topics": len(topics),
         "reports": len(reps),
+        "double_checked": len(alts),
         "findings": findings,
         "sources": len(sources),
     }

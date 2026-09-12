@@ -3,7 +3,7 @@
     "purpose": "Гео-профили: язык, игры, сленг, цена, точка приёма, таймзона.",
     "source": "собрано scripts/build_geos.py из отчётов страновых агентов",
     "priority": "1 = стартовое гео, 2 = второй эшелон, 3 = третий, 9 = не брать (planner игнорирует > 3)",
-    "countries": 35,
+    "countries": 36,
     "overrides_applied": [
       "ae",
       "af_fr",
@@ -17,6 +17,7 @@
       "it",
       "jp",
       "kr",
+      "nl_be",
       "pl",
       "th_my"
     ],
@@ -1452,6 +1453,57 @@
       ],
       "needs_local_ip": false,
       "notes": "ПОЧЕМУ НЕ priority_1 и не skip — по цифрам.\n\nЗА (реальные плюсы):\n1. ПК-гейминг подтверждён: в топ-5 игровых сайтов Польши 2 из 5 — Steam (steampowered.com #4, steamcommunity.com #5), #1 twitch.tv, #2 roblox.com (Similarweb, Top Websites Poland / Games, данные за август 2026, обновлено 01.09.2026). "
+    },
+    {
+      "code": "pt_gr",
+      "name": "Portugal + Greece (cluster, 2 separate language pipelines)",
+      "priority": 2,
+      "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_2"
+      ],
+      "verdict_reason": "БРАТЬ, но как САТЕЛЛИТ англоязычного ядра, НЕ как 20+20 каналов. Цифры (DataReportal Digital 2026, данные на окт.2025): PT — население 10.4M, интернет 9.26M (89.0%), соцсети 7.59M (72.9%), YouTube 7.59M, Instagram 6.35M (61.0%), TikTok 18+ 4.11M (46.8% взрослых), Reddit 3.50M (+223% г/г). GR — население 9.93M, интернет 8.64M (87.0%), соцсети 7.40M (74.5%), YouTube 7.40M, Facebook 5.10M (51.4%), Instagram 4.60M (46.3%), TikTok 18+ 4.60M (55.3% взрослых — одна из самых высоких в ЕС, ВЫШЕ Португалии). Ядро 13-24: PT 4.8%+7.4% = 12.2% = ~1.27M чел; GR 5.3%+7.3% = 12.6% = ~1.25M чел. Суммарно класт",
+      "content_language": "pt",
+      "voiceover_language": "pt",
+      "subtitle_language": "pt",
+      "english_works": "ЧАСТИЧНО, и это ловушка. Португалия: английский среди 13-24 сильный (PT стабильно в топ-10 EF EPI), чисто английский контент будет понят — НО он не получит локального алгоритмического приоритета и будет конкурировать с глобальным англоязычным полем, где вы никто. Греция: английский слабее, особенно ",
+      "timezone": "Europe/Lisbon",
+      "top_games": [
+        "Fortnite",
+        "CS2",
+        "Valorant",
+        "League of Legends",
+        "Roblox",
+        "GTA V",
+        "Rust",
+        "Dead by Daylight",
+        "Apex Legends",
+        "Minecraft",
+        "Marvel Rivals",
+        "Escape from Tarkov"
+      ],
+      "slang": [],
+      "price_tier": "mid",
+      "price_points_usd": [
+        6.99
+      ],
+      "entry_point": "discord",
+      "cta_language": "pt",
+      "payment_methods": [
+        "ПОРТУГАЛИЯ — ОБЯЗАТЕЛЬНО, иначе теряется большинство: по данным PPRO картами оплачивается лишь 26% онлайн-покупок (Visa 60% / Mastercard 40% внутри этой доли), e-wallet 34%, банковский перевод 25%, наличные 7% (данные 2022, могли сдвинуться в сторону кошельков)",
+        "PT: MB WAY — мобильный кошелёк SIBS, де-факто стандарт у молодёжи; поддерживается Stripe. Без него португальская конверсия просядет кратно",
+        "PT: Multibanco (платёж по референции) — поддерживается Stripe; ключевой метод для тех, у кого нет своей карты, т.е. ровно для ядра 13-18. Минус: платёж асинхронный (до нескольких часов/суток) — автовыдача ключа должна ждать вебхука об оплате, а не редиректа",
+        "PT: Visa / Mastercard",
+        "PT: PayPal",
+        "PT: Apple Pay / Google Pay",
+        "PT: Revolut (широко распространён у молодёжи; отдельной интеграции не нужно — проходит как карта)",
+        "ГРЕЦИЯ — ПРОЩЕ: карты 57% (Mastercard 53% / Visa 46% внутри), e-wallet 15%, банковский перевод 13%, наличные 9%, прочее 6% (PPRO, страница обновлена сентябрь 2026). Карточная воронка Stripe закрывает подавляющую часть рынка",
+        "GR: Visa / Mastercard (основа)",
+        "GR: PayPal"
+      ],
+      "needs_local_ip": false,
+      "notes": "БРАТЬ, но как САТЕЛЛИТ англоязычного ядра, НЕ как 20+20 каналов. Цифры (DataReportal Digital 2026, данные на окт.2025): PT — население 10.4M, интернет 9.26M (89.0%), соцсети 7.59M (72.9%), YouTube 7.59M, Instagram 6.35M (61.0%), TikTok 18+ 4.11M (46.8% взрослых), Reddit 3.50M (+223% г/г). GR — насел"
     },
     {
       "code": "th_my",
