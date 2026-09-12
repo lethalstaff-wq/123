@@ -18,7 +18,9 @@
       "jp",
       "kr",
       "nl_be",
+      "nordics",
       "pl",
+      "pt_gr",
       "th_my"
     ],
     "verdict_conflicts": [
@@ -34,6 +36,13 @@
         "verdicts": [
           "priority_1",
           "priority_2"
+        ]
+      },
+      {
+        "code": "pt_gr",
+        "verdicts": [
+          "priority_2",
+          "priority_3"
         ]
       },
       {
@@ -1457,11 +1466,12 @@
     {
       "code": "pt_gr",
       "name": "Portugal + Greece (cluster, 2 separate language pipelines)",
-      "priority": 2,
+      "priority": 3,
       "payment_blocked": false,
-      "verdict_conflict": false,
+      "verdict_conflict": true,
       "verdicts_seen": [
-        "priority_2"
+        "priority_2",
+        "priority_3"
       ],
       "verdict_reason": "БРАТЬ, но как САТЕЛЛИТ англоязычного ядра, НЕ как 20+20 каналов. Цифры (DataReportal Digital 2026, данные на окт.2025): PT — население 10.4M, интернет 9.26M (89.0%), соцсети 7.59M (72.9%), YouTube 7.59M, Instagram 6.35M (61.0%), TikTok 18+ 4.11M (46.8% взрослых), Reddit 3.50M (+223% г/г). GR — население 9.93M, интернет 8.64M (87.0%), соцсети 7.40M (74.5%), YouTube 7.40M, Facebook 5.10M (51.4%), Instagram 4.60M (46.3%), TikTok 18+ 4.60M (55.3% взрослых — одна из самых высоких в ЕС, ВЫШЕ Португалии). Ядро 13-24: PT 4.8%+7.4% = 12.2% = ~1.27M чел; GR 5.3%+7.3% = 12.6% = ~1.25M чел. Суммарно класт",
       "content_language": "pt",
