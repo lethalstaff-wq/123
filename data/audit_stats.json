@@ -4,6 +4,11 @@
     "refuted": 1,
     "size": 41563
   },
+  "geo_mena_asia": {
+    "confirmed": 18,
+    "refuted": 3,
+    "size": 15120
+  },
   "platform": {
     "confirmed": 19,
     "refuted": 0,
