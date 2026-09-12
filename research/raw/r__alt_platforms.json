@@ -1,0 +1,442 @@
+{
+  "dimension": "alt_platforms",
+  "summary": "Для продажи подписки на Windows-твики англоязычной геймерской аудитории 13-24 из всего списка альтернативных площадок реально работают только 4: Facebook Reels (единственная крупная short-video площадка с ОФИЦИАЛЬНЫМ API автопостинга — 30 рилсов/24ч на страницу, + кликабельные ссылки в подписи), Reddit (не видео, а прямой канал с самым высоким интентом на PC-оптимизацию, но жёсткие правила саморекламы и ручной режим), Telegram (нет подавления ссылок, полноценный Bot API, до 500 каналов на аккаунт) и Discord (слой выдачи/ретеншена, не привлечения). Snapchat Spotlight по демографии идеален (13-24), но у него НЕТ публичного API органического постинга (только Creative Kit = share-to-app, инициируемый пользователем), поэтому автозалив невозможен без нарушения ToS. X/Twitter технически позволяет постить, но ссылки режут охват на 50-90%, а pay-per-use API с февраля 2026 берёт $0.20 за пост со ссылкой против $0.015 без ссылки — это в 13 раз дороже и ломает экономику. Kick и Twitch НЕ являются каналами для коротких видео: в Kick API 13 скоупов и ни одного на загрузку видео/клипов, в Twitch API есть только Create Clip из собственного стрима и вообще нет эндпоинта загрузки видео. Kwai (60M MAU только в Бразилии) и Moj/ShareChat (325M MAU Индия) дают огромные объёмы, но без API, с низким ARPU и почти нулевой конверсией в оплату подписки в GBP/USD. VK Клипы и Rutube (MAU 82.3M, DAU 20.4M за H1 2026) — русскоязычная аудитория, не совпадает с англоязычным позиционированием UK. Bilibili с августа 2026 открыл международную версию без паспорта и активно вербует западных креаторов — единственная новая площадка из «длинного хвоста», где геймерская аудитория реальна, но монетизация для иностранцев «обещана, но не финализирована». Главный системный риск: Meta — самая агрессивная площадка по мульти-аккаунтингу (device fingerprinting + IP + поведенческий анализ, отключение ВСЕХ связанных аккаунтов и бан email/телефона), то есть площадка с лучшим API одновременно самая опасная для сети из 20 каналов на гео.",
+  "key_numbers": [
+    "Facebook ad reach: 2.39B (DataReportal, mid-April 2026)",
+    "Instagram ad reach: 1.99B; YouTube 2.65B; TikTok 2.21B (DataReportal, mid-April 2026)",
+    "Facebook Reels API publish limit: 30 API-published posts per 24h rolling window per Page (Meta official docs)",
+    "Instagram API publish limit: 100 API-published posts per 24h rolling window per account; carousels 50/24h (Meta official docs)",
+    "Facebook Reels video spec: MP4, 9:16, min 1080x1920 (540x960 acceptable), 3-90s, 24-60fps, H.264/H.265, AAC 48kHz stereo >=128kbps",
+    "Facebook Page organic reach 2026: 1-6% of followers (practitioner estimates)",
+    "Facebook Reels RPM: $0.02-$0.20 per 1k views, median $0.05-0.10 (one source); $0.15-0.30 per 1k qualified views (another); $0.30-5.00 RPM (third) — wide disagreement",
+    "Snapchat monetization: 50,000 followers + 15,000 view hours/28d of which >=3,000 Spotlight hours, 18+, Snap Star verified (official Snapchat help)",
+    "Snapchat from 2026-05-07: >=100 hours Total Spotlight View Time/28d for max Creator Rewards; Spotlight videos must be >=30s to earn",
+    "Snapchat monetization available in 45 countries as of April 2026; min payout $100",
+    "X API pay-per-use (default since 2026-02-06, no free tier): post create $0.015, post create WITH URL $0.200, post read $0.005, user read $0.010, media metadata $0.005, owned reads $0.001 (docs.x.com official)",
+    "X link penalty: 50-90% reach reduction on link posts; near-zero median engagement for non-Premium link posts since March 2026",
+    "X: Premium accounts reach = 4-8x equivalent organic engagement of non-verified",
+    "Reddit API free tier: 100 queries/minute per OAuth client, non-commercial only; unauthenticated ~10/min and being phased down",
+    "Reddit commercial API: $0.24 per 1,000 calls, manual approval 2-4 weeks; self-service app registration closed late 2025 (Responsible Builder Policy)",
+    "Reddit subreddit study (49 subs, 2026): 39% ban self-promo outright, 22% allow only under 9:1, exactly 1 openly welcomes it",
+    "Reddit CQS: high (>=0.7) promotes more freely; low (<0.3) auto-filtered even at 5% promo ratio",
+    "r/pcmasterrace Rule 2: 9:1 ratio + must already be a frequent member; Rule 5 bans affiliate/referral links AND link shorteners",
+    "Telegram Bot API: ~1 msg/sec per chat, 20 msg/min per group, 30 msg/sec broadcast, ~30 req/sec; upload 50MB (2000 MiB via local Bot API server), download 20MB",
+    "Telegram account limits: 500 channels/supergroups (1000 Premium), 50 group creations/day, 20 bots (40 Premium), 50 admins per channel",
+    "Telegram: 1B+ active users, ~500M engaging with Mini Apps (2026 industry reports)",
+    "Kick: ~100M total registered users (not MAU); 570.7M hours watched in June 2026 (record); ~660k avg concurrent vs Twitch ~2.5M; ~11% of gaming hours watched; 4th most-watched live platform",
+    "Kick geo: English = 22% of platform hours; strongest in Brazil, Turkey, Russia, Middle East; 18-24 male skew; Just Chatting 27% of hours",
+    "Kick monetization: 95/5 split; requires 250 followers, 30 stream hours/month, 75 avg concurrent, 250 unique chatters",
+    "Kick API: OAuth 2.1 + PKCE, public since March 2025, 13 scopes, ZERO video/clip upload scope",
+    "Twitch API: Create Clip + Create Clip From VOD (channel:manage:clips, own channel only); NO video upload endpoint",
+    "Rumble: 56M avg global MAU Q1 2026 (+8% QoQ), revenue $25.5M (+7% YoY); Q3 2025 47M MAU, ARPU $0.45",
+    "Bilibili: 376M MAU / 115.2M DAU Q1 2026; international app relaunched globally on Android 2026-08-19, passport/ID requirement removed; not available in India or Romania at launch; reported ~$0.70 per 1k views incentive (estimate, not published rate)",
+    "VK Clips: 2.7B average daily views (+9% YoY) per one source vs 750M/day per another; clips published +2.2x YoY, creators +89%; clip length 5s-3min",
+    "Rutube H1 2026: MAU 82.3M (+~5%), DAU 20.4M (+18%), 29B views (+10.4%), 63 min/user/day (ComNews 2026-07-23)",
+    "Rutube Shorts stats only available for uploads from 2025-11-01; Yappy positioned as Rutube Shorts (Gazprom-Media)",
+    "Kwai Brazil: 60M MAU (~1/3 of population), >75 min/day per user (Caixin, 2025-12-11); Brazil 77% of users 25+, 51/49 M/F; international business profitable from Q1 2025",
+    "Likee: 30.6M mobile MAU Q4 2024 (down from 33.9M Q3 2024); 500M+ Google Play downloads (Feb 2026); claims of ~150M MAU are unverified",
+    "BIGO LIVE: 33.4M mobile MAU Q4 2024, 600M registered, 150+ countries; JOYY ecosystem 263.1M mobile MAU Q4 2024",
+    "Moj/ShareChat: 325M+ MAU (advertiser-facing), 280B+ video views/month, 34+ min/day, 200M+ monetisable users (Oct 2025), 3M uploads/day, 15+ Indian languages",
+    "Zalo: 81.3M MAU (June 2026), 2.2B messages/day; Zalo Video ~40M users/month",
+    "Meta multi-account: 1 personal account per person + up to 4 additional profiles (since Sept 2023); enforcement via device fingerprinting, IP, location, behavioral analysis; can disable ALL linked accounts and permanently ban email/phone"
+  ],
+  "findings": [
+    {
+      "claim": "Facebook Reels — единственная крупная short-video площадка из этого списка с официальным, документированным API публикации видео. Лимит: 30 API-опубликованных постов за скользящие 24 часа на одну Page.",
+      "evidence": "Endpoints: POST /page-id/video_reels (init + publish), POST /video-upload/video-id (upload), GET /page-id/video_reels. Permissions: pages_show_list, pages_read_engagement, pages_manage_posts + пользователь должен иметь task CREATE_CONTENT на Page. Meta прямо пишет: '30 API-published posts within a 24-hour moving period' и рекомендует зеркалить этот rate limit в своём приложении.",
+      "source": "https://developers.facebook.com/docs/video-api/guides/reels-publishing/",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Ядро автозалива. Константа: MAX_FB_REELS_PER_PAGE_PER_24H = 30 (скользящее окно, не календарные сутки). При 20 каналах на гео это 600 рилсов/сутки/гео легально по API."
+    },
+    {
+      "claim": "Спека видео для Facebook Reels API: MP4, 9:16, минимум 1080x1920 (540x960 допустимо), 3-90 секунд, 24-60 fps, H.264/H.265, аудио AAC stereo 48kHz от 128kbps.",
+      "evidence": "Официальная таблица требований в Reels Publishing guide.",
+      "source": "https://developers.facebook.com/docs/video-api/guides/reels-publishing/",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Это самый узкий набор ограничений среди всех целевых площадок кроме TikTok — рендерить мастер-файл под него (1080x1920, H.264, AAC 48k/128k, 3-90s) и он пройдёт везде: FB Reels, IG Reels, Shorts, Snapchat, Kwai."
+    },
+    {
+      "claim": "Instagram Content Publishing API даёт 100 API-публикаций за скользящие 24 часа на аккаунт (карусели — 50/24ч), то есть в 3.3 раза больше, чем Facebook Reels.",
+      "evidence": "'Instagram accounts are limited to 100 API-published posts within a 24-hour moving period. Carousels count as a single post.' Требуется Instagram professional account, привязанный к Page, и permission instagram_business_content_publish (Instagram Login) либо instagram_content_publish (Facebook Login).",
+      "source": "https://developers.facebook.com/docs/instagram-platform/content-publishing",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "MAX_IG_POSTS_PER_ACCOUNT_PER_24H = 100. Один Meta-app может обслуживать и FB Page reels, и IG Reels — один пайплайн на два канала, но лимиты считаются раздельно."
+    },
+    {
+      "claim": "Facebook объединил все программы монетизации в единую Facebook Content Monetization 31 августа 2025 (были Performance Bonuses + Ads on Reels + In-Stream Ads), и на июль 2026 программа всё ещё invite-only.",
+      "evidence": "'On August 31, 2025, Facebook retired its legacy monetization programs and merged three separate systems... into a single unified program called Facebook Content Monetization.' Creators Agency (июль 2026) прямо пишет: нет опубликованных гарантированных порогов, программа остаётся invite-only, Meta заявила о планах открыть enrollment 'in the near future'.",
+      "source": "https://creatorsagency.co/blog/facebook-content-monetization-requirements-2026 ; https://fluxnote.io/guides/facebook-reels-monetization-earnings-2026",
+      "source_date": "2026-06-26 / 2026-07",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "НЕ закладывать монетизацию FB Reels в юнит-экономику. Считать Facebook чисто трафиковым каналом, доход = подписки. Монетизация — опциональный бонус через 6-12 месяцев."
+    },
+    {
+      "claim": "Часто цитируемые пороги входа в Facebook Content Monetization: 10,000+ подписчиков Page/профиля в Professional Mode, 600,000 минут просмотра за последние 60 дней, 5+ активных видео-загрузок за 30 дней. Но официального подтверждения этих чисел на 2026 нет.",
+      "evidence": "Эти цифры приводят несколько гайдов 2026 года, при этом Creators Agency (июль 2026) заявляет, что Meta не раскрывает гарантированные пороги.",
+      "source": "https://fluxnote.io/guides/facebook-reels-monetization-requirements-2026 ; https://creatorsagency.co/blog/facebook-content-monetization-requirements-2026",
+      "source_date": "2026",
+      "kind": "industry_data",
+      "confidence": "low",
+      "actionable": "Использовать как ориентир, не как правило. 10k подписчиков на канал — реалистичная цель для 3-6 месяцев при 3 рилсах/день."
+    },
+    {
+      "claim": "Данные по RPM Facebook Reels в 2026 расходятся на порядок: $0.02-0.20 за 1000 просмотров рилсов (медиана $0.05-0.10) vs $0.15-0.30 за 1000 qualified views vs $0.30-5.00 RPM. Разбивки RPM по гео (US/UK vs SEA/MENA/LATAM/Африка) в открытых источниках нет.",
+      "evidence": "Три независимых источника 2026 дают несовместимые диапазоны. Fluxnote (2026-06-26) при прямом запросе региональной разбивки не содержит её вовсе; приводит только нишевую таблицу ($0.30-1.50 для entertainment). Creators Agency приводит единичный пример $1.80 за 1000 qualified views.",
+      "source": "https://postplanify.com/blog/how-much-does-facebook-reels-pay-per-1000-views ; https://fluxnote.io/guides/facebook-reels-monetization-earnings-2026 ; https://creatorsagency.co/blog/facebook-content-monetization-requirements-2026",
+      "source_date": "2026",
+      "kind": "industry_data",
+      "confidence": "low",
+      "actionable": "Нет данных по RPM per geo. Для модели брать worst case $0.05/1k и считать это шумом: при 10M просмотров/мес это $500, при том что 0.1% конверсии в подписку $7 = $700. Трафик важнее рекламного дохода."
+    },
+    {
+      "claim": "Органический охват Facebook Page в 2026 оценивается практиками в 1-6% от подписчиков, но Reels получают наибольший алгоритмический буст и распространяются к новой аудитории через шеры, а не через подписчиков.",
+      "evidence": "'Facebook Page organic reach averages just 1-6% of followers in 2026'; 'Reels (short video under 60 seconds) receive the highest algorithmic boost'; 'the first 30-60 minutes are crucial as the algorithm watches for early-engagement signals, and Reels need strong initial velocity to get pushed to the Explore tab'.",
+      "source": "https://influencerdb.net/social-media-marketing/facebook-organic-reach/ ; https://blog.crescitaly.com/facebook-reach-2026-what-changed-how-to-win/ ; https://chatbotx.io/blog/facebook-algorithm-2026-how-it-works-and-5-proven-strategies-to-maximize-organic-reach/",
+      "source_date": "2026",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Число подписчиков на FB Page почти не влияет на охват рилса — значит холодные новореги не в катастрофическом положении. Планировать публикации так, чтобы первые 30-60 минут попадали на пик активности целевого гео."
+    },
+    {
+      "claim": "Meta — самая жёсткая из всех рассмотренных площадок по мульти-аккаунтингу: политика Inauthentic Behavior прямо запрещает создание/использование неаутентичных ассетов (аккаунтов, страниц, групп) для обмана о происхождении или аудитории, и при срабатывании отключаются ВСЕ связанные аккаунты, а email/телефон могут быть забанены навсегда.",
+      "evidence": "Meta Transparency Center: 'The creation, use, or claimed use of Inauthentic Meta Assets (Accounts, Pages, Groups, etc.) in order to deceive Meta or users about the identity, or origin of an audience or the entity that they represent is prohibited.' Один личный аккаунт на человека + до 4 доп. профилей (с сентября 2023). Детект: device fingerprinting, IP, location data, behavioral analysis; отчёты 2025-2026 говорят о банах в течение часов-суток.",
+      "source": "https://transparency.meta.com/policies/community-standards/inauthentic-behavior/ ; https://transparency.meta.com/policies/community-standards/account-integrity/ ; https://gologin.com/blog/banned-from-facebook/",
+      "source_date": "2026",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Ключевой конфликт архитектуры: у Facebook лучший API, но худший риск по сети из 20 каналов/гео. Проектировать так, чтобы падение всего Meta-кластера не убивало бизнес: домен/лендинг/Discord вне Meta, ссылки не только через Meta. Не строить >50% трафика на Meta."
+    },
+    {
+      "claim": "Snapchat НЕ имеет публичного API для органической публикации (Snaps/Stories/Spotlight). Creative Kit — это share-to-app флоу, инициируемый пользователем из сторонного приложения, а не серверный постинг; SDK-версия Creative Kit больше не обновляется, рекомендуется переход на code-only версию.",
+      "evidence": "Snap for Developers: Creative Kit 'provides Spotlight Creators and Snapstars with the ability to share content... from third-party applications to Spotlight'; 'Creative Kit was previously provided as an installable SDK, but the SDK version will no longer be updated'. Обзоры 2026 фиксируют: 'Snapchat has no documented public API for core organic publishing, including posting Snaps, Stories, or Spotlight content programmatically'.",
+      "source": "https://developers.snap.com/snap-kit/creative-kit/overview ; https://mallary.ai/blog/snapchat-api",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Snapchat нельзя включить в серверный автозалив. Либо исключить, либо вести 1-3 аккаунта вручную/полуручную как эксперимент. Сторонние сервисы (mallary.ai, codivupload) заявляют API-постинг в Spotlight — не подтверждено официальной документацией, риск блокировки аккаунта."
+    },
+    {
+      "claim": "Официальные требования монетизации Snapchat: 50,000 подписчиков + 15,000 часов просмотра за последние 28 дней, из которых минимум 3,000 часов — Spotlight; 18+; Snap Star verification; проживание в eligible country. С 7 мая 2026 добавлено: минимум 100 часов Total Spotlight View Time за 28 дней для максимальных Creator Rewards. Spotlight-видео должно быть не короче 30 секунд, чтобы зарабатывать.",
+      "evidence": "Прямая цитата из официальной справки Snapchat: 'Achieve 15,000 hours of view time over the last 28 days, with at least 3,000 of' those from Spotlight; 'Maintain at least 100 hours of Total Spotlight View Time on your posts over the last 28 days' (as of May 7, 2026).",
+      "source": "https://help.snapchat.com/hc/en-us/articles/14669003687444-About-Snapchat-s-Monetization-Program",
+      "source_date": "fetched 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Порог 50k подписчиков нереалистичен для сети новорегов. Если Snapchat используется — только как трафиковый канал на bio-ссылку Public Profile, монетизацию не планировать. MIN_SPOTLIGHT_DURATION_SEC = 30 для монетизируемых роликов."
+    },
+    {
+      "claim": "Монетизация Snapchat доступна в 45 странах (на апрель 2026), минимальный вывод $100. Точные ставки Snapchat не публикует.",
+      "evidence": "Сводки 2026: 'Available in 45 countries as of April 2026, with additional markets in staged rollout'; 'The minimum payout sits at $100'; 'exact payment rates aren't publicly disclosed by Snapchat'.",
+      "source": "https://kompozy.io/creator-growth/snapchat-monetization-2026 ; https://creatorsagency.co/blog/snapchat-monetization-requirements-2026",
+      "source_date": "2026",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Для оператора из СНГ выплаты Snapchat скорее всего недоступны географически — дополнительный аргумент рассматривать Snapchat только как трафик."
+    },
+    {
+      "claim": "Reddit — самый релевантный по интенту канал для продукта 'Windows-твики для игр', но он не видео-канал: это текст + прямые ссылки, и его нельзя масштабировать автопостингом без быстрого бана.",
+      "evidence": "Исследование 49 сабреддитов (2026): 39% полностью запрещают саморекламу, 22% допускают только по правилу 9:1, ровно один открыто приветствует. Формальное сайтвайд-правило 9:1 отменено и заменено качественной anti-spam политикой, но модераторы продолжают мыслить в ратио; практики отмечают, что в маркетингово-релевантных сообществах де-факто ожидание ближе к 19:1 (5%), чем к 9:1 (10%).",
+      "source": "https://oneup.today/blogs/reddit-selfpromo-rules-study-2026 ; https://redship.io/blog/reddit-self-promotion-rules ; https://karmaguy.io/en/blog/reddit-self-promotion-rules",
+      "source_date": "2026",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Reddit ставить как ручной/полуручной канал с 3-5 прогретых аккаунтов, не как часть массового автозалива. Скрипт может максимум мониторить ключевые слова ('low fps', 'stutter', 'input lag', 'valorant fps drops') и складывать треды в очередь для ручного ответа."
+    },
+    {
+      "claim": "Reddit ввёл Contributor Quality Score (CQS): аккаунты с высоким CQS (>=0.7) могут промоутить относительно свободно, аккаунты с низким CQS (<0.3) автоматически фильтруются даже при 5% промо-контента. Это делает свежие новореги почти бесполезными для постинга ссылок.",
+      "evidence": "'Reddit's Contributor Quality Score changed self-promotion dynamics in 2023, with high CQS accounts (0.7+) able to promote more freely, while low CQS accounts (< 0.3) face automatic content filtering even at 5% promotional ratios.'",
+      "source": "https://redship.io/blog/reddit-self-promotion-rules",
+      "source_date": "2026",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Купленные новореги на Reddit не работают. Нужны либо прогретые вручную аккаунты (2-3 месяца органики), либо аккаунты с историей. Это ручная работа, а не скрипт."
+    },
+    {
+      "claim": "r/pcmasterrace (крупнейший релевантный сабреддит по ПК) требует соотношения 9:1 и предварительного статуса активного участника; Rule 5 прямо запрещает affiliate/referral-ссылки И сокращатели ссылок; запрещены просьбы об апвоутах; гивэвеи считаются промо и требуют одобрения модераторов.",
+      "evidence": "Официальные правила сабреддита: 'A ratio of 9:1 is a good general rule'; 'Before you post about your project, we ask that you are also a somewhat frequent member'; Rule 5 — affiliate/referral links and link shorteners prohibited; giveaways must conform to anti-spam rules and need mod approval; модераторы могут выдать pre-approval в исключительных случаях.",
+      "source": "https://pcmasterrace.org/rules",
+      "source_date": "fetched 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "КРИТИЧНО для спеки: НИКОГДА не использовать сокращатели ссылок (bit.ly, cutt.ly, свои short-домены) в контенте для Reddit — это прямое нарушение. Всегда полный URL основного домена. Плюс: имеет смысл написать модераторам r/pcmasterrace за pre-approval — это легальный путь."
+    },
+    {
+      "claim": "Reddit Data API: бесплатный тариф 100 запросов/минуту на OAuth client только для non-commercial использования; коммерческое использование $0.24 за 1,000 вызовов с ручным одобрением 2-4 недели. Самостоятельная регистрация приложений закрыта в конце 2025 (Responsible Builder Policy) — каждый новый OAuth client проходит ручное ревью с реальным шансом тихого отказа.",
+      "evidence": "'free for non-commercial use... within a rate limit of 100 queries per minute per OAuth client'; 'averaged over a rolling ten-minute window'; unauthenticated ~10/min и сворачивается; commercial '$0.24 per 1,000 API calls'; 'Reddit's Responsible Builder Policy closed self-service app registration in late 2025: every new OAuth client, free or paid, now goes through a manual approval ticket'.",
+      "source": "https://www.socialcrawl.dev/blog/reddit-data-api-2026 ; https://www.painpointmap.com/blog/reddit-api-rate-limits-guide",
+      "source_date": "2026",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Не рассчитывать на Reddit API как на доступный компонент к дате запуска. Подать заявку заранее; фоллбэк — только ручная работа. Скрипт не должен зависеть от Reddit API в критическом пути."
+    },
+    {
+      "claim": "Telegram — единственная площадка из списка без подавления внешних ссылок и с полноценным серверным Bot API для публикации видео. Лимиты: ~1 сообщение/сек в один чат, 20 сообщений/мин в группу, 30 сообщений/сек broadcast, ~30 запросов/сек; загрузка 50 MB через обычный Bot API и до 2,000 MiB через локальный Bot API server.",
+      "evidence": "'Bots can currently send video files of up to 50 MB in size'; лимиты: up to roughly one message per second per chat, 20 messages per minute in the same group, 30 messages per second across chats, ~30 API requests/sec; with local Bot API server upload up to 2,000 MiB.",
+      "source": "https://core.telegram.org/bots/api ; https://limits.tginfo.me/en",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "TG_BOT_UPLOAD_MAX_MB = 50 (или локальный Bot API server → 2000 MiB). Использовать Telegram как воронку/ретеншен и как зеркало контента, а не как источник холодного трафика — открытия каналов в TG нет, трафик надо приводить."
+    },
+    {
+      "claim": "Лимиты Telegram-аккаунта под сеть каналов: до 500 каналов/супергрупп на аккаунт (1,000 с Premium), до 50 созданий групп в день, до 20 ботов (40 с Premium), до 50 админов на канал. Спам-баны от 1 суток до постоянных; Aggressive Anti-Spam доступен от 200 участников.",
+      "evidence": "Сводка лимитов Telegram.",
+      "source": "https://limits.tginfo.me/en",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Один Telegram-аккаунт технически покрывает всю сеть каналов на все гео (500 каналов >> 20 каналов × N гео). Ограничение не в лимитах, а в спам-детекте."
+    },
+    {
+      "claim": "Telegram: 1B+ активных пользователей, ~500M взаимодействуют с Mini Apps; экосистема Mini Apps выросла с 2,200 приложений (середина 2024) до ~5,800 (октябрь 2025), +162%; 7-дневный retention Mini Apps 30-50% против 5-10% у обычных DApps.",
+      "evidence": "Отчёты 2026: 'With over 1 billion active Telegram users and 500 million engaging with Mini Apps'; рост числа мини-приложений и данные по retention.",
+      "source": "https://richads.com/blog/telegram-statistics/ ; https://statiko.io/blog/telegram-mini-apps ; https://grambase.ai/blog/telegram-mini-apps-2026",
+      "source_date": "2026",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Telegram Mini App — реальный вариант для выдачи лицензионного ключа и биллинга (Telegram Stars / бот-платежи) как альтернатива/дублёр Stripe. Снижает зависимость от Discord и от карточных платёжек."
+    },
+    {
+      "claim": "Discord прямо запрещает self-bots (автоматизацию обычных user-аккаунтов вне OAuth2/bot API) под угрозой терминации аккаунта, и это нельзя 'сделать совместимым' задержками, ротацией токенов или человекоподобным набором.",
+      "evidence": "Официальная справка Discord: 'Automating normal user accounts (generally called \"self-bots\") outside of the OAuth2/bot API is forbidden, and can result in an account termination if found'; 'Captcha solving, token rotation, delays, and human-like typing do not make a prohibited use compliant'. ToS запрещает unsolicited marketing, spam, auto-messaging, auto-dialing.",
+      "source": "https://support.discord.com/hc/en-us/articles/115002192352-Automated-User-Accounts-Self-Bots ; https://discord.com/terms ; https://discord.com/guidelines",
+      "source_date": "fetched 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Discord = только слой выдачи и ретеншена: официальный бот (OAuth2) выдаёт роль после оплаты через webhook Stripe/LemonSqueezy. Никакого масс-DM, никакого постинга в чужие серверы user-аккаунтами — это прямой путь к бану всего кластера."
+    },
+    {
+      "claim": "Discord не запрещает несколько аккаунтов прямым текстом, но флагует аккаунты, созданные с одного IP/устройства подряд, как потенциально автоматизированные (спам); мульти-аккаунтинг для обхода банов/нарушений — бан.",
+      "evidence": "'Discord's Terms of Service do not explicitly prohibit having multiple accounts. However, using multiple accounts to evade bans, harass users, or violate community guidelines is a bannable offense. Additionally, Discord may flag accounts created from the same IP address or device in quick succession.'",
+      "source": "https://discord.com/terms ; https://support.discord.com/hc/en-us/articles/115002192352-Automated-User-Accounts-Self-Bots",
+      "source_date": "2026",
+      "kind": "official_policy",
+      "confidence": "medium",
+      "actionable": "Держать один основной Discord-сервер на весь бизнес, а не сеть серверов. Риск потери всей базы клиентов при бане сервера — предусмотреть экспорт email/ключей вне Discord."
+    },
+    {
+      "claim": "X/Twitter режет охват постам с внешними ссылками на 50-90%, а с марта 2026 у не-Premium аккаунтов посты со ссылками получают почти нулевой медианный engagement. Нативное видео короче 2:20 получает лучшее распределение. Premium даёт охват, эквивалентный 4-8x органического engagement неверифицированного аккаунта.",
+      "evidence": "'Posts with external links are penalized in reach; the algorithm actively suppresses link posts. Elon Musk confirmed that posts containing links... often see a reach reduction of 50-90%. Since March 2026, non-Premium accounts posting links receive near-zero median engagement'; 'Native video under 2 minutes 20 seconds drives the highest initial distribution'; 'Premium tweets reach an audience that would require 4-8x the organic engagement for non-verified accounts'.",
+      "source": "https://www.successonx.com/algorithm-changes ; https://opentweet.io/blog/how-twitter-x-algorithm-works-2026 ; https://www.teract.ai/resources/twitter-algorithm-2026",
+      "source_date": "2026",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Если использовать X: ссылку НЕ в тело поста (в первый ответ/профиль), Premium на каждый аккаунт (доп. косты), видео до 2:20. Для 20 аккаунтов × Premium это заметная статья бюджета при 50-200 USD/мес — вероятно вне бюджета."
+    },
+    {
+      "claim": "С 6 февраля 2026 X убрал тарифные планы и перешёл на pay-per-use по умолчанию, без бесплатного тарифа; Basic мигрировали на PPU после 1 июня 2026, Pro депрекейтнули 14 августа 2026 с миграцией после 1 сентября 2026. Цены: создание поста $0.015, создание поста СО ССЫЛКОЙ $0.200, чтение поста $0.005, чтение юзера $0.010, media metadata $0.005, owned reads $0.001.",
+      "evidence": "Официальная страница цен X API: 'Post create $0.015 per request', 'Post create (with URL) $0.200 per request', 'Post read $0.005', 'User read $0.010', 'Media Metadata $0.005', 'Owned Reads $0.001'. 'The X API uses pay-per-usage pricing. No subscriptions'; кредиты покупаются вперёд в Developer Console, нет minimum spend.",
+      "source": "https://docs.x.com/x-api/getting-started/pricing ; https://docs.x.com/x-api/introduction ; https://postproxy.dev/blog/x-api-pricing-2026/",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Прямой расчёт для спеки: 20 аккаунтов × 3 поста/день × 30 дней = 1,800 постов/мес → $27/мес без ссылок, $360/мес если в каждом посте ссылка. Правило для скрипта: X_POST_COST_USD=0.015, X_POST_WITH_URL_COST_USD=0.200 → ссылки в постах X запрещены на уровне конфига, ссылка только в bio/первом реплае (реплай тоже post create = $0.015)."
+    },
+    {
+      "claim": "Kick API НЕ позволяет загружать видео или клипы: в публичном API 13 OAuth-скоупов (user:read, channel:read/write, channel:rewards:read/write, chat:write, streamkey:read, events:subscribe, moderation:ban, moderation:chat_message:manage, kicks:read, ads:read/write) и ни одного на создание контента.",
+      "evidence": "Официальные Kick Dev Docs: полный список скоупов; 'No scope exists for uploading videos or clips. The available scopes focus on channel management, chat, rewards, moderation, and ads rather than content creation tools.' Публичный API открыт в марте 2025 вместе с dev-фондом $100,000; OAuth 2.1 + PKCE.",
+      "source": "https://docs.kick.com/getting-started/scopes.md ; https://github.com/KickEngineering/KickDevDocs",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Исключить Kick из автозалива коротких видео — технически невозможно. Kick пригоден только как канал через живых стримеров (партнёрки/спонсорство) или собственный стрим."
+    },
+    {
+      "claim": "Kick: ~100 млн зарегистрированных пользователей (не MAU — Kick не раскрывает MAU), 570.7 млн часов просмотра в июне 2026 (рекорд), 4.5 млрд часов за 2025 (+131% YoY), пиковые конкуренты 4,600,683 (19 октября 2025), средние ~660k конкурентов против ~2.5 млн у Twitch; 4-я по просмотрам live-платформа, ~11% всех игровых часов просмотра.",
+      "evidence": "Streams Charts и сводки статистики 2026.",
+      "source": "https://streamscharts.com/news/kick-reaches-100-million-users ; https://levvvel.com/statistics/kick/ ; https://www.shanethegamer.com/research/streaming-platform-market-share/",
+      "source_date": "2026",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Kick — реальная геймерская аудитория, но канал доставки = спонсорство стримеров, не автозалив. Бюджет $50-200/мес позволяет только микро-стримеров (500-2000 конкурентов)."
+    },
+    {
+      "claim": "Гео и демография Kick сильно смещены от англоязычного UK: английский = только 22% часов платформы, сильнейшие сообщества — Бразилия, Турция, Россия, Ближний Восток; аудитория 18-24, преимущественно мужская; Just Chatting = 27% часов. Условия монетизации: 95/5 сплит, требуется 250 подписчиков, 30 часов стрима/мес, 75 средних конкурентов, 250 уникальных чаттеров.",
+      "evidence": "Сводка статистики Kick 2026.",
+      "source": "https://levvvel.com/statistics/kick/",
+      "source_date": "2026",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Демография Kick (18-24 муж.) совпадает с ЦА, но гео (BR/TR/RU/MENA) — низкая платёжеспособность в GBP. Если тестировать Kick — сразу с локализацией цены (PPP-прайсинг) или отдельным дешёвым тиром."
+    },
+    {
+      "claim": "Twitch не является каналом для загрузки короткого видео: в API есть только Create Clip и Create Clip From VOD (требуют user access token со скоупом channel:manage:clips и работают по собственному каналу/VOD), эндпоинта загрузки видео нет вообще.",
+      "evidence": "Twitch API Reference: 'Create Clip - Creates a clip from a broadcaster's live stream', 'Create Clip From VOD - Creates a clip from the broadcaster's VOD', скоуп channel:manage:clips; 'No video upload endpoint is provided... there is no endpoint for uploading video content directly through the Twitch API'.",
+      "source": "https://dev.twitch.tv/docs/api/reference/",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Twitch-клипы могут быть только ИСХОДНИКОМ контента (нарезка чужих клипов → риск копирайта) или результатом собственного стрима. Исключить из списка каналов дистрибуции."
+    },
+    {
+      "claim": "Kwai — крупнейшая недооценённая short-video площадка в LATAM: 60 млн MAU только в Бразилии (~1/3 населения страны), >75 минут в день на пользователя; международный бизнес Kuaishou вышел в прибыль в Q1 2025. В Бразилии 77% пользователей 25+, гендер 51/49.",
+      "evidence": "Caixin Global (11 декабря 2025): '60 million monthly active users in Brazil, where it focuses on localized content'; 'each user spending an average of more than 75 minutes on the platform every day'; 'Q1 2025: International business achieved profitability for the first time'. Демография Бразилии — из гайдов по Kwai Ads 2025.",
+      "source": "https://www.caixinglobal.com/2025-12-11/kuaishous-kwai-conquers-brazil-by-ditching-the-time-machine-strategy-102392161.html ; https://novabeyond.com/info-282.html",
+      "source_date": "2025-12-11",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Kwai = объём + низкая конкуренция, но 77% аудитории 25+ (а ЦА 13-24) и низкий ARPU в BRL. Приоритет низкий. Открытого API контент-публикации для Kwai в документации не найдено — только Kwai for Business (реклама)."
+    },
+    {
+      "claim": "Moj/ShareChat: 325M+ MAU в экосистеме (цифра для рекламодателей), 280 млрд просмотров видео/мес, 34+ минут/день, 200M+ монетизируемых пользователей (окт 2025), ~3 млн загрузок видео/день, 15+ индийских языков. Данные по самому Moj конфликтуют: от ~160M до 300M MAU.",
+      "evidence": "ads.sharechat.com (рекламный сайт): '325 million+ users across Bharat'; expandedramblings свод: 'Moj-specific metrics are limited and primarily date to 2022'; 12M активных креаторов Moj (2022).",
+      "source": "https://ads.sharechat.com/ ; https://expandedramblings.com/index.php/moj/",
+      "source_date": "2025-2026",
+      "kind": "industry_data",
+      "confidence": "low",
+      "actionable": "Индия: огромный объём, но контент на индийских языках, ЦА не покупает подписки в GBP/USD, нет публичного API постинга. Не включать в автозалив. Максимум — как тест на дешёвый tier для Индии, если появится локальная платёжка (UPI)."
+    },
+    {
+      "claim": "Zalo (Вьетнам): 81.3 млн MAU на июнь 2026, 2.2 млрд сообщений в день; Zalo Video (запущен 2023) — ~40 млн пользователей в месяц. Это фактически монополия мессенджера во Вьетнаме.",
+      "evidence": "Vietnam.vn (июнь 2026): 'the number of monthly active users on the Zalo platform reached 81.3 million, with 2.2 billion messages sent daily'; 'Zalo Video... attracting approximately 40 million users per month'.",
+      "source": "https://www.vietnam.vn/en/zalo-dat-81-3-trieu-nguoi-dung-voi-2-2-ty-tin-nhan-moi-ngay ; https://zalo.me/en/product/zalo-video/",
+      "source_date": "2026-06",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Только вьетнамский рынок, вьетнамский язык, нет данных о публичном API публикации видео (есть Zalo Official Account API для бизнес-сообщений — не подтверждено для видео-фида). Исключить."
+    },
+    {
+      "claim": "Bilibili — единственная площадка из 'длинного хвоста' с реально геймерской аудиторией и новым открытым доступом для иностранцев: 376 млн MAU / 115.2 млн DAU в Q1 2026; международная версия перезапущена глобально на Android 19 августа 2026, требование загружать паспорт/ID для зарубежных пользователей убрано, регистрация по email/международному телефону/Google.",
+      "evidence": "Statista/сводки: Q1 2026 — 376M MAU, 115.2M DAU. TechTrox: 'removed the identity verification requirement that previously required overseas users to submit a passport or government ID'; анонс Creator Hub в X 19.08.2026; приложение недоступно в Индии и Румынии на старте. Монетизация для международных креаторов 'promised but not yet finalized'; сообщается о ~$0.70 за 1000 просмотров (оценка, не опубликованная ставка).",
+      "source": "https://www.statista.com/statistics/1109108/bilibili-average-monthly-active-users/ ; https://techtrox.com/bilibili-global-launch-guide/ ; https://factfile.pk/2026/08/29/bilibili-global-expansion-youtube/",
+      "source_date": "2026-08",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Единственный интересный 'новый' канал: геймеры + пустой англоязычный контент + платформа сама вербует западных креаторов (обычно = аномально высокий органический охват на старте). Но: нет данных о публичном API загрузки, нет данных о правилах по внешним ссылкам, платёжная связка с CN. Тест 2-3 канала вручную, не в автозалив."
+    },
+    {
+      "claim": "Rumble: 56 млн средних глобальных MAU в Q1 2026 (+8% QoQ), выручка $25.5 млн (+7% YoY); в Q3 2025 было 47 млн MAU, ARPU $0.45. Аудитория привязана к новостным циклам, US-центричная, политически/возрастно смещённая.",
+      "evidence": "Официальный отчёт Rumble Q1 2026: 'average global Monthly Active Users of 56 million in the first quarter of 2026, a sequential increase of 8%'; 'Record first quarter revenue of $25.5 million'. Q3 2025: 47M MAU, $24.8M, ARPU $0.45. 'Rumble's audience tends to rise and fall with major news cycles'.",
+      "source": "https://www.rum.group/blog/rumble-reports-first-quarter-2026-results/ ; https://expandedramblings.com/index.php/rumble/",
+      "source_date": "2026",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Демографический промах: аудитория Rumble старше и новостная, ЦА 13-24 геймеров там почти нет. Публичного API загрузки в документации не найдено (help.rumble.com редиректит на несвязанный rumbleplayer.com). Исключить."
+    },
+    {
+      "claim": "VK Клипы: данные по охвату конфликтуют (750 млн просмотров/день в одном источнике против 2.7 млрд среднедневных просмотров, +9% YoY, в другом); число опубликованных клипов x2.2 YoY, время просмотра +31%, число авторов +89%; длина клипа 5 секунд - 3 минуты; есть монетизация по CPM/CPV, средний доход блогеров вырос x5.7.",
+      "evidence": "ads.vk.ru и Popsters: 'Short videos in VK Clips generate up to 750 million views daily' vs 'average daily views of 2.7 billion, which represented a 9% year-over-year increase'; 'Published clips increased 2.2x year-over-year, time spent grew 31%, and the number of creators jumped 89%'.",
+      "source": "https://ads.vk.ru/en/insights/kak-rabotat-s-vk-klipami ; https://popsters.com/blog/post/-vk-clips-and-vk-video--video-marketing-in-social-media",
+      "source_date": "2026",
+      "kind": "industry_data",
+      "confidence": "low",
+      "actionable": "Аудитория русскоязычная — не совпадает с англоязычным UK-позиционированием и с оплатой в GBP/USD. Держать как опциональный отдельный RU-продукт (RU-цена, RU-платёжка), но НЕ смешивать с основным каналом. Официальную документацию VK API получить не удалось (dev.vk.com недоступен) — endpoint загрузки клипов: нет подтверждённых данных."
+    },
+    {
+      "claim": "Rutube H1 2026: средний MAU 82.3 млн (+~5%), средний DAU 20.4 млн (+18%), 29 млрд просмотров (+10.4%), 63 минуты на пользователя в сутки (+10%). Статистика по вертикальным Shorts доступна только для загрузок начиная с 1 ноября 2025; Yappy позиционируется как 'Rutube Shorts' внутри Газпром-медиа.",
+      "evidence": "ComNews (23.07.2026) и ixbt (21.07.2026) со ссылкой на отчётность платформы. Отдельный источник (techora, 26.07.2026) утверждает противоположный тренд: 'YouTube восстанавливается, Rutube теряет зрителей, VK Видео лидирует'.",
+      "source": "https://www.comnews.ru/content/246524/2026-07-23/2026-w30/1008/rutube-uvelichil-sredniy-dau-18-pervom-polugodii-2026-goda ; https://www.ixbt.com/news/2026/07/21/424458-prosmotry-rutube-dostigli-29-mlrd-v-pervom-polugodii.html ; https://techora.ru/news/youtube-vosstanavlivaetsya-rutube-teryaet-zriteley-vk-2026-07-26",
+      "source_date": "2026-07",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Как и VK — русскоязычный трафик, мимо основного продукта. Публичного API загрузки Rutube не найдено: нет данных. Исключить из автозалива для англоязычного продукта."
+    },
+    {
+      "claim": "Likee — падающая площадка, а не возможность: 30.6 млн мобильных MAU в Q4 2024 против 33.9 млн в Q3 2024 (по отчётности JOYY). Заявления о ~150 млн MAU в отдельных сводках не подтверждены отчётностью. 500M+ загрузок в Google Play (листинг обновлён в феврале 2026). Владелец — BIGO Technology (Сингапур) / JOYY.",
+      "evidence": "'Likee averaged 30.6M mobile MAUs in Q4 2024, down from 33.9M in Q3'; 'some sources report higher aggregate figures, with Likee having approximately 150 million monthly active users worldwide' — без подтверждения; 'Unlike publicly traded social apps that publish consistent DAU/MAU dashboards, Likee is typically tracked through JOYY's quarterly reporting'.",
+      "source": "https://expandedramblings.com/index.php/likee-statistics-facts/ ; https://earthweb.com/likee-users/",
+      "source_date": "2026",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Исключить. Тренд отрицательный, аудитория не геймерская, публичного API публикации нет."
+    },
+    {
+      "claim": "BIGO LIVE — не short-video площадка, а лайв-стриминг с гифтингом: 33.4 млн мобильных MAU в Q4 2024, 600 млн зарегистрированных, 150+ стран; вся экосистема JOYY — 263.1 млн мобильных MAU в Q4 2024.",
+      "evidence": "Сводка со ссылкой на отчётность JOYY Q4 2024.",
+      "source": "https://expandedramblings.com/index.php/bigo-live-statistics-and-facts/",
+      "source_date": "2026",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Формат (лайв + виртуальные подарки) не подходит для автозалива коротких видео. Исключить."
+    },
+    {
+      "claim": "Facebook остаётся крупнейшей по рекламному охвату площадкой после YouTube: 2.39 млрд рекламный охват (середина апреля 2026), Instagram 1.99 млрд, YouTube 2.65 млрд, TikTok 2.21 млрд. Разбивки по крупнейшим странам Facebook/Snapchat в этом отчёте нет.",
+      "evidence": "DataReportal, данные середины апреля 2026. Источник прямо подчёркивает, что это 'advertising audiences', а не уникальные люди, и методики измерения разные.",
+      "source": "https://datareportal.com/social-media-users",
+      "source_date": "2026-04",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Facebook по объёму сопоставим с TikTok+, при этом с официальным API автопостинга и кликабельными ссылками. Это главный аргумент делать Facebook Reels каналом №1 среди альтернативных."
+    },
+    {
+      "claim": "Facebook — практически единственная крупная short-video площадка, где ссылка в подписи к посту кликабельна (в отличие от Instagram/TikTok, где ссылки только в bio/стикерах). Официальной документации, подтверждающей отсутствие штрафа за исходящую ссылку в Reels, найти не удалось.",
+      "evidence": "Прямое подтверждение в официальных источниках не найдено: Meta Reels Publishing docs не обсуждают политику ссылок; гайды по монетизации 2026 тему не затрагивают ('Links in Captions: Not mentioned'). Вывод сделан по общеизвестному поведению Facebook Page posts.",
+      "source": "inference from https://developers.facebook.com/docs/video-api/guides/reels-publishing/ + https://fluxnote.io/guides/facebook-reels-monetization-earnings-2026",
+      "source_date": "2026",
+      "kind": "inference",
+      "confidence": "low",
+      "actionable": "Проверить эмпирически на 2-3 тестовых Page: A/B ссылка в подписи vs ссылка только в bio, замер охвата. Заложить в спеку флаг FB_LINK_IN_CAPTION (default off до теста)."
+    },
+    {
+      "claim": "Итоговая приоритизация площадок для продажи подписки на твики (с учётом ЦА 13-24 англоязычные геймеры, оператор один, бюджет $50-200/мес, всё через скрипт). Tier A: 1) Facebook Reels — официальный API, 30/24ч на Page, ссылки в подписи, 2.39B охват; 2) Reddit — высший интент, прямые ссылки, но только ручной режим и прогретые аккаунты; 3) Telegram — Bot API, ссылки без подавления, воронка + выдача через Mini App; 4) Discord — слой выдачи роли/ключа, не привлечение. Tier B (тест): 5) Snapchat Spotlight — идеальная демография, но НЕТ API (ручной режим); 6) X/Twitter — нативное видео ок, но ссылки = -50-90% охвата и $0.20/пост в API; 7) Bilibili International — геймеры + пустая англоязычная ниша + платформа вербует креаторов, но API и правила по ссылкам неизвестны; 8) Kick — геймеры, но только через стримеров. Tier C (исключить): Twitch (нет загрузки), Kwai/Moj/Zalo/Likee/Bigo (гео/ARPU/нет API), VK Клипы/Rutube (русскоязычные — отдельный продукт), Rumble (демография мимо).",
+      "evidence": "Сводка по всем найденным фактам: наличие/отсутствие API публикации (Meta — есть, Kick/Twitch/Snapchat — нет, остальные — нет данных), политика по ссылкам (FB/Reddit/Telegram/Discord — да; X — штраф; Snapchat — только bio), совпадение гео и демографии с англоязычной UK-ЦА 13-24, стоимость канала при бюджете $50-200/мес.",
+      "source": "synthesis of all sources cited in this dimension",
+      "source_date": "2026-09-12",
+      "kind": "inference",
+      "confidence": "medium",
+      "actionable": "Порядок внедрения в скрипт: фаза 1 — Facebook Reels + Instagram Reels через один Meta Graph API пайплайн (общая спека рендера 1080x1920/H.264/AAC/3-90s); фаза 2 — Telegram Bot API как зеркало + воронка; фаза 3 — Discord bot для выдачи; фаза 4 — вручную Reddit (3-5 прогретых аккаунтов) и Bilibili International (2-3 канала). X/Snapchat — только после подтверждения экономики."
+    }
+  ],
+  "machine_spec_notes": [
+    "MAX_FB_REELS_PER_PAGE_PER_24H = 30 (скользящее окно 24ч, не календарные сутки; Meta рекомендует зеркалить лимит в приложении)",
+    "MAX_IG_POSTS_PER_ACCOUNT_PER_24H = 100; MAX_IG_CAROUSELS_PER_24H = 50",
+    "Единый мастер-рендер видео, проходящий все Tier A/B площадки: MP4 / 9:16 / 1080x1920 / H.264 (или H.265) / 24-60 fps / AAC stereo 48000 Hz / >=128 kbps / длительность 3-90 s",
+    "Для монетизируемых Spotlight-роликов отдельный вариант: MIN_DURATION_SEC = 30 (Snapchat не платит за <30s)",
+    "Для X/Twitter: MAX_VIDEO_DURATION_SEC = 140 (2:20) — граница лучшего распределения",
+    "VK Клипы: длительность 5-180 s (если RU-канал когда-либо включается)",
+    "FB Reels API: endpoints POST /{page-id}/video_reels -> POST /video-upload/{video-id} -> finish; scopes pages_show_list + pages_read_engagement + pages_manage_posts; требуется task CREATE_CONTENT у пользователя на Page",
+    "IG API: permission instagram_business_content_publish (Instagram Login) ИЛИ instagram_content_publish (Facebook Login) + instagram_business_basic/instagram_basic; аккаунт обязательно professional и привязан к Page; учесть блокирующее состояние Page Publishing Authorization",
+    "X_API_PRICING: post_create=0.015 USD, post_create_with_url=0.200 USD, post_read=0.005, user_read=0.010, media_metadata=0.005, owned_read=0.001 — pay-per-use, кредиты вперёд, без бесплатного тарифа (с 2026-02-06)",
+    "ПРАВИЛО КОНФИГА: X_ALLOW_URL_IN_POST = false (иначе стоимость поста x13.3 и охват -50-90%); ссылку размещать в профиле или в первом реплае (реплай тарифицируется как post_create $0.015)",
+    "TELEGRAM_BOT_UPLOAD_MAX_MB = 50 (без локального Bot API server) / 2000 MiB (с локальным сервером); download 20 MB",
+    "TELEGRAM_RATE: 1 msg/sec на чат, 20 msg/min на группу, 30 msg/sec broadcast, ~30 API req/sec",
+    "TELEGRAM_ACCOUNT_LIMITS: 500 каналов/супергрупп (1000 Premium), 50 созданий групп/сутки, 20 ботов (40 Premium), 50 админов на канал",
+    "REDDIT_API: free 100 QPM на OAuth client (усреднение по скользящему 10-минутному окну), только non-commercial; commercial $0.24/1000 вызовов; регистрация приложения = ручное ревью 2-4 недели (Responsible Builder Policy с конца 2025) — не ставить Reddit API в критический путь скрипта",
+    "ЗАПРЕТ В КОНТЕНТЕ ДЛЯ REDDIT: никаких сокращателей ссылок и affiliate/referral-ссылок (прямое нарушение Rule 5 r/pcmasterrace и аналогичных) — всегда полный канонический URL основного домена",
+    "REDDIT_PROMO_RATIO: планировать 19:1 (5% промо), не 9:1; аккаунты с CQS < 0.3 фильтруются автоматически даже при 5% — новореги на Reddit непригодны",
+    "KICK_API: нет скоупа загрузки видео/клипов (13 скоупов: user:read, channel:read, channel:write, channel:rewards:read, channel:rewards:write, chat:write, streamkey:read, events:subscribe, moderation:ban, moderation:chat_message:manage, kicks:read, ads:read, ads:write) -> исключить из модуля автозалива",
+    "TWITCH_API: только Create Clip / Create Clip From VOD (scope channel:manage:clips, собственный канал) — нет upload endpoint -> исключить из модуля автозалива",
+    "SNAPCHAT: нет публичного API органической публикации; Creative Kit = user-initiated share-to-app, SDK deprecated (code-only версия) -> площадка не автоматизируется серверно, только ручной режим",
+    "PLATFORM_CAPABILITY_MATRIX (для роутера автозалива): publish_api=true -> facebook_reels, instagram_reels, telegram; publish_api=false -> snapchat, kick, twitch, rumble, kwai, likee, bigo, moj, zalo, bilibili_intl; publish_api=paid_per_post -> x_twitter; publish_api=unknown -> vk_clips, rutube",
+    "CLICKABLE_LINK_SUPPORT: facebook_reels=caption (проверить A/B, флаг FB_LINK_IN_CAPTION default false), reddit=post/comment (полный URL), telegram=везде, discord=везде, x=с штрафом, instagram=только bio, snapchat=только Public Profile website, tiktok=только bio",
+    "МЕТРИКА ДЛЯ АТРИБУЦИИ: отдельный UTM/поддомен на КАЖДУЮ площадку и КАЖДЫЙ канал, т.к. без этого нельзя отличить эффект Facebook Reels от Reddit — при запрете сокращателей на Reddit использовать канонический URL + путь (/r, /fb, /tg), не query-параметры",
+    "ИЗОЛЯЦИЯ РИСКА: доля трафика от Meta-кластера в модели не выше 50%; email/лицензионные ключи клиентов храниться вне Discord и вне Meta (бан Meta-кластера или Discord-сервера не должен уносить базу)"
+  ],
+  "risks": [
+    "Meta — самый высокий риск потери всего кластера: политика Inauthentic Behavior запрещает неаутентичные ассеты, детект по device fingerprinting + IP + location + поведению, при срабатывании отключаются ВСЕ связанные аккаунты и могут навсегда забаниться email/телефон. Парадокс: площадка с лучшим API одновременно самая опасная для сети из 20 каналов на гео. Вероятность потери части кластера на горизонте 6 месяцев при работе с новорегами — высокая.",
+    "Facebook Content Monetization остаётся invite-only на июль 2026, официальных порогов нет — любой план, где рекламный доход FB покрывает часть косты, ненадёжен.",
+    "Reddit: покупные новореги практически не работают из-за CQS (<0.3 = автофильтрация даже при 5% промо). Плюс r/pcmasterrace прямо банит сокращатели ссылок — типовая схема с короткими трекинг-ссылками ведёт к удалению постов и бану. Прогрев аккаунтов = ручная работа на 2-3 месяца, а не скрипт.",
+    "Reddit API: самостоятельная регистрация приложений закрыта с конца 2025, ручное ревью 2-4 недели с реальным шансом тихого отказа — фича может не появиться к запуску вообще.",
+    "X/Twitter: pay-per-use без бесплатного тарифа с февраля 2026 + $0.20 за пост со ссылкой. При бюджете $50-200/мес X способен съесть весь инфраструктурный бюджет: 1,800 постов/мес со ссылками = $360/мес. Плюс Premium на каждый аккаунт для нормального охвата — ещё расходы.",
+    "Snapchat: отсутствие API означает, что любая автоматизация идёт через эмуляцию клиента, что противоречит условиям сервиса и создаёт риск бана аккаунтов без возможности апелляции. Порог монетизации 50k подписчиков + 15,000 часов/28д недостижим для сети новорегов.",
+    "Discord: self-bots прямо запрещены с формулировкой, что задержки/ротация токенов/человекоподобный ввод не делают использование допустимым. Любая попытка масс-DM или автопостинга в чужие серверы = терминация. Так как Discord планируется как канал выдачи доступа, бан сервера означает потерю доступа клиентов к оплаченному продукту — репутационный и chargeback-риск.",
+    "Kick и Twitch физически не поддерживают загрузку короткого видео — если они заложены в план как каналы автозалива, план невыполним.",
+    "Данные по VK Клипам расходятся в 3.6 раза (750M vs 2.7B просмотров/день), по Moj — от 160M до 325M MAU, по Likee — от 30.6M до 150M MAU. Планировать объёмы по этим площадкам нельзя.",
+    "Rutube: два источника за июль 2026 дают противоположные тренды (рост DAU +18% vs 'Rutube теряет зрителей'). Низкая надёжность прогноза.",
+    "Bilibili International: монетизация для иностранных креаторов официально 'обещана, но не финализирована'; правила по внешним ссылкам и наличие API загрузки неизвестны; платформа китайская — вывод средств и платёжная связка для оператора из СНГ под вопросом.",
+    "Kwai/Moj/Zalo/Bilibili: аудитория в гео с низкой платёжеспособностью в GBP/USD. Даже при огромном охвате конверсия в подписку $5-15 может быть близка к нулю — риск потратить весь ресурс на трафик, который не платит.",
+    "Атрибуция: без раздельных URL на площадку невозможно отключить убыточные каналы; при этом запрет сокращателей на Reddit ломает типовую схему трекинга — нужна альтернативная схема путей на своём домене.",
+    "Общий структурный риск: из 18 рассмотренных площадок серверный автопостинг официально поддерживают только Meta (FB/IG) и Telegram. Это значит, что 'сеть из 20 каналов на гео в нескольких сетях' реализуема автоматически лишь на 2-3 площадках, а всё остальное требует либо ручной работы, либо нарушения условий сервиса."
+  ],
+  "open_questions": [
+    "Разрешает ли Facebook кликабельные внешние ссылки в подписи к Reels без штрафа по охвату в 2026? Официальной документации найти не удалось — нужен A/B тест на 2-3 тестовых Page.",
+    "Нет данных по RPM Facebook Reels в разбивке по гео (US/UK vs SEA/MENA/LATAM/Африка) — ни один из проверенных источников не даёт региональной таблицы.",
+    "Полный список eligible countries для Facebook Content Monetization и для Snapchat Creator Rewards (упоминаются '45 countries' у Snapchat, 'US, UK, Canada, Australia and others' у Meta, точных списков нет). Критично: может ли оператор из СНГ вообще получать выплаты.",
+    "Правила саморекламы в конкретных игровых/ПК-сабреддитах: r/lowendgaming, r/optimizedgaming, r/FortniteCompetitive, r/VALORANT, r/playrust, r/cs2, r/GlobalOffensive, r/deadbydaylight, r/pcgamingtechsupport, r/buildapc, r/allbenchmarks. reddit.com недоступен для прямого получения — требуется ручная проверка сайдбаров. Подтверждены только правила r/pcmasterrace (через pcmasterrace.org).",
+    "Разрешает ли Reddit API (OAuth) программную отправку постов/комментариев в 2026 и какие аккаунтные throttles применяются (частота постов для аккаунтов с низкой кармой)? Проверенные источники освещают только чтение.",
+    "Есть ли у VK официальный endpoint публикации Клипов (shortVideo/video.save с флагом вертикального видео) и его лимиты — dev.vk.com недоступен для получения.",
+    "Есть ли публичный API загрузки видео у Rutube, Rumble, Kwai, Likee, Moj/ShareChat, Zalo Video, Bilibili International — по всем: нет данных. Требуется прямая проверка developer-порталов.",
+    "Правила Bilibili International по внешним ссылкам в описании видео и по мульти-аккаунтингу для иностранных креаторов — нет данных.",
+    "Точные rate limits Kick API (страница docs.kick.com/getting-started/rate-limits отсутствует/перемещена).",
+    "Фактический органический охват нового аккаунта в первые 30 дней по каждой площадке (Facebook Reels, Snapchat Spotlight, Kwai, Bilibili Intl) — публичных данных нет, нужен собственный замер: по 3 тестовых аккаунта на площадку, 30 дней, одинаковый контент.",
+    "Какова реальная доля англоязычной аудитории 13-24 на Kick за пределами топ-стримеров (известно только, что английский = 22% часов платформы).",
+    "Работает ли Telegram Stars / платежи в боте как альтернативная платёжка для подписки при отказе Stripe/PayPal — и какие там ограничения по возвратам и по цифровым товарам."
+  ]
+}

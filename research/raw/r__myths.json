@@ -1,0 +1,319 @@
+{
+  "dimension": "myths",
+  "summary": "28 убеждений разобраны с вердиктами. Ключевой вывод: почти вся «карго-культовая» часть (прокси конкретного города, прогрев скроллом, пауза от шедоубана, гео через хештеги, жёсткий лимит постов, aged-аккаунты, 30 хештегов, бонус новичка, ответы на комменты за 30 минут) — миф или недоказуемо, и стоит денег без отдачи. А та часть, которую операторы обычно игнорируют, подтверждена официальными документами и стоит бизнеса: (1) дубликаты — TikTok официально не рекомендует «duplicated content», YouTube прямо запрещает «automated or synthetic mass-production… high volumes of similar content with minimal changes» (снятие + страйк, 3 страйка/90 дней = удаление канала), Instagram деприоритизирует Reels с чужим ватермарком; (2) арифметика сети — по Socialinsider (2 млн видео, 214 507 профилей, янв 2024–дек 2025) аккаунт на 1–5K подписчиков даёт в среднем 350 просмотров на пост, т.е. 20 аккаунтов × 1 пост/день ≈ 7 000 просмотров/день — это не бизнес; трафик приносят не аккаунты, а прорывные креативы; (3) единственный некапризный канал для этого продукта — ПОИСК (TikTok «search value» из авто-субтитров, YouTube Shorts в результатах поиска), а его убивают спамом #fyp вместо ключевых слов в озвучке и on-screen тексте. TikTok официально: «neither follower count nor whether the account has had previous high-performing videos are direct factors» — значит и покупать траст бессмысленно, и «бонуса новичку» нет. YouTube — единственная из трёх, где репутация канала официально учитывается («the reputation and the quality of a channel»), поэтому правила удаления/перезалива там противоположны TikTok/IG. Слабо задокументированные зоны (город-прокси, device fingerprint, SIM, эффект правки метаданных) помечены «нет данных» — спеку на них строить нельзя.",
+  "findings": [
+    {
+      "claim": "МИФ №1 — «нужен прокси конкретного города». Гео-сигнал существует, но он страновой и официально с НИЗКИМ весом; город-левел эффект — нет данных.",
+      "evidence": "TikTok официально относит к сигналам «device and account settings like your language preference, country setting, and device type», и прямо указывает, что они получают меньший вес, поскольку пользователь не выражает их как предпочтение. Sprout Social (обзор алгоритма, 6 фев 2026) ставит группу «Device/account indicators — country, language, device type» на последнее место по весу из 4 групп. Ни в одном официальном документе TikTok/Meta/YouTube нет упоминания города как сигнала распределения.",
+      "source": "https://newsroom.tiktok.com/en-us/how-tiktok-recommends-videos-for-you (TikTok Newsroom, официально) + https://sproutsocial.com/insights/tiktok-algorithm/",
+      "source_date": "2020-06-18 / 2026-02-06",
+      "kind": "official_policy",
+      "confidence": "medium",
+      "actionable": "В спеку: один стабильный residential/mobile IP уровня СТРАНЫ на аккаунт, не менять после создания. Не платить за city-level GEO. Гораздо важнее совпадение стека: системная локаль + язык приложения + timezone + валюта в лендинге = целевая страна (UK: en-GB, Europe/London, £). Поле в конфиге: geo=UK|US|DE, proxy_scope=country."
+    },
+    {
+      "claim": "МИФ №2 — «прогрев аккаунта скроллом обязателен» (N часов скролла перед первым постом). Как «накопление траста» — не подтверждено ничем официальным. Как формирование интересного графа — имеет смысл, но 10–15 минут, один раз.",
+      "evidence": "Официальные списки сигналов TikTok (2020) и Instagram (Mosseri, 31 мая 2023) описывают сигналы ЗРИТЕЛЯ (его лайки, доскроллы, история), а не историю просмотров ПУБЛИКУЮЩЕГО аккаунта. Ни один официальный документ трёх платформ не описывает «trust score» аккаунта, накапливаемый потреблением. При этом TikTok официально относит к сигналам «accounts you follow, comments you post, content you create» — т.е. активность аккаунта влияет на то, ЧТО ему показывают, и косвенно на первичный подбор похожей аудитории.",
+      "source": "https://newsroom.tiktok.com/en-us/how-tiktok-recommends-videos-for-you + https://about.instagram.com/blog/announcements/instagram-ranking-explained",
+      "source_date": "2020-06-18 / 2023-05-31",
+      "kind": "myth_debunk",
+      "confidence": "medium",
+      "actionable": "Заменить ритуал «3 дня скролла» на детерминированный чеклист: заполненный профиль (аватар, ник в нише, bio, ссылка), 10–15 мин потребления гейминг/FPS-контента с доскроллами и 3–5 подписками на целевые аккаунты, затем первый пост. Константа: warmup_minutes=10..15, warmup_days=0. Не жечь недели."
+    },
+    {
+      "claim": "МИФ №3 — «шедоубан лечится паузой». Миф. Ни TikTok, ни Instagram официально не признают шедоубан; реальные механизмы — per-video неэлигибельность в рекомендации и per-account нарушения, и они ПРОВЕРЯЕМЫ в интерфейсе. Пауза не лечит ничего.",
+      "evidence": "Instagram, Adam Mosseri: «Shadowbanning is not a thing»; с окт 2021 в настройках есть инструмент Account Status, показывающий фактические ограничения и дающий апелляцию. TikTok support, по обзору Hootsuite, «doesn't acknowledge they exist»; в том же материале практическая оценка: «90% of people who think they are shadowbanned are not actually shadowbanned at all, they just made some errors along the way». Типичная длительность, о которой сообщают практики — 1–2 недели (Hootsuite), «около двух недель» (Later, обновлено 19 сен 2025) — но это наблюдения, а не политика.",
+      "source": "https://blog.hootsuite.com/instagram-shadowban/ (цитата Mosseri) + https://blog.hootsuite.com/tiktok-shadowban/ + https://later.com/blog/tiktok-shadowban/",
+      "source_date": "2021-09-22 / 2025-09-19",
+      "kind": "myth_debunk",
+      "confidence": "high",
+      "actionable": "В скрипт — процедура диагностики вместо паузы: (1) прочитать Account Status (IG) / уведомления о нарушениях (TikTok) / Strikes в YouTube Studio; (2) если нарушений нет — это НЕ бан, это плохой креатив или сработавший детект дубликата; (3) удалить конкретное видео-нарушитель, продолжать заливать по графику. Пауза 7–14 дней = −30..−60 тестовых постов на аккаунт, т.е. потеря именно того сигнала, за которым ты и пришёл."
+    },
+    {
+      "claim": "МИФ №4 — «хештеги задают гео». Миф. Хештег — контентный сигнал (о чём видео), гео идёт отдельным каналом через страновую настройку аккаунта/устройства.",
+      "evidence": "TikTok официально разделяет «video information — captions, hashtags, sounds» и «device and account settings — language preference, country setting, device type» как РАЗНЫЕ группы сигналов, причём вторая с меньшим весом. Instagram с 13 дек 2024 вообще убрал возможность подписываться на хештеги, а официальное объяснение ранжирования (Mosseri, 2023) хештеги в списке сигналов не упоминает вовсе.",
+      "source": "https://newsroom.tiktok.com/en-us/how-tiktok-recommends-videos-for-you + https://blog.hootsuite.com/instagram-hashtags/",
+      "source_date": "2020-06-18 / 2024-12-13",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Гео делается не тегами, а: страновая настройка аккаунта, язык озвучки/субтитров (en-GB), локальные маркеры в кадре (UK-сленг, £-цены, пинг до лондонских серверов, названия провайдеров/ISP). Теги — только тематические (#fortnite #fps #lowendpc). Убрать из спеки любые #uk/#london/#unitedkingdom как «гео-инструмент»."
+    },
+    {
+      "claim": "МИФ №5 — «нельзя постить чаще N раз в день». Устарело/миф в части ЧИСЛА: жёсткого лимита нет. Но реальный лимит есть, и он по ПОХОЖЕСТИ, а не по количеству.",
+      "evidence": "Официальная рекомендация TikTok, приводимая Hootsuite: «1-4 times per day», при «no limit» на органический контент. Adam Mosseri: «Posting too often will not lose you followers… the more you post, the more chances you have to be discovered». Фактическая медиана 2025: TikTok 3,7 поста/неделю, Instagram 9,3 поста/неделю. ОДНАКО YouTube spam policy прямо запрещает «Automated or synthetic mass-production: Using automated tools or AI to churn out high volumes of similar content with minimal changes» — наказывается именно высокий объём ПОХОЖЕГО, а не высокая частота как таковая.",
+      "source": "https://blog.hootsuite.com/how-often-to-post-on-social-media/ + https://support.google.com/youtube/answer/2801973",
+      "source_date": "2025-04-18 / политика действующая",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Константы в спеку: max_posts_per_day = {tiktok:4, instagram_reels:3, yt_shorts:4}; min_gap_minutes=90; jitter ±25 мин. И главное — hard-gate uniqueness: аплоад отклоняется, если variant_id совпадает по (hook_first_1_5s, on_screen_text, audio_id, clip_order, caption) с любым постом за 30 дней по всей сети. Смена хеша файла НЕ считается уникальностью."
+    },
+    {
+      "claim": "МИФ №6 — «надо покупать аккаунты с трастом / aged». Миф, причём с прямым официальным опровержением и нарушением ToS.",
+      "evidence": "TikTok официально: «neither follower count nor whether the account has had previous high-performing videos are direct factors in the recommendation system». TikTok ToS запрещает «use or attempt to use another's account, service or system without authorisation from TikTok, or create a false identity on the Services». Экономика: по Socialinsider (2 млн видео, 214 507 профилей, янв 2024–дек 2025) аккаунт на 1–5K подписчиков даёт в среднем 350 просмотров/пост — вот что ты покупаешь под видом «траста».",
+      "source": "https://newsroom.tiktok.com/en-us/how-tiktok-recommends-videos-for-you + https://www.tiktok.com/legal/page/global/terms-of-service/en + https://www.socialinsider.io/social-media-benchmarks/tiktok",
+      "source_date": "2020-06-18 / ToS US фев 2019, EEA-UK июл 2020 / исследование опубл. 2026-04-22",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Бюджет на aged-аккаунты перенести в монтаж/креативы (3–5x больше РАЗНЫХ вариантов). Единственное исключение — YouTube, где репутация канала официально учитывается; но купленный канал несёт и свою историю, включая страйки, которые ты не увидишь до первого залива. Правило: новореги, self-registered, 1 профиль = 1 окружение."
+    },
+    {
+      "claim": "МИФ №7 — «смена региона убивает аккаунт». Частично: политического наказания за смену региона нет ни в одном официальном документе; реальный эффект — сброс/смещение seed-аудитории и рассинхрон с уже набранными подписчиками.",
+      "evidence": "Страновая настройка официально входит в сигналы распределения TikTok (группа с наименьшим весом). Никакой официальной политики о санкции за её изменение нет ни у TikTok, ни у Meta, ни у YouTube. Утверждение «убивает» — практикский фольклор, доказательств не найдено (нет данных).",
+      "source": "https://newsroom.tiktok.com/en-us/how-tiktok-recommends-videos-for-you (сигнал) ; санкция — нет данных",
+      "source_date": "2020-06-18",
+      "kind": "inference",
+      "confidence": "low",
+      "actionable": "Правило в спеке: geo задаётся ОДИН раз при создании и фиксируется (immutable field). Нужен другой рынок — заводить новый аккаунт, а не миграция рабочего. Это дешевле, чем деградировать работающий, и снимает вопрос без необходимости в доказательствах."
+    },
+    {
+      "claim": "МИФ №8 — «дешёвые просмотры из Азии навсегда портят канал». Частично / формулировка неверна: «навсегда» не документировано, но последствия задокументированы и хуже, чем «испорченный охват».",
+      "evidence": "YouTube spam policy наказывает «artificially inflating engagement through bots, coercion, or offering rewards in exchange for likes, views, or subscribers»: «remove the content and issue a warning or a strike against your channel», вплоть до «suspend your monetization or terminate your channel or account»; «If you get 3 strikes within 90 days, your channel may be terminated». TikTok официально исключает из рекомендаций «any content that's considered spam». Второй, менее очевидный урон — сигнальный: рекомендация строится из интересов реальных зрителей, а купленные просмотры из нецелевого гео учат систему неверному профилю аудитории.",
+      "source": "https://support.google.com/youtube/answer/2801973 + https://newsroom.tiktok.com/en-us/how-tiktok-recommends-videos-for-you",
+      "source_date": "политика действующая / 2020-06-18",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Никаких покупных просмотров/подписчиков/лайков — ни на прогрев, ни на «стартовый сигнал». Если уже куплены: чинить не паузой, а заменой аккаунта (дешевле, чем перебивать отравленный сигнал аудитории). В спеку: явный запрет любых SMM-панелей, и запрет на общий email/телефон между аккаунтами, чтобы одна терминация не собрала остальные."
+    },
+    {
+      "claim": "МИФ №9 — «первый час решает всё». Частично/устарело. Скорость реакции — реальный сигнал, но окно многодневное, а у этого продукта основной канал вообще отложенный (поиск).",
+      "evidence": "Instagram официально (2023) учитывает популярность поста, включая скорость набора likes/comments/shares/saves — т.е. velocity реальна. Но Hootsuite отмечает, что видео на FYP «usually no older than a couple of days» (дни, не час), а Sprout (6 фев 2026) отдельно выделяет «search value (auto-captions matching queries)» как отдельный источник распределения, работающий неограниченно долго. YouTube официально распределяет Shorts также через «search results, the homepage, channel pages, subscriptions, and notifications».",
+      "source": "https://about.instagram.com/blog/announcements/instagram-ranking-explained + https://blog.hootsuite.com/best-time-to-post-on-tiktok/ + https://sproutsocial.com/insights/tiktok-algorithm/ + https://support.google.com/youtube/answer/10059070",
+      "source_date": "2023-05-31 / 2026-02-06",
+      "kind": "official_policy",
+      "confidence": "medium",
+      "actionable": "Константы: flop_decision_window_hours=72 (не 1 и не 24). Никаких удалений/перезаливов по метрике первого часа. Метрики снимать на T+1h, T+24h, T+72h, T+7d, T+30d и хранить все — 30-дневный хвост нужен, чтобы отличить «плохой креатив» от «поискового долгожителя»."
+    },
+    {
+      "claim": "МИФ №10 — «надо отвечать на комментарии в первые 30 минут». Миф: скорость ответа не является сигналом ни на одной из трёх платформ. Хуже: массовые шаблонные ответы со ссылкой — прямо описанный спам-паттерн.",
+      "evidence": "Ни официальный список сигналов TikTok (2020), ни Instagram (2023), ни страница YouTube о рекомендациях не упоминают латентность ответа автора. При этом YouTube spam policy прямо квалифицирует как спам «Using high-volume, repetitive, or deceptive comments, live chats, or other messages to drive traffic to or engagement with content» — т.е. именно то, что делает автоответчик со ссылкой на 20 аккаунтах.",
+      "source": "https://support.google.com/youtube/answer/2801973 + https://newsroom.tiktok.com/en-us/how-tiktok-recommends-videos-for-you + https://www.youtube.com/howyoutubeworks/product-features/recommendations/",
+      "source_date": "политики действующие / 2020-06-18",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Ответы на комментарии — батчем 1–2 раза в сутки, не по таймеру «30 минут». Запретить в спеке: одинаковый текст ответа + ссылка, повторяющийся более 3 раз в сутки или более 1 раза на аккаунт. Комментарии использовать как место для оффера — но текстом, написанным по шаблонной СХЕМЕ, а не одинаковой СТРОКОЙ (pinned comment варьировать)."
+    },
+    {
+      "claim": "МИФ №11 — «удаление неудачных видео вредит». Миф для TikTok/Instagram; ЧАСТИЧНО верно для YouTube — там правила противоположные.",
+      "evidence": "TikTok официально: «neither follower count nor whether the account has had previous high-performing videos are direct factors» — распределение по-видеошное, история постов не тянет вниз. YouTube официально наоборот: система учитывает «the reputation and the quality of a channel to determine how, when, and to whom the content can be surfaced» — канальный уровень существует, и удаление уничтожает накопленное watch time, ничего не «очищая» задним числом.",
+      "source": "https://newsroom.tiktok.com/en-us/how-tiktok-recommends-videos-for-you + https://www.youtube.com/howyoutubeworks/product-features/recommendations/",
+      "source_date": "2020-06-18 / страница действующая",
+      "kind": "official_policy",
+      "confidence": "medium",
+      "actionable": "Разные политики по платформам в спеке: delete_flops = {tiktok:allowed (только если нарушение или битые метаданные), instagram:allowed, youtube:never — использовать private/unlisted}. И абсолютный запрет во всех трёх: delete → reupload того же файла (это ровно «duplicated content» / inauthentic content)."
+    },
+    {
+      "claim": "МИФ №12 — «нужно постить строго в одно время». Миф как ритуал; окна времени реальны, но они про аудиторию, а не про алгоритмический бонус за пунктуальность.",
+      "evidence": "Hootsuite на анализе 1 000 000+ постов в 118 странах даёт окна по дням (например, лучшие — четверг 6–9 утра и суббота 10:00–18:00), но сам оговаривает зависимость от «your industry, audience behavior, and time zone». Sprout (6 фев 2026) называет 14:00–18:00, вторник–четверг, и тоже требует смотреть собственную аналитику. Ни одна официальная политика не упоминает регулярность расписания как сигнал.",
+      "source": "https://blog.hootsuite.com/best-time-to-post-on-tiktok/ + https://sproutsocial.com/insights/tiktok-algorithm/",
+      "source_date": "2026-02-06",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Для UK-подростковой гейминг-аудитории: окна 15:00–22:00 Europe/London (после школы + вечер), плюс 10:00–19:00 в субботу/воскресенье. В спеку: per-account случайный сдвиг внутри окна, jitter ±25 мин, и запрет на одновременный залив >2 аккаунтов в одну минуту (и паттерн, и самоканнибализация одной seed-аудитории)."
+    },
+    {
+      "claim": "МИФ №13 — «watermark TikTok режет охват в Reels». ПОДТВЕРЖДЕНО для Instagram. Для YouTube Shorts официальной формулировки нет, но политика неаутентичного контента бьёт по тому же.",
+      "evidence": "Later (обзор алгоритма Instagram, 21 апр 2026): Instagram деприоритизирует «Reels with visible watermarks from other platforms (like TikTok)», и отдельно — «Reposting the same Reel multiple times signals low effort». На странице YouTube Help о Shorts прямых заявлений о ватермарках нет (проверено), но монетизационная политика с 15 июл 2025 переименовала «repetitious content» в «inauthentic content» и требует «significant original commentary, substantive modifications, or educational or entertainment value».",
+      "source": "https://later.com/blog/instagram-algorithm/ + https://support.google.com/youtube/answer/1311392 + https://support.google.com/youtube/answer/10059070",
+      "source_date": "2026-04-21 / 2025-07-15",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Никогда не скачивать готовое видео с одной платформы для залива на другую. Рендерить КАЖДУЮ платформу из исходного проекта: свой safe-area (IG/Shorts UI отличается), свой текст, свой финальный CTA-кадр. Цена соблюдения — 0, цена нарушения — документированная деприоритизация на платформе с лучшим share-механизмом."
+    },
+    {
+      "claim": "МИФ №14 — «оригинальное аудио лучше трендового». Частично / зависит от цели, официального приоритета нет ни у того, ни у другого.",
+      "evidence": "TikTok официально включает «sounds» в группу «video information» как один из контентных сигналов; Sprout (2026) подтверждает sounds как контентный сигнал. Ни одного официального заявления, что оригинальное аудио получает преимущество, не найдено (нет данных). Отдельный, не алгоритмический фактор: продвижение платного продукта под нелицензированный для коммерции трендовый трек — лицензионный риск (для рекламы существует Commercial Music Library).",
+      "source": "https://newsroom.tiktok.com/en-us/how-tiktok-recommends-videos-for-you + https://sproutsocial.com/insights/tiktok-algorithm/",
+      "source_date": "2020-06-18 / 2026-02-06",
+      "kind": "myth_debunk",
+      "confidence": "medium",
+      "actionable": "Гибрид: трендовый трек на −18..−24 dB под свой войсовер/on-screen текст, несущий оффер. В спеку — переменная A/B: audio_type ∈ {trending, original, trending+vo} с обязательным логом audio_id. Как только видео становится платной рекламой — только Commercial Sounds."
+    },
+    {
+      "claim": "МИФ №15 — «длинные видео продвигаются лучше в 2026». Частично: премируется ЗАВЕРШЁННОСТЬ длинного видео, а не длина сама по себе. Для холодного трафика на продукт длина — риск.",
+      "evidence": "TikTok официально: «a strong indicator of interest, such as whether a user finishes watching a longer video from beginning to end, would receive greater weight than a weak indicator» — награда за completion, не за длину. Sprout (6 фев 2026): оптимум «60–90 seconds», видео >1 мин открывают лучшее распределение через Creator Rewards Program; порог «Qualified View» — 5+ секунд; «3-second hook» остаётся критичным. Metricool (24 364 803 поста, 375 000+ аккаунтов, 2026): время просмотра Reels «more than doubled in one year».",
+      "source": "https://newsroom.tiktok.com/en-us/how-tiktok-recommends-videos-for-you + https://sproutsocial.com/insights/tiktok-algorithm/ + https://www.metricool.com/instagram-study/",
+      "source_date": "2020-06-18 / 2026-02-06 / 2026",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Две длины в спеке: hook_test = 15–25 с (массовый перебор хуков, дешёвый), proof = 45–75 с (before/after с графиком фреймтайма, для конверсии). Гейт: не переходить к длинной версии, пока hook_test не даёт retention_at_3s ≥ 60% и completion ≥ 35% (пороги задать как настраиваемые — абсолютных бенчмарков по нише нет, нет данных)."
+    },
+    {
+      "claim": "МИФ №16 — «алгоритм наказывает за ссылку в bio». Миф. Наказывают за ЛОЖНОЕ ОБЕЩАНИЕ, а не за ссылку.",
+      "evidence": "Ни в официальном списке сигналов TikTok (2020), ни в объяснении ранжирования Instagram (2023), ни на странице рекомендаций YouTube нет ссылки в профиле как негативного фактора. Зато YouTube spam policy прямо квалифицирует как нарушение «Maliciously misleading titles, thumbnails, descriptions, or imagery to trick users into clicking on a video that does not deliver what was promised».",
+      "source": "https://support.google.com/youtube/answer/2801973 + https://newsroom.tiktok.com/en-us/how-tiktok-recommends-videos-for-you + https://about.instagram.com/blog/announcements/instagram-ranking-explained",
+      "source_date": "политики действующие / 2020-06-18 / 2023-05-31",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Ссылка в bio остаётся на всех трёх. Риск переносится на лендинг и на формулировки: убрать «+200 FPS guaranteed», оставить измеримое (1% low, ms input latency, метод измерения). Для Shorts ссылка идёт ещё в описание, закреплённый комментарий и ссылку канала — там она живёт долго, в отличие от TikTok-профиля."
+    },
+    {
+      "claim": "МИФ №17 — «инста мертва для органики». Миф; по свежим данным IG для короткого видео растёт, и у него лучший механизм для этого продукта — шеры.",
+      "evidence": "Metricool, исследование 2026 на 24 364 803 постах из 375 000+ аккаунтов: Reels публикуется +35%, время просмотра Reels «more than doubled in one year», карусели дают «9 times more saves than single image posts». Later (21 апр 2026): «Shares are now a top-ranking signal» по Feed, Reels, Stories, Explore. Официально Mosseri (2023): «it is in our interest as a business to ensure that creators are able to reach their audiences» — отрицание практики душить охват ради рекламы.",
+      "source": "https://www.metricool.com/instagram-study/ + https://later.com/blog/instagram-algorithm/ + https://about.instagram.com/blog/announcements/instagram-ranking-explained",
+      "source_date": "2026 / 2026-04-21 / 2023-05-31",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "IG держать в ротации, но как САМУЮ строгую по оригинальности платформу (ватермарк-деприоритизация, «reposting the same Reel» = low effort). Затачивать креативы под шер: «отправь другу, у которого ПК не тянет», «твой сетап vs его» — шер официально топ-сигнал. Карусель со скриншотами настроек/бенчмарков — отдельный формат под saves."
+    },
+    {
+      "claim": "МИФ №18 — «Shorts не даёт трафик на продукт». Миф по механике; сравнительный CTR на продукт по платформам — нет данных.",
+      "evidence": "YouTube официально: Shorts распределяются не только в Shorts Feed, но и «in search results, the homepage, channel pages, subscriptions, and notifications». Это единственная из трёх платформ, где у тебя есть постоянная, индексируемая страница канала, описание под видео и закреплённый комментарий как штатные поверхности для ссылки. Монетизационный порог высок (1 000 подписчиков + 10 млн qualified Shorts views за 90 дней), но он нерелевантен, если продаёшь свой продукт. Публичных достоверных цифр «CTR в bio: TikTok vs Shorts vs Reels» найти не удалось — нет данных.",
+      "source": "https://support.google.com/youtube/answer/10059070",
+      "source_date": "страница действующая",
+      "kind": "platform_docs",
+      "confidence": "medium",
+      "actionable": "Shorts оставить и относиться к нему как к ПОИСКОВОМУ каналу: заголовки под запросы («fortnite fps boost low end laptop», «valorant input lag fix»), ключевые слова в первых 60 символах, ссылка в описании + pinned comment + ссылка канала. Долгоживущий поисковый хвост Shorts компенсирует более низкую виральность. Замерить CTR самому — UTM per platform per account, это в спеке обязательно."
+    },
+    {
+      "claim": "МИФ №19 — «нужен один аккаунт на одну игру». Частично подтверждено: важна тематическая узость, но единица не «игра», а «кластер проблемы».",
+      "evidence": "TikTok официально строит рекомендацию из интересов зрителя, т.е. узкий тематический аккаунт быстрее находит правильную seed-аудиторию; Sprout (6 фев 2026) прямо перечисляет «topic authority» в группе user interactions. Экономика против дробления: по Socialinsider аккаунт 1–5K подписчиков в среднем 350 просмотров/пост — 15 аккаунтов по одной игре каждый дают то же, что 4 кластерных, но требуют 15 контент-пайплайнов.",
+      "source": "https://sproutsocial.com/insights/tiktok-algorithm/ + https://www.socialinsider.io/social-media-benchmarks/tiktok",
+      "source_date": "2026-02-06 / 2026-04-22",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "4 кластера вместо 20 игр: C1 BR/FPS-hungry (Fortnite, Apex, Warzone, Delta Force, PUBG); C2 tac-shooter «1% low + input lag» (Valorant, CS2, OW2, LoL); C3 тяжёлые по CPU/статтерам (Rust, Tarkov, DBD, Battlefield, Marvel Rivals); C4 слабые ноуты/младшая аудитория (Roblox, Minecraft, GTA V/RP). Поле в конфиге: account.cluster ∈ {C1..C4}; запрет микшировать кластеры внутри аккаунта."
+    },
+    {
+      "claim": "МИФ №20 — «чем больше аккаунтов, тем больше трафика». Миф: линейности нет, а каждый клон-аккаунт увеличивает не охват, а поверхность нарушения.",
+      "evidence": "Socialinsider (2 млн видео, 214 507 профилей, янв 2024–дек 2025): средние просмотры на пост — 350 (1–5K подписчиков), 945 (5–10K), 3 240 (10–50K), 9 900 (50–100K), 34 900 (100K–1M). Т.е. 20 мелких аккаунтов × 1 пост/день ≈ 7 000 просмотров/день на медианной траектории. Одновременно ER в Q2 2026 — 3,85%, −8% к прошлому кварталу, а частота постинга по рынку выросла на 40% за 2024–2025 — то есть больше постов на меньшую отдачу. И YouTube spam policy наказывает именно «high volumes of similar content with minimal changes» — то, во что неизбежно скатывается 180-аккаунтная сеть у одного оператора.",
+      "source": "https://www.socialinsider.io/social-media-benchmarks/tiktok + https://support.google.com/youtube/answer/2801973",
+      "source_date": "2026-04-22 / политика действующая",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Стартовать с 5–8 аккаунтов НА ПЛАТФОРМУ НА ГЕО, не 20. KPI сети — не число аккаунтов и не суммарные просмотры, а median_views_per_post и cost_per_paid_subscription. Расширять число аккаунтов ТОЛЬКО после того, как median_views_per_post стабильно держится, т.е. когда упёрся в производство контента, а не в охват."
+    },
+    {
+      "claim": "МИФ №21 — «новый аккаунт всегда получает бонусный охват». Миф. Новичок не наказан — но и не премирован; никакого «newbie boost» в официальных документах нет.",
+      "evidence": "TikTok официально: «neither follower count nor whether the account has had previous high-performing videos are direct factors» — это означает отсутствие штрафа за новизну, а не наличие бонуса. Socialinsider 2025: темпы роста подписчиков упали во всех сегментах, сильнее всего у самых мелких (1–5K — падение с 269% в 2024); средние просмотры у них 350/пост. Ни одного официального упоминания стартового повышенного распределения найти не удалось.",
+      "source": "https://newsroom.tiktok.com/en-us/how-tiktok-recommends-videos-for-you + https://www.socialinsider.io/social-media-benchmarks/tiktok",
+      "source_date": "2020-06-18 / 2026-04-22",
+      "kind": "myth_debunk",
+      "confidence": "high",
+      "actionable": "Убрать из стратегии «жечь аккаунты ради первого буста». Константа: min_posts_before_retire = 30 (не судить аккаунт по 3–5 постам). Ротация аккаунтов только по факту нарушения/блокировки, не по «выдохся буст»."
+    },
+    {
+      "claim": "МИФ №22 — «нужно ставить 30 хештегов». Устарело/миф. Текущая практика — 3–5 тематических; при этом экспериментальных данных с числами не существует ни у кого.",
+      "evidence": "Instagram с 13 дек 2024 убрал подписку на хештеги; текущая рекомендация Hootsuite — «the best number of hashtags to use on Instagram is 3 to 5», и там же честная оговорка, что это «based on expert opinion», а не эксперимент. Buffer также рекомендует «three to five relevant hashtags» и уточняет, что рост охвата — «not their primary purpose», числовых данных не приводит. TikTok официально относит хештеги к «video information» наравне с подписями — как описание темы, не как усилитель.",
+      "source": "https://blog.hootsuite.com/instagram-hashtags/ + https://buffer.com/resources/instagram-reach/ + https://newsroom.tiktok.com/en-us/how-tiktok-recommends-videos-for-you",
+      "source_date": "2024-12-13 / 2020-06-18",
+      "kind": "myth_debunk",
+      "confidence": "medium",
+      "actionable": "hashtag_count = 3..5, все тематические (игра + проблема + платформа железа), ноль #fyp/#viral/#foryoupage. Вес переносится в ПОИСКОВЫЕ поверхности: ключевые слова произносятся голосом (авто-субтитры TikTok формируют «search value» — Sprout, 2026), дублируются on-screen текстом и в первых 60 символах подписи/заголовка."
+    },
+    {
+      "claim": "МИФ №23 — «обязателен реальный SIM/устройство на каждый аккаунт». Нет данных. Требования к device-fingerprint платформы не раскрывают, и спеку на этом строить нельзя.",
+      "evidence": "Ни TikTok, ни Meta, ни YouTube не публикуют критерии оценки окружения. Официально известно только, что TikTok ToS запрещает «use automated scripts to collect information from or otherwise interach with the Services» и «create a false identity on the Services». Всё остальное в этой области — непроверяемый фольклор продавцов аккаунтов и прокси.",
+      "source": "https://www.tiktok.com/legal/page/global/terms-of-service/en",
+      "source_date": "ToS US фев 2019, EEA-UK июл 2020",
+      "kind": "official_policy",
+      "confidence": "low",
+      "actionable": "Не закладывать в спеку недоказуемую fingerprint-мифологию и не строить модель на обходе детекта. Закладывать: меньше аккаунтов, каждый — стабильная долгоживущая сессия с неизменным окружением (IP, локаль, timezone фиксируются при создании и логируются). Методы обхода антифрода в спеку не входят."
+    },
+    {
+      "claim": "МИФ №24 — «engagement pods / взаимные лайки поднимают охват». Миф и прямое нарушение; плюс портит сигнал аудитории.",
+      "evidence": "YouTube spam policy: запрещены «Repetitive or templated content aimed at artificially inflating engagement through bots, coercion, or offering rewards in exchange for likes, views, or subscribers»; последствия — «remove the content and issue a warning or a strike», до «suspend your monetization or terminate your channel or account». TikTok официально не рекомендует «any content that's considered spam». Побочный урон: рекомендация строится из интересов зрителей, а вовлечение от нецелевых аккаунтов уводит подбор аудитории в сторону.",
+      "source": "https://support.google.com/youtube/answer/2801973 + https://newsroom.tiktok.com/en-us/how-tiktok-recommends-videos-for-you",
+      "source_date": "политика действующая / 2020-06-18",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Ноль подов. Если нужен ранний сигнал — выкладывать новое видео в свой Discord и просить реальных геймеров целевого гео посмотреть до конца (это настоящие зрители с правильным интересом, а не накрутка). В спеке: запрет на cross-engagement между собственными аккаунтами сети (не лайкать/не комментировать друг друга)."
+    },
+    {
+      "claim": "МИФ №25 — «правка описания/хештегов после публикации сбрасывает охват». Нет данных: ни одна из трёх платформ такого не заявляла и не опровергала.",
+      "evidence": "Поиска официального заявления о влиянии пост-фактум правки метаданных на распределение не дал результата ни у TikTok, ни у Meta, ни у YouTube — нет данных. Утверждение циркулирует как практикский фольклор без подтверждений.",
+      "source": "нет данных (официальных заявлений не найдено)",
+      "source_date": "—",
+      "kind": "myth_debunk",
+      "confidence": "low",
+      "actionable": "Всё равно запретить правку в скрипте — но по другой причине: правка метаданных ломает атрибуцию A/B-теста, и ты перестаёшь понимать, какой вариант дал результат. Правило: метаданные финализируются ДО аплоада, поле metadata_locked=true после публикации."
+    },
+    {
+      "claim": "МИФ №26 — «одно и то же видео можно залить на 20 аккаунтов». Миф, прямо противоречащий официальным правилам всех трёх платформ. Самый дорогой миф в списке.",
+      "evidence": "TikTok официально: система рекомендаций избегает показывать «duplicated content, content you've already seen before, or any content that's considered spam». YouTube spam policy: «Automated or synthetic mass-production: Using automated tools or AI to churn out high volumes of similar content with minimal changes» → снятие + предупреждение/страйк, приостановка монетизации, «3 strikes within 90 days — your channel may be terminated»; монетизационная политика с 15 июл 2025 (inauthentic content) требует «significant original commentary, substantive modifications» и считает нарушением контент, который выглядит «produced using a template». Later (21 апр 2026): «Reposting the same Reel multiple times signals low effort» + деприоритизация чужих ватермарков.",
+      "source": "https://newsroom.tiktok.com/en-us/how-tiktok-recommends-videos-for-you + https://support.google.com/youtube/answer/2801973 + https://support.google.com/youtube/answer/1311392 + https://later.com/blog/instagram-algorithm/",
+      "source_date": "2020-06-18 / 2025-07-15 / 2026-04-21",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "В спеку — генератор ВАРИАНТОВ, а не копий. Обязательно различны на каждый аплоад: (1) хук — первые 1,5 с (другой кадр, другая фраза), (2) on-screen текст, (3) порядок/набор B-roll, (4) аудио, (5) подпись/заголовок, (6) длина ±20%, (7) игра/кластер. Проверка uniqueness через perceptual hash кадров + сравнение текстов, а не через md5 файла. Один исходный проект → максимум 1 аплоад на платформу."
+    },
+    {
+      "claim": "МИФ №27 — «за упоминание платного продукта банят». Частично: продвижение своего софта не запрещено, но формулировки в нише твиков читаются модерацией как читы.",
+      "evidence": "Официального запрета на промо собственного ПО нет ни в одной из трёх политик. Реальные ограничения два: (1) вводящие в заблуждение метаданные — YouTube: «Maliciously misleading titles, thumbnails, descriptions, or imagery to trick users into clicking on a video that does not deliver what was promised»; (2) правила раскрытия платного промо/branded content. Дополнительный фактор в этой конкретной нише (практическое наблюдение, не политика): лексика «unlocker / bypass / hack / cheat» вокруг Fortnite/Valorant/CS2 провоцирует репорты и снятие, потому что читается как чит-софт.",
+      "source": "https://support.google.com/youtube/answer/2801973 (официально) + отраслевое наблюдение по нише (нет данных по частоте)",
+      "source_date": "политика действующая",
+      "kind": "official_policy",
+      "confidence": "medium",
+      "actionable": "Banned-terms list прямо в спеку скрипта (блокировать аплоад при совпадении в заголовке/подписи/on-screen тексте): hack, cheat, cheats, unlocker, bypass, anti-cheat, aimbot, injector, crack, spoofer. Allowed-terms: Windows optimisation, latency, input lag, 1% lows, frametime, settings guide, debloat, power plan. Плюс обязательный дисклеймер «no game files modified» в описании — это снижает и репорты, и отказы платёжки."
+    },
+    {
+      "claim": "МИФ №28 — «надо обещать +200 FPS, иначе не купят». Маркетинговый миф, стоящий платёжного аккаунта. Достоверных бенчмарков под такие цифры нет.",
+      "evidence": "Публичных достоверных измерений, подтверждающих кратный рост FPS от твиков ОС на GPU-bound нагрузке, найти не удалось — нет данных; воспроизводимый эффект таких настроек концентрируется в 1% low/фреймтайме и задержке ввода на CPU-ограниченных и малопамятных системах. Завышенное обещание попадает ровно в официальную категорию YouTube «maliciously misleading… does not deliver what was promised» и одновременно поднимает refund/chargeback rate, а это уже риск на стороне платёжки.",
+      "source": "https://support.google.com/youtube/answer/2801973 ; бенчмарки прироста FPS от твиков — нет данных",
+      "source_date": "политика действующая",
+      "kind": "myth_debunk",
+      "confidence": "medium",
+      "actionable": "Продавать измеримое и показываемое: прирост 1% low, стабильность фреймтайма, input latency в мс с указанным методом замера, всё на реальной конфигурации, названной в кадре. Метод измерения в кадре — это и есть контентное отличие от 500 клонов «+200 FPS». В спеку: claim_template должен содержать метрику + конфиг + метод; аплоад без них блокируется."
+    }
+  ],
+  "key_numbers": [
+    "Средние просмотры на пост по размеру аккаунта (Socialinsider, 2 млн видео, 214 507 профилей, янв 2024–дек 2025, опубл. 2026-04-22): 1–5K подписчиков = 350; 5–10K = 945; 10–50K = 3 240; 50–100K = 9 900; 100K–1M = 34 900",
+    "Средний ER TikTok Q2 2026 = 3,85% (−8% к предыдущему кварталу). По сегментам 2025: 1–5K = 4,40%; 5–10K = 4,00%; 10–50K = 3,90%; 50–100K = 3,75%; 100K–1M = 3,95% (Socialinsider)",
+    "Фактическая частота постинга TikTok 2025 по размеру: 8 / 12 / 16 / 18 / 23 постов в месяц (1–5K → 100K–1M). Рынок нарастил частоту на 40% за 2024–2025 (Socialinsider)",
+    "Официальная рекомендация TikTok по частоте, приводимая Hootsuite (2025-04-18): 1–4 поста в день, «no limit» на органику. Рыночная медиана Q1 2025: TikTok 3,7 поста/нед, Instagram 9,3 поста/нед",
+    "Порог Qualified View на TikTok = 5+ секунд; оптимум длины 60–90 с; критичен 3-секундный хук (Sprout Social, 2026-02-06)",
+    "Оптимальные окна TikTok: 14:00–18:00 вт–чт (Sprout, 2026-02-06); по дням — чт 6:00–9:00 и сб 10:00–18:00 лучшие (Hootsuite на 1 000 000+ постов, 118 стран)",
+    "Рекомендуемое число хештегов Instagram: 3–5 (Hootsuite, Buffer — экспертное мнение, экспериментальных данных нет). Подписка на хештеги отключена 2024-12-13",
+    "YouTube: 3 страйка за 90 дней = возможное удаление канала. Порог YPP по Shorts: 1 000 подписчиков + 10 млн qualified Shorts views за 90 дней",
+    "YouTube переименовал «repetitious content» в «inauthentic content» 2025-07-15 (включает repetitive и mass-produced)",
+    "Instagram/Metricool 2026 (24 364 803 поста, 375 000+ аккаунтов): Reels +35% публикаций, время просмотра Reels выросло более чем в 2 раза за год, карусели дают в 9 раз больше сохранений, чем одиночные фото",
+    "Оценка воронки (INFERENCE, low confidence, нет данных по CTR в нише): 100 000 просмотров → CTR в bio 0,5–2% → 500–2 000 визитов лендинга → конверсия в платную подписку 1–3% → 5–60 подписок. При $5–10/мес это $25–600/мес на 100k просмотров → для осмысленной выручки нужен порядок ~1 млн просмотров/мес ≈ 33 000/день",
+    "Арифметика сети (INFERENCE на базе Socialinsider 350 просм./пост): 20 аккаунтов × 1 пост/день ≈ 7 000 просмотров/день; 180 аккаунтов (20 × 3 платформы × 3 гео) × 1 пост/день ≈ 63 000/день ТЕОРЕТИЧЕСКИ — на практике распределение степенное, медиана существенно ниже среднего",
+    "Практикская оценка длительности «шедоубана»: 1–2 недели (Hootsuite), ~2 недели (Later, 2025-09-19) — наблюдения, не политика. Там же: «90% of people who think they are shadowbanned are not actually shadowbanned»"
+  ],
+  "machine_spec_notes": [
+    "HARD GATE uniqueness: аплоад отклоняется, если совпадает с любым постом сети за 30 дней по кортежу (phash первых 45 кадров, on_screen_text, audio_id, caption, clip_order). md5 файла НЕ является проверкой уникальности. Один исходный проект → максимум 1 аплоад на платформу.",
+    "Константы частоты: max_posts_per_day = {tiktok:4, instagram_reels:3, yt_shorts:4}; min_gap_minutes=90; per-post jitter ±25 мин; max_accounts_posting_same_minute=2.",
+    "Гео-конфиг: geo задаётся при создании и immutable. proxy_scope=country (НЕ city). Обязательно синхронно: system_locale, app_language, timezone, currency лендинга. Для UK: en-GB / Europe/London / GBP.",
+    "Окна публикации для UK-гейминг-аудитории: будни 15:00–22:00 Europe/London; сб/вс 10:00–19:00.",
+    "flop_decision_window_hours=72. Метрики снимать на T+1h, T+24h, T+72h, T+7d, T+30d и хранить все (нужен поисковый хвост).",
+    "Политика удаления по платформам: delete_flops = {tiktok: allowed_if_violation_or_bad_metadata, instagram: allowed_if_violation_or_bad_metadata, youtube: NEVER (использовать private/unlisted)}. Абсолютный запрет: delete → reupload того же файла.",
+    "Рендер: отдельный рендер на каждую платформу из исходного проекта. forbid_third_party_watermark=true. Свои safe-area на платформу (IG Reels / Shorts / TikTok UI разные).",
+    "min_posts_before_retire = 30. Ротация аккаунта только по факту блокировки/нарушения, не по «выдохся буст».",
+    "Кластеры вместо игр: account.cluster ∈ {C1 BR-FPS: Fortnite/Apex/Warzone/DeltaForce/PUBG; C2 tac-shooter: Valorant/CS2/OW2/LoL; C3 CPU-heavy/stutter: Rust/Tarkov/DBD/Battlefield/MarvelRivals; C4 low-end-laptop: Roblox/Minecraft/GTA V-RP}. Запрет микширования кластеров внутри аккаунта.",
+    "Старт сети: 5–8 аккаунтов на платформу на гео (НЕ 20). Расширение только при стабильном median_views_per_post.",
+    "Хештеги: hashtag_count=3..5, только тематические. Blocklist тегов: fyp, foryou, foryoupage, viral, viralvideo, trending. Ключевые слова обязательно ещё и в озвучке (авто-субтитры = search value) и в первых 60 символах подписи/заголовка.",
+    "Banned-terms list (блокировать аплоад при совпадении в title/caption/on_screen_text/description): hack, cheat, cheats, unlocker, bypass, anti-cheat, anticheat, aimbot, injector, crack, spoofer, undetected. Allowed vocabulary: Windows optimisation, latency, input lag, 1% lows, frametime, power plan, debloat, settings guide.",
+    "claim_template должен содержать метрику + конфигурацию ПК + метод замера; аплоад без всех трёх блокируется. Запрет абсолютных обещаний прироста FPS.",
+    "Комментарии: reply_mode=batch, 1–2 раза в сутки. Запрет идентичной строки ответа >3 раз/сутки и >1 раза на аккаунт. Запрет cross-engagement между аккаунтами собственной сети.",
+    "metadata_locked=true после публикации (не из-за штрафа — нет данных — а чтобы не ломать атрибуцию A/B).",
+    "A/B переменные к логированию на каждый пост: hook_id, audio_type ∈ {trending, original, trending+vo}, length_bucket ∈ {15-25s, 45-75s}, cluster, geo, platform, post_window, on_screen_text_variant. Метрики: retention_at_3s, completion_rate, saves, shares, profile_visits, link_clicks (UTM per platform+account), paid_conversions.",
+    "Запрещённые модули в спеке: покупка просмотров/подписчиков/лайков, SMM-панели, engagement pods, покупка/передача аккаунтов, автоответы со ссылкой. Каждый аккаунт — изолированные email/телефон/платёжные данные, чтобы терминация одного не собрала остальные.",
+    "KPI сети: median_views_per_post и cost_per_paid_subscription. НЕ суммарные просмотры и НЕ число аккаунтов.",
+    "Гейт масштабирования длины: не переходить на 45–75 с, пока hook-тест не даёт retention_at_3s ≥ 60% и completion ≥ 35% (пороги настраиваемые — нишевых бенчмарков нет)."
+  ],
+  "risks": [
+    "1. ЗАЛИВ ОДНОГО ФАЙЛА НА 20 АККАУНТОВ. Цена: вся сеть за 1–3 месяца. TikTok официально не рекомендует «duplicated content»; YouTube квалифицирует как «automated or synthetic mass-production… high volumes of similar content with minimal changes» → снятие, страйк, приостановка монетизации, 3 страйка/90 дней = удаление канала; IG деприоритизирует повторные Reels и чужие ватермарки. Денежно: $50–200/мес инфраструктуры × 2–4 мес + стоимость всех аккаунтов + 2–4 месяца времени оператора. Самая дорогая ошибка в списке.",
+    "2. СТАВКА НА КОЛИЧЕСТВО АККАУНТОВ ВМЕСТО КАЧЕСТВА КРЕАТИВОВ. Цена: месяцы работы в убыток. 20 аккаунтов × 350 просм./пост (Socialinsider) ≈ 7 000 просмотров/день; при CTR 0,5–2% и конверсии 1–3% (inference) это единицы подписок в неделю против $50–200/мес расходов. Плюс 180 пайплайнов контента на одного человека физически не обслуживаются → скат в дубликаты → ошибка №1.",
+    "3. ПОКУПКА AGED/«ТРАСТОВЫХ» АККАУНТОВ. Цена: прямые деньги ($3–30+ за аккаунт × десятки) при нулевой выгоде — TikTok официально не учитывает ни follower count, ни прошлые успешные видео; плюс нарушение ToS (передача аккаунта, false identity) и невидимые до первого залива страйки на YouTube-каналах.",
+    "4. ПОКУПКА ПРОСМОТРОВ/ПОДПИСЧИКОВ «для стартового сигнала». Цена: аннулирование метрик + warning/страйк + приостановка монетизации, в тяжёлых случаях терминация (YouTube spam policy); плюс отравленный сигнал аудитории → аккаунт под замену, а не под лечение. Двойная потеря: деньги за накрутку + аккаунт.",
+    "5. ЗАЛИВ С ВАТЕРМАРКОМ TIKTOK В REELS/SHORTS. Цена: документированная деприоритизация на Instagram — фактически до 100% охвата на платформе с лучшим для этого продукта механизмом (шеры — топ-сигнал, «отправь другу со слабым ПК»). Стоимость исправления = 0 (рендерить из проекта). Чистый самострел.",
+    "6. ПАУЗА 7–14 ДНЕЙ «ЛЕЧИМ ШЕДОУБАН». Цена: −30…−60 тестовых постов на аккаунт именно в фазе, когда нужен сигнал; реальная причина (нарушение, дубликат, битые метаданные) остаётся и срабатывает снова. Instagram даёт Account Status с фактическим статусом — пауза заменяет 30 секунд проверки на две недели простоя.",
+    "7. УДАЛЕНИЕ/ПЕРЕЗАЛИВ ВИДЕО НА YOUTUBE. Цена: потеря накопленного watch time на канале, репутация которого официально учитывается («the reputation and the quality of a channel»); перезалив того же файла = inauthentic content → демонетизация/страйк. На TikTok/IG удаление флопа бесплатно — на YouTube правила ОБРАТНЫЕ, и копирование TikTok-привычки стоит канала.",
+    "8. РЕШЕНИЕ «ФЛОП» ПО ПЕРВОМУ ЧАСУ. Цена: выброс креативов, которые набирают на T+48…72h и через поиск (TikTok search value из авто-субтитров, Shorts в результатах поиска); ложные выводы A/B → неверная оптимизация ВСЕЙ сети на месяцы вперёд. Ошибка, которая портит не один пост, а всю модель принятия решений.",
+    "9. ЛЕКСИКА «HACK / CHEAT / UNLOCKER / BYPASS ANTI-CHEAT» В КОПИРАЙТЕ. Цена: массовые репорты, снятие видео, риск потери Discord-сервера (а он — канал авто-выдачи, т.е. и продукта тоже) и аккаунтов. Для аудитории Fortnite/Valorant/CS2 это прямой триггер модерации и жалоб. Стоимость исправления — банлист слов в скрипте.",
+    "10. ЗАВЫШЕННЫЕ ОБЕЩАНИЯ («+200 FPS guaranteed»). Цена: попадание в официальную категорию YouTube «maliciously misleading… does not deliver what was promised» + рефанды и чарджбеки. Чарджбеки — главный риск всего проекта: при выходе за пороги Stripe/PayPal ставят аккаунт под ревью или закрывают, и бизнес останавливается целиком, а не теряет канал. Потенциальная цена: 100% выручки + замороженные средства.",
+    "11. ПОСТИНГ 20 АККАУНТОВ В ОДНУ МИНУТУ ПО ОДНОМУ ШАБЛОНУ. Цена: идеальное совпадение с описанием «automated mass-production» в YouTube spam policy + самоканнибализация (все клоны борются за одну и ту же seed-аудиторию, снижая completion друг другу). Лечится строкой jitter — не лечится после бана.",
+    "12. 30 ХЕШТЕГОВ И #FYP ВМЕСТО КЛЮЧЕВЫХ СЛОВ В ОЗВУЧКЕ И ON-SCREEN ТЕКСТЕ. Цена: потеря поискового канала — единственного, который приносит ЦЕЛЕВОЙ трафик («fortnite fps boost low end pc», «valorant input lag fix») без зависимости от виральности и работает месяцами. Для платного продукта это самый конверсионный источник; отказ от него означает зависимость от лотереи FYP при 350 просм./пост медианой."
+  ],
+  "open_questions": [
+    "Влияет ли прокси/IP уровня ГОРОДА (а не страны) на распределение — нет данных. Ни одна платформа не публикует гранулярность гео-сигнала. Проверяется только собственным A/B: 2 группы по 4 аккаунта, country-proxy vs city-proxy, ≥30 постов каждая.",
+    "Сравнительный CTR из профиля/описания в лендинг по платформам (TikTok vs IG Reels vs YT Shorts) для гейминг-утилиты — нет данных. Достоверных публичных цифр нет; обязателен собственный замер через UTM per platform per account.",
+    "Конверсия целевого трафика этой нишы (подростки, слабый ПК, UK) в платную подписку — нет данных. Диапазон 1–3% в спеке — inference, low confidence; уточняется только после первых ~1 000 визитов лендинга.",
+    "Реальный порог «похожести», после которого срабатывает детект mass-production у YouTube/TikTok — не раскрыт ни одной платформой. Спека использует консервативные 7 осей различия, но калибровать придётся эмпирически.",
+    "Есть ли фактический эффект у пост-фактум правки метаданных (подпись, хештеги) на распределение — нет данных, официальных заявлений ни у TikTok, ни у Meta, ни у YouTube нет.",
+    "Влияет ли активность аккаунта до первого поста (потребление контента) на подбор первичной аудитории и в каком объёме — официальных данных нет; спека фиксирует 10–15 минут как дешёвый компромисс, а не как обоснованное число.",
+    "Сохраняется ли официальная формулировка TikTok «follower count is not a direct factor» в актуальной редакции документации 2025–2026 — цитата подтверждена по Newsroom-посту от 2020-06-18 и косвенно по обзору Sprout от 2026-02-06; свежий официальный текст For You Feed eligibility standards загрузить не удалось (страницы tiktok.com рендерятся на JS).",
+    "Действующая редакция TikTok Community Guidelines (Platform Security & Authenticity, FYF eligibility standards: спам, неоригинальный контент, ватермарки, QR-коды, низкое разрешение) — прямые цитаты получить не удалось, страницы не отдают текст. Нужно свериться вручную перед фиксацией банлистов в спеке.",
+    "Пороги retention_at_3s и completion_rate, при которых видео в этой нише получает масштабирование — нишевых бенчмарков нет; 60% / 35% в спеке заданы как настраиваемые заглушки."
+  ]
+}

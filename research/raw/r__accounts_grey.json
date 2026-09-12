@@ -1,0 +1,355 @@
+{
+  "dimension": "accounts_grey",
+  "summary": "Продажа игровых аккаунтов запрещена прямым текстом во ВСЕХ четырёх проверенных EULA/ToS (Epic, Riot, Valve, Blizzard), причём аккаунт юридически принадлежит паблишеру, а не игроку — значит «товар» продать нельзя вообще, продаётся только доступ, который паблишер может отозвать в любой момент без возврата денег. Главный технический дефект категории — невозможность необратимой передачи: продавец сохраняет доступ через recovery по исходному email/телефону/чеку покупки, и это НЕ баг рынка, а его встроенная константа: Eldorado (крупный легальный маркетплейс, ToS от 01.04.2026) явно перечисляет «loss of access due to account recovery by the seller» и «account bans due to the ownership transfer» как ПОКРЫВАЕМЫЕ гарантией события, а бесплатная гарантия составляет всего 5 дней. Рынок оценивает риск деньгами: комиссия продавца на Eldorado за аккаунты Fortnite/CoD = 20%, GTA5 = 30% против базовых 10% за «Accounts, Items, Boosting» — двух-трёхкратная надбавка именно за категории с наибольшей долей споров. По платёжкам: PayPal AUP прямо запрещает «stolen goods including digital and virtual goods» и «items that infringe or violate any copyright, trademark»; нарушение AUP даёт PayPal право держать средства до 180 дней и дольше. Stripe относит «sale of in-game currency or game items, unless the business is the operator of the virtual world» к Restricted (нужен письменный pre-approval), а SSA запрещает «enable any individual or entity (including User) to operate or benefit from any Prohibited or Restricted Business» — то есть одна общая платёжка автоматически заражает легальный подписочный бизнес. Экономика провальной сделки при самостоятельном приёме платежей: −100% выручки (возврат) −20 USD chargeback fee −15/30 USD dispute fee = минус 135–150% от чека, то есть при марже 20% уже ~13–15% проблемных сделок съедают всю прибыль категории. Худший сценарий не в проценте чарджбеков, а в бинарном событии: блокировка Stripe/PayPal merchant-аккаунта + 180-дневный холд всей выручки, включая деньги от твиков. РЕКОМЕНДАЦИЯ: не заводить категорию в ту же юрлицо/платёжку/Discord/контент-сеть вообще; если оператор хочет её трогать — только как продавец-физлицо внутри escrow сторонних маркетплейсов (Eldorado/подобные), где merchant of record и чарджбек-риск несёт маркетплейс, а не оператор, и без единого упоминания основного бренда. Нет данных по: точным ценам аккаунтов Fortnite с 14 ивентами, правилам Whop/Sellix/PlayerAuctions (страницы недоступны), доле проблемных сделок в процентах, явному запрету продажи аккаунтов в рекламных политиках TikTok/Meta/Google.",
+  "findings": [
+    {
+      "claim": "Riot ToS прямо запрещает продажу и передачу аккаунта и объявляет, что у игрока нет права собственности на аккаунт",
+      "evidence": "§1.5: \"You can't sell, transfer or allow any other person to access your account\"; \"You can't share your account or Login Credentials with anyone\". §4.4: \"you shall have no ownership or other property interest in your account\", \"all rights in and to your account are and shall forever be owned by...Riot Games\". §2.3: при терминации теряется доступ к аккаунту и Virtual Content, \"you'll not be entitled to any refunds\", Riot может \"terminate any other accounts you may have created\"",
+      "source": "Riot Games Terms of Service, riotgames.com/en/terms-of-service",
+      "source_date": "Last Modified: 2024-12-01",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Valorant/LoL аккаунты: для покупателя риск — потеря доступа без возврата И терминация ДРУГИХ его аккаунтов (клаузула §2.3 распространяется на все аккаунты нарушителя). Для продавца-оператора это значит: недовольный покупатель, у которого забанили основной аккаунт, почти гарантированно пойдёт в чарджбек."
+    },
+    {
+      "claim": "Steam Subscriber Agreement: аккаунт «strictly personal», продажа и передача аккаунта и Subscriptions запрещены, при терминации возврата нет",
+      "evidence": "§1.C: \"Your Account...is strictly personal\"; \"You may therefore not sell or charge others for the right to use your Account, or otherwise transfer your Account, nor may you sell, charge others for the right to use, or transfer any Subscriptions except as expressly permitted\"; \"you must not use your Account to enable a violation of this Agreement by others, such as through their commercial use of Steam Content and Services\". §9.C: \"no refund, including of any Subscription fees or of any unused funds in your Steam Wallet, will be granted\"",
+      "source": "Steam Subscriber Agreement, store.steampowered.com/subscriber_agreement/",
+      "source_date": "Last Updated: 2026-09-10",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "CS2/Rust аккаунты — самая жёсткая формулировка из четырёх: запрещена не только продажа, но и «charge others for the right to use» (то есть аренда/шеринг за деньги тоже). Валв также прямо ловит схему «использовать свой аккаунт для чужого коммерческого использования»."
+    },
+    {
+      "claim": "Blizzard EULA: Blizzard владеет всеми аккаунтами; покупка, продажа, дарение и обмен аккаунта объявлены ничтожными и ведут к forfeiture",
+      "evidence": "§2.A.vii: \"All Accounts, including the name of the Account and any Battle Tags associated with an Account. All use of an Account shall inure to Blizzard's benefit.\" и \"You may not purchase, sell, gift or trade any Account, or offer to purchase, sell, gift, or trade any Account, and any such attempt shall be null and void and may result in the forfeiture of the Account.\" §1.C.iii запрещает \"gathering in-game currency, items, or resources for sale outside of the Platform\". §10.B.iii: при терминации виртуальные товары forfeit, \"you are not entitled to any refund\"",
+      "source": "Blizzard End User License Agreement, blizzard.com/en-us/legal/.../blizzard-end-user-license-agreement",
+      "source_date": "Last Revised: 2024-03-21",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Единственный из четырёх, кто криминализует САМО ПРЕДЛОЖЕНИЕ («offer to purchase, sell...»), а не только сделку. То есть объявление/видео с оффером уже является нарушением, независимо от того, состоялась ли продажа. Это важно для контент-сети: пост с оффером = нарушение, даже без транзакции."
+    },
+    {
+      "claim": "Epic Games Store EULA: лицензия personal, non-transferable, non-sublicensable и только для personal, non-commercial use; продажа/передача прямо запрещена; любая попытка передачи без письменного согласия Epic ничтожна",
+      "evidence": "§1.1: \"Epic grants you a personal, non-exclusive, non-transferable, non-sublicensable limited right and license to use the Software and its associated Services for your personal, non-commercial use\". Запреты: \"(d) sell, rent, lease, license, distribute, or otherwise transfer it\". §16 No Assignment: \"You may not, without the prior written consent of Epic, assign, transfer, charge, or sub-contract all or any of your rights or obligations under this Agreement, and any attempt without that consent will be null and void.\" Капсом в преамбуле: \"YOU ARE LEGALLY AND FINANCIALLY RESPONSIBLE FOR ALL ACTIONS USING OR ACCESSING OUR SOFTWARE, INCLUDING THE ACTIONS OF ANYONE YOU ALLOW TO ACCESS YOUR ACCOUNT.\"",
+      "source": "Epic Games Store End User License Agreement, store.epicgames.com/en-US/eula",
+      "source_date": "Last Updated: 2025-01-15",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Ключевая для Fortnite. Обратите внимание на клаузулу капсом: ПРОДАВЕЦ остаётся «legally and financially responsible» за всё, что делает покупатель на аккаунте. То есть если покупатель начнёт читерить/скамить с проданного аккаунта, юридическая ответственность формально возвращается к исходному владельцу — это хвост, который не закрывается передачей email."
+    },
+    {
+      "claim": "Основной Epic Games Terms of Service (не Store EULA) получить не удалось — все хосты Epic отдают 403",
+      "evidence": "HTTP 403 на www.epicgames.com/site/en-US/tos, store.epicgames.com/en-US/tos, www.fortnite.com/eula, www.epicgames.com/help/..., www.epicgames.com/fortnite/competitive/en-US/rules — при UA Chrome, Googlebot и curl. Успешно получен только store.epicgames.com/en-US/eula",
+      "source": "собственные HTTP-запросы, 2026-09-12",
+      "source_date": "2026-09-12",
+      "kind": "inference",
+      "confidence": "high",
+      "actionable": "Нет данных по точной формулировке основного Epic ToS и по официальным правилам Fortnite Competitive (правила про account sharing / one account per player в турнирах). Тезис «14 ивентов» как товарная ценность не удалось верифицировать по официальному документу — перепроверить вручную из браузера перед любыми решениями."
+    },
+    {
+      "claim": "PayPal AUP прямо запрещает транзакции с «stolen goods including digital and virtual goods» и с предметами, нарушающими чужие copyright/trademark",
+      "evidence": "Prohibited Activities: \"relate to transactions involving ... (e) stolen goods including digital and virtual goods, ... (h) items that infringe or violate any copyright, trademark, right of publicity or privacy or any other proprietary right under the laws of any jurisdiction\". Также отдельный пункт: \"relate to transactions involving any activity that requires pre-approval without having obtained said approval\". В таблице Activities Requiring Approval категория 7 Cryptocurrency покрывает \"virtual in-game currencies\"",
+      "source": "PayPal Acceptable Use Policy, paypal.com/us/legalhub/acceptableuse-full",
+      "source_date": "Last updated 2022-10-29 (страница жива на 2026-09-12)",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "«Game accounts» дословно в AUP НЕ названы. Но два крючка закрывают категорию: (1) восстановленный/отозванный аккаунт легко подводится под «stolen digital goods»; (2) сам аккаунт содержит лицензию паблишера → «items that infringe...any other proprietary right». Для спека: product_category=\"game_account\" НЕ должна попадать ни в один PayPal-инструмент оператора."
+    },
+    {
+      "claim": "При нарушении AUP PayPal имеет право держать деньги на аккаунте до 180 дней и дольше",
+      "evidence": "\"...or any money waiting to be claimed through your personal account if you do not have a Balance Account linked to your personal account, for up to 180 days if reasonably needed to protect against the risk of liability or if you have violated our Acceptable Use Policy. The hold may remain in place longer than 180 days according to Court Orders, Regulatory Requirements, or Other Legal Processes.\"",
+      "source": "PayPal User Agreement, paypal.com/us/legalhub/useragreement-full",
+      "source_date": "Last updated 2026-09-01",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Это главный финансовый риск смешивания категорий, а не чарджбеки. Холд накладывается на АККАУНТ, а не на транзакцию: выручка от подписок на твики замерзает вместе с деньгами от аккаунтов. Константа для расчёта: 180 дней × MRR."
+    },
+    {
+      "claim": "Точные суммы штрафов PayPal на 2026-09-01: chargeback fee 20.00 USD / 14.00 GBP / 16.00 EUR; Standard Dispute fee 15.00 USD / 12.00 GBP / 14.00 EUR; High Volume Dispute fee 30.00 USD / 24.00 GBP / 28.00 EUR; Unauthorized Fee 5.00 USD",
+      "evidence": "Fee Table: Chargeback fees — \"UK pounds sterling 14.00 GBP, US dollar 20.00 USD, Euro 16.00 EUR\". Fee Table: Standard Dispute Fees — \"UK pounds sterling 12.00 GBP, US dollar 15.00 USD, Euro 14.00 EUR\". Fee Table: High Volume Dispute Fees — \"UK pounds sterling 24.00 GBP, US dollar 30.00 USD, Euro 28.00 EUR\". Плюс: \"5.00 USD Unauthorized Fee for each transaction disputed by your customer as unauthorized\"",
+      "source": "PayPal Merchant Fees, paypal.com/us/webapps/mpp/merchant-fees",
+      "source_date": "Last Updated: 2026-09-01",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Константы для калькулятора риска. Для UK-позиционирования брать GBP: 14 GBP chargeback / 12 GBP standard dispute / 24 GBP high-volume dispute."
+    },
+    {
+      "claim": "Порог перехода на High Volume Dispute fee у PayPal: dispute ratio >=1.5% И более 100 продаж за предыдущие 3 полных календарных месяца",
+      "evidence": "\"If your dispute ratio is 1.5% or more and you had more than 100 sales transactions in the previous three full calendar months, you will be charged the High Volume Dispute fee for each dispute. Otherwise, you will be charged the Standard Dispute fee for each dispute.\" Ratio считается по claims Item Not Received + Significantly Not as Described (включая чарджбеки у эмитента), Unauthorized Transactions не учитываются",
+      "source": "PayPal User Agreement, раздел Dispute fees",
+      "source_date": "Last updated 2026-09-01",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Важная асимметрия: аккаунт-сделки генерируют именно INR/SNAD-споры («аккаунт забрали обратно» = Significantly Not as Described), то есть ровно тот тип, который попадает в ratio. Подписки на твики с малым чеком разбавляют ratio только если их МНОГО. Для спека: мониторинг ratio с алертом на 1.0%."
+    },
+    {
+      "claim": "PayPal может поднять процентную часть комиссий до 5.00% за транзакцию при повышенном уровне жалоб и чарджбеков, уведомив за 30 дней",
+      "evidence": "\"If PayPal determines that your Account receives, or is likely to receive a disproportionately higher number of customer complaints, reversals, chargebacks, claims, or other indicators of a serious level of risk, PayPal may increase the percentage components of your Transaction Fees after giving you 30 days prior notice of the increase. — Up to 5.00% per transaction\"",
+      "source": "PayPal Merchant Fees, раздел Additional Risk Factors",
+      "source_date": "Last Updated: 2026-09-01",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Тихий, но долгий ущерб: +5% на ВСЕ транзакции, включая подписки на твики. При 5000 USD/мес это −250 USD/мес постоянно, до выхода из риск-категории."
+    },
+    {
+      "claim": "Stripe: продажа in-game предметов и валюты — категория Restricted (нужен письменный pre-approval), кроме случая когда продавец сам является оператором виртуального мира; продажа лицензированных материалов — категория Prohibited",
+      "evidence": "Restricted → Nonfiat Currency and Stored Value: \"Sale of in-game currency or game items, unless the business is the operator of the virtual world\". Prohibited → Products Infringing Intellectual Property: \"Sales or distribution of music, movies, software, or any other licensed materials\", \"Counterfeit goods\"",
+      "source": "Stripe Prohibited & Restricted Businesses, stripe.com/legal/restricted-businesses",
+      "source_date": "Last Updated: 2026-05-13",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "«Game accounts» дословно не названы — это факт, а не лазейка. Аккаунт = контейнер лицензий на software → подпадает под Prohibited «any other licensed materials». Оператор НЕ является «operator of the virtual world», поэтому исключение из Restricted не применяется. Практический вывод: без письменного pre-approval Stripe категория недопустима, а запрашивать pre-approval на перепродажу чужих аккаунтов бессмысленно."
+    },
+    {
+      "claim": "Stripe SSA запрещает не только вести Restricted-бизнес, но и «позволять любому лицу, включая самого User, извлекать выгоду» из него — это прямо накрывает схему «один Stripe на два бизнеса»",
+      "evidence": "General Terms, Restrictions (ix): \"use the Services to conduct a Prohibited or Restricted Business, transact with any Prohibited or Restricted Business, or enable any individual or entity (including User) to operate or benefit from any Prohibited or Restricted Business, unless Stripe has pre-approved the respective Prohibited or Restricted Business in writing\"",
+      "source": "Stripe Services Agreement, General Terms, stripe.com/legal/ssa",
+      "source_date": "актуальная версия на 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Формулировка «enable...(including User)...to benefit from» означает: даже если аккаунты продаются НЕ через Stripe, но выручка от них финансирует/пересекается с бизнесом на Stripe, формальное основание для терминации есть. Полное разделение юрлиц и денежных потоков — не косметика, а единственная защита."
+    },
+    {
+      "claim": "Stripe при задолженности может списывать средства из Reserve, баланса, привязанного банковского счёта и backup payment method; Assessed Fines (штрафы карточных сетей) передаются пользователю и НЕ ограничены лимитом ответственности",
+      "evidence": "\"...Stripe or its Affiliate may, to the extent Law permits, deduct, recoup or setoff these amounts from any of the following: (i) if established and applicable, a Reserve of any User Entity; (ii) funds payable by a Stripe Entity to a User Entity; (iii) the Stripe Account balance of a User Entity; (iv) each User Bank Account (if any); and (v) a backup User-selected Payment Method.\" И: \"User's payment obligations, including Fees, Assessed Fines and Taxes are not limited by this Section 8.4 [liability cap].\" \"Assessed Fines\" = \"assessments, penalties, fines, and fees imposed by Governmental Authorities or Financial Providers\"",
+      "source": "Stripe Services Agreement, General Terms (setoff, Section 8.4, Indemnification 9.1)",
+      "source_date": "актуальная версия на 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Штрафы Visa/Mastercard (см. ниже, до 100k–200k USD в программе) юридически ложатся на оператора без потолка и могут быть списаны с его личного банковского счёта. Это не теоретический риск для одиночного оператора из СНГ — это единственная строка, где потенциальный убыток превышает весь оборот проекта."
+    },
+    {
+      "claim": "Visa VAMP: non-compliant порог — ratio 0.5% ИЛИ count 5 диспутов; excessive порог — 1.5% ratio / 1,500 count (AP, Canada, EU, US, LAC) либо 2.2% / 150 count / 75,000 USD в CEMEA",
+      "evidence": "\"Criteria | Non-compliant threshold | Excessive threshold — VAMP count 5 | 150 in CEMEA, 1,500 elsewhere (AP, Canada, EU, US and LAC); VAMP ratio 0.5% | 2.2% in CEMEA, 1.5% elsewhere; VAMP volume N/A | 75,000 USD in CEMEA, N/A elsewhere\". VAMP count включает все диспуты (TC15) + fraud по TC40/EFW, и одна транзакция может быть посчитана ДВАЖДЫ если попала в оба отчёта",
+      "source": "Stripe Docs — Card network monitoring programs (Visa VAMP), docs.stripe.com",
+      "source_date": "актуальная версия на 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Критично для малого оборота: non-compliant count = ВСЕГО 5 диспутов. Микро-мерчанту не нужно 1500 чарджбеков — 5 проблемных аккаунт-сделок плюс ratio выше 0.5% ставят его в мониторинг Visa. Подписочная выручка на твиках с чеком 5–15 USD даёт мало транзакций, поэтому знаменатель маленький и ratio взлетает моментально."
+    },
+    {
+      "claim": "Mastercard ECM: 100–299 диспутов И chargeback rate 1.5–2.99%; штрафы по месяцам 0 / 1,000 / 5,000 / 25,000 / 50,000 / 100,000 USD плюс issuer recovery 5 USD за чарджбек. HECM: 300+ диспутов И 3%; штрафы до 200,000 USD",
+      "evidence": "\"ECM: Mastercard Excessive Chargeback Merchant — Dispute Count 100-299, Chargeback Rate 1.5-2.99%. Number of months above ECM thresholds / Fine / Issuer recovery assessment: 1 = 0 USD No; 2-3 = 1,000 USD No; 4-6 = 5,000 USD Yes; 7-11 = 25,000 USD Yes; 12-18 = 50,000 USD Yes; 19+ = 100,000 USD Yes. Issuer recovery assessment applies an additional 5 USD per chargeback\". HECM: \"300+ / 3% ... 2 = 1,000; 3 = 2,000; 4-6 = 10,000; 7-11 = 50,000; 12-18 = 100,000; 19+ = 200,000 USD\". Пример из документа: \"a merchant identified in month 4 of ECM with 400 disputes is assessed a 5,500 USD fine (5,000 USD + (400-300) x 5 USD)\". Выход: 3 месяца подряд ниже порога",
+      "source": "Stripe Docs — Card network monitoring programs (Mastercard ECP/ECM/HECM/EFM)",
+      "source_date": "актуальная версия на 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Для оборота оператора (единицы–десятки транзакций в день) порог ECM в 100 диспутов/мес недостижим — значит реальная угроза со стороны сетей идёт от Visa VAMP (count 5), а не от Mastercard. Но константы нужны в спеку как верхняя граница ущерба, если проект вырастет."
+    },
+    {
+      "claim": "Eldorado — работающий легальный маркетплейс аккаунтов; юридически распределён по трём юрисдикциям (ОАЭ / Delaware / Эстония) и прямо перекладывает весь IP-риск на пользователей",
+      "evidence": "\"This Agreement is entered into by and between you as the User and the following entities: GWD Processing FZCO, a company incorporated...under the laws of the United Arab Emirates, with license No. 52076...IFZA Business Park, DDP, PO Box 342001, Dubai\"; \"Eldorado Sales LLC...State of Delaware\"; \"Halfway House OÜ...Republic of Estonia, registration code 17278567\". §2.8 Transaction Risks: \"risks that the manufacture, importation, distribution, offer, display, purchase, sale and/or use of products or services offered or displayed on the Site may violate or may be asserted to violate Third Party Rights, and the risk that Users may incur costs of defense or other costs\". §3.7: не аффилирован ни с одним паблишером; использование торговых марок обосновывается \"fair use principles under EU Regulation 2017/1001, Article 14\"",
+      "source": "Eldorado Terms of Service, eldorado.gg/terms-of-service",
+      "source_date": "Last modified: 2026-04-01",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Структура «три юрисдикции + fair use + вся ответственность на пользователя» — это и есть реальная стоимость легальной работы в категории. Одиночный оператор из СНГ не может её воспроизвести. Вывод: если категория трогается, то только КАК ПРОДАВЕЦ ВНУТРИ такого маркетплейса, где merchant of record = маркетплейс."
+    },
+    {
+      "claim": "Бесплатная гарантия Eldorado на покупку аккаунта — всего 5 дней, расширение до 3 или 6 месяцев за доплату; и она ЯВНО покрывает именно те два события, о которых спрашивал пользователь",
+      "evidence": "Warranty Duration: 5 days бесплатно; расширяется до 3 или 6 месяцев за доп. плату. Coverage: \"The account is not as described\" (если покупатель не менял аккаунт); \"Loss of access due to account recovery by the seller\"; \"Account bans due to the ownership transfer\"; \"Account bans due to offences made by the seller\". Refund: \"You will receive a full refund of the account's price, minus the warranty fee\" — без предметов на аккаунте и без доп. расходов. Исключения: баны из-за читерства покупателя, забытые пароли, игнор инструкций продавца; перепродажа аннулирует гарантию",
+      "source": "Eldorado Help Center — Account Warranty, support.eldorado.gg/en/articles/8408988-account-warranty",
+      "source_date": "2026-01-23",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Это самый сильный найденный факт по вопросу (4). Крупнейший игрок рынка (а) считает recovery продавцом и бан за передачу владения НОРМАЛЬНЫМИ, ожидаемыми событиями, а не эксцессами; (б) даёт бесплатно всего 5 дней — то есть по умолчанию риск после 5-го дня несёт покупатель; (в) монетизирует риск, продавая продление гарантии. Точную долю проблемных сделок в процентах Eldorado не публикует — нет данных."
+    },
+    {
+      "claim": "Комиссия продавца на Eldorado за аккаунты Fortnite и Call of Duty = 20%, за GTA5 = 30%, при базовой ставке 10% за «Accounts, Items, Boosting»; покупатель сверху платит 8% + 0.30 USD",
+      "evidence": "Seller fees: \"Currency: 5% sales fee; Top Up & Gift Cards: 0%; Accounts, Items, Boosting: 10%\". Game-specific: \"Grand Theft Auto 5 Accounts (30%), Call of Duty/Fortnite Accounts (20%)\", \"Most Roblox games, anime games (15%)\", пониженные — \"Old School RuneScape Gold (1.5%), World of Warcraft Gold (1.5%), Lost Ark Gold (3%)\". Buyer fee: \"8% + $0.30 flat fee\" при оплате картой/Apple Pay/крипто",
+      "source": "Eldorado Help Center — Fees, intercom.help/eldoradogg/en/articles/8409025-fees",
+      "source_date": "статья обновлена «this week» относительно 2026-09-12; точной даты нет",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Это рыночная цена риска, выраженная цифрой. Fortnite-аккаунты стоят маркетплейсу в 2 раза дороже базовой категории, GTA5 — в 3 раза. Полная воронка: продавец теряет 20%, покупатель платит +8% + 0.30 → спред ~28%+ на сделку. Для оператора это означает: (а) внутри Eldorado маржа режется на 20%; (б) вне маркетплейса эти 20% — это ровно та сумма, которую он берёт себе вместе с ВСЕМ чарджбек-риском."
+    },
+    {
+      "claim": "Eldorado: чарджбек по завершённому заказу = пожизненный бан покупателя; продавец обязан возмещать, и маркетплейс списывает возмещение с его платёжного метода",
+      "evidence": "§6.9: \"Once an order has been marked as delivered by the Seller and received by the Buyer, orders are considered Completed, both parties are satisfied, and the sale is final. Customers who issue chargebacks for Completed orders will be permanently banned from the Site.\" §8.2 Obligation to Reimburse: \"If a Seller is required to reimburse the Buyer or Eldorado, the Seller authorizes Eldorado to remove the reimbursement amount (in same or other currency) from their designated payment method (i.e. PayPal) on the Site.\" Возврат по жалобе может занимать до 1 недели",
+      "source": "Eldorado Terms of Service §6.9, §8.2",
+      "source_date": "Last modified: 2026-04-01",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Даже внутри маркетплейса продавец не полностью защищён: обязанность возмещения остаётся, а деньги тянутся с его PayPal. Но ключевая разница с самостоятельной продажей: чарджбек-ratio портится у МАРКЕТПЛЕЙСА, а не у merchant-аккаунта оператора. Это и есть главная причина платить 20%."
+    },
+    {
+      "claim": "Discord Community Guidelines прямо запрещают продажу и покупку Discord-аккаунтов, ников, серверов и инвайтов, и отдельно — мошенническое получение прибыли за счёт других",
+      "evidence": "\"Do not sell or purchase Discord assets, including accounts, usernames, servers, server permissions, or custom server invite links.\" \"Do not engage in activities that fraudulently generate a profit at the expense of others. This includes facilitating, providing instructions for, and participating in fraud.\" \"Do not organize, promote, or engage in the selling or facilitation of sales of regulated or potentially dangerous goods.\"",
+      "source": "Discord Community Guidelines, discord.com/guidelines",
+      "source_date": "Effective: 2025-09-29",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Прямого запрета на продажу ИГРОВЫХ аккаунтов в Discord CG не найдено — запрет касается Discord-ассетов. НО: правило про fraud («facilitating...fraud») — это тот крючок, по которому Trust & Safety сносит серверы после потока репортов от обманутых покупателей. И снос идёт по серверу, а это ровно тот канал, через который выдаются роли подписчикам твиков. Для спека: единый Discord под оба направления — единая точка отказа."
+    },
+    {
+      "claim": "TikTok Terms of Service (ROW) НЕ содержат явного запрета на продажу/передачу аккаунта; есть только персональная ответственность, запрет на использование чужого аккаунта и широкое право на отключение",
+      "evidence": "§4: \"You agree that you are solely responsible (to us and to others) for the activity that occurs under your account\"; \"We reserve the right to disable your user account at any time, including if you have failed to comply with any of the provisions of these Terms\". §5: \"use or attempt to use another's account, service or system without authorisation from TikTok, or create a false identity on the Services\"; запрет на материалы, нарушающие \"copyright, trade mark or other intellectual property or privacy rights\". §6: право блокировать/терминировать аккаунты при заявленном нарушении IP",
+      "source": "TikTok Terms of Service (ROW), tiktok.com/legal/page/row/terms-of-service/en",
+      "source_date": "Last Updated: 2025-12-01",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Честно: прямой запрет на «продажу игровых аккаунтов» в ToS TikTok не найден. Реальный риск для контента — IP-клауза (§5/§6) и правила Community Guidelines про fake engagement/scam, текст которых получить не удалось (страницы рендерятся только JS). Не строить планов на «в ToS TikTok этого нет» — правоприменение идёт через CG и через репорты."
+    },
+    {
+      "claim": "В рекламной политике TikTok по категории Gambling and Games явных правил про продажу игровых аккаунтов, аккаунт-трейдинг, виртуальные предметы и буст НЕ найдено",
+      "evidence": "Просмотрен ads.tiktok.com/help/article/tiktok-ads-policy-gambling-and-games (last updated Aug 2026) и tiktok-advertising-policies-industry-entry (Aug 2025). Прямо запрещены только: \"Gambling ads that promote unlicensed or illegal gambling services\", \"Ads that are directed at underage audiences\", \"Ads that feature underage people\". По game accounts / account trading / virtual items / boosting — в опубликованном тексте ничего",
+      "source": "TikTok Ads Policy — Gambling and Games; TikTok Advertising Policies — Industry Entry",
+      "source_date": "2026-08 / 2025-08",
+      "kind": "platform_docs",
+      "confidence": "medium",
+      "actionable": "Нет данных о явном запрете. Это НЕ значит «можно»: модерация рекламных креативов у TikTok работает по более широким правилам (Fraud/Deceptive, IP), и категория с ЦА 13–24 плюс упоминание «ads directed at underage audiences» делает такую рекламу заведомо проблемной. Для спека: не подавать платную рекламу по этой категории вообще."
+    },
+    {
+      "claim": "Meta Advertising Standards не содержат отдельной категории про продажу игровых аккаунтов; применимые крючки — Fraud/Scams and Deceptive Practices, Intellectual Property Infringement, Unacceptable Business Practices",
+      "evidence": "\"Ads must not promote products, services, schemes or offers using identified deceptive or misleading practices\" (Fraud, Scams and Deceptive Practices); \"Ads may not contain content that violates the intellectual property rights of any third party\", включая \"promotion or sale of counterfeit goods\" (Intellectual Property Infringement); \"When we detect that advertisers are engaging in potentially suspicious behaviour...we may require those advertisers to complete additional verification\" (Unacceptable Business Practices). Даты на странице отсутствуют",
+      "source": "Meta Transparency Center — Advertising Standards, transparency.meta.com/en-gb/policies/ad-standards/",
+      "source_date": "дата на странице не указана; получено 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "medium",
+      "actionable": "Нет прямого запрета — но IP-клауза универсальна, а «additional verification» означает, что рекламный кабинет с этой категорией уходит на проверку личности/бизнеса. Для оператора из СНГ с новорег-аккаунтами это фактический блокер."
+    },
+    {
+      "claim": "В списке Google Ads «Other restricted businesses» категорий про игровые аккаунты, виртуальную валюту, игровые сервисы и продажу аккаунтов НЕТ",
+      "evidence": "Фактически перечисленные категории: government documents and official services; free desktop software; event ticket sale; third-party consumer technical support; solicitation of funds; HFSS food and beverage ads; local services; consumer advisories; call directory/forwarding/recording; bail bond services; dating and companionship services; Dating Services Japan; regional restrictions. Дата последнего обновления на странице не видна, копирайт \"©2026 Google\"",
+      "source": "Google Ads Policies — Other restricted businesses, support.google.com/adspolicy/answer/6368711",
+      "source_date": "©2026, точной даты нет",
+      "kind": "platform_docs",
+      "confidence": "medium",
+      "actionable": "Честный вывод: явного запрета нет ни у TikTok Ads, ни у Meta, ни у Google Ads restricted businesses. Запреты живут в ToS/EULA паблишеров и в политиках платёжек, а не в рекламных политиках. Это значит: риск приходит не от рекламного кабинета, а от платёжки и от репортов покупателей."
+    },
+    {
+      "claim": "Правила и политики Whop, Sellix и PlayerAuctions по продаже игровых аккаунтов получить не удалось — нет данных",
+      "evidence": "whop.com/legal/products и /legal/ отдают SPA-оболочку без текста (HTML ~1 МБ, извлекаемого текста 219 символов; попытка с заголовком RSC: 1 дала тот же результат); whop.com/terms-of-service и /acceptable-use-policy → HTTP 404. sellix.io → DNS/proxy connect_rejected. playerauctions.com/terms-of-use/, /playerguardian/, support.playerauctions.com → HTTP 403 (и curl, и WebFetch). g2g.com, igvault.com — 403/404",
+      "source": "собственные HTTP-запросы, 2026-09-12",
+      "source_date": "2026-09-12",
+      "kind": "inference",
+      "confidence": "high",
+      "actionable": "Нет данных по: разрешает ли Whop продажу игровых аккаунтов (важно, т.к. Whop — вероятная платёжка для самих твиков), по правилам Sellix, по длительности PlayerGuardian-гарантии PlayerAuctions и по их escrow-периоду. Эти три пункта обязательно перепроверить вручную из браузера — особенно Whop, потому что от ответа зависит, можно ли вообще держать твики на Whop, если оператор параллельно продаёт аккаунты."
+    },
+    {
+      "claim": "Конкретные цены на аккаунты Fortnite (в том числе «с 14 ивентами») и объём спроса верифицировать не удалось — нет данных",
+      "evidence": "Все листинги маркетплейсов недоступны: eldorado.gg/fortnite-accounts → 404, g2g.com/categories/fortnite-account(-s-for-sale) → 404/403, playerauctions.com/fortnite-account/ → 403, igvault.com → 403, blog.playerauctions.com страница про Fortnite account value содержит только баннер калькулятора без цифр. WebSearch недоступен (исчерпан бюджет сессии: 200/200)",
+      "source": "собственные HTTP-запросы, 2026-09-12",
+      "source_date": "2026-09-12",
+      "kind": "inference",
+      "confidence": "high",
+      "actionable": "НЕ использовать никакие цифры цен из памяти. Единственный верифицированный косвенный ценовой сигнал — комиссия Eldorado 20% на Fortnite-аккаунты, что говорит о ликвидной категории с повышенной спорностью, но не о ценах. Диапазон цен и доля проблемных сделок — пометить low confidence и собрать вручную из браузера (Eldorado/G2G/PlayerAuctions листинги + фильтр по Fortnite accounts)."
+    },
+    {
+      "claim": "Оценка убытка на одной провалившейся самостоятельной сделке: минус 135–150% выручки сделки (расчёт по верифицированным тарифам)",
+      "evidence": "Арифметика на верифицированных константах PayPal 2026-09-01: чек 100 USD → возврат −100 USD + chargeback fee −20 USD (или dispute fee −15 USD standard / −30 USD high volume) = −120…−130 USD при уже потраченном аккаунте. Плюс потеря самого аккаунта (товар не возвращается — покупатель или исходный владелец его удерживает). Для 100 USD чека: −135…−150 USD с учётом того, что закупочная стоимость аккаунта не возмещается",
+      "source": "расчёт на основе PayPal Merchant Fees (2026-09-01) и PayPal User Agreement (2026-09-01)",
+      "source_date": "2026-09-12",
+      "kind": "inference",
+      "confidence": "medium",
+      "actionable": "Break-even: при марже 20% на сделку (что соответствует комиссии Eldorado как рыночной оценке) чарджбек-рейт ~13–15% полностью уничтожает прибыль категории. Если реальная доля проблемных сделок хотя бы приближается к «recovery продавцом» как штатному сценарию (а Eldorado трактует его именно так), категория убыточна при самостоятельном приёме платежей."
+    },
+    {
+      "claim": "Худший сценарий оценивается не процентом чарджбеков, а бинарным событием: терминация merchant-аккаунта + 180-дневный холд всей выручки, включая подписки на твики",
+      "evidence": "Комбинация: PayPal UA (2026-09-01) — холд до 180 дней и дольше при нарушении AUP, плюс negative balance, collection efforts и setoff с привязанных платёжных методов; Stripe SSA — setoff из Reserve, баланса, банковского счёта и backup payment method, Assessed Fines без потолка, право терминации за Restricted Business и за «enabling...(including User)...to benefit from» такого бизнеса",
+      "source": "PayPal User Agreement 2026-09-01; Stripe Services Agreement (актуальная)",
+      "source_date": "2026-09-12",
+      "kind": "inference",
+      "confidence": "medium",
+      "actionable": "Формула ожидаемого убытка для спека: worst_case_loss = MRR × 6 (180 дней холда) + стоимость перезапуска платёжного контура. При MRR 3,000 USD это 18,000 USD замороженных; при 10,000 USD — 60,000 USD. Это на порядок больше всей возможной прибыли от аккаунтов, что делает смешивание категорий экономически иррациональным независимо от морали."
+    },
+    {
+      "claim": "Структурный дефект категории: необратимой передачи аккаунта не существует, потому что recovery-контур паблишера привязан к исходным данным и чеку покупки, а не к текущему владельцу email",
+      "evidence": "Косвенно, но прямо: Eldorado Account Warranty (2026-01-23) перечисляет \"Loss of access due to account recovery by the seller\" как штатное покрываемое событие, а не как исключение; §8.2 Eldorado ToS предусматривает механику возмещения продавцом. Epic Store EULA (2025-01-15) сохраняет на исходном владельце \"legally and financially responsible for all actions using or accessing our Software, including the actions of anyone you allow to access your Account\". Riot ToS §4.4 — у пользователя нет права собственности, все права принадлежат Riot",
+      "source": "Eldorado Account Warranty 2026-01-23; Epic Games Store EULA 2025-01-15; Riot ToS 2024-12-01",
+      "source_date": "2026-09-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Ответ на вопрос (4): проблема не решается «передать email и сменить пароль». Паблишер — единственный арбитр владения, а он по своим же правилам считает продажу ничтожной (Blizzard: \"null and void\"). Значит любая гарантия, которую даёт продавец, в принципе неисполнима, и платить приходится за неё деньгами. Конкретной доли проблемных сделок в процентах — нет данных."
+    },
+    {
+      "claim": "Риск для основного бренда при общем Discord и общей платёжке — не аддитивный, а мультипликативный: три единые точки отказа",
+      "evidence": "(1) Платёжка: Stripe SSA (ix) — «enable...(including User)...to benefit from any Prohibited or Restricted Business»; PayPal UA — холд 180 дней на АККАУНТ при нарушении AUP. (2) Discord: CG (2025-09-29) «Do not engage in activities that fraudulently generate a profit at the expense of others. This includes facilitating...fraud» — снос сервера снимает канал выдачи ролей подписчикам. (3) Контент-сеть: Blizzard EULA §2.A.vii криминализует само «offer to...sell any Account», то есть видео с оффером = нарушение EULA даже без сделки",
+      "source": "Stripe SSA; PayPal User Agreement 2026-09-01; Discord CG 2025-09-29; Blizzard EULA 2024-03-21",
+      "source_date": "2026-09-12",
+      "kind": "inference",
+      "confidence": "high",
+      "actionable": "Ответ на вопрос (6): да, риск для основного бренда высокий и он реализуется через инфраструктуру, а не через репутацию. Одна жалоба обманутого покупателя аккаунта способна остановить выдачу лицензий подписчикам твиков (Discord) и заморозить их деньги (платёжка). Это архитектурный дефект, а не вопрос вероятности."
+    },
+    {
+      "claim": "Рекомендация по отделению: три уровня изоляции, все три обязательны — иначе изоляции нет",
+      "evidence": "Выводится из: Stripe SSA (ix) требует отсутствия связи «benefit from»; PayPal UA накладывает холд на аккаунт целиком; Eldorado платит 20% именно за то, чтобы merchant of record был маркетплейсом (Eldorado Fees); Discord CG сносит сервер за facilitating fraud",
+      "source": "синтез верифицированных источников выше",
+      "source_date": "2026-09-12",
+      "kind": "inference",
+      "confidence": "medium",
+      "actionable": "L1 ПЛАТЁЖНЫЙ: аккаунты НИКОГДА не проходят через Stripe/PayPal/Whop оператора. Только escrow сторонних маркетплейсов (Eldorado и аналоги), где merchant of record — маркетплейс. Цена изоляции = 20% комиссии на Fortnite/CoD, 30% на GTA5. L2 ИНФРАСТРУКТУРНЫЙ: отдельное юрлицо/физлицо-продавец, отдельный домен, отдельный бренд без пересечения строк и визуала, отдельный Discord (сервер под твики не содержит ни одного упоминания аккаунтов), отдельные email/телефон/банковский счёт. L3 КОНТЕНТНЫЙ: контент-сети не пересекаются — отдельные аккаунты, отдельные прокси-пулы, отдельные хранилища креативов, ни одной ссылки между сетями, ни одного общего link-in-bio домена. Простейший и самый выгодный вариант: категорию не запускать вообще — ожидаемая прибыль (20% маржи минус комиссия маркетплейса = близко к нулю) не покрывает даже одного события 180-дневного холда."
+    }
+  ],
+  "key_numbers": [
+    "Eldorado seller fee: Fortnite/Call of Duty accounts = 20%, GTA5 accounts = 30%, base Accounts/Items/Boosting = 10%, Currency = 5%, Top Up & Gift Cards = 0%, Roblox/anime = 15% (Eldorado Fees, 2026)",
+    "Eldorado buyer payment fee: 8% + 0.30 USD",
+    "Eldorado Account Warranty: 5 days free, extendable to 3 or 6 months for a fee (2026-01-23)",
+    "PayPal chargeback fee: 20.00 USD / 14.00 GBP / 16.00 EUR (2026-09-01)",
+    "PayPal Standard Dispute fee: 15.00 USD / 12.00 GBP / 14.00 EUR (2026-09-01)",
+    "PayPal High Volume Dispute fee: 30.00 USD / 24.00 GBP / 28.00 EUR (2026-09-01)",
+    "PayPal Unauthorized Fee: 5.00 USD per transaction",
+    "PayPal High Volume threshold: dispute ratio >= 1.5% AND > 100 sales transactions in previous 3 full calendar months",
+    "PayPal AUP-violation hold: up to 180 days, may be longer",
+    "PayPal risk-based fee increase: up to +5.00% per transaction, 30 days notice",
+    "Visa VAMP non-compliant: ratio 0.5% / count 5",
+    "Visa VAMP excessive: ratio 1.5% / count 1,500 (AP, Canada, EU, US, LAC); 2.2% / 150 / 75,000 USD (CEMEA)",
+    "Visa fraud monitoring: 75,000 USD fraud volume + 0.9% fraud rate -> loss of 3DS liability shift",
+    "Mastercard ECM: 100-299 disputes AND 1.5-2.99% rate; fines 0 / 1,000 / 5,000 / 25,000 / 50,000 / 100,000 USD by month band + 5 USD per chargeback issuer recovery",
+    "Mastercard HECM: 300+ disputes AND 3% rate; fines up to 200,000 USD",
+    "Mastercard program exit: 3 consecutive months below threshold",
+    "Mastercard EFM: min 1,000 e-comm payments, net fraud > 50,000 USD, fraud CB rate > 0.50%, 3DS share <= 10% (non-regulated)",
+    "Single failed self-processed sale: -135% to -150% of transaction revenue (100 USD ticket -> -120 to -130 USD in cash plus lost account)",
+    "Break-even chargeback rate at 20% margin: ~13-15%",
+    "Worst-case formula: MRR x 6 frozen (180-day PayPal hold) + payment-stack rebuild cost",
+    "Fortnite account prices and share of problem deals: NO DATA (all marketplace listing pages returned 403/404; WebSearch budget exhausted 200/200)"
+  ],
+  "machine_spec_notes": [
+    "CONSTANT payment_router.blocked_categories = [\"game_account\"] — ни один Stripe/PayPal/Whop payment link оператора не создаётся с product_category=\"game_account\"; hard fail на этапе валидации, не warning",
+    "CONSTANT paypal_fees_2026_09 = {chargeback_usd: 20.00, chargeback_gbp: 14.00, chargeback_eur: 16.00, dispute_std_usd: 15.00, dispute_std_gbp: 12.00, dispute_hv_usd: 30.00, dispute_hv_gbp: 24.00, unauthorized_usd: 5.00}",
+    "CONSTANT paypal_hv_threshold = {dispute_ratio: 0.015, min_sales_3mo: 100} — алерт на 0.010 (2/3 порога), не на 0.015",
+    "CONSTANT visa_vamp = {noncompliant_ratio: 0.005, noncompliant_count: 5, excessive_ratio: 0.015, excessive_count: 1500} — для микро-оборота бинд по count: алерт при 3 диспутах/мес",
+    "CONSTANT mc_ecm = {min_disputes: 100, rate_lo: 0.015, rate_hi: 0.0299, fines_by_month: {1:0, 2:1000, 3:1000, 4:5000, 5:5000, 6:5000, 7:25000, 12:50000, 19:100000}, issuer_recovery_per_cb: 5}",
+    "CONSTANT mc_hecm = {min_disputes: 300, rate: 0.03, fines_by_month: {2:1000, 3:2000, 4:10000, 7:50000, 12:100000, 19:200000}}",
+    "CONSTANT eldorado_fees = {fortnite_account: 0.20, cod_account: 0.20, gta5_account: 0.30, accounts_base: 0.10, currency: 0.05, roblox_anime: 0.15, buyer_fee_pct: 0.08, buyer_fee_flat_usd: 0.30}",
+    "CONSTANT eldorado_warranty_days_free = 5",
+    "RULE каждая контент-сеть получает отдельный namespace: {credentials_store, proxy_pool, creative_dir, link_in_bio_domain, brand_assets} — пересечение любого из пяти = fail при инициализации; сети brand=tweaks и brand=accounts НИКОГДА не резолвятся в один namespace",
+    "RULE caption/overlay/hashtag generator для brand=tweaks: keyword blocklist = [account, acc, accs, selling, for sale, 14 events, og account, stacked account, rare skins, buy acc, trade] — блокирует публикацию, не фильтрует молча",
+    "RULE brand=tweaks Discord server: zero-mention policy — ни канала, ни роли, ни бота, ни закреплённого сообщения про аккаунты; автоматическая проверка на каждом деплое конфигурации сервера",
+    "RULE ни один платный рекламный кабинет (TikTok Ads / Meta Ads / Google Ads) не используется для brand=accounts — явного разрешения ни в одной из трёх политик не найдено, а ЦА 13-24 попадает под TikTok 'ads directed at underage audiences'",
+    "MONITOR dispute_ratio по каждому merchant-аккаунту, rolling 3 календарных месяца, алерт на 1.0%, kill-switch на 1.4% (ниже порога PayPal HV 1.5% и Visa excessive 1.5%)",
+    "MONITOR dispute_count абсолютный, rolling 30 дней, алерт на 3 (ниже Visa VAMP non-compliant count 5)",
+    "FORMULA worst_case_hold_usd = MRR * 6 — выводить в риск-дашборд как первую строку, потому что она доминирует над суммой всех чарджбеков",
+    "FORMULA breakeven_cb_rate = margin_pct / (1 + (chargeback_fee + dispute_fee) / ticket) — при margin 0.20 и ticket 100 USD даёт ~0.13-0.15",
+    "TODO(manual, blocked by 403/SPA) собрать вручную из браузера: Whop prohibited products (критично — влияет на выбор платёжки для самих твиков), Sellix ToS, PlayerAuctions PlayerGuardian период гарантии и escrow-холд, реальные листинги цен Fortnite-аккаунтов, официальный Epic Games ToS и Fortnite Competitive Rules про account sharing",
+    "TODO не вносить в спеку никакие цены аккаунтов и никакие проценты проблемных сделок до ручной верификации — на 2026-09-12 данных нет"
+  ],
+  "risks": [
+    "Blizzard EULA §2.A.vii запрещает САМО ПРЕДЛОЖЕНИЕ ('offer to purchase, sell, gift, or trade any Account') — значит промо-видео с оффером уже нарушение EULA, даже если сделки не было; это переносит риск с платёжки на контент-сеть",
+    "Epic Store EULA оставляет исходного владельца 'legally and financially responsible for all actions using or accessing our Software, including the actions of anyone you allow to access your Account' — хвост ответственности за действия покупателя не закрывается передачей доступа",
+    "Riot ToS §2.3 даёт Riot право терминировать 'any other accounts you may have created' — покупатель, потерявший купленный аккаунт, теряет заодно свой основной, что резко повышает вероятность чарджбека и публичного скандала",
+    "Stripe SSA (ix) запрещает 'enable any individual or entity (including User) to operate or benefit from any Prohibited or Restricted Business' — формальное основание терминировать Stripe легального подписочного бизнеса существует даже если аккаунты продаются вне Stripe",
+    "Assessed Fines (штрафы Visa/Mastercard) по Stripe SSA прямо исключены из cap ответственности и могут списываться с личного банковского счёта и backup payment method — единственная статья, где убыток превышает весь оборот проекта",
+    "PayPal AUP-нарушение даёт холд до 180 дней на АККАУНТ, а не на транзакцию — деньги подписчиков твиков замерзают вместе с деньгами от аккаунтов",
+    "При малом обороте (подписки по 5-15 USD) знаменатель dispute ratio маленький, поэтому Visa VAMP non-compliant count = 5 диспутов достижим в первый же месяц активных аккаунт-сделок",
+    "Discord CG 'facilitating...fraud' — снос сервера останавливает автоматическую выдачу ролей подписчикам, то есть ломает продукт, а не только маркетинг",
+    "Eldorado трактует 'recovery продавцом' и 'бан за передачу владения' как ШТАТНЫЕ покрываемые события — значит это базовый сценарий категории, а не хвост распределения; а бесплатная гарантия всего 5 дней означает, что после 5 дней риск по умолчанию на покупателе",
+    "Возрастная проблема: ЦА 13-24, а Epic Store EULA требует 'AN ADULT OF THE LEGAL AGE OF MAJORITY' для заключения соглашения — сделки с минорами дополнительно оспоримы и попадают под consumer protection в UK",
+    "Даже внутри маркетплейса продавец не защищён полностью: Eldorado §8.2 сохраняет обязанность возмещения и списывает её с PayPal продавца",
+    "Нет данных по политике Whop — если Whop запрещает продажу игровых аккаунтов и заметит связь между двумя бизнесами оператора, под удар попадает платёжка ОСНОВНОГО продукта",
+    "Юридическая структура легального игрока (Eldorado: ОАЭ FZCO + Delaware LLC + эстонская OU, опора на EU Reg 2017/1001 Art. 14 fair use) невоспроизводима для одиночного оператора из СНГ — попытка работать напрямую означает работу без той защиты, которую рынок считает минимально необходимой"
+  ],
+  "open_questions": [
+    "Реальные цены аккаунтов Fortnite, в том числе 'с 14 ивентами' — все листинги маркетплейсов отдали 403/404, WebSearch исчерпан (200/200). Нужен ручной сбор из браузера: Eldorado /fortnite-accounts, G2G, PlayerAuctions, IGVault",
+    "Доля проблемных сделок в процентах — ни один маркетплейс не публикует. Прокси-метрику можно оценить косвенно через надбавку комиссии (Fortnite 20% против базовых 10%), но это не процент диспутов. Нужен либо seller-опыт с цифрами, либо отказ от количественной оценки",
+    "Политика Whop по продаже игровых аккаунтов — КРИТИЧНО, т.к. Whop рассматривается как платёжка для самих твиков. Страницы /legal/products рендерятся только JS, /terms-of-service и /acceptable-use-policy отдают 404. Проверить вручную из браузера",
+    "Правила Sellix (proxy connect_rejected на sellix.io) — популярная платёжка в этой нише, её политика по аккаунтам неизвестна",
+    "PlayerAuctions: точная длительность PlayerGuardian buyer protection для аккаунтов, escrow-период до выплаты продавцу, механика при recovery — все страницы 403",
+    "Официальный Epic Games Terms of Service (не Store EULA) и официальные Fortnite Competitive Rules про account sharing / one account per player — все хосты Epic отдают 403. Тезис '14 ивентов как ценность' не верифицирован по официальному документу",
+    "Текст TikTok Community Guidelines (fake engagement / integrity-authenticity) про трейдинг аккаунтов — страницы рендерятся только JS, извлекаемого текста нет. В ToS (ROW, 2025-12-01) прямого запрета на продажу аккаунтов нет; неизвестно, есть ли он в CG",
+    "Eligibility PayPal Seller Protection для intangible/digital goods — страница программы не получена; неизвестно, покрывает ли она цифровые товары вообще, а от этого зависит, есть ли у оператора хоть какая-то защита при споре",
+    "Применимость UK consumer law (Consumer Rights Act, right of withdrawal для digital content) к продаже аккаунтов при UK-позиционировании — не исследовано в этом измерении",
+    "Разрешает ли Discord ToS оператору держать два отдельных сервера под два бренда с одного личного аккаунта, или это трактуется как evasion — в полученном тексте CG ответа нет"
+  ]
+}

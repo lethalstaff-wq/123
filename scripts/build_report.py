@@ -330,7 +330,14 @@ footer p{max-width:70ch}
 
 # ─────────────────────────── секции ───────────────────────────
 
+_SEC_N = [0]
+
+
 def sec(idx: str, sid: str, title: str, lede: str, body: str) -> str:
+    # номер присваивается по порядку сборки: добавление раздела не требует
+    # переписывания всех последующих номеров
+    _SEC_N[0] += 1
+    idx = f"{_SEC_N[0]:02d}"
     return (f'<section id="{sid}"><div class="wrap">'
             f'<div class="sec__head"><span class="sec__idx">{e(idx)}</span><h2>{e(title)}</h2></div>'
             f'<p class="sec__lede">{lede}</p>{body}</div></section>')
@@ -351,6 +358,63 @@ def s_decisions() -> str:
                "Нумерация здесь — не оформление: это последовательность, в которой шаги "
                "нельзя менять местами.",
                f'<div class="steps">{"".join(steps)}</div>')
+
+
+def s_competitor() -> str:
+    off = R.d("offers.json")
+    bm = off.get("business_model", {})
+    exm = bm.get("exm_actual_model", {})
+    ladder = exm.get("ladder_usd", {})
+    tr = bm.get("exm_traffic", {})
+    sub = bm.get("subscription_precedent", {})
+    free = bm.get("free_competition", {}).get("github_stars", {})
+    floor = bm.get("price_floor", {})
+
+    price_rows = "".join(
+        f'<tr><td class="rowlab">{e(k.replace("_", " ").replace("pc", "ПК"))}</td>'
+        f'<td class="num">${v}</td></tr>' for k, v in ladder.items())
+
+    stars = " · ".join(f"{k} {v // 1000}K" for k, v in free.items())
+    vel = sub.get("velocity_tweaks", {})
+    hone = sub.get("hone_gg", {})
+
+    return sec("02", "competitor", "Конкурент, на которого ты равняешься",
+               "EXM Tweaks разобран по его собственным данным: встроенный JSON прайса, политика "
+               "возвратов, счётчики Discord и YouTube. Первое, что выяснилось, отменяет исходную "
+               "продуктовую модель.",
+               f'<div class="callout"><h4>Это не подписка</h4>'
+               f'<p>Дословно из их политики возвратов: «{e(exm.get("quote"))}»</p>'
+               f'<p class="finding__src">{e(exm.get("source"))}</p>'
+               f'<p>То есть запуск подписки ставит тебя против покупки навсегда за $29.99–49.99. '
+               f'Либо копировать lifetime и зарабатывать объёмом и апселлами, либо идти в подписку '
+               f'$4–6 в месяц и оправдывать её непрерывным контентом под патчи, а не самими твиками.</p></div>'
+               f'<h3>Их лестница цен</h3>'
+               f'<div class="tablewrap"><table><thead><tr><th>Тир</th><th>Цена</th></tr></thead>'
+               f'<tbody>{price_rows}</tbody></table></div>'
+               f'<p class="small">Юрлицо — {e(exm.get("entity"))}. Масштаб: {e(exm.get("scale"))}. '
+               f'Бесплатный тир: {e(exm.get("free_tier"))}.</p>'
+               f'<div class="callout callout--ok"><h4>Их трафик идёт не оттуда, где ты собрался его брать</h4>'
+               f'<p>{e(tr.get("_critical"))}</p>'
+               f'<p><b>YouTube:</b> {e(tr.get("youtube"))}</p>'
+               f'<p><b>TikTok:</b> {e(tr.get("tiktok"))}</p>'
+               f'<p><b>Партнёрка:</b> {e(tr.get("affiliate"))}</p></div>'
+               f'<h3>Как устроена их авто-выдача</h3>'
+               f'<p class="small">{e(bm.get("exm_delivery", {}).get("how"))}. '
+               f'Дословно: «{e(bm.get("exm_delivery", {}).get("quote"))}». '
+               f'{e(bm.get("exm_delivery", {}).get("hwid"))}</p>'
+               f'<h3>Кто всё-таки продаёт подписку</h3>'
+               f'<div class="tablewrap"><table><thead><tr><th>Проект</th><th>Цена</th><th>Масштаб</th></tr></thead><tbody>'
+               f'<tr><td class="rowlab">Velocity Tweaks</td>'
+               f'<td class="num">${vel.get("monthly_usd")}/мес · ${vel.get("yearly_monthly_usd")}/мес при годовой · '
+               f'${vel.get("lifetime_usd")} навсегда</td>'
+               f'<td class="small">Discord {vel.get("discord_members")}. {e(vel.get("note"))}</td></tr>'
+               f'<tr><td class="rowlab">Hone.gg</td><td class="num">{e(hone.get("model"))}</td>'
+               f'<td class="small">Discord {hone.get("discord_members")}, Trustpilot {e(hone.get("trustpilot"))}, '
+               f'{e(hone.get("entity"))}</td></tr></tbody></table></div>'
+               f'<div class="callout"><h4>Потолок цены задан бесплатным сегментом</h4>'
+               f'<p>Открытый код в этой нише сильный: {e(stars)} звёзд на GitHub. '
+               f'Платят не за твики, а за автоматизацию, поддержку и доверие.</p>'
+               f'<p>{e(floor.get("ceiling_note"))}</p></div>')
 
 
 def s_geo() -> str:
@@ -707,12 +771,12 @@ def s_gaps() -> str:
 
 def build() -> str:
     st = R.stats()
-    nav = [("01", "order", "Порядок решений"), ("02", "geo", "Гео-матрица"),
-           ("03", "factors", "Гео-факторы"), ("04", "timing", "Тайминги"),
-           ("05", "content", "Контент"), ("06", "product", "Продукт"),
-           ("07", "payments", "Платежи"), ("08", "platforms", "Лимиты"),
-           ("09", "gaps", "Пробелы")]
-    nav_html = "".join(f'<a href="#{sid}">{idx} {e(label)}</a>' for idx, sid, label in nav)
+    nav = [("order", "Порядок решений"), ("competitor", "Конкурент"), ("geo", "Гео-матрица"),
+           ("factors", "Гео-факторы"), ("timing", "Тайминги"), ("content", "Контент"),
+           ("product", "Продукт"), ("payments", "Платежи"), ("platforms", "Лимиты"),
+           ("gaps", "Пробелы")]
+    nav_html = "".join(f'<a href="#{sid}">{i:02d} {e(label)}</a>'
+                       for i, (sid, label) in enumerate(nav, start=1))
     meta = [
         (st["countries"], "стран разобрано"),
         (st["topics"], "тематических блоков"),
@@ -741,6 +805,7 @@ def build() -> str:
 
 <main>
 {s_decisions()}
+{s_competitor()}
 {s_geo()}
 {s_factors()}
 {s_timing()}

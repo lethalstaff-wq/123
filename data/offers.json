@@ -4,7 +4,6 @@
     "source": "агенты tweaks_efficacy / saas_pricing / anticheat_safety / exmtweaks_teardown",
     "enforced_by": "src/claims.py — проверка идёт до рендера и до публикации, нарушение блокирует материал"
   },
-
   "product": {
     "name": "PC tweaks subscription",
     "core_promise_safe": "стабильнее кадр и меньше фризов на том же железе",
@@ -24,13 +23,21 @@
     "refund_shield": {
       "_purpose": "Одновременно доказательство результата и основание отказать в необоснованном возврате.",
       "protocol": "замер before/after в CapFrameX или PresentMon/FrameView: одна и та же сцена, 3 прогона, отчёт с avg FPS + 1% low + системной латентностью, автосохранение JSON",
-      "include_in": ["оффер", "онбординг", "карточку товара"]
+      "include_in": [
+        "оффер",
+        "онбординг",
+        "карточку товара"
+      ]
     }
   },
-
   "claim_rules": {
     "_purpose": "Валидатор обещаний. Цифры без контекста железа — главная причина, по которой такие проекты разносят в комментариях.",
-    "required_fields_for_numeric_claim": ["hardware_cpu_or_gpu", "game", "resolution_or_tool", "metric"],
+    "required_fields_for_numeric_claim": [
+      "hardware_cpu_or_gpu",
+      "game",
+      "resolution_or_tool",
+      "metric"
+    ],
     "numeric_caps": {
       "max_claimed_avg_fps_gain_pct": 15,
       "max_claimed_1pct_low_gain_pct": 50,
@@ -55,9 +62,25 @@
     ],
     "hardware_tier_gate": "Не показывать креативы с цифрами DLSS 4 MFG / '8x' / '1.7x' аудитории без RTX 40/50: это триггер разноса в комментариях. Для GTX 10/16 и RTX 30 использовать цифры Reflex на GTX 1660 Super (56→38 ms).",
     "honest_tiers": {
-      "tier_a_measured_sellable": ["NVIDIA Reflex / Low Latency Mode при GPU-bound", "апскейлер + пресет (DLSS/FSR)", "XMP/EXPO", "ReBAR (только с A/B)", "undervolt + power limits", "Game Mode + разгрузка фона (1% low до +8.6% в CS2, до +48% при открытых Edge и Discord)"],
-      "tier_b_noise": ["HAGS", "план электропитания", "большинство debloat-скриптов"],
-      "tier_c_snake_oil": ["чистка реестра", "RAM-бустеры", "дефрагментация SSD", "сетевые твики для снижения пинга"]
+      "tier_a_measured_sellable": [
+        "NVIDIA Reflex / Low Latency Mode при GPU-bound",
+        "апскейлер + пресет (DLSS/FSR)",
+        "XMP/EXPO",
+        "ReBAR (только с A/B)",
+        "undervolt + power limits",
+        "Game Mode + разгрузка фона (1% low до +8.6% в CS2, до +48% при открытых Edge и Discord)"
+      ],
+      "tier_b_noise": [
+        "HAGS",
+        "план электропитания",
+        "большинство debloat-скриптов"
+      ],
+      "tier_c_snake_oil": [
+        "чистка реестра",
+        "RAM-бустеры",
+        "дефрагментация SSD",
+        "сетевые твики для снижения пинга"
+      ]
     },
     "myth_busting_content_slots": [
       "чистка реестра не даёт FPS (Malwarebytes: 'digital snake oil' + позиция Microsoft)",
@@ -67,42 +90,230 @@
       "DLSS 5 не ускоритель: NBA 2K27 в 4K на RTX 5090 даёт 128.4 → 62.7 FPS"
     ]
   },
-
   "by_price_tier": {
     "high": {
-      "regions_example": ["us", "uk", "ae", "de", "nordics", "au_nz"],
-      "monthly_usd": [8.99, 12.0],
+      "regions_example": [
+        "us",
+        "uk",
+        "ae",
+        "de",
+        "nordics",
+        "au_nz"
+      ],
+      "monthly_usd": [
+        8.99,
+        12.0
+      ],
       "anchor_note": "US: ставить $9.99 — найденный рыночный якорь; ниже выглядит подозрительно, выше требует бренда. UAE: $12 попадает в цену одного дневного пропуска в гейминг-кафе.",
-      "quarterly_usd": [19.99, 29.0],
-      "lifetime_usd": [35.0, 69.0],
+      "quarterly_usd": [
+        19.99,
+        29.0
+      ],
+      "lifetime_usd": [
+        35.0,
+        69.0
+      ],
       "primary_cta": "link in bio",
-      "cta": ["link in bio", "free FPS checklist in bio", "join the Discord in bio"]
+      "cta": [
+        "link in bio",
+        "free FPS checklist in bio",
+        "join the Discord in bio"
+      ]
     },
     "mid": {
-      "regions_example": ["ca", "pl", "cee", "tr", "br", "mx", "sa", "th_my", "za"],
-      "monthly_usd": [4.0, 6.99],
+      "regions_example": [
+        "ca",
+        "pl",
+        "cee",
+        "tr",
+        "br",
+        "mx",
+        "sa",
+        "th_my",
+        "za"
+      ],
+      "monthly_usd": [
+        4.0,
+        6.99
+      ],
       "anchor_note": "Канада: $6.99, не $4.99 — слишком низкая цена в этом тире читается как несерьёзная.",
-      "quarterly_usd": [10.0, 18.0],
-      "lifetime_usd": [20.0, 35.0],
+      "quarterly_usd": [
+        10.0,
+        18.0
+      ],
+      "lifetime_usd": [
+        20.0,
+        35.0
+      ],
       "primary_cta": "link in bio",
-      "cta": ["link in bio", "free guide in bio", "Discord in bio"]
+      "cta": [
+        "link in bio",
+        "free guide in bio",
+        "Discord in bio"
+      ]
     },
     "low": {
-      "regions_example": ["eg", "iq", "id", "ph", "vn", "in", "ng", "ke_tz"],
-      "monthly_usd": [1.99, 3.5],
+      "regions_example": [
+        "eg",
+        "iq",
+        "id",
+        "ph",
+        "vn",
+        "in",
+        "ng",
+        "ke_tz"
+      ],
+      "monthly_usd": [
+        1.99,
+        3.5
+      ],
       "anchor_note": "Египет: $2.5-3.5 (149 EGP). Нигерия: $2/мес, но главный SKU — lifetime $12: рекуррент по локальным рельсам плохо работает, 60-70% выручки даёт единоразовая покупка.",
-      "quarterly_usd": [4.5, 8.0],
-      "lifetime_usd": [10.0, 18.0],
+      "quarterly_usd": [
+        4.5,
+        8.0
+      ],
+      "lifetime_usd": [
+        10.0,
+        18.0
+      ],
       "primary_cta": "free guide in bio",
-      "cta": ["free guide in bio", "Discord in bio", "comment FPS"],
+      "cta": [
+        "free guide in bio",
+        "Discord in bio",
+        "comment FPS"
+      ],
       "note": "Монетизация подписки здесь слабая: гео берётся ради охвата, социальных доказательств и lifetime-продаж, а не ради MRR."
     }
   },
-
   "funnel_entry": {
-    "discord": { "best_for": ["us", "ca", "uk", "de", "fr", "es", "it", "pl", "br", "mx", "eg"], "why": "молодая геймерская аудитория уже там; видимое сообщество работает как доказательство" },
-    "site": { "best_for": ["ae", "de", "jp", "kr", "nordics"], "why": "аудитория ждёт нормальный лендинг и понятную оплату" },
-    "whatsapp": { "best_for": ["ng", "ke_tz", "sa", "maghreb", "id"], "why": "основной мессенджер региона; в Кении и Нигерии ресерч прямо ставит его выше Discord" },
-    "telegram": { "best_for": ["ru", "kz_uz", "ua_by", "iq"], "why": "де-факто мессенджер аудитории" }
+    "discord": {
+      "best_for": [
+        "us",
+        "ca",
+        "uk",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "pl",
+        "br",
+        "mx",
+        "eg"
+      ],
+      "why": "молодая геймерская аудитория уже там; видимое сообщество работает как доказательство"
+    },
+    "site": {
+      "best_for": [
+        "ae",
+        "de",
+        "jp",
+        "kr",
+        "nordics"
+      ],
+      "why": "аудитория ждёт нормальный лендинг и понятную оплату"
+    },
+    "whatsapp": {
+      "best_for": [
+        "ng",
+        "ke_tz",
+        "sa",
+        "maghreb",
+        "id"
+      ],
+      "why": "основной мессенджер региона; в Кении и Нигерии ресерч прямо ставит его выше Discord"
+    },
+    "telegram": {
+      "best_for": [
+        "ru",
+        "kz_uz",
+        "ua_by",
+        "iq"
+      ],
+      "why": "де-факто мессенджер аудитории"
+    }
+  },
+  "business_model": {
+    "_critical": "Исходное допущение «конкурент продаёт подписку» НЕВЕРНО. Проверено по встроенному JSON прайса и политике возвратов EXM.",
+    "exm_actual_model": {
+      "type": "lifetime, одноразовая покупка",
+      "quote": "EXM Plus and EXM Premium are one-time purchases, not subscriptions. There is no recurring charge, no billing period, and nothing to cancel.",
+      "source": "exmtweaks.com/en-us/refund-policy, обновлено 19.08.2026",
+      "ladder_usd": {
+        "plus_1pc": 29.99,
+        "plus_2pc": 54.99,
+        "plus_3pc": 74.99,
+        "plus_4pc": 99.99,
+        "premium_1pc": 49.99,
+        "premium_2pc": 89.99,
+        "premium_3pc": 129.99,
+        "premium_4pc": 169.99
+      },
+      "free_tier": "есть, 150+ оптимизаций",
+      "entity": "EXM TWEAKS s.r.o., Словакия, платежи через Stripe",
+      "scale": "Trustpilot 4.6 из 532 отзывов, Discord 171 663 участника, 964 656 заявленных загрузок"
+    },
+    "exm_delivery": {
+      "_why_important": "Архитектура авто-выдачи без ключей и без ролей — проще, чем планировалось.",
+      "how": "Stripe webhook -> флаг тира на аккаунте сайта -> тот же бесплатный установщик разблокируется при перелогине",
+      "quote": "There's no waiting on an email or a licence key",
+      "hwid": "привязка к 1 ПК, бесплатные переносы через тикет в Discord — единственная ручная точка"
+    },
+    "exm_second_leg": {
+      "_note": "Противоречит требованию «без ручной работы», но объясняет их средний чек.",
+      "services_eur": {
+        "ram_oc": 59.99,
+        "cpu_oc": 49.99,
+        "gpu_oc": 39.99,
+        "full_bundle": 119.99,
+        "bios": 49.99,
+        "pc_checkup": 39.99,
+        "fast_checkup": 24.99
+      },
+      "delivery": "до 72 часов, человеком"
+    },
+    "exm_traffic": {
+      "_critical": "Их трафик — Discord и YouTube, НЕ TikTok. Instagram отсутствует полностью.",
+      "youtube": "@exmtweaks — 53 тыс подписчиков, 284 видео, 7.03 млн просмотров всего; медиана Shorts 20 тыс (n=48, от 2.3 тыс до 65 тыс); длинные гайды по играм и патчам 2.2-195 тыс",
+      "tiktok": "@exm.tweaks — всего 18.1 тыс подписчиков, 230 видео, 434 тыс лайков, открыт в марте 2024",
+      "affiliate": "программа через tolt.io: 15/20/25%, плюс вирусная петля «бесплатный Premium за 2 приглашённых»"
+    },
+    "subscription_precedent": {
+      "velocity_tweaks": {
+        "monthly_usd": 5.99,
+        "yearly_monthly_usd": 3.99,
+        "lifetime_usd": 70,
+        "discord_members": 14641,
+        "note": "роль в Discord как платная фича"
+      },
+      "hone_gg": {
+        "model": "месяц/год + бесплатный тир с рекламой",
+        "discord_members": 61216,
+        "trustpilot": "4.7 из 1803",
+        "entity": "Delaware, США",
+        "claim": "2.5 млн+ геймеров"
+      }
+    },
+    "free_competition": {
+      "_why": "Весь бесплатный сегмент — сильный открытый код. Платить будут не за твики, а за автоматизацию, поддержку и доверие.",
+      "github_stars": {
+        "winutil": 62500,
+        "Win11Debloat": 57000,
+        "Atlas": 21500,
+        "Winhance": 13000,
+        "optimizerDuck": 9500
+      }
+    },
+    "price_floor": {
+      "one_time_usd": [
+        29.99,
+        49.99
+      ],
+      "monthly_usd": [
+        4,
+        6
+      ],
+      "ceiling_note": "Выше ~$8/мес прецедентов в нише не найдено. Исключение — Саудовская Аравия: локальный trk.sa берёт 149 SAR за 30 дней (~$40), и рынок это принимает."
+    },
+    "decision": "Либо копировать lifetime $29.99-49.99 и зарабатывать объёмом и апселлами, либо идти в подписку $4-6/мес как Velocity — но тогда подписку надо оправдывать непрерывным контентом под патчи, а не самими твиками."
   }
 }

@@ -1,0 +1,421 @@
+{
+  "dimension": "automation_apis",
+  "summary": "Главный вывод: из трёх площадок ЛЕГАЛЬНО и полностью автоматизируемы только YouTube и Instagram; TikTok официальным API для этого кейса ЗАКРЫТ. TikTok Content Sharing Guidelines (обновлены 04.08.2026) прямо называют НЕПРИЕМЛЕМЫМ как «утилиту для загрузки контента на аккаунты, которыми управляете вы или ваша команда», так и «приложение, копирующее произвольный контент с других платформ в TikTok» — это дословно описание сети из 20 своих каналов на гео, т.е. аудит клиента будет отклонён. Без аудита: только 5 юзеров за 24 ч, все аккаунты должны быть ПРИВАТНЫМИ, видимость только SELF_ONLY → трафика ноль. Единственный рабочий путь для TikTok — сторонний агрегатор с уже пройденным аудитом (upload-post $24-147/мес, Blotato $29-97, Publer Business, Metricool Advanced $53-159, Ayrshare $149+), но и там действует жёсткий потолок ~15 постов/сутки на аккаунт-креатора, общий для всех API-клиентов. YouTube Data API v3 в 2026 сменил квотную модель: videos.insert больше НЕ стоит 1600 юнитов — у него отдельный бакет 100 вызовов/сутки по 1 юниту (подтверждено таблицей квот, last updated 2026-09-04), т.е. 100 заливок/сутки на один GCP-проект бесплатно; при этом политика III.D.1.c запрещает создавать несколько проектов под один API-клиент ради обхода квоты. Instagram — самый дружелюбный: при Standard Access (все 20 аккаунтов имеют роль в приложении) НЕ нужны ни App Review, ни Business Verification, лимит 100 API-публикаций на аккаунт за скользящие 24 ч, Reels через media(media_type=REELS) → media_publish. Для TikTok PULL_FROM_URL и для Instagram video_url обязателен публичный HTTPS-хост (для TikTok — с DNS-верификацией домена). Рендер: ffmpeg/MoviePy бесплатно; Remotion для автоматического рендера требует «Remotion for Automators» — $0.01/рендер при минимуме $100/мес, что съедает половину бюджета, поэтому Remotion исключаем. Автосабы: faster-whisper локально бесплатно (int8 на CPU: 13 мин аудио за 51 с) либо whisper-1 API $0.006/мин. TTS: Kokoro-82M (Apache-2.0, 8 языков, 54 голоса) локально бесплатно или ~$0.65-0.80 за 1M символов у хостеров; edge-tts бесплатно но это неофициальный доступ к сервису Microsoft Edge (серая зона); ElevenLabs Creator $22/мес = 121k символов, 74 языка, коммерческая лицензия с $6-тарифа. Итоговая архитектура в $50-200/мес: VPS-рендер + объектное хранилище с своим доменом + прямой YouTube Data API + прямой Instagram API (Standard Access) + агрегатор только под TikTok.",
+  "key_numbers": [
+    "YouTube videos.insert: отдельный квотный бакет, 100 вызовов/сутки, 1 юнит за вызов (НЕ 1600) — developers.google.com/youtube/v3/determine_quota_cost, last updated 2026-09-04",
+    "YouTube search.list: отдельный бакет, 100 вызовов/сутки, 1 юнит; все остальные эндпоинты — 10 000 юнитов/сутки суммарно; сброс в 00:00 PT",
+    "YouTube: captions.insert = 400 юнитов, captions.update = 450, thumbnails.set = 50, playlistItems.insert = 50, videos.update = 50 (берутся из общего пула 10 000)",
+    "YouTube: неверифицированный аккаунт — видео максимум 15 минут; макс. файл 256 GB или 12 часов (что меньше)",
+    "TikTok direct post init: /v2/post/publish/video/init/, лимит 6 запросов/минуту на user access_token",
+    "TikTok status fetch: /v2/post/publish/status/fetch/, лимит 30 запросов/минуту на user access_token",
+    "TikTok неаудированный клиент: максимум 5 юзеров могут постить за 24 ч, все аккаунты должны быть private, видимость только SELF_ONLY",
+    "TikTok потолок постинга через Direct Post API: ~15 постов/сутки на аккаунт-креатора, общий для ВСЕХ API-клиентов",
+    "TikTok upload-as-draft (/v2/post/publish/inbox/video/init/): максимум 5 pending shares за любые 24 ч (spam_risk_too_many_pending_share)",
+    "TikTok чанки: минимум 5 MB, максимум 64 MB на чанк, последний чанк до 128 MB; от 1 до 1000 чанков; файлы <5 MB заливать целиком; upload_url живёт 1 час",
+    "TikTok видео: MP4/WebM/MOV, H.264/H.265/VP8/VP9, 23-60 FPS, 360-4096 px по обеим сторонам, максимум 10 минут через API; title до 2200 UTF-16 rune",
+    "TikTok PULL_FROM_URL: ingress-полоса TikTok до 100 Mbps, таймаут скачивания 1 час, только https, редиректы (3xx) запрещены",
+    "Instagram: 100 API-публикаций на аккаунт за скользящие 24 ч (карусель = 1 пост); карусели отдельно 50 постов/24 ч, до 10 элементов",
+    "Instagram: media-контейнер живёт 24 ч (status_code=EXPIRED), опрашивать статус раз в минуту не дольше 5 минут",
+    "Instagram scopes (Instagram Login): instagram_business_basic + instagram_business_content_publish; Standard Access — без App Review и без Business Verification, если все аккаунты имеют роль в приложении",
+    "upload-post: Free 2 профиля (без TikTok, 10 заливок/мес), Basic $24/мес 5 профилей, Professional $50/мес 25 профилей, Advanced $147/мес 75 профилей, Business $438/мес 225 профилей; годовая оплата -40%",
+    "upload-post add-on профилей: Professional +25 за $55/мес, Advanced +50 за $115/мес (не суммируются)",
+    "Blotato: Starter $29/мес 20 соц-аккаунтов до 900 TikTok-постов/мес; Creator $97/мес 40 аккаунтов; Agency $499/мес",
+    "Postiz: Standard $29/мес 5 каналов, Team $39/мес 10, Pro $49/мес 30, Ultimate $99/мес 100; REST API на всех тарифах; open-source, self-host бесплатно",
+    "Metricool: Advanced $53/мес до 15 брендов, $85/мес до 25 брендов, $159/мес до 50 брендов; Metricool API доступен только с Advanced",
+    "Ayrshare: Premium $149/мес 1 профиль, Launch $299/мес до 10 профилей, Business $599/мес 30 профилей (+$8.99/профиль за 31-100)",
+    "Remotion: Free License только для компаний до 3 человек; Creators $25/мес за место (3 места = $75/мес); Remotion for Automators $0.01 за рендер при минимуме $100/мес",
+    "OpenAI whisper-1: $0.006/минута; gpt-4o-mini-transcribe ~$0.003/минута; tts-1 $15 за 1M символов; gpt-4o-mini-tts $0.60/1M текстовых токенов + $12/1M аудио-токенов",
+    "ElevenLabs: Free $0 (10k кредитов, БЕЗ коммерческой лицензии), Starter $6 (30k, коммерческая лицензия), Creator $22 (121k), Pro $99 (600k), Scale $299 (1.8M), Business $990 (6M); 74 языка; TTS = 1 кредит/символ, STT = 330 кредитов/минуту",
+    "Kokoro-82M v1.0 (2025-01-27): Apache-2.0, 8 языков, 54 голоса, 82M параметров; хостинг-цена <$1 за 1M символов (~$0.06 за час аудио) по данным Replicate/DeepInfra на апрель 2025",
+    "faster-whisper v1.1.0: large-v2 int8 на RTX 3070 Ti — 13 мин аудио за 59 с (2926 MB VRAM); small int8 batch=8 на CPU i7-12700K — 51 с (3608 MB RAM)"
+  ],
+  "findings": [
+    {
+      "claim": "TikTok официально запрещает именно этот кейс: аудит клиента Content Posting API не пройдёт для инструмента, заливающего контент на собственные аккаунты оператора",
+      "evidence": "Раздел Intended Use: «1) API Clients should facilitate authentic creators to post original content to TikTok. Not acceptable: An app that copies arbitrary contents from other platforms to TikTok. ❌ 2) API Clients must not be limited to test applications and should be intended for a wide audience, not limited to internal groups/private use. Not acceptable: A utility tool to help upload contents to the account(s) you or your team manages. ❌»",
+      "source": "https://developers.tiktok.com/doc/content-sharing-guidelines/ (Content Sharing Guidelines, TikTok for Developers)",
+      "source_date": "Last updated 2026-08-04",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "НЕ подавать свой TikTok-клиент на аудит под этот use case — отказ практически гарантирован. Планировать TikTok только через сторонний аудированный агрегатор либо через ручную публикацию из приложения."
+    },
+    {
+      "claim": "Неаудированный TikTok-клиент даёт нулевой трафик: 5 юзеров/24ч, аккаунты обязаны быть приватными, посты только SELF_ONLY",
+      "evidence": "«User cap: Unaudited API Clients can allow up to 5 users to post in a 24 hour window. All user accounts using the API client to post must be set to private at the time of posting. Private Viewership: Unaudited API Clients can only post contents in SELF_ONLY viewership. To make the contents publicly viewable later on, the account owner must first change their account visibility to public, and then change the privacy settings of each content to \"Everyone.\"»; код ошибки unaudited_client_can_only_post_to_private_accounts блокирует /publish/video/init/",
+      "source": "https://developers.tiktok.com/doc/content-sharing-guidelines/ + https://developers.tiktok.com/doc/content-posting-api-reference-direct-post/",
+      "source_date": "2026-08-04 / 2026-08-24",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Свой неаудированный клиент годится только для тестов пайплайна. В проде не использовать. Открытие видимости после залива = ручная работа на каждый пост, что противоречит требованию «без ручной работы»."
+    },
+    {
+      "claim": "Даже у аудированных клиентов TikTok жёстко ограничивает частоту: ~15 постов/сутки на аккаунт-креатора, и этот лимит общий для всех API-клиентов",
+      "evidence": "«Posting cap: There is a limit on the number of posts that can be made to a creator account in a 24-hour window via Direct Post API. The upper limit may vary among creators (typically around 15 posts per day/ creator account) and is shared across all API Clients using Direct Post.» Плюс «Creator cap: There will be a 24-hour active creator cap for each API client based on the usage estimates provided in the audit application form.»",
+      "source": "https://developers.tiktok.com/doc/content-sharing-guidelines/",
+      "source_date": "2026-08-04",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Константа для скрипта: TIKTOK_MAX_POSTS_PER_ACCOUNT_PER_24H = 15 (планировать 3-5 для безопасности). Ошибка spam_risk_too_many_posts (HTTP 403) = стоп на этот аккаунт до следующего окна."
+    },
+    {
+      "claim": "TikTok upload-as-draft (inbox) технически работает без аудита, но требует ручного шага в приложении и ограничен 5 черновиками/24ч",
+      "evidence": "Эндпоинт /v2/post/publish/inbox/video/init/, scope video.upload. «You should inform users that they must click on inbox notifications to continue the editing flow in TikTok and complete the post.» Ошибка: «spam_risk_too_many_pending_share — The daily upload cap from the API is reached for the current user... There may be at most 5 pending shares within any 24-hour period.» Статус SEND_TO_USER_INBOX.",
+      "source": "https://developers.tiktok.com/doc/content-posting-api-reference-upload-video/",
+      "source_date": "Last updated 2026-08-04",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Гибридный режим: скрипт заливает 3-5 черновиков в сутки на аккаунт, оператор публикует их из приложения (~30-60 сек на пост). Практики (upload-post) утверждают, что нативная публикация из приложения даёт больше охвата, чем DIRECT_POST — это НЕ подтверждённый TikTok факт, а мнение вендора."
+    },
+    {
+      "claim": "TikTok запрещает накладывать на видео логотипы, водяные знаки, ссылки и промо-текст при публикации через API",
+      "evidence": "«your apps and integrations should not superimpose or otherwise include any brand name, logo, watermark, other promotional branding, link or promotional text, on or in any content which is shared to TikTok. Doing so is a violation of these guidelines, and may also lead to deleted content or disabled accounts.» Также: «API Clients should not add promotional watermarks/logos to creators' content.»",
+      "source": "https://developers.tiktok.com/doc/content-sharing-guidelines/ (Watermark Guidelines)",
+      "source_date": "2026-08-04",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "В шаблоне рендера для TikTok-варианта отключить любые оверлеи с брендом/Discord-ссылкой/доменом. CTA выносить в bio и в подпись, а не в кадр. Для YouTube/Instagram таких запретов в API-доках нет."
+    },
+    {
+      "claim": "YouTube Data API v3 в 2026 сменил квотную модель: videos.insert стоит 1 юнит и имеет собственный бакет 100 вызовов/сутки вместо прежних 1600 юнитов из общего пула",
+      "evidence": "Текст страницы: «Projects that enable the YouTube Data API have a default quota allocation of 100 search.list calls, 100 videos.insert calls, and 10,000 units per day combined for all other endpoints.» и «The search.list and videos.insert methods have their own quota buckets. Each of these methods has a default daily limit of 100 per day. The quota cost is 1 per call.» В таблице квот строки: search/list = «100 quota per day. Each call costs 1 quota.», videos/insert = «100 quota per day. Each call costs 1 quota.» (устаревшая вводная фраза про «1600 points» на той же странице осталась и противоречит таблице)",
+      "source": "https://developers.google.com/youtube/v3/determine_quota_cost (Quota Calculator)",
+      "source_date": "Last updated 2026-09-04 UTC",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Ключевая константа: YOUTUBE_MAX_UPLOADS_PER_PROJECT_PER_DAY = 100, сброс в 00:00 America/Los_Angeles. Для 20 каналов это 5 видео/канал/сутки — достаточно без расширения квоты. Обязательно логировать ответ 403 quotaExceeded и ставить залив в очередь на следующие сутки. Устаревшую цифру 1600 из старых гайдов НЕ закладывать в спеку."
+    },
+    {
+      "claim": "Метаданные к загруженному видео на YouTube тратят ОБЩИЙ пул 10 000 юнитов, а не бакет insert — это узкое место при массовом заливе с обложками и субтитрами",
+      "evidence": "Таблица квот: thumbnails.set = 50, captions.insert = 400, captions.update = 450, videos.update = 50, playlistItems.insert = 50, playlists.insert = 50",
+      "source": "https://developers.google.com/youtube/v3/determine_quota_cost",
+      "source_date": "2026-09-04",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Расчёт: 100 заливок × (thumbnails.set 50 + captions.insert 400) = 45 000 юнитов — превышает 10 000. Вывод для спеки: НЕ грузить субтитры через captions.insert (максимум 10 000/400 = 25 в сутки). Сабы вжигать в видео через ffmpeg. Обложки: 10 000/50 = 200 в сутки, укладывается. Не вызывать search.list в пайплайне вообще — бакет 100/сутки нужен целиком не для залива."
+    },
+    {
+      "claim": "Дробление на несколько GCP-проектов для обхода лимита 100 заливок/сутки прямо нарушает YouTube API Developer Policies",
+      "evidence": "Раздел III.D.1.c: «you must create exactly one (1) API Project for that API Client. Those API Credentials are intended to be used exclusively by the associated API Client, which means that you must not use that one (1) API Project for multiple API Clients.» Раздел III.D.3: YouTube «may use quotas and place use restrictions to ensure that YouTube API Services are accessed and used as intended», запрещая превышать одобренную квоту без повторной заявки.",
+      "source": "https://developers.google.com/youtube/terms/developer-policies",
+      "source_date": "версия политик доступна на developers.google.com (дата ревизии не указана на странице)",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Один GCP-проект на систему. Если нужно >100 заливок/сутки — только официальная заявка через форму YouTube API Services - Audit and Quota Extension (support.google.com/youtube/contact/yt_api_form). Готовиться к тому, что заявку на сеть своих каналов с шаблонным контентом могут отклонить."
+    },
+    {
+      "claim": "YouTube API Developer Policies требуют явного согласия пользователя на каждую автоматизированную заливку и финального контроля пользователя над публикуемыми данными",
+      "evidence": "III.I.2: «you must not automate or trigger views, uploads, comments, likes, dislikes, or other actions without the user's prior specific and express consent». III.C.3: «users must have final control over the data that will be published to YouTube», значения нельзя менять «unless the user has explicitly consented to such changes».",
+      "source": "https://developers.google.com/youtube/terms/developer-policies",
+      "source_date": "не указана на странице",
+      "kind": "official_policy",
+      "confidence": "medium",
+      "actionable": "Формально: оператор = владелец каналов = сам пользователь, и он даёт согласие своим же OAuth-согласием. Практически риск низкий, но при аудите квоты это спросят. В спеке скрипта: хранить факт и время OAuth-согласия по каждому каналу."
+    },
+    {
+      "claim": "YouTube хранение авторизованных данных API ограничено 30 днями",
+      "evidence": "III.E.4.c: хранение большинства авторизованных данных «not longer than 30 calendar days. After 30 calendar days, the API Client must either delete or refresh the stored data.»",
+      "source": "https://developers.google.com/youtube/terms/developer-policies",
+      "source_date": "не указана",
+      "kind": "official_policy",
+      "confidence": "medium",
+      "actionable": "В спеке: TTL 30 дней на кэш метрик/данных каналов из API; refresh-токены OAuth под это правило не попадают (это учётные данные, а не данные API)."
+    },
+    {
+      "claim": "Instagram публикация Reels полностью автоматизируема без App Review и без Business Verification, если это Standard Access и все аккаунты имеют роль в приложении",
+      "evidence": "«Standard Access (no App Review needed): Available for apps serving only your own business... My app is only for a business I own or manage»; «Permissions with Standard Access can only be requested from app users who have a role on the requesting app» (роли: admin, developer, tester); «Business Verification is required to get Advanced Access» (с 1 февраля 2023) — то есть для Standard Access не требуется",
+      "source": "https://developers.facebook.com/docs/instagram-platform/app-review + https://developers.facebook.com/docs/graph-api/overview/access-levels",
+      "source_date": "страницы Meta Developers, актуальны на 2026-09",
+      "kind": "platform_docs",
+      "confidence": "medium",
+      "actionable": "Практический путь: одно Meta-приложение, все 20 IG Business/Creator аккаунтов добавлены как роли (tester/admin) в бизнес-портфолио → Standard Access, publish работает. Риск: масштабирование на 20+20+20 ролей в одном приложении Meta может упереться в лимиты по числу тестеров — точных цифр в доках нет, это надо проверить эмпирически (low confidence)."
+    },
+    {
+      "claim": "Instagram Reels публикуется в два шага, лимит 100 API-публикаций на аккаунт за скользящие 24 часа",
+      "evidence": "«Instagram accounts are limited to 100 API-published posts within a 24-hour moving period. Carousels count as a single post. This limit is enforced on the POST /<IG_ID>/media_publish endpoint». Шаг 1: POST /<IG_ID>/media с media_type=REELS и video_url (публичный сервер, «We cURL your image using the passed in URL so it must be on a public server»). Шаг 2: POST /<IG_ID>/media_publish с creation_id. Проверка использования: GET /<IG_ID>/content_publishing_limit. Хосты: graph.instagram.com (Instagram Login) / graph.facebook.com + rupload.facebook.com для resumable.",
+      "source": "https://developers.facebook.com/docs/instagram-platform/content-publishing",
+      "source_date": "Updated Jun 30, 2026",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Константы: IG_MAX_PUBLISH_PER_ACCOUNT_PER_24H = 100 (реально ставить 3-5). Перед публикацией дёргать content_publishing_limit. Статусы контейнера: IN_PROGRESS → FINISHED → publish; EXPIRED через 24 ч; ERROR. Опрос статуса: «once per minute, for no more than 5 minutes»."
+    },
+    {
+      "claim": "Instagram поддерживает Trial Reels через API — реклама только на не-подписчиков, что идеально для тестирования креативов при заливе с новорегов",
+      "evidence": "«Trial reels are reels that are only shared to non-followers. To publish a trial reel, create a container for the video and include a valid trial_params parameter»; trial_params.graduation_strategy: MANUAL или SS_PERFORMANCE (автоматический перевод в обычный Reel при хороших метриках)",
+      "source": "https://developers.facebook.com/docs/instagram-platform/content-publishing",
+      "source_date": "Updated Jun 30, 2026",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "В спеке: для Instagram использовать trial_params с graduation_strategy=SS_PERFORMANCE на A/B-тестовых креативах — платформа сама продвинет удачные. Это официальная фича, не хак."
+    },
+    {
+      "claim": "Instagram Graph API имеет прямые ограничения по формату: только JPEG для картинок, нет shopping-тегов, нет фильтров, alt_text не работает для Reels и Stories, resumable upload только для Facebook Login",
+      "evidence": "«JPEG is the only image format supported. Extended JPEG formats such as MPO and JPS are not supported. Shopping tags are not supported. Filters are not supported.»; «On March 24, 2025, we introduced the new alt_text field for image posts... Reels and stories are not supported»; «upload_type=resumable — ...Only for apps that have implemented Facebook Login for Business»",
+      "source": "https://developers.facebook.com/docs/instagram-platform/content-publishing",
+      "source_date": "Updated Jun 30, 2026",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Если планируется resumable-загрузка больших файлов (нестабильная сеть на VPS СНГ) — выбирать Facebook Login for Business, не Instagram Login. При Instagram Login только video_url через публичный хост."
+    },
+    {
+      "claim": "Обе платформы (TikTok PULL_FROM_URL и Instagram video_url) требуют публичного HTTPS-хоста, причём TikTok дополнительно требует DNS-верификации домена",
+      "evidence": "TikTok: «Ensure that the media URL you provided belongs to a path that you own... add your Domain or URL Prefix property to your application in the URL properties widget... To verify domain ownership, it is recommended that you add a signature string to the domain's DNS records»; «The media URL must use \"https\" and should not redirect to another URL»; «URLs that return HTTP 3xx are considered invalid». Instagram: «the media must be hosted on a publicly accessible server at the time of the attempt»",
+      "source": "https://developers.tiktok.com/doc/content-posting-api-media-transfer-guide/ + https://developers.facebook.com/docs/instagram-platform/content-publishing",
+      "source_date": "2026-08-04 / 2026-06-30",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Обязательный компонент архитектуры: объектное хранилище + свой домен с валидным TLS, без редиректов (важно: Cloudflare R2 public bucket через r2.dev нельзя — нужен custom domain). Верификация домена в TikTok распространяется на все субдомены, но НЕ на родительский домен: верифицировав static.example.com, вы покрываете video.static.example.com, но не example.com."
+    },
+    {
+      "claim": "Сторонние агрегаторы дают самый дешёвый легальный путь к TikTok — они работают под своим уже аудированным клиентом, свой dev-app не нужен",
+      "evidence": "upload-post: «TikTok: Upload videos, photo carousels and slideshows via the official TikTok Content Posting API, no TikTok developer app or audited-client review needed. Direct post or draft mode»; «Instagram: ...no Meta developer app or app review needed. Built on the Instagram Graph API»; API base https://api.upload-post.com, REST multipart, SDK Python/Node, официальный n8n-нод",
+      "source": "https://www.upload-post.com/llms-full.txt (self-published vendor doc; сервис основан январь 2025)",
+      "source_date": "актуально на 2026-09-12",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Тарифная модель upload-post выгодна именно под этот кейс: «profile» = один аккаунт на каждой платформе, т.е. 5 профилей = 5 TikTok + 5 Instagram + 5 YouTube. Professional $50/мес = 25 профилей покрывает целое гео (20 каналов × 3 платформы). Advanced $147/мес = 75 профилей = 3 гео. ВАЖНО: цены и лимиты — заявления вендора, не проверены независимо."
+    },
+    {
+      "claim": "Даже через агрегатор потолок ~15 постов/сутки/аккаунт в TikTok никуда не исчезает, потому что он «shared across all API Clients»",
+      "evidence": "«Posting cap: ...The upper limit may vary among creators (typically around 15 posts per day/ creator account) and is shared across all API Clients using Direct Post.»",
+      "source": "https://developers.tiktok.com/doc/content-sharing-guidelines/",
+      "source_date": "2026-08-04",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Агрегатор решает проблему аудита и SELF_ONLY, но не проблему частоты. Максимум реального объёма TikTok-постинга: 20 аккаунтов × 3-5 постов = 60-100 постов/сутки на гео. Это и есть верхняя граница планирования."
+    },
+    {
+      "claim": "Сравнение цен агрегаторов на 60 каналов (20 на платформу × 3 платформы): разброс от $50 до $599+ в месяц",
+      "evidence": "upload-post Professional $50/мес — 25 профилей (=25 TikTok+25 IG+25 YT); Postiz Pro $49/мес — 30 каналов, Ultimate $99/мес — 100 каналов, REST API на всех тарифах, есть self-host (open source); Blotato Starter $29/мес — 20 соц-аккаунтов, Creator $97/мес — 40 аккаунтов; Metricool Advanced $85/мес — до 25 брендов, API только с Advanced; Publer API «officially available to all Business and Enterprise clients», от $10/мес за Business; Ayrshare Launch $299/мес — до 10 профилей, Business $599/мес — 30 профилей",
+      "source": "https://www.upload-post.com/llms-full.txt; https://postiz.com/pricing; https://blotato.com/pricing; https://www.metricool.com/pricing/; https://publer.com/blog/publer-api/; https://www.ayrshare.com/pricing/",
+      "source_date": "проверено 2026-09-12",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Порядок выбора для бюджета $50-200: (1) upload-post Professional $50 — лучшая цена за канал; (2) Postiz self-hosted — $0 за софт, но свои dev-apps нужны → упирается в TikTok-аудит, не годится; (3) Postiz Cloud Ultimate $99 — 100 каналов; (4) Blotato Starter $29 при 20 аккаунтах. Ayrshare и Metricool переоценены под этот объём. Разные единицы учёта (profile/channel/account/brand) — обязательно уточнять у вендора до оплаты."
+    },
+    {
+      "claim": "Postiz — единственный open-source вариант с self-host, но self-host не снимает проблему аудита площадок",
+      "evidence": "«Open-source social media scheduling tool»; «Definitely, we are trying to make Postiz to host as easy as possible, check our documentation to find out how»; при этом «the company offers optional paid services for app approval assistance» — то есть при self-host вам нужны СВОИ одобренные приложения TikTok/Meta",
+      "source": "https://postiz.com/pricing",
+      "source_date": "проверено 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Self-host Postiz = экономия на подписке, но возврат к запрещённому TikTok-аудиту. Имеет смысл только как оркестратор поверх YouTube+Instagram (где свои приложения работают), а TikTok — отдельным платным агрегатором."
+    },
+    {
+      "claim": "Автоматизация через неофициальные API, Selenium и мобильную автоматизацию прямо запрещена ToS TikTok",
+      "evidence": "TikTok ToS (US, §5): «use automated scripts to collect information from or otherwise interact with the Services»; «use or attempt to use another's account, service or system without authorisation from TikTok, or create a false identity on the Services». EEA/UK/CH ToS (§7): «use any automated system or software, whether operated by a third party or otherwise, to extract any data from the Service for commercial purposes (\"screen scraping\")»",
+      "source": "https://www.tiktok.com/legal/page/global/terms-of-service/en",
+      "source_date": "актуальная версия на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Браузерная/мобильная автоматизация TikTok — прямое нарушение ToS, последствия: бан аккаунтов и потеря всей сети каналов без апелляции. Факт: это не «риск», а нарушение по букве документа. Инструкций по обходу антифрода не даю. Рекомендация для спеки: если TikTok-постинг через API не масштабируется — оставить в пайплайне ручной шаг публикации черновиков."
+    },
+    {
+      "claim": "Remotion не подходит бюджету: для автоматического (не-интерактивного) рендера требуется тариф Automators $0.01/рендер при минимуме $100/мес",
+      "evidence": "«For individuals and companies of up to 3 people» — Free License; «Remotion for Automators: $0.01 per render, $100/mo minimum», entry-пакет 10 000 рендеров за $100/мес; с Remotion 5.0 телеметрия обязательна для render-based лицензирования",
+      "source": "https://www.remotion.pro/license + https://www.remotion.dev/docs/licensing",
+      "source_date": "проверено 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "medium",
+      "actionable": "Исключить Remotion из спеки. При 600 видео/мес ($100 минимум = 50-100% бюджета инфраструктуры) экономически нецелесообразно. Использовать ffmpeg напрямую (LGPL/GPL, бесплатно) либо MoviePy (MIT, обёртка над ffmpeg). Для сложных анимированных шаблонов — ffmpeg filter_complex + drawtext/subtitles/overlay, шаблоны в JSON."
+    },
+    {
+      "claim": "Автосабы полностью бесплатны при локальном faster-whisper; облачный whisper-1 стоит копейки при этих объёмах",
+      "evidence": "faster-whisper v1.1.0: «up to 4 times faster than openai/whisper for the same accuracy while using less memory»; small int8 batch=8 на CPU (8 потоков i7-12700K) — 13 мин аудио за 51 с; large-v2 int8 на GPU — 59 с; ffmpeg системный НЕ нужен (PyAV бандлит библиотеки). OpenAI: whisper-1 $0.006/минута, gpt-4o-mini-transcribe ~$0.003/минута",
+      "source": "https://github.com/SYSTRAN/faster-whisper README + https://developers.openai.com/api/docs/pricing",
+      "source_date": "проверено 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Расчёт для спеки: 600 шортсов/мес × 30 с = 300 минут. Локально на CPU-VPS (faster-whisper small int8): ~20 минут CPU-времени в месяц, $0. Через API: 300 × $0.006 = $1.80/мес. Выбрать локально: медиа-файлы уже на VPS, не нужен egress. Модель: small или distil-large-v3 для английского."
+    },
+    {
+      "claim": "TTS: три уровня цены — бесплатно локально (Kokoro), бесплатно но серая зона (edge-tts), платно официально (ElevenLabs $6-22/мес)",
+      "evidence": "Kokoro-82M v1.0 (2025-01-27): Apache-2.0, 8 языков, 54 голоса, 82M параметров, «market rate of Kokoro served over API is under $1 per million characters of text input, or under $0.06 per hour of audio output» (Replicate $0.65/1M, DeepInfra $0.80/1M, данные апрель 2025). edge-tts: «a Python module that allows you to use Microsoft Edge's online text-to-speech service from within your Python code» — без API-ключа, кастомный SSML вырезан («Microsoft prevents the use of any SSML that could not be generated by Microsoft Edge itself»). ElevenLabs: Free БЕЗ коммерческой лицензии, Starter $6/мес 30k кредитов + Commercial License, Creator $22/мес 121k кредитов, 74 языка, TTS = 1 кредит/символ",
+      "source": "https://huggingface.co/hexgrad/Kokoro-82M + https://github.com/rany2/edge-tts + https://elevenlabs.io/pricing",
+      "source_date": "проверено 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Расчёт: 600 видео × 400 символов = 240 000 символов/мес. ElevenLabs Creator (121k) НЕ хватит — нужен Pro $99 (600k). Kokoro локально: $0, 8 языков (en включён) — оптимально для англоязычного UK-позиционирования. edge-tts: бесплатно, 74+ голоса, но это использование внутреннего сервиса Microsoft Edge без официального API-контракта — может быть отключён в любой момент и формально не лицензирован под коммерческое использование (low confidence по правовому статусу, доки Microsoft этот эндпоинт не покрывают)."
+    },
+    {
+      "claim": "ElevenLabs Free-тариф НЕ даёт коммерческих прав на сгенерированный звук",
+      "evidence": "Таблица тарифов: Free $0 — Commercial Use: No; «Everything in free, plus Commercial License» появляется с тарифа Starter $6/мес",
+      "source": "https://elevenlabs.io/pricing",
+      "source_date": "проверено 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Если TTS от ElevenLabs идёт в монетизируемый контент (воронка в платную подписку) — минимум Starter $6/мес. Free использовать только для тестов пайплайна."
+    },
+    {
+      "claim": "TikTok требует специфичный UX-флоу в приложении-клиенте, который несовместим с полностью автоматическим заливом без человека",
+      "evidence": "«Users must manually select the privacy status from a dropdown and there should be no default value»; «Users must manually turn on these interaction settings and none should be checked by default»; «API Clients should display a preview of the to-be-posted content»; «API Clients must only start sending content materials to TikTok after the user has expressly consent to the upload»; «Preset text, including any text in the title field or hashtags, should be allowed to be edited by the user before posting»",
+      "source": "https://developers.tiktok.com/doc/content-sharing-guidelines/ (Required UX Implementation in Your App)",
+      "source_date": "2026-08-04",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Формально аудированный клиент ОБЯЗАН иметь UI с ручным выбором privacy на каждый пост. Полностью безголовый cron-залив в TikTok нарушает эти требования даже при пройденном аудите. Это вторая независимая причина, почему свой TikTok-клиент не пройдёт. Следствие для спеки: TikTok = либо агрегатор (их ответственность), либо draft + ручная публикация."
+    },
+    {
+      "claim": "TikTok требует хранить client_secret в секрете и запрещает его в открытых репозиториях; PULL_FROM_URL обязателен когда файлы уже на сервере",
+      "evidence": "«You must not share your API Credentials with any other third-party or embed your client_secret in open source projects»; «If video resources are already on API Clients' servers, do not use FILE_UPLOAD; use PULL_FROM_URL instead»",
+      "source": "https://developers.tiktok.com/doc/content-sharing-guidelines/ (Technical Considerations)",
+      "source_date": "2026-08-04",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "В спеке: секреты в env/vault, никогда в git. Для TikTok транспорт по умолчанию PULL_FROM_URL (файлы на своём CDN) — это и требование доков, и экономия egress-трафика VPS."
+    },
+    {
+      "claim": "TikTok поддерживает флаг is_aigc для маркировки AI-генерированного контента, Instagram — is_ai_generated",
+      "evidence": "TikTok: «is_aigc bool — Set to true if the video is AI generated content. If set, the video will be labelled with Creator labeled as AI-generated tag in video's description.» Instagram: «To provide a self-disclosure of AI usage in the media, you can set is_ai_generated parameter to true when creating a media container»",
+      "source": "https://developers.tiktok.com/doc/content-posting-api-reference-direct-post/ + https://developers.facebook.com/docs/instagram-platform/content-publishing",
+      "source_date": "2026-08-24 / 2026-06-30",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Если в пайплайне AI-TTS-озвучка и/или AI-генерированный визуал — это поле должно заполняться. Немаркированный AI-контент в 2026 — дополнительный риск санкций площадки. Константа в спеке: IS_AIGC = true, если использован TTS или генеративный визуал; false, если только реальные геймплейные записи + монтаж."
+    },
+    {
+      "claim": "YouTube получение увеличенной квоты возможно только через одну официальную форму, с циклом переаудита каждые 12 месяцев",
+      "evidence": "«Submit the YouTube API Services - Audit and Quota Extension Form at support.google.com/youtube/contact/yt_api_form. YouTube's API Services team will contact you afterward.»; «If you have completed an API Compliance Audit within the last 12 months but require an additional quota extension, you can request more quota using the same form»; аудит нужен «if you need quota beyond the default allocation»",
+      "source": "https://developers.google.com/youtube/v3/guides/quota_and_compliance_audits",
+      "source_date": "проверено 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Сроки рассмотрения в доках не указаны — нет данных. Практический вывод: не строить архитектуру в расчёте на расширенную квоту. Проектировать под 100 заливок/сутки как жёсткий предел на весь проект (все гео)."
+    },
+    {
+      "claim": "Ограничение 100 заливок/сутки на весь GCP-проект становится бутылочным горлышком при расширении на несколько гео",
+      "evidence": "Расчёт из документированных лимитов: 100 videos.insert/сутки на проект ÷ 20 каналов = 5 видео/канал/сутки на ОДНО гео. При 3 гео (60 каналов) — 1.6 видео/канал/сутки.",
+      "source": "вывод из https://developers.google.com/youtube/v3/determine_quota_cost + III.D.1.c из developer-policies",
+      "source_date": "2026-09-04",
+      "kind": "inference",
+      "confidence": "high",
+      "actionable": "Планирование масштабирования: 1 гео = комфортно (5/канал/сутки). 2-3 гео = либо снижать частоту до 1-2/канал/сутки, либо подавать заявку на расширение квоты, либо для дополнительных гео использовать агрегатор (у которого свой одобренный проект с большей квотой). Не плодить GCP-проекты."
+    },
+    {
+      "claim": "Instagram не документирует технические спеки Reels (длительность, размер файла, битрейт) в разделе Content Publishing — спеки надо брать эмпирически",
+      "evidence": "Страницы developers.facebook.com/docs/instagram-platform/content-publishing/reels и .../reels-specifications возвращают HTTP 404; в reference/instagram-media и в Content Publishing техспеки видео отсутствуют, есть только media_type, share_to_feed, audio_type (MUSIC/ORIGINAL_SOUND), is_ai_generated, trial_params",
+      "source": "попытки фетча https://developers.facebook.com/docs/instagram-platform/content-publishing/reels (404) и /reels-specifications (404), 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "source_date": "2026-09-12",
+      "actionable": "Нет данных по официальным спекам Reels через API. Безопасный профиль рендера (low confidence, из общей практики, НЕ из документации Meta): MP4/H.264 High, yuv420p, 1080×1920, 30 fps, CRF 20-23, AAC 128 kbps 48 kHz, 15-90 с, <100 MB. Обязательно проверить эмпирически на 1 аккаунте перед масштабированием и логировать status_code=ERROR с причиной."
+    },
+    {
+      "claim": "TikTok-спеки видео задокументированы точно и являются самыми узкими из трёх платформ — под них надо рендерить мастер-файл",
+      "evidence": "«Supported media formats: MP4 (recommended), WebM, MOV; Supported codecs: H.264 (recommended), H.265, VP8, VP9; Framerate: Minimum 23 FPS, Maximum 60 FPS; Picture size: Minimum 360 pixels for both height and width, Maximum 4096 pixels; ...The longest video a developer can send via the initialize Upload Video endpoint is 10 minutes»; max_video_post_duration_sec возвращается в creator_info/query (в примере 300)",
+      "source": "https://developers.tiktok.com/doc/content-posting-api-media-transfer-guide/ + https://developers.tiktok.com/doc/content-posting-api-get-started/",
+      "source_date": "2026-08-04",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Единый мастер-профиль рендера для всех трёх площадок: MP4, H.264, 1080×1920, 30 fps (в диапазоне 23-60), AAC. Перед постингом обязательно читать max_video_post_duration_sec из creator_info/query и отбраковывать длиннее. Причины отказа TikTok, которые надо обрабатывать: file_format_check_failed, duration_check_failed, frame_rate_check_failed, picture_size_check_failed, video_pull_failed."
+    },
+    {
+      "claim": "TikTok обязывает опрашивать статус публикации, ответ не означает публикацию",
+      "evidence": "«API clients should poll the publish/status/fetch API or handle status update webhooks»; эндпоинт POST /v2/post/publish/status/fetch/, 30 запросов/минуту на токен; статусы PROCESSING_UPLOAD, PROCESSING_DOWNLOAD, SEND_TO_USER_INBOX, PUBLISH_COMPLETE, FAILED; publicaly_available_post_id возвращается «only when the post is published publicly and approved by moderation»",
+      "source": "https://developers.tiktok.com/doc/content-posting-api-reference-get-video-status/",
+      "source_date": "проверено 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "В спеке: state machine на publish_id, поллинг с backoff (не чаще 30/мин), финальные состояния PUBLISH_COMPLETE / FAILED. Факт публичной доступности подтверждать наличием publicaly_available_post_id — только по нему считать пост «живым» и собирать по нему метрики."
+    },
+    {
+      "claim": "Официальные планировщики самих площадок непригодны для API-автоматизации 20+ аккаунтов",
+      "evidence": "Нет данных по публичному API у TikTok Creator Center / Instagram-планировщика в Meta Business Suite и у YouTube Studio scheduling — ни один из них не публикует программный интерфейс для сторонних приложений. Единственный документированный программный путь публикации на каждой платформе — это соответствующий Content Posting API / Graph API / Data API v3.",
+      "source": "отсутствие такой документации на developers.tiktok.com, developers.facebook.com/docs/instagram-platform, developers.google.com/youtube/v3 (проверено 2026-09-12)",
+      "source_date": "2026-09-12",
+      "kind": "inference",
+      "confidence": "medium",
+      "actionable": "Не закладывать нативные планировщики в архитектуру скрипта. Их единственная роль — ручной фолбэк, если API-путь для TikTok окажется закрыт (загрузка черновика ботом → публикация человеком по расписанию из приложения)."
+    },
+    {
+      "claim": "Рекомендуемая архитектура при бюджете $50-200/мес: гибрид прямых API (YouTube, Instagram) + агрегатор (TikTok)",
+      "evidence": "Складывается из проверенных цифр: YouTube Data API — бесплатно, 100 заливок/сутки; Instagram Graph API — бесплатно, 100/аккаунт/сутки, Standard Access без App Review; TikTok свой клиент невозможен → upload-post Professional $50/мес на 25 профилей или Blotato Starter $29/мес на 20 аккаунтов; ffmpeg + faster-whisper + Kokoro — $0",
+      "source": "синтез: developers.google.com/youtube/v3/determine_quota_cost; developers.facebook.com/docs/instagram-platform/*; developers.tiktok.com/doc/content-sharing-guidelines; upload-post.com/llms-full.txt; blotato.com/pricing",
+      "source_date": "2026-09-12",
+      "kind": "inference",
+      "confidence": "medium",
+      "actionable": "Разбивка бюджета на одно гео (20 каналов × 3 платформы): VPS 4 vCPU/8 GB для рендера — $15-40/мес (НЕТ ПРОВЕРЕННЫХ ДАННЫХ, оценка, low confidence); объектное хранилище + свой домен/CDN — $5-20/мес (low confidence); агрегатор под TikTok — $29-50/мес; YouTube API — $0; Instagram API — $0; ffmpeg/MoviePy — $0; faster-whisper локально — $0; Kokoro TTS локально — $0; резерв на прокси/антидетект для управления 60 аккаунтами — нет данных. Итого проверяемая часть: $34-70/мес, остаток бюджета покрывает инфраструктуру и запас."
+    },
+    {
+      "claim": "Миф: «YouTube API даёт всего 6 загрузок в сутки из-за 1600 юнитов за videos.insert»",
+      "evidence": "Это было верно до смены модели. Актуальная таблица квот (last updated 2026-09-04) ставит videos.insert в отдельный бакет: «100 quota per day. Each call costs 1 quota.» Устаревшая формулировка «methods like videos.insert have the highest cost of 1600 points» ещё осталась во вводном абзаце той же страницы, что и порождает путаницу.",
+      "source": "https://developers.google.com/youtube/v3/determine_quota_cost",
+      "source_date": "Last updated 2026-09-04 UTC",
+      "kind": "myth_debunk",
+      "confidence": "high",
+      "actionable": "Не копировать из старых гайдов расчёт 10000/1600=6. Актуальная константа для скрипта — 100 заливок/сутки. При этом ожидать, что в статьях и Stack Overflow 2023-2025 будет старая цифра."
+    },
+    {
+      "claim": "Миф: «через сторонний агрегатор можно обойти лимиты площадок»",
+      "evidence": "TikTok прямо пишет, что posting cap «is shared across all API Clients using Direct Post»; Instagram enforce-ит 100 публикаций/аккаунт/24 ч на эндпоинте media_publish независимо от того, какое приложение вызывает; YouTube квота привязана к API-проекту, поэтому агрегатор лишь использует свою квоту, а не расширяет вашу",
+      "source": "https://developers.tiktok.com/doc/content-sharing-guidelines/ + https://developers.facebook.com/docs/instagram-platform/content-publishing",
+      "source_date": "2026-08-04 / 2026-06-30",
+      "kind": "myth_debunk",
+      "confidence": "high",
+      "actionable": "Агрегатор решает ДВА вопроса: (а) аудит/одобрение приложения, (б) отсутствие требований к UX. Он НЕ увеличивает пер-аккаунтные лимиты. Планировать частоту по лимитам площадок, а не по обещаниям вендора («до 900 TikTok-постов/мес» у Blotato Starter = 30/сутки суммарно на все 20 аккаунтов, что сходится с реальностью 1-2 поста/аккаунт/сутки)."
+    }
+  ],
+  "machine_spec_notes": [
+    "КОНСТАНТА YOUTUBE_MAX_UPLOADS_PER_PROJECT_PER_DAY = 100 (videos.insert, отдельный бакет, 1 юнит/вызов). Сброс 00:00 America/Los_Angeles.",
+    "КОНСТАНТА YOUTUBE_GENERAL_QUOTA_UNITS_PER_DAY = 10000 (общий пул на все остальные эндпоинты). Стоимости: thumbnails.set=50, videos.update=50, playlistItems.insert=50, captions.insert=400, captions.update=450.",
+    "ПРАВИЛО: НЕ использовать captions.insert (400 юнитов = максимум 25 в сутки при 100 заливках). Субтитры вжигать в видео через ffmpeg subtitles-фильтр.",
+    "ПРАВИЛО: НЕ вызывать search.list в пайплайне (отдельный бакет 100/сутки, не нужен для залива).",
+    "ПРАВИЛО: один GCP-проект на всю систему (YouTube Developer Policies III.D.1.c). Не создавать проекты под каждое гео.",
+    "КОНСТАНТА TIKTOK_MAX_POSTS_PER_ACCOUNT_PER_24H = 15 (safe default = 4). Общий лимит для всех API-клиентов.",
+    "КОНСТАНТА TIKTOK_INIT_RATE_LIMIT = 6 req/min per user access_token; TIKTOK_STATUS_RATE_LIMIT = 30 req/min per user access_token.",
+    "КОНСТАНТА TIKTOK_UNAUDITED_MAX_USERS_PER_24H = 5; TIKTOK_DRAFT_MAX_PENDING_SHARES_PER_24H = 5.",
+    "КОНСТАНТА TIKTOK_UPLOAD_URL_TTL_SEC = 3600; TIKTOK_PULL_FROM_URL_TIMEOUT_SEC = 3600.",
+    "КОНСТАНТЫ чанкования TikTok: CHUNK_MIN = 5*1024*1024, CHUNK_MAX = 64*1024*1024, LAST_CHUNK_MAX = 128*1024*1024, MAX_CHUNKS = 1000; total_chunk_count = floor(video_size/chunk_size); если video_size < 5 MB — один чанк равный размеру файла; чанки только последовательно; Content-Range обязателен; ожидать 206 на промежуточных, 201 на финальном.",
+    "КОНСТАНТА IG_MAX_PUBLISH_PER_ACCOUNT_PER_24H = 100 (safe default = 4); IG_CAROUSEL_LIMIT_PER_24H = 50; IG_CAROUSEL_MAX_ITEMS = 10.",
+    "КОНСТАНТА IG_CONTAINER_TTL_HOURS = 24; поллинг status_code раз в 60 с, максимум 5 попыток; состояния IN_PROGRESS/FINISHED/PUBLISHED/ERROR/EXPIRED.",
+    "ПРАВИЛО: перед каждой IG-публикацией вызывать GET /<IG_ID>/content_publishing_limit и не публиковать при исчерпании.",
+    "ПРАВИЛО: транспорт медиа — TikTok source=PULL_FROM_URL (обязательно по Technical Considerations, если файлы на сервере), Instagram video_url. Оба требуют публичного HTTPS без редиректов.",
+    "ПРАВИЛО: домен медиа-хоста должен быть верифицирован в TikTok for Developers (DNS TXT со signature string). Верификация субдомена НЕ покрывает родительский домен. r2.dev/публичные bucket-URL не подходят — нужен custom domain с валидным TLS.",
+    "ПРАВИЛО: 3xx-редирект на медиа-URL = url_ownership_unverified/невалидный URL. Отдавать 200 напрямую.",
+    "ЕДИНЫЙ ПРОФИЛЬ РЕНДЕРА: MP4 container, H.264 High profile, yuv420p, 1080x1920, 30 fps (допустимый диапазон TikTok 23-60), AAC 128 kbps 48 kHz, длительность 15-60 с, CRF 20-23. Размеры кадра в пределах 360-4096 px по обеим сторонам.",
+    "ПРАВИЛО: читать max_video_post_duration_sec из /v2/post/publish/creator_info/query/ перед каждым TikTok-постом и отбраковывать видео длиннее.",
+    "ПРАВИЛО: для TikTok-варианта видео ОТКЛЮЧАТЬ любые оверлеи с брендом/логотипом/ссылкой/промо-текстом (Watermark Guidelines). Отдельный рендер-пресет tiktok_clean.",
+    "ПРАВИЛО: title/caption TikTok максимум 2200 UTF-16 rune. Хэштеги и @-упоминания парсятся автоматически.",
+    "ФЛАГИ AI-раскрытия: TikTok post_info.is_aigc = true; Instagram media container is_ai_generated = true. Ставить true при использовании TTS и/или генеративного визуала.",
+    "ПРАВИЛО: Instagram Reels A/B-тест через trial_params.graduation_strategy = SS_PERFORMANCE (показ только не-подписчикам с авто-повышением при хороших метриках).",
+    "ПРАВИЛО retry: TikTok 5xx — retry с экспоненциальным backoff; 403 spam_risk_too_many_posts — блокировать аккаунт до следующего 24h-окна; 429 rate_limit_exceeded — backoff; 416 на чанке — перечитать Content-Range из ответа и продолжить с фактического offset.",
+    "ПРАВИЛО: TikTok state machine по publish_id; пост считать живым только при наличии publicaly_available_post_id в /status/fetch/ (означает, что модерация пропустила).",
+    "ПРАВИЛО TTL данных: кэш данных YouTube API удалять/обновлять не позже 30 дней (Developer Policies III.E.4.c).",
+    "ПРАВИЛО секретов: client_secret TikTok и OAuth-креды — в env/vault, никогда в репозитории (Technical Considerations).",
+    "СТЕК РЕНДЕРА: ffmpeg (напрямую, filter_complex) или MoviePy. Remotion ИСКЛЮЧИТЬ (Automators $0.01/рендер при минимуме $100/мес).",
+    "СТЕК ASR: faster-whisper локально, модель small или distil-large-v3, compute_type=int8. Фолбэк: OpenAI whisper-1 $0.006/мин.",
+    "СТЕК TTS: Kokoro-82M локально (Apache-2.0, 8 языков, 54 голоса) как основной. Платный фолбэк ElevenLabs (минимум Starter $6/мес для коммерческих прав; 1 кредит = 1 символ). edge-tts только для прототипа (неофициальный доступ к сервису Microsoft Edge).",
+    "ТАРИФНЫЙ ВЫБОР для 20 каналов/гео × 3 платформы: TikTok через upload-post Professional $50/мес (25 профилей = 25 TikTok + 25 IG + 25 YT) либо Blotato Starter $29/мес (20 аккаунтов). YouTube и Instagram — свои прямые API за $0.",
+    "ПРАВИЛО ПЛАНИРОВЩИКА: суточный бюджет постов = min(лимит платформы, лимит агрегатора, квота проекта). Для 1 гео: YouTube 100/сутки на всю систему, Instagram 4/аккаунт, TikTok 4/аккаунт → безопасный план 20 каналов × 3 платформы × 3 поста = 180 постов/сутки, из которых YouTube-часть (60) укладывается в квоту 100."
+  ],
+  "risks": [
+    "TikTok: подача своего клиента на аудит под этот use case будет отклонена — оба пункта Intended Use прямо описывают запрещённое («утилита для загрузки на аккаунты, которыми управляете вы или ваша команда»; «копирование произвольного контента с других платформ»). Вероятность одобрения оцениваю как очень низкую (нет данных о статистике одобрений, но формулировка однозначная).",
+    "TikTok: даже при пройденном аудите требования Required UX (ручной выбор privacy без дефолта, ручное включение duet/stitch/comment, превью, редактируемый заголовок) несовместимы с безголовым cron-заливом — второе независимое препятствие.",
+    "TikTok: браузерная/мобильная автоматизация нарушает ToS (§5 US: «use automated scripts to... otherwise interact with the Services»). Последствие — бан аккаунтов и потеря всей сети без апелляции. Это не вероятностный риск, а нарушение по букве документа.",
+    "Зависимость от одного агрегатора: если аудированный клиент upload-post/Blotato будет отозван TikTok, весь TikTok-канал трафика встанет одновременно по всем гео. Мера: держать два агрегатора и возможность фолбэка на draft+ручную публикацию.",
+    "Агрегаторы — молодые сервисы (upload-post основан январь 2025), их заявленные цены и лимиты — self-published маркетинг, не проверены независимо. Риск смены тарифов и лимитов.",
+    "YouTube: масштабирование на 2-3 гео упирается в 100 заливок/сутки на весь проект. Заявка на расширение квоты у проекта, публикующего шаблонный контент с сети каналов, может быть отклонена; создание нескольких проектов — нарушение III.D.1.c.",
+    "YouTube: политика III.I.2 требует «prior specific and express consent» пользователя на каждую автоматизированную заливку. Формально оператор сам себе пользователь, но при аудите квоты трактовка может быть не в его пользу.",
+    "Instagram: Standard Access требует, чтобы каждый из 20 аккаунтов имел роль в приложении. Лимиты Meta на количество тестеров/ролей в одном приложении в доках не указаны — НЕТ ДАННЫХ. Может потребоваться несколько Meta-приложений или переход на Advanced Access (App Review + Business Verification).",
+    "Instagram: официальных техспек Reels для API-публикации нет (страницы 404) — риск систематических ERROR при неверном профиле кодирования, обнаруживаемый только эмпирически.",
+    "Управление 20 аккаунтами на платформу с новорегов: площадки применяют собственные антиспам-механики к сетям связанных аккаунтов независимо от API-лимитов. Официальных цифр нет — нет данных. Массовые баны новорегов — ожидаемый постоянный фон.",
+    "Немаркированный AI-контент: и TikTok (is_aigc), и Instagram (is_ai_generated) имеют поля самораскрытия. Отсутствие маркировки при TTS-озвучке — дополнительное основание для санкций.",
+    "Бюджет: при 600+ видео/мес ElevenLabs требует тариф Pro $99/мес (240k символов не покрываются Creator 121k) — это половина верхней границы бюджета. Локальный Kokoro убирает эту статью, но требует CPU/GPU-ресурсов на VPS.",
+    "edge-tts: неофициальный доступ к внутреннему сервису Microsoft Edge без API-контракта. Может быть отключён без предупреждения; правовой статус коммерческого использования не покрыт документацией Microsoft — low confidence.",
+    "Remotion: если разработчик по незнанию заложит Remotion в автоматический рендер без лицензии Automators — это нарушение лицензии с обязательной телеметрией с версии 5.0, то есть нарушение будет видно вендору."
+  ],
+  "open_questions": [
+    "Сколько IG-аккаунтов можно добавить ролями (tester/admin) в одно Meta-приложение для Standard Access? В доках Meta цифры нет — нужно проверить эмпирически на 20+ аккаунтах.",
+    "Какой конкретно профиль кодирования Reels принимает Instagram API без ERROR? Официальные страницы спек Reels возвращают 404 — только эмпирика.",
+    "Сроки рассмотрения формы YouTube API Services - Audit and Quota Extension в 2026 — в документации не указаны, нет данных.",
+    "Пройдёт ли заявка на расширение квоты YouTube для проекта, публикующего на сеть собственных каналов? Статистики одобрений нет.",
+    "Под каким именно описанием use case upload-post/Blotato получили аудит TikTok и распространяется ли их одобрение на массовый залив на аккаунты одного владельца? Вендоры это не публикуют.",
+    "Какие точные per-account лимиты постинга накладывают сами агрегаторы (помимо лимитов площадок)? Blotato указывает «до 900 TikTok-постов/мес» на Starter, но распределение по аккаунтам не документировано.",
+    "Есть ли у Metricool реальный REST API для публикации (не только Zapier/Make/MCP)? Страница тарифов называет его «Metricool API (Zapier, Make, and MCP)», справочная статья недоступна (404) — нет данных.",
+    "Точная цена Publer Business на 60 аккаунтов: блог называет «starts at $10/month», страница тарифов рендерится на JS и не отдала цифры — нет данных.",
+    "Актуальные цены VPS под ffmpeg-рендер (4 vCPU/8 GB) и объектного хранилища с custom domain — страницы Hetzner/Cloudflare отдают цены только через JS, проверить не удалось. Оценка $15-40 и $5-20/мес — low confidence.",
+    "Есть ли у YouTube документированный суточный лимит на количество загрузок со стороны САМОГО канала (не API-квоты), особенно для новых/неверифицированных каналов? На support.google.com/youtube/answer/71673 такого лимита нет — нет данных.",
+    "Поддерживает ли какой-либо из агрегаторов TikTok DIRECT_POST с privacy_level=PUBLIC_TO_EVERYONE на аккаунтах, которые не связаны с их аудитом? Технически это требование аудированного клиента, но проверить со стороны нельзя.",
+    "Есть ли webhooks (а не поллинг) для статуса публикации TikTok? Content Sharing Guidelines упоминают «status update webhooks», но отдельной документации по ним найти не удалось."
+  ]
+}

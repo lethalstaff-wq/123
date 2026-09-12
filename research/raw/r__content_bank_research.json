@@ -1,0 +1,418 @@
+{
+  "dimension": "content_bank_research",
+  "summary": "Банк форматов построен на РЕАЛЬНЫХ данных: 24 поисковых запроса к YouTube Shorts/видео, распарсенных из ytInitialData (curl, дата съёма 2026-09-12), что дало ~400 реальных заголовков с реальными просмотрами; плюс официальная политика YouTube по reused/mass-produced контенту, данные prosettings.net (937 CS2-про), настроечные гайды по Rust/DBD/CS2 2026 и практикующие источники по хукам/ретеншену. Ключевые выводы для скрипта авто-залива: (1) ниша FPS-boost/PC-optimization живая и ёмкая — потолок одиночного Shorts здесь 1-11M просмотров, типичный «рабочий» ролик 100K-2.5M; (2) абсолютные лидеры — не «твики», а СРАВНЕНИЯ (60Hz vs 240Hz — 10.8M/9.8M/7.4M), «картошка-стенды» (Can A $1 Laptop Run Fortnite? — 10M; GTA без видеокарты — 9.8M; Gaming on a Mini PC — 14M) и симптом-фиксы (How to FIX LOW FPS in ROBLOX — 11M); (3) форматы, полностью собираемые скриптом из готовых ассетов без лица и голоса, существуют и тянут миллионы: скрин-запись одной настройки + зум + подписи, сплит-скрин сравнения, дамп настроек скриншотом, copy-paste команда/конфиг; (4) миф-дебанк как формат в этой нише НЕ работает (Mythbusting Registry Tweaks — 4 278; HPET debunk — 1 541; More RAM ≠ FPS — ~1K) при том, что «инверсия доверия» с брендом/эмоцией работает (Is Game Mode TANKING Your FPS? — 1.5M); (5) один и тот же заголовок («The BEST Low END Shader #minecraft») существует минимум в 3 копиях с 2M/1.4M/1M — формат терпит массовое клонирование на УРОВНЕ ЗАГОЛОВКА, но платформы фингерпринтят видеоряд и аудио, поэтому вариативность надо закладывать в пиксели и TTS-дорожку, а не в текст. Ниже 30 форматов с секундной раскладкой, оценкой автоматизируемости (A/B/C) и 25 реальных хуков.",
+  "findings": [
+    {
+      "claim": "F01 «Hidden Setting Reveal» — скрин-запись ОДНОЙ настройки Windows/драйвера с зумом и подписью. Базовый формат ниши, полностью автоматизируемый. Уровень A.",
+      "evidence": "Реальные Shorts: «Disable This Setting to Fix Random FPS Drops» — 1.9M; «Two Hidden Windows Settings to Boost FPS in Games» — 923K; «Secret NVIDIA Setting That Boosts FPS in Valorant (Do This NOW!)» — 75K; «Hidden Windows Override = INSTANT FPS Boost!» — 2.7K (без игры/бренда в хуке — провал). Разброс 2.7K..1.9M показывает: тянет не сам формат, а привязка к игре/железу в хуке.",
+      "source": "YouTube search (scraped ytInitialData, curl), queries: \"settings you should turn off windows gaming\", \"fps boost low end pc\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Раскладка по секундам: 0-1с — стоп-кадр окна настройки с красной обводкой + текст хука 3-6 слов; 1-3с — курсор доезжает до тумблера, зум 1.4x; 3-8с — клик, подпись «why» одной строкой; 8-14с — FPS-оверлей до/после; 14-18с — CTA. Скрипт: набор из 40-60 pre-recorded 6-10с клипов одной настройки (PowerShell/UI-automation запись), рандом наложение: zoom-кривая, цвет обводки, позиция капшена, фон-геймплей в рамке, TTS-голос."
+    },
+    {
+      "claim": "F02 «Numbered Micro-Checklist» (3/4/5/11 настроек) — самый масштабируемый формат: одна и та же библиотека твиков режется в бесконечные комбинации N-штук. Уровень A.",
+      "evidence": "«These 3 PC Tips Will Give You A Crazy Performance Boost 🤯 #pctips #fpsboost» — 4.5M; «New Gaming PC? Change These 4 Settings» — 2.9M; «[Part 01] 03 Steps to Optimize WINDOWS For Gaming & Performance» — 1.2M; «5 Best Settings in Battlefield 6» — 933K; «11 Console Commands for MAX Fps in CS2» — 46K.",
+      "source": "YouTube search (scraped), queries: \"gaming laptop fps boost tips\", \"settings you should turn off windows gaming\", \"battlefield 6 best settings fps\", \"cs2 fps boost\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "N=3 даёт максимум (4.5M), N=11 — минимум (46K). Ставь N∈{2,3,4,5}. Секунды: 0-1с «3 PC tips» + счётчик «1/3»; 1-6с твик 1; 6-11с твик 2; 11-16с твик 3; 16-20с итог «+X FPS». Комбинаторика: при базе 30 твиков число уникальных упорядоченных троек = 24 360 — хватит на всю сеть каналов без повтора порядка."
+    },
+    {
+      "claim": "F03 «Time-Boxed Optimization» — таймбокс в хуке («in one minute», «in 24 seconds», «in 2 SECONDS») сам по себе поднимает CTR. Уровень A.",
+      "evidence": "«How To Optimize Your PC For Gaming In One Minute» — 1 940 701; «Fix Your Slow PC in 1 Minute | Speed Up Windows 11 & 10 Without Software» — 1.3M; «Rust ultra fps boost in 24 seccond» — 1 104 759 (с опечаткой в заголовке — не мешает); «Get 1000+ FPS on Low End PC in Just 2 SECONDS!!» — 525K; «Fix Games Stuttering In 15 Seconds» — 2.2M; «How to REDUCE LAG On Roblox In 5 Seconds!» — 4.6M; «How To Optimize Windows In Under 69 Seconds!» — 4.4K.",
+      "source": "YouTube search (scraped), queries: \"optimize pc for gaming in one minute\", \"rust fps boost settings\", \"1% low stutter fix explained\", \"roblox fps boost low end pc\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Таймбокс-токены для генератора: {2 SECONDS, 5 Seconds, 10 Seconds, 15 Seconds, 24 seconds, 30 Seconds, 1 Minute}. Не использовать несерийные числа типа «69 seconds» (4.4K). Наложить обратный таймер-оверлей в правом верхнем углу на весь ролик — визуальный open-loop."
+    },
+    {
+      "claim": "F04 «Split-Screen Hz/FPS Comparison» — самый высокопотолочный формат ниши. Собирается программно из двух видеодорожек. Уровень A (после одной сессии захвата).",
+      "evidence": "«[Slow motion] 240Hz vs 144Hz vs 120Hz vs 60Hz - CS:GO» — 10 831 551; «60hz vs 240hz Gaming #60hz #144hz #Monitors» — 9.8M; «You wont believe the difference! Monitor Refresh rates test» — 7.4M; «[Slow motion] 240Hz vs 144Hz vs 120Hz vs 60Hz - Monitor refresh rates» — 7 097 078; «300hz vs 60hz is insane🤯» — 5M; «60Hz Vs 480Hz Is INSANE!!» — 5M; «240Hz vs 165Hz for PC Gaming?» — 4.6M; «Gaming monitor 60 Hz vs 240 Hz» — 3.7M (https://youtube.com/shorts/esIl_oMew8c); «60 FPS vs 300 FPS (Overwatch) #shorts» — 2.3M; «60Hz vs 240 Hz Valorant» — 2.1M (https://youtube.com/shorts/RrdtW9hbf10).",
+      "source": "YouTube search (scraped), queries: \"60hz vs 144hz vs 240hz difference\", \"60hz vs 240hz gaming\", \"overwatch 2 fps settings boost\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Раскладка: 0-1с вертикальный сплит с бегущей мишенью/флик-шотом + подписи «60Hz | 240Hz»; 1-4с обычная скорость; 4-12с slow-motion 0.15x (именно slow-mo в заголовке = 10.8M и 7.1M); 12-18с текст «this is why you keep dying». Скрипт: рендерить из ОДНОГО захвата с разными frame-drop маской (симуляция 60/120/144/240 через decimation) — но это фактически вводит зрителя в заблуждение, честнее снять реальный capture на разных лимитерах один раз и потом рекомбинировать пары (60vs144, 60vs240, 144vs240, 60vs360, 60vs480)."
+    },
+    {
+      "claim": "F05 «Low vs Ultra Graphics» — покадровое сравнение пресетов в одной игре. Уровень A/B.",
+      "evidence": "«GTA 5 FPS Comparision #gta5 #shorts #shortsviral» — 8.7M; «Roblox FPS Comparaison 2» — 2 943 462; «LOW vs MEDIUM vs HIGH vs ULTRA GRAPHICS in CarX Street» — 1.5M; «LOW vs MEDIUM vs ULTRA GRAPHICS - CPM2» — 1.2M; «Ultra high vs. low graphics» — 1.1M; «CS2 LOW VS ULTRA GRAPHICS - ANY DIFFERENCE?» — 559K; «The Sims 4 - PC Low vs. Ultra Graphics Comparison» — 525 640; «Battlefield 6 - Low vs Ultra Settings (RTX 4060)» — 308K; «Delta Force Mobile Graphics Comparison» — 2M; «RDR2 Texture Quality Comparison: Ultra vs Low Graphics» — 315K.",
+      "source": "YouTube search (scraped), queries: \"lowest vs ultra graphics comparison\", \"gta 5 fps boost low end pc\", \"roblox fps boost low end pc\", \"delta force best settings fps boost\", \"battlefield 6 best settings fps\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Ключ: 4-ступенчатая шкала (LOW/MEDIUM/HIGH/ULTRA) работает лучше бинарной в мобильных играх, бинарная — в шутерах. Секунды: 0-1с кадр ULTRA + подпись FPS; 1-2с щелчок на LOW + FPS-число прыгает; 2-10с вайп-переход по вертикали между пресетами на одной и той же сцене; 10-16с «which one would you play?» (комментарный крючок). Скрипт: один проход по сцене × 4 пресета = 4 файла, дальше все 6 пар генерируются автоматически."
+    },
+    {
+      "claim": "F06 «Before/After FPS-counter proof» работает ТОЛЬКО с конкретным числом и/или брендом устройства; абстрактный «до/после оптимизации» не набирает.",
+      "evidence": "Работает: «From 60FPS to 500 w/ 1 Setting on HP VICTUS (DON'T MAKE THIS MISTAKE)» — 2.6M; «2 Fps to 200 Fps | Minecraft | #shorts» — 1.6M; «1 FPS vs 60 FPS | FPS Evolution in One Clip» — 1.4M (https://youtube.com/shorts/MnxjMac3mgI); «From Laggy to Smooth - CS2 #optimiztion #fpsboost» — 169K; «Before VS After PC OPTIMIZATION using Hone - BEST FPS BOOST TOOL» — 119K. Не работает: «10 FPS to 40 FPS transformation 🔥 #frameinterpolation» — 4 просмотра; «Hidden Windows Override = INSTANT FPS Boost!» — 2.7K.",
+      "source": "YouTube search (scraped), queries: \"before vs after pc optimization fps proof\", \"gaming laptop fps boost tips\", \"minecraft fps boost shaders low end\", \"windows 11 debloat gaming optimization\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Обязательные слоты шаблона: {FPS_BEFORE}→{FPS_AFTER} где отношение ≥3x, и {DEVICE_BRAND} или {GAME}. Пары, подтверждённые просмотрами: 60→500, 2→200, 1→60. Пары вида 10→40 (x4, но мелкие абсолютные числа) провалились. Секунды: 0-1с раздвоенный экран с двумя FPS-числами; 1-3с «one setting»; 3-12с показ действия; 12-16с финальный счётчик крупно. ЮРИДИЧЕСКИЙ РИСК: если числа синтетические — это ложная реклама платной подписки; генерировать только из реальных бенчей."
+    },
+    {
+      "claim": "F07 «Symptom-First Fix» (хук = симптом игрока, не решение) — самый надёжный по медиане формат. Уровень A.",
+      "evidence": "«How to FIX LOW FPS in ROBLOX» — 11M; «How to REDUCE LAG On Roblox In 5 Seconds!» — 4.6M; «How To Fix FPS Drops and Stuttering in Games - Optimize Your PC for Gaming. #gamelag #fpsdrop» — 2.5M; «Fix Games Stuttering In 15 Seconds» — 2.2M; «EASY fix for laggy games - How to boost FPS #gaming #lifehacks #pcmr» — 1.3M; «FPS Drop Fix Windows 10 & 11» — 1 159 302 (https://youtube.com/shorts/sasx5r3QEgA); «When Your PC Games Randomly Start Freezing… Do THIS» — 1 008 325; «How to Fix Lag & FPS Stutters» — 886K; «How To Fix Low FPS On Your PC Fast» — 817K (https://youtube.com/shorts/Nj-eEpqQkDU).",
+      "source": "YouTube search (scraped), queries: \"roblox fps boost low end pc\", \"1% low stutter fix explained\", \"dead by daylight fps boost\", \"fps boost low end pc\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Словарь симптомов для генератора (каждый = отдельный ролик × отдельная игра): low FPS, FPS drops, stuttering, micro-stutter, random freezing, lag spikes, input delay, screen tearing, high ping, shader compilation stutter, fps drops after update, frame time spikes. Матрица симптом×игра = 12 × 18 игр = 216 уникальных тем без повторов сценария."
+    },
+    {
+      "claim": "F08 «Metric Education с ❌/✅» — объяснение метрики (1% low, frametime, bottleneck) с чек-крестовой графикой. Абсолютный лидер по просмотрам среди «умных» форматов и идеально соответствует продукту (стабильные 1% low). Уровень A.",
+      "evidence": "«Average FPS ❌ 1% Lows ✅» — 6 256 475 (https://youtube.com/shorts/UvuiIRipZE4); «This is Destroying Your PC Games | Micro-stutter» — 1.1M; «How to Find a CPU Bottleneck in Your PC» — 958 531; «Why Average FPS Doesn't Always Matter» — 198K (https://youtube.com/shorts/GUSeB5HoC1E); «Average FPS vs 1% Lows - What's the Difference? 🤔» — 10K; «What is a 1% Low in Pc Gaming?» — 2K.",
+      "source": "YouTube search (scraped), queries: \"1% low stutter fix explained\", \"1% low vs average fps\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Критично: заголовок-СУЖДЕНИЕ с ❌/✅ даёт 6.2M, а нейтральный вопрос «What's the Difference?» — 10K (в 625 раз меньше) при том же контенте. Шаблон заголовка: «{METRIC_BAD} ❌ {METRIC_GOOD} ✅». Пары: Average FPS/1% Lows; Max FPS/Frametime; More RAM/Faster RAM; Ultra/Consistent; 240 FPS/Stable 144; GPU/CPU bottleneck; V-Sync/Reflex. Секунды: 0-1с только два слова и символы на контрастном фоне; 1-4с график frametime с двумя пилами; 4-12с озвучка причины; 12-16с «this is why your aim feels off»."
+    },
+    {
+      "claim": "F09 «Per-Game Settings Config Dump» — скриншот/скринкаст меню настроек игры с подсвеченными значениями. Ядро контент-банка: 18 игр × 3-5 вариаций = 54-90 роликов из одного шаблона. Уровень A.",
+      "evidence": "«The Best Valorant Settings for FPS & Performance» — 2.3M; «Best CS2 Settings for FPS & Performance (Counter Strike 2)» — 1.5M; «*BEST* Console + PC Graphic Settings for 0 input Delay + Higher FPS! 🤯» — 1.5M; «Best CS2 Video Settings for FPS» — 835K; «The Best Valorant Settings to Boost FPS & Stop Lagging» — 442K; «Marvel Rivals: Ultimate Performance Settings Guide» — 437K; «The New Best Settings For Rust 2026 (Increase FPS)» — 263 019; «Best Settings for FPS in Rust! #rust» — 216K; «Use THESE Delta Force settings!» — 218K; «Best FPS Settings | Escape from Tarkov» — 84K.",
+      "source": "YouTube search (scraped), queries: \"valorant fps boost settings\", \"cs2 fps boost\", \"rust fps boost settings\", \"marvel rivals fps boost settings\", \"escape from tarkov fps boost settings\", \"delta force best settings fps boost\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Каждый ролик = 1 игра + 1 «угол» (max FPS / visibility / 0 input delay / low-end / pro-copy). Секунды: 0-1с логотип игры + «BEST SETTINGS {YEAR}»; 1-3с полный скрин меню, все строки размыты кроме одной; 3-14с последовательное «снятие размытия» по 4-6 строкам с тик-звуком; 14-18с полный список кадром на паузу («screenshot this»). «Screenshot this» на финальном кадре даёт rewatch/save — оба сигнала алгоритма."
+    },
+    {
+      "claim": "F10 «Pro-Player Settings Copy» — конкретное имя про-игрока в хуке даёт кратный прирост к обычному settings-ролику.",
+      "evidence": "«These Overwatch settings give you a competitive advantage» — 6.8M; «Aceu's graph settings! #apexlegends» — 857K; «SEN TenZ SHOWS *FPS BOOST* SETTINGS FOR VALORANT 2026» — 626 295; «My TARKOV Graphic SETTINGS #eft» — 83K. Данные для наполнения: prosettings.net (937 CS2-про, обновлено 2026-05-03): 1280×960 у 53% про, 1024×768 — 15%, 1920×1080 — 13%; 400 DPI — 66%, 800 DPI — 28%; медианный eDPI 830; средняя дистанция поворота на 360° — 47 см.",
+      "source": "YouTube search (scraped), queries: \"overwatch 2 fps settings boost\", \"apex legends fps boost settings\", \"valorant fps boost settings\"; https://prosettings.net/guides/cs2-options/",
+      "source_date": "2026-09-12 (retrieved) / prosettings.net обновлено 2026-05-03",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Шаблон: «{PRO_NAME} uses {N} {SETTING} — here's why». Готовые статистические факты-хуки: «53% of CS2 pros play at 1280×960», «66% of CS2 pros use 400 DPI», «median pro eDPI is 830», «pros turn 360° in 47cm». Юридически: имена про-игроков и их сетапы — публичные факты, но их фото/лого команд использовать нельзя (права). В генераторе — только текст имени, без аватаров."
+    },
+    {
+      "claim": "F11 «Zero Input Delay» — отдельная под-ниша, прямо совпадающая с продуктовым обещанием (снижение input lag), с потолком ~3.7M.",
+      "evidence": "«This will give you 0 input delay 😏 #pc #pctips #inputdelay #lowerinputdelay #tech» — 3.7M; «GET LOWER INPUT LAG BY CHANGING THESE SETTINGS ON YOUR MONITOR! #shorts» — 2M; «How to BOOST FPS, Lower INPUT DELAY & REDUCE PING in FORTNITE!» — 1M; «How to fix weird aim / input lag in Overwatch 2! (BEST SETTINGS)» — 758K; «How to get ZERO Input Delay! #valorant» — 658K; «How To REMOVE Input Delay On CONSOLE (Fortnite Tips)» — 565K; «Boost Gaming Performance: Lower Input Delay» — 535K; «NUMBER 1 WAY - TO BUILD FASTER 🔥 & REDUCE INPUT LAG IN FORTNITE*» — 514K; «BETTER INPUT LAG IN VALORANT ✅» — 493K.",
+      "source": "YouTube search (scraped), query: \"input lag reduce settings\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Токены-обещания: «0 input delay», «ZERO Input Delay», «lower input lag», «weird aim fix». Визуальная опора формата — high-speed съёмка мышь→экран или оверлей Reflex-латентности; для авто-генерации: оверлей-анимация «ms» счётчика, падающего с 47ms до 12ms, поверх геймплея. Числа брать только из реального замера (NVIDIA Reflex/LDAT-стиля), иначе это фабрикация метрик."
+    },
+    {
+      "claim": "F12 «Hardware Unlock» (CPU/ноутбук/разгон) — обещание «раскрыть спящую мощность» железа. Очень высокий потолок, целевая аудитория — слабые ноутбуки.",
+      "evidence": "«Unlock Your Laptop's Full Gaming Performance» — 3.3M; «How To Boost Processor or CPU SPEED in Windows 10/11 | Make Computer 200% Faster | Boost FPS» — 3 169 294; «Boost CPU Performance in any PC Game» — 3M (https://youtube.com/shorts/4SF_yfDdRfg); «⚡ Overclock Your PC for MAX Power – FPS 500+ 🚀🎮» — 154K; «YOUR CPU IS SLEEPING! (Wake It Up for MAX FPS)» — 931.",
+      "source": "YouTube search (scraped), queries: \"gaming laptop fps boost tips\", \"optimize pc for gaming in one minute\", \"fps boost low end pc\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Работает нейтрально-инструментальная формулировка («Unlock Your Laptop's Full Gaming Performance» 3.3M), НЕ работает кричащая метафора («YOUR CPU IS SLEEPING!» 931). Для генератора: запретить CAPS-метафоры в этом формате, разрешить «{DEVICE} full performance», «{DEVICE} hidden power plan», «{N}% faster {COMPONENT}». Претензии вида «200% Faster» набирают, но это прямой риск претензии о ложной рекламе, если продаётся подписка."
+    },
+    {
+      "claim": "F13 «Debloat / Command-Line» — терминал на экране, одна вставляемая команда. Идеален для авто-генерации (нет геймплея, нет лица, нет голоса — только скрин-запись консоли).",
+      "evidence": "«Debloat Windows in Seconds With This Command» — 793K; «How I Remove the Bloat from Windows» — 461K; «Uninstall Windows Bloatware: Ultimate Guide 2024!» — 366K; «Debloat Windows 10 & 11 Easily! #pcgaming #pctips #shorts» — 338K; «DEBLOAT WINDOWS FOR THE LOWEST LATENCY» — 271K; «Is It Safe to Debloat Windows 11 Using Chris Titus Tool🤔 #pctips #techtips» — 259K; «How To DEBLOAT Windows 11 in 2024 ✅ (LOWER PROCESSES & Lower Ram Usage)» — 131 338.",
+      "source": "YouTube search (scraped), query: \"windows 11 debloat gaming optimization\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Секунды: 0-1с чёрный терминал + мигающий курсор + одна строка команды крупно (высокий контраст = сильный 1-секундный визуальный триггер); 1-3с Enter, бегущий вывод; 3-12с счётчик «processes 187 → 94» / «RAM 6.2GB → 3.1GB»; 12-16с «full list in bio». Потолок формата ниже (≤793K), но производство самое дешёвое и полностью скриптуемое: рендер терминала можно генерировать синтетически (ANSI-рендер в кадры), без реальной записи экрана."
+    },
+    {
+      "claim": "F14 «Tool / Utility Showcase» — это ровно формат продажи такого продукта, и он работает: обзор оптимизатора набирает миллионы. Прямая аналогия для собственной утилиты.",
+      "evidence": "«FREE AI Powered Gaming Optimizer Instantly BOOSTS FPS in ANY GAME» — 3.4M; «How to BOOST FPS Fast in ANY Game 2025!» — 1.9M; «THIS ROBLOX OPTIMIZER WILL TRIPLE YOUR FPS *ULTIMATE TWEAKING UTILITY🔧*» — 711 425; «Boost Your Gaming PC's FPS For FREE With This SIMPLE Trick! #shorts» — 677K; «Maximize Gaming PC Performance for Free» — 648K; «High 🚀 FPS Method 👆 #boostfps #0delay #tweaks #optimization» — 624K (классический link-in-bio-хук); «Best MINECRAFT FPS BOOST Using Mods & HONE OPTIMIZER» — 272K; «*ULTIMATE* Windows FPS Boost Tool 🔧(ZERO Input Delay)» — 66K; «How I Boosted My CS2 FPS Instantly Using HONE OPTIMIZER!» — 37K.",
+      "source": "YouTube search (scraped), queries: \"hone optimizer fps boost review\", \"windows 11 debloat gaming optimization\", \"cs2 fps boost\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Слово «FREE» в хуке — у двух топ-роликов (3.4M и 677K); «AI Powered» — у лидера. Для фримиум-воронки: ролик продаёт БЕСПЛАТНЫЙ тир, апселл — внутри утилиты/Discord, а не в видео. Секунды: 0-1с UI утилиты + большая кнопка; 1-3с клик «Optimize»; 3-10с прогресс-бар + бегущие строки применённых твиков; 10-16с FPS до/после; 16-20с «free version in bio». Конкурент-бенчмарк: Hone упоминается в 3 роликах из выборки — у формата уже есть доказанный рынок."
+    },
+    {
+      "claim": "F15 «Trust Inversion» (атака на общепринятый твик) работает, НО только с эмоцией/брендом в хуке; академический миф-дебанк в этой нише мёртв.",
+      "evidence": "Работает: «Is Game Mode TANKING Your FPS?» — 1.5M; «TWEAKS ARE KILLING YOUR FPS #pc #fortnite #gaming» — 287K; «here's How High FPS is LOSING you Games in Marvel Rivals» — 486K. Не работает: «Mythbusting Some Registry Tweaks to Boost FPS» — 4 278; «📈Does HPET Affect FPS? | Debunking Gaming Tweak Myths | Timer Bench Analysis» — 1 541; «More RAM Does NOT Automatically Mean More FPS» — ~1K; «Your Bed Is Killing Your Gaming Laptop's FPS #shorts» — ~1K.",
+      "source": "YouTube search (scraped), queries: \"fps boost myth does it actually work debunk\", \"settings you should turn off windows gaming\", \"hone optimizer fps boost review\", \"marvel rivals fps boost settings\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "myth_debunk",
+      "confidence": "high",
+      "actionable": "Для генератора: запретить лексемы «mythbusting», «debunking», «analysis», «benchmark» в хуке (медиана <5K просмотров). Разрешить: «Is {TWEAK} TANKING your FPS?», «{THING} is KILLING your FPS», «{GOOD_THING} is LOSING you games». Заметь риск: формат «tweaks are killing your FPS» — это контр-нарратив против самого продукта; его нельзя игнорировать, надо занять эту позицию первым («bad tweaks vs measured tweaks»)."
+    },
+    {
+      "claim": "F16 «Potato-PC Stunt» — запуск игры на абсурдно слабом железе. Самый высокий потолок из всех форматов ниши (10-14M), идеальное попадание в аудиторию слабых ПК, но требует физического железа.",
+      "evidence": "«Gaming on a Mini PC» — 14M; «Can A $1 Laptop Run Fortnite?» — 10M; «A Gaming PC With No GPU?!» — 10M; «Playing all GTA Games without Graphics Card 😲» — 9.8M; «8k on a 1050ti 💀💀» — 12M; «Lets play some games on Amazons CHEAPEST gaming pc!» — 13M; «ULTRA LOW Graphics Boost FPS in FORTNITE! 🥔» — 1.3M (https://youtube.com/shorts/oqm2Ci3MRiY); «What GTA 5 Looks Like On The Lowest Graphics Possible 🤮» — 704K.",
+      "source": "YouTube search (scraped), queries: \"pov low end pc gamer\", \"mini pc gaming test fps\", \"gta 5 fps boost low end pc\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Уровень C для «физического» варианта. АВТОМАТИЗИРУЕМЫЙ ПОДФОРМАТ — «ULTRA LOW Graphics» (1.3M): выкрутить конфиг игры в минимум (r_ настройки/ini) и записать уродливый геймплей; это чистый screen-capture, воспроизводимый скриптом на одной машине для 18 игр. Секунды: 0-1с уродливый кадр без текстур + «this is Fortnite on the lowest settings possible»; 1-3с FPS-счётчик 480; 3-12с пробег по карте; 12-16с «but you get 400 FPS»."
+    },
+    {
+      "claim": "F17 «Budget Setup Build / Price-Anchored» — самые высокие просмотры среди «сетапов»; прямо релевантно планируемому расширению в ноутбуки/мини-ПК/коврики, но не автоматизируемо.",
+      "evidence": "«Building sister a GAMING SETUP!! #pcupgrade #aestheticsetup #cozysetup» — 14M; «Building An Entire Gaming Setup With $100» — 9.2M (https://youtube.com/shorts/ucl8uoNizu4); «Best Budget Gaming Setup» — 6.6M; «The World's Cheapest Ever Gaming Setup!» — 5M; «This 10 Year Old Built Gaming Setup From $0» — 4.9M; «This $1,000 gaming setup looks amazing #carterpcs» — 3M; «Lets See My Brothers PC Setup» — 2.9M; «$100 Budget Gaming Set Up» — 2M (https://youtube.com/shorts/lrsTfTto8Y0); «$100 Gaming Set Up» — 1.6M; «Cheapest Gaming Setup Built For Under 100 Dollars» — 812K; «$100 Gaming PC!» — 521K.",
+      "source": "YouTube search (scraped), queries: \"budget gaming setup tour\", \"building gaming setup with 100 dollars\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Уровень C (нужны руки, железо, съёмка). Ценовой якорь $100 — доминирующий токен (9.2M/2M/1.6M/812K/521K). Если оператор один из СНГ без съёмки — этот формат не для авто-залива; держать как отдельный ручной канал под мини-ПК/коврики, 1-2 ролика в месяц, а не в сети из 20 каналов."
+    },
+    {
+      "claim": "F18 «Mini-PC / Can-It-Run Hardware Test» — прямой формат для планируемой продажи мини-ПК и ноутбуков.",
+      "evidence": "«Gaming on a Mini PC» — 14M; «Gaming PC 😈 vs Small PC - FREEFIRE SPEED TEST» — 4.6M; «\"My mini PC is good!!\" #carterpcs» — 1.4M; «Most Heavy Game on 10K Mini PC 🔥» — 1.1M; «Testing a $300 Mini PC…» — 1M; «Gaming on a Mini PC...?» — 854K; «GEEKOM A5 2025 - Will it game?» — 282K; «The Mini PC That you Can Play a Lot With - ACEMAGIC S3A» — 143K; «Mini PC can run 200 FPS In Fortnite 😱» — 117K.",
+      "source": "YouTube search (scraped), query: \"mini pc gaming test fps\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Уровень C. Заметка для монетизации: ролики с конкретной моделью (GEEKOM A5 — 282K, ACEMAGIC S3A — 143K) на порядок слабее безымянных стантов (14M) — то есть брендовый обзор своей железки не масштабируется, а «Can a $X mini PC run {GAME}?» масштабируется. Формулировать как вопрос-челлендж, модель показывать, но не в хуке."
+    },
+    {
+      "claim": "F19 «Peripheral Glide / Sound Test» — формат под кастомные коврики для мыши; потолок 12M, но требует физического продукта и микрофона.",
+      "evidence": "«FlashBeyond glass mousepad #mousepad #gaming #gamingmouse #gamingsetup» — 12M; «$1 vs $200 Keyboard Sounds #gamingsetup #keyboard» — 5.3M (https://youtube.com/shorts/e4Vbk4wSdjA); «New Uses For Mouse Pads» — 3M; «Artisan Raiden Mid Glide Test» — 1 446 118; «Testing a GLASS Mousepad…» — 1.3M; «Best Glass Mousepad..? LINK IN BIO ✅ #airglide #glassmousepad» — 773K; «G-PRO SUPERLIGHT X GLORIOUS ELEMENT AIR FASTEST GLIDE EVEEEER» — 717 981; «everything you need to know when getting a GLASS mousepad» — 367K; «PULSAR SUPERGLIDE XXL GLASS PAD!» — 212K.",
+      "source": "YouTube search (scraped), query: \"gaming mousepad glide test\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Уровень C. Механика формата: близкий макро-план + ASMR-звук скольжения/щелчков, без лица и без речи — то есть при наличии продукта производство дёшево (один штатив + микрофон), а «LINK IN BIO ✅» уже в заголовке у ролика на 773K — формат нативно продающий. Ценовое сравнение ($1 vs $200) — самый сильный под-шаблон."
+    },
+    {
+      "claim": "F20 «Console/Mobile Mirror» — тот же совет, переупакованный под PS5/Xbox/мобилу, открывает вторую, менее конкурентную аудиторию.",
+      "evidence": "«Best Graphics Settings 🔥 #pubgmobile #bgmi» — 4M; «Unlock Hidden PS5 Setting for Better FPS or Graphics!» — 993K; «How to get more than 120 fps on mobile or pc without settings 🤯 #roblox» — 1.9M; «How To Get Higher FPS ON Fortnite Mobile | Fix FPS Drops on Fortnite Mobile» — 221K; «5 PS5 Settings To Give You More FPS in Warzone» — 174K; «Best Settings for Battlefield 6 on PS5/Xbox» — 358K; «How to Get 90/120 FPS in BGMI 3.8🔥» — 855K; «PS5 Tips and Tricks №7: How to Remove Input Delay on DualSense» — 1M; «10 Best Settings in Delta Force Mobile That'll Make You A PRO! 💯» — 278 669.",
+      "source": "YouTube search (scraped), queries: \"pubg fps boost settings low end\", \"dead by daylight fps boost\", \"warzone fps boost settings\", \"fortnite best settings fps boost\", \"delta force best settings fps boost\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "ВАЖНО для воронки: мобильный/консольный трафик НЕ монетизируется Windows-утилитой. Использовать как отдельные каналы-«кормушки» только если продукт получит консольно-нейтральные офферы (настройки, гайды, коврики). Иначе исключить из матрицы генерации — иначе вы платите за просмотры, которые не могут купить подписку."
+    },
+    {
+      "claim": "F21 «Rendering-Mode A/B» (DX11 vs DX12 vs Performance Mode) — узкий, но качественный формат с высокой конверсионностью в «продвинутых» зрителей.",
+      "evidence": "«Performance Mode vs DirectX 12: the real difference!» — 905K (https://youtube.com/shorts/8EDLZ_-9eK4); «🟢 Fortnite - DX12 vs Performance Mode | RTX 4060» — 174K; «RTX 5060 Ti Fortnite Performance Mode vs DirectX 12 #benchmark» — 135K; «NEW Performance mode or OLD Performance mode? (DX12 vs DX11)» — 62K; «Fortnite C7 S4 | Performance mode vs DirectX 12 🤔» — 10K; «Fortnite Rendering Modes EXPOSED! DX12 vs DX11 vs Performance Mode» — 4.9K. Технический факт для наполнения (DBD): добавление -dx12 в параметры запуска «can improve performance on weaker systems», -high повышает приоритет процесса.",
+      "source": "YouTube search (scraped), query: \"fortnite performance mode vs dx12\"; https://champbop.com/dead-by-daylight/best-dbd-settings-2025/ (2026-08-28)",
+      "source_date": "2026-09-12 (retrieved) / 2026-08-28",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Потолок ~905K, медиана низкая — держать как 5-10% объёма для «authority»-сигнала, не как ядро. Слово «EXPOSED!» дало 4.9K — не использовать. Раскладка: 0-1с два FPS-числа рядом; 1-3с название режимов; 3-12с один и тот же отрезок карты в двух режимах; 12-16с вывод одной строкой."
+    },
+    {
+      "claim": "F22 «GPU Vendor Control Panel Walkthrough» — самый живучий evergreen: один ролик на драйверную панель работает годами и на всех играх сразу.",
+      "evidence": "«🔧 NVIDIA CONTROL PANEL: BEST SETTINGS TO BOOST FPS FOR GAMING 🔥 | Optimize NVIDIA ✔️» — 4 420 500 (длинный, 3:13, id 9eFnUQFFcXo — всплывает первым по 5 разным игровым запросам); «Does FPS drop in your AMD graphics card? Try this setting» — 1.6M; «🔧 INTEL HD GRAPHICS: BEST SETTINGS TO BOOST FPS FOR GAMING» — 1 541 287; «Best NVIDIA Control Panel Settings for Gaming & Performance» — 988K (https://youtube.com/shorts/Wu1pbFawyBc); «✅ How do I increase FPS in NVIDIA Control Panel?» — 686K; «BEST AMD Radeon Settings For GAMING! (FPS BOOST)» — 506 422; «BEST Nvidia Control Panel Settings for Fortnite! (MAX FPS)» — 91 782.",
+      "source": "YouTube search (scraped), queries: \"nvidia control panel settings walkthrough\", \"valorant fps boost settings\", \"apex legends fps boost settings\", \"warzone fps boost settings\", \"league of legends fps boost settings\", \"pubg fps boost settings low end\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Три вендора × 18 игр = 54 варианта одного шаблона («BEST {VENDOR} settings for {GAME}»). Intel HD (1.54M) — недооценённый сегмент, ровно ваша аудитория слабых ноутбуков. Секунды: 0-1с логотип панели + «{VENDOR} Control Panel»; 1-3с список пунктов, один подсвечен; 3-14с 4 пункта по 3с с подписью значения; 14-18с «save + restart»."
+    },
+    {
+      "claim": "F23 «Low-End Shader/Mod Ranking» (Minecraft/Roblox) — доказательство, что в этой нише один и тот же заголовок живёт в нескольких копиях и всё равно набирает миллионы.",
+      "evidence": "Заголовок «The BEST Low END Shader #minecraft» встречается трижды с разными просмотрами: 2M, 1.4M, 1M. Также: «The 3 Best Shaders for Low End PC!» — 1.9M; «BEST High Performance Minecraft Shaders for POTATO PCS🤯» — 1.8M; «Best MINECRAFT FPS BOOST Using Mods & HONE OPTIMIZER» — 1.8M; «Best Shaders For High FPS!» — 1.5M; «Top 10 BEST Low-End Shaders for Minecraft!» — 1 451 334; «Which Optimization Mods are Best? #shorts» — 1M; «Top Mods That Kill FPS» — 5.7K; «Best Fps Boost Mods #fpsboost #minecraft #lowendpc» — 661.",
+      "source": "YouTube search (scraped), queries: \"minecraft fps boost shaders low end\", \"hone optimizer fps boost review\", \"fps boost low end pc\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Дублирование ЗАГОЛОВКА не блокирует охват (3 копии: 2M/1.4M/1M) — значит текстовая вариативность не критична, критична пиксельная/аудио. Но разброс внутри формата 661..2M огромный: слабые — те, что перечисляют «что убивает FPS» (негатив) вместо «что даёт красиво+FPS» (позитив). В генераторе: для Minecraft/Roblox всегда позитивная рамка «BEST ... for LOW END / POTATO»."
+    },
+    {
+      "claim": "F24 «Non-Obvious Mechanic Explainer» — раскрытие скрытого механического эффекта настройки (не FPS, а игровое преимущество). Даёт высокие просмотры и высокий авторитет.",
+      "evidence": "«Your FOV Isn't Just Field of View in Battlefield 6 😳» — 3.2M; «These Overwatch settings give you a competitive advantage» — 6.8M; «here's How High FPS is LOSING you Games in Marvel Rivals» — 486K; «Top Secret to NO Recoil in Delta Force» — 305K; «Does PostFX enabled hurt my FPS in Escape From Tarkov?» — 207K; «How to increase fps in escape from tarkov just by turning on borderless mode» — 148K.",
+      "source": "YouTube search (scraped), queries: \"battlefield 6 best settings fps\", \"overwatch 2 fps settings boost\", \"marvel rivals fps boost settings\", \"delta force best settings fps boost\", \"escape from tarkov fps boost settings\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Шаблон: «{SETTING} isn't just {OBVIOUS_MEANING} in {GAME} 😳». Требует реального знания механик — это ЕДИНСТВЕННЫЙ формат в списке, который нельзя сгенерировать без предметной экспертизы; закладывать как ручной, 1-2 в неделю, для авторитета флагманского канала. Эмодзи 😳 присутствует у топ-ролика."
+    },
+    {
+      "claim": "F25 «FPS/Era Evolution Montage» — временная шкала (1 FPS → 60 FPS, «then vs now»). Программно собирается из архивных клипов, но упирается в авторские права.",
+      "evidence": "«Gaming now vs Then. #shorts #gaming #viral #funny» — 78M; «1 FPS vs 60 FPS | FPS Evolution in One Clip» — 1.4M (https://youtube.com/shorts/MnxjMac3mgI).",
+      "source": "YouTube search (scraped), queries: \"pov low end pc gamer\", \"1% low vs average fps\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Потолок огромный (78M), но 78M-ролик — это компиляция чужих кадров; по политике YouTube монетизации такое прямо запрещено: «Content downloaded or copied from another online source without any substantive modifications». Для собственного производства: рендерить один и тот же свой клип с decimation 1/5/15/30/60/144 FPS — это уже свой ассет, а не реюз."
+    },
+    {
+      "claim": "F26 «Randomizer/Gacha Stunt» — рулетка выбирает железо/настройки. Максимальный потолок в выборке (63M), но физический.",
+      "evidence": "«letting fate pick my GPU #shorts» — 63M.",
+      "source": "YouTube search (scraped), query: \"pov low end pc gamer\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Есть автоматизируемая проекция: «spinner выбирает, какую настройку я выкручу на минимум» — рендер колеса (программная анимация) + заранее записанные клипы результата для каждого сектора. Скрипт: 12 секторов × 12 записанных исходов = 144 комбинации из одного набора ассетов, при этом каждая выглядит уникально (разный угол остановки колеса, разный исход)."
+    },
+    {
+      "claim": "F27 «Free Thermal / Physical Fix» — бесплатное решение через температуры/физику. Средний потолок, дешёвый в производстве.",
+      "evidence": "«Reduce your CPU temperature for 0$ #trend» — 706K; «Your Bed Is Killing Your Gaming Laptop's FPS #shorts» — ~1K (провал).",
+      "source": "YouTube search (scraped), queries: \"settings you should turn off windows gaming\", \"fps boost myth does it actually work debunk\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Работает ценовой якорь «0$» (706K), не работает бытовая метафора «Your Bed» (1K). Для ноутбучной аудитории (ключевой сегмент продукта) держать 5% объёма: «lower your laptop temps for 0$ → +X FPS», с оверлеем термо-графика. Уровень B (нужен один раз реальный замер температур)."
+    },
+    {
+      "claim": "F28 «Copy-Paste Asset Drop» — ролик, единственная ценность которого — строка, которую зритель копирует (команда, launch options, конфиг, crosshair-код). Максимально автоматизируемый и максимально конверсионный в переход по ссылке.",
+      "evidence": "«Boost Your Game: Performance Commands in CS2» — 348K; «New FPS BOOST COMMAND IN CS2! #shorts #cs2 #csgo» — 217K; «Use this command to make rust run smooth» — 135K; «The *BEST* GameUserSettings Config For Fortnite! (MAX FPS + 0 DELAY)» — 18 735. На TikTok эквивалент — обмен crosshair-кодами Valorant (формат: код в описании/комментариях, зрители просят коды в комментах). Фактура для наполнения: CS2 launch option '-high'; DBD '-dx12' и '-high'; для Rust источник прямо советует оставить поле launch options ПУСТЫМ.",
+      "source": "YouTube search (scraped), queries: \"cs2 fps boost\", \"rust fps boost settings\", \"fortnite best settings fps boost\"; https://prosettings.net/guides/cs2-options/ (2026-05-03); https://champbop.com/dead-by-daylight/best-dbd-settings-2025/ (2026-08-28); https://tradeit.gg/blog/rust-graphics-settings/ (2026-07-04); TikTok discover \"valorant-crosshairs\"",
+      "source_date": "2026-09-12 / 2026-05-03 / 2026-08-28 / 2026-07-04",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Лучший формат под link-in-bio воронку: ценность неполная в видео → ссылка обязательна. Секунды: 0-1с крупная монотипная строка на контрастном фоне; 1-3с «paste this into {LOCATION}»; 3-10с показ результата; 10-14с «full config in bio». ВНИМАНИЕ: нельзя публиковать конфиги, дающие соревновательное преимущество через изменение файлов игры в античит-играх (Valorant/Vanguard, FACEIT) — риск бана аккаунтов ваших клиентов и претензий. Ограничиться официально поддерживаемыми полями (launch options, настройки в меню, драйверная панель)."
+    },
+    {
+      "claim": "F29 «Settings Tier List» (S/A/B/C/D/F) — формат общепризнанно сильный по комментариям, но в нише PC-оптимизации мне НЕ удалось найти ни одного примера с высокими просмотрами. Данных нет.",
+      "evidence": "Запрос \"graphics settings tier list which setting costs most fps\" вернул ПУСТУЮ выдачу Shorts; ближайший найденный ролик «How much FPS do you need? ... #ranking» — 1.1K. Общая (не нишевая) рекомендация: тир-листы «drive massive comment debate», структура — «colored row labels in a fixed order (S red, A orange, B yellow, C green, D blue, F gray), item cards in each row sized roughly equal, rows stacked top to bottom», формат «scale[s] gracefully to 1:1 and 9:16».",
+      "source": "YouTube search (scraped, empty result); https://fluxnote.io/guides/how-to-make-tier-list-video (2026)",
+      "source_date": "2026-09-12 / 2026",
+      "kind": "practitioner_report",
+      "confidence": "low",
+      "actionable": "Ставить как ЭКСПЕРИМЕНТ на ≤5% объёма, не как ядро. Полностью программно рендерится (HTML/CSS → кадры, никакого геймплея). Гипотеза для теста: «Tier list: every graphics setting by FPS cost» — если 3 ролика подряд дают <5K, формат выключить."
+    },
+    {
+      "claim": "F30 «Mobile Graphics Comparison» — отдельная огромная под-ниша сравнения графики в мобильных играх; максимальные просмотры при минимальном производстве, но нерелевантный трафик для Windows-подписки.",
+      "evidence": "«Best Graphics Settings 🔥 #pubgmobile #bgmi #pubgmobile» — 4M; «Delta Force Mobile Graphics Comparison» — 2M; «Delta Force Mobile but I Made It Better Than PC» — 623K; «Delta Force Mobile All Graphics Comparison» — 176K; «LOW vs MEDIUM vs HIGH vs ULTRA GRAPHICS in CarX Street» — 1.5M; «Gaming PC vs Small PC - FREEFIRE SPEED TEST» — 4.6M.",
+      "source": "YouTube search (scraped), queries: \"pubg fps boost settings low end\", \"delta force best settings fps boost\", \"lowest vs ultra graphics comparison\", \"mini pc gaming test fps\"",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Исключить из основной матрицы: трафик не конвертируется в Windows-утилиту. Допустимо как «прокачка» новых аккаунтов на этапе прогрева (нужен объём безопасного контента), затем переключение канала на PC-темы."
+    },
+    {
+      "claim": "Форматы БЕЗ лица и голоса, собираемые программно из готовых ассетов (уровень A) — исчерпывающий список для спеки скрипта.",
+      "evidence": "Из 30 форматов к уровню A относятся: F01 Hidden Setting Reveal, F02 Numbered Checklist, F03 Time-Boxed, F05 Low-vs-Ultra (после захвата), F07 Symptom-Fix, F08 Metric ❌/✅, F09 Settings Dump, F10 Pro-Settings Copy, F13 Debloat/Terminal, F14 Tool Showcase, F15 Trust Inversion, F22 Vendor Control Panel, F28 Copy-Paste Drop, F29 Tier List (рендер из HTML). Подтверждающая практика по формату «faceless»: «looping gameplay footage as the background, an AI voiceover reading a script, and bold word-by-word captions burned in on top»; «85%» видео смотрят без звука — значит burned-in субтитры обязательны.",
+      "source": "YouTube search (scraped, все запросы выше); https://clypse.ai/blog/complete-guide-short-form-video-gamers-2026 (2026-01-19); https://gamedesigning.org/beyond/the-2026-vloggers-toolkit-how-tts-is-solving-the-narrative-crisis-for-faceless-channels/",
+      "source_date": "2026-09-12 / 2026-01-19",
+      "kind": "practitioner_report",
+      "confidence": "high",
+      "actionable": "Спека рендера уровня A: 1080×1920, H.264, 30 fps, битрейт 8-12 Mbps; длина 15-34с для максимального охвата, 30-60с для туториалов, 61-70с если нужен TikTok Creator Rewards; burned-in капшены word-by-word обязательно; TTS генерировать заново под каждый ролик (уникальный аудио-фингерпринт), не переиспользовать файл."
+    },
+    {
+      "claim": "Вариативность без превращения в дубли: платформы фингерпринтят видеоряд и аудио, а не текст заголовка. Нужны рандомизированные оси рендера.",
+      "evidence": "Практический источник: «Duplicate or template-based content is the #1 cause of shadowbans across all platforms. When multiple accounts post visually identical content (same stock footage, same template layouts, same AI-generated imagery from the same prompts), platforms detect it as spam»; «Platforms employ content fingerprinting and perceptual hashing to identify near-duplicate material»; рекомендации: «applying unique filters, cropping differently, and overlaying original text», «custom AI voiceovers rather than reusing identical files», «randomizes across 9 generation axes, producing over 530 million possible video combinations»; «Don't post at exactly the same time every day — vary by 30-60 minutes»; прогрев: неделя 1 — только просмотр/лайки, неделя 2 — 1-2 поста, неделя 3 — ежедневно, неделя 4+ — полный график; «avoid 5+ videos within your first 24 hours»; восстановление после shadowban «7-28 days». Официально (YouTube): контент должен «Not be mass-produced, generic, repetitive, or manipulative»; запрещено «Content downloaded or copied from another online source without any substantive modifications».",
+      "source": "https://reelforgeai.io/blog/shadowban-prevention-guide (2026-07-02); https://support.google.com/youtube/answer/1311392 (официальная политика YouTube)",
+      "source_date": "2026-07-02 / официальная страница без даты",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Оси рандомизации для скрипта (минимум 9, чтобы выйти на 10^7+ комбинаций): (1) фоновый геймплей-луп из пула ≥200 клипов; (2) TTS-голос из пула ≥12 + скорость 0.95-1.10 + pitch ±2%; (3) шрифт капшена из пула ≥8; (4) позиция/анимация капшена (4 позиции × 5 анимаций); (5) цветовой грейдинг/LUT из пула ≥10; (6) кроп/зум 1.00-1.08 + сдвиг 0-3%; (7) порядок пунктов внутри чеклиста; (8) фоновая музыка из пула ≥30 (только лицензионно чистая); (9) длина 16/22/28/34с; (10) формулировка хука из пула ≥50 шаблонов. Никогда не заливать один и тот же файл на 2 аккаунта. Расписание: ±30-60 мин джиттер, разное число постов в неделю."
+    },
+    {
+      "claim": "25 реальных работающих хуков-текстов из этой ниши (это подтверждённые заголовки реальных роликов с указанными просмотрами, а не выдуманные примеры).",
+      "evidence": "1) «How to FIX LOW FPS in ROBLOX» — 11M. 2) «Average FPS ❌ 1% Lows ✅» — 6.2M. 3) «These Overwatch settings give you a competitive advantage» — 6.8M. 4) «How to REDUCE LAG On Roblox In 5 Seconds!» — 4.6M. 5) «These 3 PC Tips Will Give You A Crazy Performance Boost 🤯» — 4.5M. 6) «This will give you 0 input delay 😏» — 3.7M. 7) «Unlock Your Laptop's Full Gaming Performance» — 3.3M. 8) «Your FOV Isn't Just Field of View in Battlefield 6 😳» — 3.2M. 9) «Boost CPU Performance in any PC Game» — 3.0M. 10) «New Gaming PC? Change These 4 Settings» — 2.9M. 11) «How to BOOST FPS (Valorant Tips)» — 2.9M. 12) «INCREASE YOUR FPS WITH THIS TRICK!» — 2.8M. 13) «From 60FPS to 500 w/ 1 Setting on HP VICTUS (DON'T MAKE THIS MISTAKE)» — 2.6M. 14) «How To Fix FPS Drops and Stuttering in Games» — 2.5M. 15) «Fix Games Stuttering In 15 Seconds» — 2.2M. 16) «+20 FPS in Tarkov...» — 2.1M. 17) «GET LOWER INPUT LAG BY CHANGING THESE SETTINGS ON YOUR MONITOR!» — 2.0M. 18) «How To Optimize Your PC For Gaming In One Minute» — 1.94M. 19) «Disable This Setting to Fix Random FPS Drops» — 1.9M. 20) «Is Game Mode TANKING Your FPS?» — 1.5M. 21) «EASY fix for laggy games» — 1.3M. 22) «When Your PC Games Randomly Start Freezing… Do THIS» — 1.0M. 23) «Two Hidden Windows Settings to Boost FPS in Games» — 923K. 24) «Debloat Windows in Seconds With This Command» — 793K. 25) «How to Increase Your FPS Without Upgrading» — 607K. Бонус: «TWEAKS ARE KILLING YOUR FPS» — 287K; «Use this command to make rust run smooth» — 135K; «Secret NVIDIA Setting That Boosts FPS in Valorant 💻 (Do This NOW!)» — 75K; «Rust ultra fps boost in 24 seccond» — 1.1M; «Get 1000+ FPS on Low End PC in Just 2 SECONDS!!» — 525K.",
+      "source": "YouTube search (scraped ytInitialData via curl), 24 запроса, полный лог в /tmp/claude-0/-home-user-123/f5c4f68f-6b67-54eb-966c-5cf75718754c/scratchpad/",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Извлечённые синтаксические правила для генератора хуков: (a) длина 4-9 слов, ≤12 (подтверждается практикой «stay under roughly 12 spoken words»); (b) императив в начале (How to FIX / Fix / Disable / Unlock / Boost / Change); (c) ровно один эмодзи в конце, из пула {🤯,😳,😏,⚙️,🔥,🚀,💻,🥔,✅}; (d) CAPS на 1-2 словах, не на всём; (e) конкретная игра ИЛИ конкретное число ИЛИ конкретное устройство — минимум одно из трёх; (f) символы ❌/✅ как самостоятельный визуальный крючок; (g) запрещённые лексемы: mythbusting, debunking, analysis, benchmark, EXPOSED, tutorial, guide (в чистом виде)."
+    },
+    {
+      "claim": "Секундная раскладка хука, применимая ко всем форматам уровня A (сводный стандарт из практикующих источников).",
+      "evidence": "«0.0–0.5s: Visual trigger (movement, contrast, expression); 0.5–1.5s: Verbal trigger (one clear promise sentence); 1.5–3.0s: Context lock (who it's for + what they'll get); 3.0–6.0s: Content delivery begins immediately». Бенчмарки: «71% of users decide within 3 seconds whether to continue watching»; «videos with 70%+ retention past that mark get better distribution»; «~70% retention past 3 seconds signals potential for wider reach, ~60% at 15 seconds, ~50% at 30 seconds»; «Videos under 10 seconds get 27% more completions than longer clips»; «TikTok for Business has noted that 63% of the highest click-through videos hook viewers within the first three seconds»; DIY/tutorial структура: «Problem (1s) → steps (3–5 cuts) → result (1s)»; before/after: «Show \"after\" first, then reveal process».",
+      "source": "https://hypenest.ai/blogs/tiktok-algorithm-2026-video-hooks-retention (обновлено 2026-07-18); https://www.teleprompter.com/blog/trending-youtube-shorts (2026-02-26); https://www.teleprompter.com/blog/tiktok-3-second-rule; https://dynamoi.com/learn/tiktok-music-promotion/what-is-the-3-second-rule-on-tiktok",
+      "source_date": "2026-07-18 / 2026-02-26",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Жёсткие константы рендера: кадр 0.0-0.5с — максимальный контраст + движение (зум-ин 1.00→1.04 или влёт текста), НЕ логотип канала; 0.5-1.5с — одна фраза обещания (TTS + капшен одновременно); 1.5-3.0с — «if you play {GAME} on a low-end PC»; с 3.0с — сразу первый шаг, без интро. Для before/after — сначала результат (after-first), потом процесс."
+    },
+    {
+      "claim": "Тайминг и каденс публикации по платформам (практикующие рекомендации, не официальные лимиты).",
+      "evidence": "«TikTok: 1-3 posts daily; consistency prioritized over volume»; «YouTube Shorts: 3-5 times weekly»; «Instagram Reels: 1-2 daily»; «Maximum virality: 15-34 seconds»; «Tips/tutorials: 30-60 seconds»; «Monetization threshold: 61-70 seconds (TikTok Creator Rewards requirement)»; «the algorithm doesn't decide if you're worth pushing until video 10-15, so posting just 3 videos and stopping is a major mistake»; монетизация: YouTube Shorts RPM $0.03-$0.07 (т.е. $30-70 за 1M), TikTok Creator Rewards $0.20-$1.00 за 1000 просмотров.",
+      "source": "https://clypse.ai/blog/complete-guide-short-form-video-gamers-2026 (2026-01-19); https://james-palm.medium.com/7-faceless-tiktok-account-ideas-that-veo-3-can-completely-automate-in-2026-...",
+      "source_date": "2026-01-19 / 2026",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Для сети 20 каналов/гео: 20 × 2 TikTok + 20 × 0.6 Shorts + 20 × 1 Reels ≈ 72 рендера/сутки/гео. Не оценивать канал раньше 10-15 роликов. Доход от просмотров игнорировать как источник (даже 10M просмотров Shorts = $300-700) — единственная экономика здесь подписка, поэтому оптимизировать не просмотры, а CTR в bio."
+    },
+    {
+      "claim": "Фактурная база (payload facts) для наполнения роликов реальными числами — CS2, Rust, DBD. Использовать вместо выдуманных «+200 FPS».",
+      "evidence": "Rust (tradeit.gg, 2026-07-04): снижение Graphics Quality даёт «roughly 10 to 25%» прироста GPU; Shadow Quality High→Low — «commonly returns about 8 to 20%» в лесу/компаундах; снижение Draw Distance на 500 — «around 3 to 10%» в CPU-тяжёлых зонах; Water Reflections Off — «about 3 to 8%» у воды; Draw Distance: low-end 1000-1500, mid 1500-2000, high 2000+; Water Reflections — Off на всех тирах; launch options оставить пустыми. CS2 (prosettings.net, 937 про, 2026-05-03): Fullscreen, V-Sync Disabled, Global Shadow Quality Low, Model/Texture Medium, Particle Detail Low, NVIDIA Reflex Enabled; аудио для соревновательной игры: EQ «Crisp», Round Start/Action/MVP Volume 0%; минимум 144Hz, «360Hz competitive standard». DBD (champbop, 2026-08-28): Quality Low, 1920×1080 native, Full Screen для меньшего input lag, отключить FSR/AA/XESS, UI/HUD scale 70%, skill check scale 100%, V-Sync Off, FPS Limit 120, launch options -high и -dx12. Общий факт по CS2-про: «overwhelming majority of professional CS2 players use Low video settings for almost everything».",
+      "source": "https://tradeit.gg/blog/rust-graphics-settings/ (2026-07-04); https://prosettings.net/guides/cs2-options/ (2026-05-03); https://champbop.com/dead-by-daylight/best-dbd-settings-2025/ (2026-08-28); https://steamdb.com/en/articles/cs2-best-settings-for-competitive",
+      "source_date": "2026-07-04 / 2026-05-03 / 2026-08-28",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Загрузить в БД скрипта как таблицу facts(game, setting, value, delta_fps_pct_low, delta_fps_pct_high, source_url, source_date). Каждый ролик берёт 1-5 строк. Диапазоны (8-20%) озвучивать как диапазоны — это и честно, и звучит как экспертиза. По DBD FPS-прирост в источнике не указан — «нет данных», не подставлять число."
+    },
+    {
+      "claim": "Референсные аккаунты-конкуренты в нише (подписчики известны, просмотры по видео — нет данных: TikTok не отдаётся ни WebFetch, ни curl — 403/SPA).",
+      "evidence": "@exm.tweaks (TikTok) — 18K подписчиков, 429.8K лайков, темы pcgaming/windows/fpsboost; exmtweaks.com заявляет «900,000+ users»; есть YouTube @exmtweaks и Linktree. @pcoptimization.us — 45.6K подписчиков. @NikkoTech (NikkoTech | PC Tweaks) — 60K подписчиков. @nextboost.pro — 12.3K подписчиков. Подтверждённый реальный TikTok-ролик через официальный oEmbed: @deridium («DERIDIUM | Game Guides 🎮»), заголовок «Optimize your Gaming PC Easily, Increase FPS + Boost Performance #fpsboost #gamingtips #fpsgames #gaming» (tiktok.com/@deridium/video/7235388368433974571). Хэштег #fpsboost — 48.9K постов (просмотры хэштега — нет данных, TikTok больше не публикует).",
+      "source": "WebSearch результаты по tiktok.com профилям и linktr.ee/exmtweaks; https://www.tiktok.com/oembed (официальный API, вернул заголовок и автора); https://www.tiktok.com/tag/fpsboost; https://www.trustpilot.com/review/exmtweaks.com",
+      "source_date": "2026-09-12 (retrieved)",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Для спеки: считать 18-60K подписчиков нормальным потолком ОДНОГО аккаунта в этой нише на TikTok — то есть стратегия «20 каналов на гео» здесь обоснована именно потому, что одиночный аккаунт упирается в низкий потолок. Пер-видео метрики конкурентов автоматически не собрать (TikTok отдаёт 403 на curl/WebFetch и SPA-заглушку; urlebird и socialblade — 403). Если метрики конкурентов нужны в цикле, потребуется отдельный вход (официальный TikTok Research/Display API или ручной сбор), это отдельная строка бюджета."
+    },
+    {
+      "claim": "Технический метод сбора реальных метрик для контент-банка, который РАБОТАЕТ и может стать частью скрипта.",
+      "evidence": "YouTube поисковая выдача успешно парсится обычным curl с браузерным User-Agent: HTTP 200, ~1.3MB HTML, ytInitialData содержит videoRenderer (title/viewCountText/publishedTimeText/ownerText/videoId), shortsLockupViewModel (overlayMetadata.primaryText/secondaryText, onTap.reelWatchEndpoint.videoId). Фильтр Shorts — параметр sp=EgIYAQ%3D%3D. Пример извлечения: «\"viewCount\":{\"simpleText\":\"4,431 views\"}» и «shortViewCount\":{\"simpleText\":\"4.4K views\"}». TikTok: WebFetch и curl отдают только SPA-заголовок «TikTok - Make Your Day» либо 403; официальный tiktok.com/oembed работает и отдаёт title/author_name/author_url, но НЕ просмотры.",
+      "source": "Собственные вызовы в этой сессии; скрипты /tmp/claude-0/-home-user-123/f5c4f68f-6b67-54eb-966c-5cf75718754c/scratchpad/ytsearch.py, multi.py, shortsid.py",
+      "source_date": "2026-09-12",
+      "kind": "inference",
+      "confidence": "high",
+      "actionable": "Встроить в скрипт модуль trend_miner: раз в 24ч дергать N запросов вида \"{game} fps boost settings\", \"{symptom} fix\", парсить title+views+videoId, складывать в SQLite, и автоматически повышать вес тех шаблонов хуков, которые встречаются у роликов >500K. Это даёт самообучающийся банк хуков без ручной работы. Ограничение: это неофициальный парсинг HTML YouTube — ToS YouTube запрещает автоматизированный доступ вне API; риск блокировки IP и формальное нарушение. Альтернатива в рамках правил — YouTube Data API v3 (search.list + videos.list, квота 10 000 units/день, search.list = 100 units → ~100 поисков/день бесплатно)."
+    },
+    {
+      "claim": "Матрица генерации контент-банка: сколько уникальных ТЕМ (не рендеров) доступно без повторов.",
+      "evidence": "Построено из подтверждённых осей: 18 игр из ТЗ × 12 симптомов (F07) = 216; 18 игр × 5 углов настроек (F09: max FPS / visibility / 0 input delay / low-end / pro-copy) = 90; 3 вендора GPU × 18 игр (F22) = 54; 30 отдельных твиков Windows × формат F01 = 30; чеклисты F02 из базы 30 твиков при N=3 = 24 360 упорядоченных вариантов; 6 пар Hz (F04) × 5 игр = 30; 6 пар пресетов (F05) × 18 игр = 108; 7 пар метрик (F08) = 7; copy-paste ассеты (F28) — по числу игр с поддерживаемыми launch options/конфигами.",
+      "source": "Синтез из собственных поисковых данных этой сессии + список игр из ТЗ",
+      "source_date": "2026-09-12",
+      "kind": "inference",
+      "confidence": "medium",
+      "actionable": "Итого ~535 уникальных ТЕМ без учёта комбинаторики чеклистов, и >24 000 с ней. При 72 рендерах/сутки/гео база тем не исчерпается ~7 суток при строгом «одна тема = один рендер», поэтому обязателен слой рендер-вариативности (10 осей выше), а не только тематический. Правило для скрипта: одна ТЕМА может уйти максимум на 1 аккаунт в пределах одного гео и не чаще раза в 30 дней; между гео повтор темы разрешён, но с другим фоновым геймплеем и другим TTS."
+    }
+  ],
+  "key_numbers": [
+    "Потолок форматов ниши (реальные Shorts, съём 2026-09-12): Hz-сравнения 10.83M / 9.8M / 7.4M / 7.10M; symptom-fix Roblox 11M; potato-стенды 14M / 13M / 12M / 10M / 9.8M; метрика 1% low 6.26M; про-настройки OW 6.8M; budget setup 14M / 9.2M / 6.6M; коврик 12M; GPU-рулетка 63M; 'Gaming now vs Then' 78M",
+    "Типичный рабочий диапазон авто-производимого формата (уровень A): 100K-2.5M просмотров на ролик; медиана по выборке PC-optimization ≈ 300-900K",
+    "Мёртвая зона (не использовать): миф-дебанк 1 541 / 4 278 / ~1 000 просмотров; нейтральный вопросительный заголовок вместо суждения — 10K против 6.2M у того же контента (разница ×625)",
+    "Хук: 71% пользователей решают за 3 секунды; 63% видео с лучшим CTR цепляют в первые 3с; цель ретеншена 70%+ на 3с, 60% на 15с, 50% на 30с; видео <10с дают +27% к completions; хук ≤12 слов",
+    "Раскладка хука: 0.0-0.5с визуальный триггер / 0.5-1.5с обещание / 1.5-3.0с контекст-лок / с 3.0с сразу контент",
+    "Длина: 15-34с максимум охвата; 30-60с для туториалов; 61-70с если нужен TikTok Creator Rewards. Рендер: 1080×1920, H.264, 30 fps, 8-12 Mbps",
+    "85% просмотров без звука → burned-in капшены обязательны",
+    "Каденс (практика): TikTok 1-3/сутки на аккаунт, Shorts 3-5/неделю, Reels 1-2/сутки. Алгоритм не оценивает аккаунт до 10-15 ролика",
+    "Прогрев аккаунта: нед.1 без постов, нед.2 1-2 поста, нед.3 ежедневно, нед.4+ полный график; не более 4 видео в первые 24ч; джиттер времени публикации 30-60 мин; восстановление после shadowban 7-28 дней",
+    "Монетизация просмотров ничтожна: Shorts RPM $0.03-0.07 (=$30-70 за 1M), TikTok Creator Rewards $0.20-1.00 за 1000 просмотров → экономика только в подписке",
+    "Потолок одного аккаунта в нише: @exm.tweaks 18K подписчиков / 429.8K лайков, @NikkoTech 60K, @pcoptimization.us 45.6K, @nextboost.pro 12.3K; #fpsboost 48.9K постов",
+    "Payload-факты Rust: Graphics Quality −10..25% GPU нагрузки, Shadow High→Low +8..20% FPS, Draw Distance −500 → +3..10%, Water Reflections Off +3..8%",
+    "Payload-факты CS2 (937 про): 1280×960 — 53%, 1024×768 — 15%, 1080p — 13%; 400 DPI — 66%, 800 DPI — 28%; медианный eDPI 830; поворот 360° = 47 см; минимум 144Hz, стандарт 360Hz",
+    "Payload-факты DBD: Quality Low, Full Screen, FSR/AA/XESS off, UI 70%, V-Sync off, FPS cap 120, launch options -high -dx12 (прирост FPS — нет данных)",
+    "Объём контент-банка: ~535 уникальных тем по подтверждённым осям (216 симптом×игра + 90 настройки×угол + 54 вендор×игра + 108 пресет-пары + 30 Hz-пар + 30 одиночных твиков + 7 метрик), >24 000 с комбинаторикой чеклистов N=3 из 30 твиков",
+    "Оси рандомизации рендера: минимум 10 (фон, TTS-голос, скорость, шрифт, позиция капшена, LUT, кроп/зум, порядок пунктов, музыка, шаблон хука); практикующий бенчмарк — 9 осей = 530M+ комбинаций",
+    "Нагрузка при сети 20 каналов/гео: ~72 рендера/сутки/гео (20×2 TikTok + 20×0.6 Shorts + 20×1 Reels)"
+  ],
+  "machine_spec_notes": [
+    "FORMAT_REGISTRY: 30 форматов F01-F30, каждый с полями {id, name, automation_level: A|B|C, ceiling_views, median_views, asset_requirements[], timeline[{t_start,t_end,layer,content_slot}], hook_template, cta_slot}. В генерацию по умолчанию включать ТОЛЬКО level A: F01,F02,F03,F05,F07,F08,F09,F10,F13,F14,F15,F22,F28,F29. F16/F17/F18/F19/F26 (level C) — вне авто-залива.",
+    "HOOK_GRAMMAR (жёсткие правила): длина 4-9 слов, максимум 12; обязателен минимум один конкретизатор из {GAME | NUMBER | DEVICE_BRAND}; ровно 0 или 1 эмодзи, только в конце, из пула {🤯,😳,😏,⚙️,🔥,🚀,💻,🥔,✅,❌}; CAPS максимум на 2 словах; BANNED_TOKENS = [mythbusting, debunking, analysis, benchmark, EXPOSED, 'full tutorial', 'complete guide', 'part 2'].",
+    "TIMEBOX_TOKENS = [2 SECONDS, 5 Seconds, 10 Seconds, 15 Seconds, 24 seconds, 30 Seconds, 1 Minute] — только серийные значения, не вставлять произвольные числа типа 69.",
+    "CHECKLIST_N ∈ {2,3,4,5}; N=3 приоритет (лучший подтверждённый результат 4.5M); N≥10 запрещён (медиана падает до 46K).",
+    "SYMPTOM_DICT (12) = [low FPS, FPS drops, stuttering, micro-stutter, random freezing, lag spikes, input delay, screen tearing, high ping, shader compilation stutter, fps drops after update, frame time spikes]. Матрица symptom × game = основной генератор тем (216).",
+    "SETTINGS_ANGLE (5) = [max FPS, visibility, 0 input delay, low-end/potato, pro-copy]. Матрица game × angle = 90 тем.",
+    "GAMES = [Fortnite, Valorant, Rust, CS2, Dead by Daylight, Apex, Warzone/CoD, Roblox, Minecraft, GTA V/RP/FiveM, Marvel Rivals, Delta Force, PUBG, LoL, Overwatch 2, Escape from Tarkov, Battlefield 6]. Флаг monetizable_platform=PC обязателен; исключить mobile-варианты из основной матрицы (F20/F30) — трафик не конвертируется в Windows-подписку.",
+    "VENDORS = [NVIDIA, AMD Radeon, Intel (integrated/HD)] → F22 матрица 3×17. Intel — недооценённый сегмент (1.54M просмотров), приоритет для аудитории слабых ноутбуков.",
+    "RENDER_SPEC: 1080×1920, H.264, 30 fps, 8-12 Mbps, duration ∈ {16,22,28,34}с (default 22); burned-in word-by-word капшены обязательно; уникальный TTS-файл на каждый рендер (никогда не переиспользовать аудио).",
+    "RANDOMIZE_AXES (минимум 10, все независимо на каждый рендер): bg_clip_id (пул ≥200), tts_voice (≥12), tts_rate 0.95-1.10, tts_pitch ±2%, caption_font (≥8), caption_position (4) × caption_anim (5), color_lut (≥10), crop_zoom 1.00-1.08 + offset 0-3%, item_order (перестановка), music_id (≥30 лицензионно чистых), hook_template_id (≥50).",
+    "DEDUP_RULES: одна тема = один рендер = один аккаунт в пределах одного гео; повтор темы в том же гео не чаще 1 раза в 30 дней; повтор темы между гео разрешён только при смене bg_clip_id И tts_voice; хеш итогового файла и перцептивный хеш (pHash) сохранять в БД и отклонять рендер при pHash-расстоянии ниже порога от любого ранее залитого.",
+    "SCHEDULE_RULES: джиттер времени публикации ±30-60 мин; число постов в неделю варьировать (не константа); новый аккаунт: неделя 1 — 0 постов (только просмотр/лайки/подписки), неделя 2 — 1-2 поста с 30-мин окном вовлечения, неделя 3 — 1/сутки, неделя 4+ — 2/сутки TikTok; hard-cap 4 видео в первые 24 часа жизни аккаунта.",
+    "EVAL_RULES: не оценивать аккаунт раньше 10-15 роликов; формат-кандидат (F29 tier list, F21 rendering modes) выключать после 3 роликов подряд <5K просмотров; вес шаблона хука повышать, если совпадающий паттерн встречается у роликов >500K в trend_miner.",
+    "FACTS_TABLE: facts(game, setting, value, delta_fps_pct_low, delta_fps_pct_high, source_url, source_date, verified_bool). Каждый ролик потребляет 1-5 строк. Если delta_fps неизвестен — поле NULL и в озвучке не произносить число (правило: никогда не генерировать FPS-дельту без строки-источника).",
+    "CLAIM_GUARD: FPS_BEFORE/FPS_AFTER в шаблонах F06 брать только из таблицы реальных бенчей; отношение after/before ≥3 даёт лучший CTR (60→500, 2→200, 1→60 подтверждены), но синтетические пары запрещены — это ложная реклама платного продукта.",
+    "TREND_MINER (опционально, юридически рискованно): YouTube Data API v3 search.list+videos.list, квота 10 000 units/сутки, search.list=100 units → ~100 запросов/сутки; складывать title/views/videoId в SQLite и автоподстраивать веса hook_template. Прямой HTML-парсинг ytInitialData технически работает (проверено), но нарушает ToS YouTube — по умолчанию выключить.",
+    "CTA_SPEC: ценность ролика должна быть НЕПОЛНОЙ у форматов F09/F28 (финальный кадр 'screenshot this' / 'full config in bio') — именно это конвертирует в переход; у форматов F01/F07 ценность полная, CTA слабый, использовать их как охватный слой, а не конверсионный."
+  ],
+  "open_questions": [
+    "Просмотры и ER конкретных TikTok-роликов в нише получить автоматически не удалось: tiktok.com отдаёт SPA-заглушку на WebFetch и 403 на curl; urlebird.com и socialblade.com — 403; официальный tiktok.com/oembed отдаёт только title/author, без метрик. Нужен ли отдельный бюджет на TikTok Research API / платный аналитик (Exolyt, Buzzlytics) — открытый вопрос.",
+    "Официальный текст TikTok про 'unoriginal content' / FYF eligibility получить не удалось (страница community-guidelines рендерится JS, редирект на /safety/en/policies-and-engagement/for-you-feed-eligibility даёт пустой HTML). Формулировки про unoriginal/duplicated контент в выводе взяты из практикующего источника, не из официальной политики — считать low confidence до проверки.",
+    "Соотношение просмотров TikTok/Reels к найденным Shorts-числам неизвестно: вся количественная база этого отчёта — YouTube. Переносимость формата 1:1 на TikTok — допущение (kind=inference), требует A/B на живой сети.",
+    "Нет данных о конверсии просмотр→клик по bio→подписка в этой нише. Ни один источник не дал CTR bio-ссылки для PC-optimization контента. Нужен собственный замер на первых 100 роликах.",
+    "Формат F29 (tier list настроек) в нише PC-оптимизации не имеет ни одного примера с высокими просмотрами — либо он не работает, либо ниша его ещё не заняла. Это единственная найденная явная белая зона; проверять экспериментом.",
+    "Неизвестно, как платформы в 2026 относятся к AI-TTS + сток-геймплей на 20 аккаунтах с одного оператора: официальных числовых порогов 'сколько похожести = спам' ни один источник не публикует. Перцептивный порог pHash приходится подбирать эмпирически.",
+    "Неизвестно, безопасно ли публиковать конфиги/launch options для игр с агрессивным античитом (Valorant/Vanguard, FACEIT, EAC в Rust/DBD): гайды-источники их упоминают, но риск бана аккаунтов КЛИЕНТОВ и обратных претензий не оценён.",
+    "Публикационные даты Shorts не отдаются в выдаче (publishedTimeText отсутствует у shortsLockupViewModel), поэтому 'свежесть' найденных примеров подтвердить нельзя — часть высоких просмотров может быть накоплена за 2-4 года."
+  ],
+  "risks": [
+    "Ложная реклама / претензии по возвратам: формат F06 (before/after) и хуки вида 'Make Computer 200% Faster', 'Get 1000+ FPS', '+500 FPS' — при продаже ПЛАТНОЙ подписки синтетические или нерепрезентативные числа квалифицируются как misleading advertising; в UK это прямая зона ответственности (ASA/CMA) и основание для chargeback-волны, которая убивает Stripe-аккаунт быстрее, чем правила площадок.",
+    "Реюз чужого контента: форматы F25 (эволюция FPS / then-vs-now, 78M) и F04 (Hz-сравнения) на практике массово собираются из чужих клипов. Официальная политика YouTube запрещает 'Content downloaded or copied from another online source without any substantive modifications' и требует 'Not be mass-produced, generic, repetitive, or manipulative' — риск демонетизации/страйков на всю сеть каналов, а не на один ролик.",
+    "Перцептивная дедупликация платформ: при 72 рендерах/сутки из одного шаблона близкие по pHash файлы на разных аккаунтах читаются как координированный спам; практикующие источники прямо называют template-based контент причиной #1 shadowban, восстановление 7-28 дней. Риск не 'ролик не зашёл', а тихая потеря всей сети одновременно.",
+    "Связность аккаунтов: платформы трекают device fingerprint и IP; новые аккаунты из той же сети 'inherit suppression'. 20 каналов × несколько гео с одного оператора — структурно уязвимая схема; я не даю методов обхода антифрода, но фиксирую, что риск потери сети реален и системный.",
+    "Парсинг YouTube HTML (мой же метод сбора данных выше) нарушает ToS YouTube при автоматизации; если trend_miner встроить в продакшн-скрипт — риск блокировки IP и формального нарушения. Легальный путь — YouTube Data API v3 с квотой 10 000 units/сутки.",
+    "Античит-риск для клиентов: публикация конфигов/параметров запуска для Valorant (Vanguard), CS2 (VAC/FACEIT), Rust/DBD (EAC) может привести к банам у подписчиков и обратным претензиям к продукту. Ограничиваться официально поддерживаемыми полями настроек.",
+    "Контр-нарратив уже существует в самой нише: ролик 'TWEAKS ARE KILLING YOUR FPS' — 287K просмотров. То есть скептицизм к платным твикам монетизируется конкурентами; репутационный риск для платной подписки выше, чем для бесплатного тула.",
+    "Аудитория 13-24 лет: часть просмотров приходится на несовершеннолетних; платная подписка для минора — риск chargeback 'unauthorized transaction' и повышенное внимание платёжного провайдера. Плюс ограничения на таргетинг/персонализацию для подростков на TikTok.",
+    "Мобильный/консольный трафик (F20, F30) даёт самые дешёвые просмотры (2-4M), но физически не может купить Windows-утилиту — риск построить сеть с высокими метриками и нулевой выручкой.",
+    "Потолок одиночного аккаунта в нише низкий (подтверждённо 12-60K подписчиков у конкурентов), значит стратегия держится на количестве аккаунтов, а количество аккаунтов — главный источник платформенного риска. Эти два фактора нельзя оптимизировать одновременно.",
+    "Реальные бенчмарки как обязательное требование (CLAIM_GUARD) означают, что скрипт не может генерировать произвольные темы: нужен физический стенд для замеров хотя бы по 17 играм. Без него весь FPS-контент либо без чисел (слабее хук), либо фабрикация."
+  ]
+}

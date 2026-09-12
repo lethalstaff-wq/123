@@ -1,0 +1,288 @@
+{
+  "dimension": "proxy_infra",
+  "summary": "Под бюджет 50-200 USD/мес физически невозможно дать каждому из 20 каналов на гео выделенный мобильный IP (dedicated 4G порт = 50-250 USD/мес за ОДИН порт). Реальный компромисс 2026: (1) окружение — не эмулятор, а cloud-phone на ARM (GeeLark $0.007/мин, cap $1.20/дев/день, аренда $29.9/дев/мес) или, как более дешёвый но более рискованный вариант, антидетект-браузер (Dolphin Anty $10/мес за 60 профилей, GoLogin от $9-24/мес, AdsPower free 5 профилей); (2) IP — ISP static residential по $0.23-3.00/IP/мес с unlimited bandwidth для гео, где они есть (US/UK/DE/FR/IT/CA/JP/AU/PL/SE/RO/BE — Webshare), плюс rotating residential/mobile по GB ($1/GB DataImpulse residential, $2/GB DataImpulse mobile, $3.60/GB SOAX) для MENA/SEA/Африки/СНГ/LATAM, где ISP-пула нет; (3) SMS — 5sim ($0.013-0.32/номер, 140 стран, delivery 60-85%), HeroSMS (SMS-Activate закрылся 29.12.2025). Главный технический риск не в IP, а в окружении: TikTok детектит эмуляторы и browser-профили и банит КЛАСТЕРОМ, а не по одному аккаунту. Главный экономический риск — трафик: видео-аппы жрут GB, и при in-app скролле 20 аккаунтов на гео дают 60-90 GB/мес (= $60-90/мес за одно гео на $1/GB), поэтому в спеке надо запретить прогрев скроллом через метрируемый прокси. ToS: TikTok прямо запрещает \"using automation to register or operate accounts in bulk\" — это нарушение, ведущее к shadowban/термину аккаунтов, и оно не лечится инфраструктурой.",
+  "key_numbers": [
+    "Residential rotating $/GB 2026 (реальная цена входа, Proxidize Pricing Index 22.07.2026): DataImpulse $1.00, Proxidize $1.00, Evomi ~$0.99, SOAX $3.60, Decodo $3.75, Proxy-Seller ~$3.50, Oxylabs $6-8, IPRoyal $7.00-7.35, Rayobyte $7.50 PAYG, Infatica $8.00 PAYG, Bright Data ~$8.00, Webshare ~$7.00 на 1GB, Massive $8.00",
+    "Mobile (4G/5G) $/GB 2026: Rayobyte $0.50, DataImpulse $2.00, Proxidize $2.00 (или $59/прокси), Evomi $2.20, Decodo $3.75-8.00, SOAX ~$3.60, IPRoyal $4.00 rotating, Oxylabs ~$7.50, Infatica $18.00 PAYG; ProxyEmpire разброс $1.25-20",
+    "Mobile dedicated port: IPRoyal $10.11/устройство/24ч, ASocks ~$15/прокси/мес, Proxidize hosted $59/прокси, ProxyWing $4/день / $15/неделя / $30/15 дней / $55/мес, Германия >$100/мес, Польша ~$50/мес, Индонезия ~$60/мес (Cyberyozh/LteSocks), USA 5G от $250/мес, мультистрана от $125/мес, UAE +25% к базе",
+    "ISP static residential $/IP/мес: Webshare $0.018-0.05/IP (datacenter) и $0.225-0.30/IP (static residential, мин. 20 IP), Rayobyte ~$1.35, Proxy-Cheap ~$1.60, ProxyWing $3.00 за 1 IP -> $2.00 на 50-200 IP -> $1.90 на 1000, Byteful $2.50, Decodo $9.99 за 3 IP (~$3.33), IPRoyal $4.00, NodeMaven $5.00, Bright Data $18-35 за 10 IP ($1.80-3.50), IPBurger $14.41/IP/мес при годовой оплате",
+    "Datacenter: DataImpulse $0.50/GB, Evomi $0.35/GB, Rayobyte $0.20/IP, Bright Data $0.60-0.90/IP, Oxylabs $0.59-1.20/IP, Infatica $1.00-1.50/IP",
+    "Антидетект-браузеры: AdsPower free 5 профилей / Professional ~$7.2/мес (годовая), Dolphin Anty $6/мес (годовая) / Starter $10/мес до 60 профилей / Base $89/мес 100 профилей / Team $299/мес, GoLogin free 3 профиля / $9/мес 10 профилей монтли / $4.50/мес годовая / Team $99/мес, Multilogin X от EUR99/мес (PRO годовой эквивалент $7.08/мес, Solo $100-200/мес)",
+    "Cloud phone: GeeLark Free 2 профиля + 30 мин, Base от $5/мес, pay-per-minute $0.007/мин, дневной cap $1.20/устройство, аренда $29.90/устройство/мес, parallel $39.90/мес, пакет минут от $14 за 2000 мин; заявлено 'в 3-5 раз ниже detection rate чем Android-эмуляторы' (вендорское заявление)",
+    "Phone farm capex (GeeLark, 21.07.2026): 10 телефонов $500-5000, 50 телефонов $2500-17500, 100 телефонов $5000-35000+. Proxidize kit: 5 модемов $499 + $99/мес; 20 модемов $1699 + $389/мес; SIM ~$10-20/мес каждая; Proxidize Connect data от $39.99/SIM/мес unlimited; сторонняя сборка от $300/модем",
+    "SMS-номера: 5sim минимум $0.013/номер, 140 стран, 340 операторов, лучший delivery 85%. Конкретика по TikTok на 5sim: Brazil $0.1282 (delivery 84.62%), Poland $0.1282-0.13, Indonesia $0.0643 (75.89%), Germany $0.20 (73.08%), Netherlands $0.075 (69.3%), Vietnam $0.08 (68.89%), Australia $0.3205 (72.73%). HeroSMS: Instagram+Threads $0.015, Google/Facebook $0.02, Telegram $0.13, WhatsApp $0.15; скидки до 40% по объёму пополнения",
+    "Sticky-сессии (максимум по провайдерам): DataImpulse mobile 2ч, SOAX mobile 1ч, SOAX residential до 7 дней, Byteful до 7 дней, Decodo до 24ч, IPRoyal 1с-24ч, NodeMaven кастом",
+    "Аккаунтов на IP: практический стандарт 1 аккаунт = 1 профиль = 1 IP; TikTok in-app switcher — 3 (по ряду источников 3-6) логин-профилей на устройство; 1 email = 1 аккаунт, 1 телефон = 1 аккаунт (по данным третьих сторон со ссылкой на Help Center); TikTok Business Center — до 200 аккаунтов в одном центре (санкционированный путь)",
+    "Рыночные тренды: residential упал до -75% за 2023-2025, mobile до -98% (с >$25/GB к ~$0.50/GB); >250 провайдеров, >50 новых вендоров только в 2025; success rate на 'hard targets' медиана 74.43%, лучший 81.23%",
+    "Оценка трафика (INFERENCE, low confidence): upload-only сессия ~20-40 MB/аккаунт/день -> 0.6-1.2 GB/аккаунт/мес -> 20 каналов = 12-24 GB/мес/гео = $12-24 на $1/GB. С in-app прогревом (скролл фида 10-15 мин/день) ~100-150 MB/аккаунт/день -> 3-4.5 GB/аккаунт/мес -> 60-90 GB/мес/гео = $60-90/мес/гео"
+  ],
+  "findings": [
+    {
+      "claim": "TikTok прямо запрещает использование автоматизации для массовой регистрации и массового управления аккаунтами; ROW-версия Terms также запрещает 'automated scripts ... to otherwise interact with the Services', что покрывает авто-постинг.",
+      "evidence": "Формулировка 'TikTok does not allow using automation to register or operate accounts in bulk'; rest-of-world Terms запрещают 'using automated scripts to collect information from or otherwise interact with the Services', что по разбору 'plainly reaches automated posting, liking, and following'.",
+      "source": "TikTok Terms of Service (tiktok.com/legal/page/us/terms-of-service/en) + разбор TokPortal 'TikTok ToS and Multi-Account Posting: 2026 Guide' (tokportal.com/learn/is-multi-account-posting-allowed-on-tiktok)",
+      "source_date": "2026 (разбор), ToS — актуальная редакция на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Вся схема авто-залива на 20 каналов/гео с новорег-аккаунтов — прямое нарушение ToS. Последствия: shadowban (reach -> 0), content-restriction, suspension, и по практическим отчётам — кластерный бан всей сети. Инфраструктура снижает вероятность детекта, но не делает схему легальной по ToS. В спеку скрипта заложить это как принятый риск и планировать регулярную потерю части парка."
+    },
+    {
+      "claim": "Мульти-аккаунтинг сам по себе TikTok не запрещает: один человек может держать несколько аккаунтов при соблюдении Community Guidelines; санкционированный путь для агентств — TikTok Business Center (до 200 аккаунтов).",
+      "evidence": "'TikTok allows 1 person to create and operate multiple accounts, given that you follow the Community Guidelines'; 'a single Business Center can request access to up to 200 accounts'.",
+      "source": "TokPortal 'TikTok Multi-Account Policy for Brands in 2026'; Pixelscan 'Can You Have Multiple TikTok Accounts?'",
+      "source_date": "2026",
+      "kind": "official_policy",
+      "confidence": "medium",
+      "actionable": "Запрет висит не на количестве аккаунтов, а на (а) автоматизации создания/управления в объёме и (б) неаутентичном поведении. Значит в спеке имеет смысл разделять: создание аккаунтов — вручную/полуручно и редко; постинг — автоматизировать, но с человеко-подобным расписанием."
+    },
+    {
+      "claim": "В приложении TikTok лимит одновременно залогиненных профилей на устройство — 3 (часть источников говорит 3-6); один email и один телефон привязываются только к одному аккаунту.",
+      "evidence": "'the cap is 3 logged-in profiles per device fingerprint ... each requiring a unique phone number or email'; 'A single email address can only be associated with one TikTok account at a time, and a single phone number can only be associated with one TikTok account at a time'. Multilogin (06.09.2026) пишет 'maximum of 3 to 6 accounts on a single device'.",
+      "source": "Обзоры со ссылкой на TikTok Help Center: findmecreators.com, topqlearn.com, recurpost.com; Multilogin 'Can I Create Multiple TikTok Accounts?'",
+      "source_date": "2026-09 (Multilogin), 2026 (остальные)",
+      "kind": "platform_docs",
+      "confidence": "medium",
+      "actionable": "Константа для спеки: MAX_ACCOUNTS_PER_DEVICE_PROFILE = 3 (консервативно 1-2 для новорегов). Уникальный email на аккаунт обязателен; телефон по TikTok формально 1:1, но противоречие в источниках (Multilogin утверждает, что один номер можно переиспользовать) — считать 1:1 и не переиспользовать номера. Официальную страницу Help Center я не открыл напрямую — пометить как непроверенное."
+    },
+    {
+      "claim": "Datacenter-прокси для соцсетей непригодны: они распознаются мгновенно как не-пользовательский трафик; для TikTok иерархия доверия — mobile (4G/5G) > residential > ISP static > datacenter.",
+      "evidence": "'TikTok is a mobile-first app, so traffic from real 4G/5G carrier IPs looks exactly like a normal user, while datacenter IPs stand out instantly'; 'TikTok ... is quick to link and ban accounts that share an IP or come from a datacenter IP'. Причина устойчивости mobile: 'Mobile carriers route many real users through a single public IP via carrier-grade NAT, so when an anti-bot or fraud system blocks one of those IPs it risks knocking out a few thousand legitimate customers'.",
+      "source": "Proxyway 'The Best TikTok Proxies of 2026' (proxyway.com/best/proxies-for-tiktok); DataImpulse 'Best Mobile Proxies in 2026' (обновлено 06.09.2026)",
+      "source_date": "2026-09",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Константа: datacenter-прокси не использовать для постинга ни в одном гео. CGNAT-эффект — единственная фундаментальная причина, почему mobile IP реально живучее: платформа не может забанить IP без коллатерального ущерба. Это значит, что mobile IP переносит больше аккаунтов, чем residential."
+    },
+    {
+      "claim": "Практический стандарт индустрии — 1 аккаунт = 1 антидетект-профиль = 1 выделенный IP в стране аккаунта; переиспользование прокси между профилями — самый быстрый способ получить связку и кластерный бан.",
+      "evidence": "'The recommended safe limit is one account per IP. Sharing an IP across accounts is the fastest way to get flagged ... never reuse the same proxy across multiple profiles'; 'Give each account its own dedicated residential or mobile IP, in the country the account belongs to, and hold it sticky'.",
+      "source": "Coronium 'Complete Guide to Social Media Proxies & Multi-Account Management 2026'; Medium/gabrielewayner 'One account, one profile, one proxy'; Shifter, ProxyDime сводки",
+      "source_date": "2026",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Идеал 1:1 при 20 каналах × N гео экономически недостижим на $50-200/мес. В спеке заложить параметр ACCOUNTS_PER_IP с дефолтом 1 и допустимым 2-3 только на mobile IP (CGNAT уже мультиплексирует реальных юзеров). Для ISP static держать строго 1:1. Явно логировать маппинг account_id -> proxy_id -> geo и никогда не менять его без причины."
+    },
+    {
+      "claim": "Sticky-сессии у провайдеров ограничены сверху и сильно различаются: mobile обычно 1-2 часа, residential — от 10 минут до 7 дней.",
+      "evidence": "DataImpulse mobile — 'Rotating + sticky (2h max)'; SOAX mobile — 'sticky (1h max)', SOAX residential — 'Up to 7 days or X requests'; Decodo — 'Customizable up to 24 hours'; Byteful — 'up to seven days'; IPRoyal — '1s-24hr customizable'. Рекомендации практиков: 'Set sticky session duration to 6+ hours', 'Use sticky sessions (24 hours or more) to maintain IP consistency'.",
+      "source": "DataImpulse 'Best Mobile Proxies in 2026' (28.05.2026, upd 06.09.2026); Proxyway TikTok proxies 2026; HydraProxy 'Sticky vs Rotating'; Coronium guide 2026",
+      "source_date": "2026-09",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Критично для спеки: rotating residential с 1-2ч sticky НЕ подходит для долгоживущего аккаунта, т.к. через дни аккаунт увидит десятки разных IP/ASN. Правило: аккаунт должен видеть один IP на всю сессию и МЕДЛЕННО меняющийся IP между днями, желательно в пределах одного ASN и города. Отсюда: для постоянных аккаунтов приоритет ISP static (IP не меняется вообще) или dedicated mobile port; rotating pool — только для гео без ISP-покрытия, и тогда обязательно фиксировать country+city+ASN в параметрах сессии."
+    },
+    {
+      "claim": "TikTok детектит эмуляторы по ARM/x86 архитектуре, нулевым device ID, отсутствию или неестественной гладкости данных сенсоров, файлам QEMU, TTL/маршрутам и синтетическим touch-событиям; при детекте reach режется до нуля.",
+      "evidence": "Перечисленные сигналы: Build.SUPPORTED_ABIS и /proc/cpuinfo (x86/x64 вместо ARM); null/all-zero IMEI, serial, Android ID; отсутствие accelerometer/gyroscope/magnetometer или статичные данные; '/dev/socket/qemud', '/system/bin/qemu-props'; TTL и routing paths, отделение datacenter от cellular; 'simulated touch events with atypical pressure and timing distributions'. Последствия: 'accounts are shadowbanned (reach limited to zero), content-restricted, or suspended'.",
+      "source": "Conbersa 'How Does TikTok Detect Emulated Devices?' (conbersa.ai/learn/tiktok-emulator-detection-guide)",
+      "source_date": "2026-05",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Жёсткое правило спеки: НЕ использовать Android-эмуляторы (BlueStacks/LDPlayer/Nox/Genymotion) для TikTok-постинга. Прокси не спасает — детект идёт на уровне устройства, а не IP. Источник — вендор конкурирующего решения, т.е. заинтересованная сторона, но набор сигналов технически корректен и совпадает с отчётами практиков на BlackHatWorld."
+    },
+    {
+      "claim": "Детект окружения у TikTok работает на уровне КЛАСТЕРА, а не отдельного аккаунта: при распознавании общего browser-operated/emulated окружения флагуется вся группа аккаунтов сразу.",
+      "evidence": "'When the platform's classifier determines that a cluster of accounts shares a browser-operated or emulated environment, it does not flag individual accounts. It flags the entire cluster. Reach drops to zero across the portfolio.' Параллельно Multilogin: 'When TikTok detects multiple accounts operating from the same device, it treats this as suspicious and can shadowban all linked accounts simultaneously.'",
+      "source": "Conbersa 'How Does TikTok Detect Anti-Detect Browsers and Emulators?' (2026-05); Stormy AI 'How to Scale TikTok Accounts Without Getting Shadowbanned'; Multilogin (06.09.2026)",
+      "source_date": "2026-05 / 2026-09",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Архитектурное требование: сегментировать парк. Не класть все 20 каналов гео в один антидетект-аккаунт/одну машину/одну подсеть прокси одного провайдера. В спеке — параметр CLUSTER_SIZE (5-7 аккаунтов на изолированный сегмент: своя машина/облачный телефон, свой провайдер прокси, своя платёжка при оплате). Так потеря одного кластера не убивает сеть."
+    },
+    {
+      "claim": "Антидетект-браузер физически не воспроизводит мобильное окружение TikTok (SIM, GPS, сенсоры, app-store install context, advertising ID), поэтому для TikTok-дистрибуции это слабая инфраструктура; для Instagram/YouTube десктоп-веб он приемлемее.",
+      "evidence": "'An antidetect browser for TikTok separates browser profiles, but it does not recreate a real phone, carrier SIM, GPS, app session, or human posting pattern. Antidetect browsers are useful for separating desktop sessions; they are weak infrastructure for TikTok distribution.' Дополнительно к device-сигналам относят 'OS build fingerprints, advertising IDs, device serial numbers, hardware model strings' и 'app-store install context with verifiable traces from Play Store or Apple App Store'.",
+      "source": "TokPortal 'Antidetect Browsers vs Real Phones for TikTok'; Conbersa anti-detect detection mechanics (2026-05)",
+      "source_date": "2026",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Разделить стек по платформам: YouTube Shorts и Instagram Reels можно заливать через антидетект-браузер + ISP static (веб-загрузка официально поддерживается), TikTok — только через реальное/облачное ARM-устройство или TikTok Web Upload с максимально консистентным окружением. Противоположная точка зрения существует (Multilogin/AdsPower продают обратное) — это конфликт интересов вендоров, отметить как спорное."
+    },
+    {
+      "claim": "Cloud-phone (облачный Android на реальном ARM-железе) — компромисс между эмулятором и телефонной фермой; вендор заявляет в 3-5 раз ниже detection rate, чем у эмуляторов, при цене $0.007/мин или $29.9/устройство/мес.",
+      "evidence": "'Cloud phones are virtual Android devices with unique device fingerprints for multi-account management and provide 3-5x lower detection rates than Android emulators due to real ARM hardware'. Цены GeeLark: Free (2 профиля + 30 мин), Base от $5/мес, $0.007/мин, дневной cap $1.20/устройство, аренда $29.90/устройство/мес, parallel $39.90/мес, 2000 мин за $14.",
+      "source": "GeeLark Pricing (geelark.com/pricing) и GeeLark 'Cloud Phone' glossary; GeeLark 'Phone Farm Cost vs Cloud Phone Pricing: 2026 TCO' (upd 21.07.2026); GoLogin 'Geelark Review 2026'",
+      "source_date": "2026-07 / 2026",
+      "kind": "industry_data",
+      "confidence": "low",
+      "actionable": "Цифра '3-5x' — вендорское маркетинговое утверждение, независимых данных нет (нет данных). Но модель pay-per-minute даёт ключевую экономику для бюджета: 20 каналов × 10 мин/день × 30 дней = 6000 мин × $0.007 = $42/мес. В спеке заложить режим 'короткая сессия': залогиниться -> загрузить -> выйти, минимизируя минуты и трафик."
+    },
+    {
+      "claim": "Телефонная ферма — самый устойчивый вариант, но не влезает в бюджет $50-200/мес: capex 10 телефонов $500-5000, 100 телефонов $5000-35000+; Proxidize-кит 5 модемов $499 + $99/мес, 20 модемов $1699 + $389/мес, SIM $10-20/мес каждая.",
+      "evidence": "GeeLark TCO-таблица: 10 phones $500-5000, 50 phones $2500-17500, 100 phones $5000-35000+, драйверы — 'devices, cables, chargers, network setup', 'racks, power, cooling, replacements'. Proxidize: '5-modem Kit for $499 with monthly subscription of $99', '20-modem Kit costs $1699 with a monthly subscription of $389', 'SIM cards (~$10-20/month each)', 'Proxidize Connect Data Plans start at $39.99/SIM/month for unlimited data'. Сторонняя сборка: 'hardware costs start from $300/modem, with cloud service available from $150/month'.",
+      "source": "GeeLark 'Phone Farm Cost vs Cloud Phone Pricing' (21.07.2026); Proxidize kit pricing (proxidize.com/mobile-proxy-pricing); XProxy pricing (xproxy.io/pricing)",
+      "source_date": "2026-07",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Отбросить как стартовый вариант. Оператор из СНГ к тому же не может легально получить SIM-карты гео US/UK/SA/AE/EG/ID/PH/VN/TR/BR/NG без резидентства -> своя ферма даёт только IP страны, где он физически есть (СНГ), что бесполезно для англоязычного UK-позиционирования. Это делает покупку чужих mobile-прокси безальтернативной для целевых гео."
+    },
+    {
+      "claim": "Регион аккаунта TikTok фиксируется при регистрации по времени и месту создания и потом плохо меняется (ограничения вида ~90-дневного review); TikTok определяет локацию по совокупности IP + SIM + GPS + языку, а не только по IP.",
+      "evidence": "'Account region is anchored at signup, so an account created on a US IP with US device settings starts US-aligned'; 'TikTok may lock your region based on where you first registered your account'; 'TikTok uses multiple signals, including IP, SIM, GPS, and language, and if you change only one, like your IP via VPN, the app may still detect your real location'; упоминается '~90-day review'.",
+      "source": "MegaDigital 'How to Change Region on TikTok (2026)'; CometVPN 'How to Change Region on TikTok in 2026: 90-Day Limits'; VPNtoUS 'TikTok 90-Day Region Lock'",
+      "source_date": "2026",
+      "kind": "platform_docs",
+      "confidence": "medium",
+      "actionable": "Самое дорогое правило спеки: гео аккаунта задаётся ОДИН РАЗ на регистрации и менять его нельзя. Значит на этапе создания аккаунта уже должны совпадать: IP страны, timezone устройства, system locale/язык, язык клавиатуры, GPS-локация (если облачное устройство это позволяет), страна SMS-номера, страна платёжного профиля Google/Apple при установке приложения. Ошибка на регистрации = мёртвый канал, а не исправимый параметр. Источники — VPN/SMM-блоги, не официальный TikTok; статус '90 дней' считать low confidence."
+    },
+    {
+      "claim": "ISP static residential — самый дешёвый способ дать аккаунту постоянный IP с unlimited bandwidth ($0.225-3.00/IP/мес), но покрытие ограничено ~10-12 развитыми странами; MENA/SEA/Африка/СНГ/LATAM в дешёвых ISP-пулах отсутствуют.",
+      "evidence": "Webshare: '$0.225/proxy at 10,000-proxy volume', '$0.30/proxy for entry-tier 20-proxy plans', 'unlimited traffic' у IPBurger от $14.41/IP/мес. Список стран Webshare ISP: 'United States (nearly 30,000 available), Italy, France, the United Kingdom, Germany, Belgium, Canada, Japan, Australia, Poland, Sweden, Romania'. ProxyWing ISP: $3.00 за 1 IP, $2.00/IP на 50-200, $1.90/IP на 1000. Rayobyte ~$1.35, Proxy-Cheap ~$1.60, Byteful $2.50, IPRoyal $4.00 (~32 страны), NodeMaven $5.00, Decodo $9.99 за 3 IP.",
+      "source": "Webshare static-residential страница и Help Center; ProxyWing 'ISP Proxy Prices' (proxywing.com/prices/isp); SpyderProxy 'Cheapest Static Residential (ISP) Proxies 2026'; Proxyway 'Best Static Residential Proxies 2026'; Caproxy 'Top 12 ISP Proxy Providers 2026'",
+      "source_date": "2026",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Ключевая развилка для спеки: UK/US/DE/FR/IT/CA/AU/PL/SE/RO/BE/JP -> ISP static, 1 IP на аккаунт, unlimited трафик, стоимость предсказуема ($0.30-2.00/IP/мес). SA/AE/EG/ID/PH/VN/TR/BR/NG/KZ -> ISP нет, только rotating residential или mobile с метрируемым GB -> стоимость зависит от трафика и это главная статья риска бюджета. Внимание на подвох: часть дешёвых ISP 'cap bandwidth at 2-10 GB per IP per month, lease from overlapping /24 subnets, or sell rotating residential IPs dressed up as static' — перед закупкой проверять ASN и /24-разброс."
+    },
+    {
+      "claim": "Заявленные цены residential-прокси систематически расходятся с реальной ценой входа при малом объёме: разница до 26x (Infatica $0.30 заявлено vs $8.00 фактически).",
+      "evidence": "Proxidize Pricing Index: Infatica '$0.30/GB advertised' -> '$8/GB PAYG entry'; Rayobyte '$0.90 advertised' -> '$7.50 PAYG entry'; IPRoyal '$1.75 advertised' -> '$7-7.35 entry'; SOAX '$0.32 (enterprise)' -> '$3.60 starter'; Webshare '$1.40 promo' -> '~$7 at 1GB'; Massive '$1.60-2.99 marketing' -> '$8 site starter'. Независимо: 'advertised rates run $0.49-$4.90/GB, but effective rates for a 5 GB/month buyer run $1.00-$40.00/GB'.",
+      "source": "Proxidize 'Proxy Pricing Index 2026' (опубл. 22.07.2026, изм. 24.08.2026); Serpent API 'What Residential Proxies Actually Cost per GB'",
+      "source_date": "2026-07 / 2026-08",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Не планировать бюджет по заявленным ценам. Для малого объёма (5-50 GB/мес) реально доступны без минималок: DataImpulse $1/GB, Proxidize $1/GB, Evomi ~$0.99/GB. Остальные при таком объёме дают $3.5-8/GB, т.е. в 4-8 раз дороже. Proxidize — заинтересованная сторона (сама продаёт прокси), но их индекс — единственный найденный источник с разделением advertised/actual, пометить."
+    },
+    {
+      "claim": "Mobile-прокси за 2023-2025 подешевели до -98% (с >$25/GB к ~$0.50-2/GB), но dedicated-порт остался дорогим и жёстко зависит от страны.",
+      "evidence": "'Mobile pricing fell as much as 98%', 'Mobile costs dropped from more than $25 per GB down toward $0.50'; 'Residential proxy rates contracted by up to 75%' за 2023-2025. При этом dedicated: 'Dedicated mobile ports are usually priced per day ($10/day on IPRoyal) or per month ($100+/port)'; 'Proxies from Germany cost more than $100 per month', 'Poland ~$50 per month'; 'entry plan for USA 5G mobile proxies starts from $250/month, while the multi-country package starts from $125/month'; 'UAE at +25% above base rates'; Индонезия ~$60 (Cyberyozh, LteSocks).",
+      "source": "Proxidize 'Proxy Pricing Index 2026' (22.07.2026); ProxyWing 'Best Mobile Proxies'; Litport pricing; Caproxy 'Top 10 4G/5G Mobile Proxies 2026'",
+      "source_date": "2026-07",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Экономика: dedicated mobile порт под каждый канал невозможен (20 каналов × $55-250 = $1100-5000/мес). Следствие для спеки: mobile IP использовать ТОЧЕЧНО — только на момент регистрации аккаунта и на первые дни прогрева (самый рискованный этап), затем переводить аккаунт на постоянный ISP static (если гео покрыто) или на sticky residential. Это снижает mobile-затраты до ~$4/день × N параллельных регистраций."
+    },
+    {
+      "claim": "Сессионное таргетирование по оператору/ASN доступно у части провайдеров, и сопоставление IP с реальным ASN оператора нужной страны технически проверяемо.",
+      "evidence": "DataImpulse mobile: таргетинг 'country/city/state/ZIP/ASN', 16M+ IP, 195 стран, $2/GB. SOAX: 'country/region/city/ISP/ASN', 33M+, $3.60/GB. Bright Data: 'country/city/ZIP/carrier/ASN', $8/GB. Oxylabs: 'continent/country/state/city/ASN', 140+ стран, от $7.50/GB. Decodo: '160+ locations, 700+ carriers cited'. IPRoyal: 'country/city/carrier/network type'. Реестр операторов: 'PROXIES.SX Mobile Carrier & ASN Registry includes 134 mobile operators in 44 countries with ASNs, MCC/MNC codes and RIPEstat prefix counts'.",
+      "source": "DataImpulse 'Best Mobile Proxies in 2026' (upd 06.09.2026); PROXIES.SX Carrier & ASN Registry Dataset (CC BY 4.0, proxies.sx/carriers/dataset)",
+      "source_date": "2026-09",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "В спеку добавить обязательную валидацию IP перед сессией: получить ASN/ISP/country/city по IP и сверить с ожидаемым профилем аккаунта; при несовпадении — не начинать сессию, а брать новую. Датасет PROXIES.SX (CC BY 4.0) можно машинно затянуть как справочник ожидаемых ASN на страну."
+    },
+    {
+      "claim": "Конкретные ASN мобильных операторов подтверждены для US, UK, DE и TR; для SA, AE, EG, ID, PH, VN, BR, NG, KZ конкретных ASN в найденном датасете нет — только названия операторов.",
+      "evidence": "US: AT&T AS20057/AS2685/AS2686/AS6389/AS7018; T-Mobile AS6614/AS21928/AS17133; Verizon AS6167/AS6256/AS22394. UK: EE AS2856; O2 AS29180; Vodafone AS25135. DE: Deutsche Telekom AS3320; Vodafone AS3209; O2 AS6805. TR: Turkcell AS16135; Vodafone Turkiye AS15897; Turk Telekom/TTNet AS9121; Superonline AS34984. Названия без ASN: SA — Mobily, STC, Zain; AE — du, Etisalat, Virgin Mobile; BR — Claro, TIM, Vivo. Для EG, ID, PH, VN, NG, KZ — нет данных в найденных источниках.",
+      "source": "PROXIES.SX Carrier & ASN Registry Dataset; VoidMob 'Mobile Proxies in Turkey'; DataImpulse 'Best Türkiye Proxies in 2026'; Holafly eSIM carriers list 2026",
+      "source_date": "2026",
+      "kind": "platform_docs",
+      "confidence": "medium",
+      "actionable": "Заложить в скрипт таблицу expected_asn[country] с подтверждёнными значениями выше; для остальных гео — заполнять из RIPEstat/BGP на этапе настройки, а не из блогов. Явно пометить в конфиге 'нет данных' и требовать ручного заполнения перед запуском гео."
+    },
+    {
+      "claim": "Консистентность окружения должна быть сквозной: страна IP + ASN, timezone, system locale и язык интерфейса, язык клавиатуры, страна SMS-номера, страна платёжного/аккаунтного профиля (Google/Apple), device model string, advertising ID, GPS.",
+      "evidence": "Детект-сигналы, перечисленные платформой/аналитиками: 'OS build fingerprints, advertising IDs, device serial numbers, and hardware model strings', 'app-store install context with verifiable traces from Play Store or Apple App Store', 'ASN, routing paths, TTL values'. TikTok 'uses multiple signals, including IP, SIM, GPS, and language'. Рекомендация вендора: 'built-in mobile-grade proxy that matches the device's geolocation'.",
+      "source": "Conbersa anti-detect detection mechanics (2026-05); MegaDigital region guide 2026; Multilogin (06.09.2026)",
+      "source_date": "2026-05 / 2026-09",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Спека: единый объект GeoProfile на аккаунт — {country, city, asn_whitelist[], tz_iana, locale, ui_lang, keyboard_langs[], sms_country, store_country, gps_lat_lon, device_model, ua_string}. Скрипт должен отказываться постить, если хоть одно поле не совпадает с фактическим состоянием устройства/прокси. Прямого подтверждения, что TikTok сверяет именно IP-timezone mismatch, в источниках НЕТ (Conbersa это явно не заявляет) — держать как разумную гигиену, а не как доказанный сигнал."
+    },
+    {
+      "claim": "SMS-Activate — крупнейший сервис SMS-номеров — закрылся 29.12.2025; трафик перенаправлен на HeroSMS; домен smsactivate.com остался активным с фейковым инвентарём и невозвратными депозитами.",
+      "evidence": "'SMS-Activate (sms-activate.org) permanently shut down on December 29, 2025 and is no longer operational ... operations transferred to Hero-SMS.com'. 'Despite this official brand shutdown, the smsactivate.com domain has intentionally been left active with a fake inventory of available virtual numbers prompting users to make deposits, while deposited funds either fail to appear or become permanently locked'.",
+      "source": "bitbrowser.net 'SMS-Activate Shutdown'; sms-act.net 'SMS-Activate Alternatives 2026'; sms-man.com 'SMS-Activate Closed'; smscode.gg 'SMS-Activate Shut Down'",
+      "source_date": "2026",
+      "kind": "practitioner_report",
+      "confidence": "low",
+      "actionable": "ВАЖНО: все найденные источники этого утверждения — сайты конкурирующих SMS-сервисов, т.е. мотивированные стороны. Официального подтверждения от самого SMS-Activate я не нашёл. Практический вывод для спеки одинаков в любом случае: не держать крупный депозит ни в одном SMS-сервисе, использовать 5sim (подтверждённо работает, живые цены и delivery-rate на странице) как основной, второй сервис как резерв, и тестировать мелким депозитом ($5-10) перед объёмом."
+    },
+    {
+      "claim": "Цена SMS-номера для TikTok на 5sim — $0.013-0.32 в зависимости от страны, при delivery rate 60-85%, что означает реальную цену успешной активации в 1.2-1.7x выше номинала.",
+      "evidence": "5sim, страница TikTok: минимальная цена $0.013, 140 стран, 340 операторов, лучший delivery 85%. Конкретно: Brazil $0.1282 / 84.62% delivery / 313 665 номеров; Poland $0.1282-0.13 / 73.91-81.48% / до 397 826; Indonesia $0.0643 / 75.89% / 1178; Germany $0.20 / 73.08% / 155; Netherlands $0.075 / 69.3% / 477 114; Vietnam $0.08 / 68.89% / 346; Australia $0.3205 / 72.73% / 17. HeroSMS: Instagram+Threads $0.015, Google/Facebook $0.02, Telegram $0.13, WhatsApp $0.15, скидки до 40%.",
+      "source": "5sim.net/products/tiktok (живые данные на 2026-09-12); HeroSMS pricing via hero-sms.com и yoobfriv.com 'SMS Activation Services in 2026'",
+      "source_date": "2026-09-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "SMS — ничтожная статья расходов: 100 аккаунтов × $0.15 × 1.5 (retry) = ~$23 разово. Но обратить внимание на СКЛАД: Germany всего 155 номеров, Vietnam 346, Australia 17 -> для DE/VN/AU масштабирование упрётся в отсутствие номеров, а не в цену. Для US/UK конкретных цифр на странице не было (нет данных). В спеке: перед запуском гео проверять count доступных номеров через API 5sim и отклонять гео при stock < 500."
+    },
+    {
+      "claim": "YouTube с 15.07.2025 официально усилил политику против 'mass-produced and repetitious content'; массовые однотипные авто-загрузки прямо попадают под неё, вплоть до термина канала.",
+      "evidence": "'On July 15, 2025, YouTube updated its guidelines to better identify mass-produced and repetitious content'; 'YouTube does not allow use of automated tools or AI to churn out high volumes of similar content with minimal changes'; 'Publishing multiple similar videos quickly may trigger review systems'. Масштаб энфорсмента: 'YouTube cracks down, deletes 4.7b views of AI spam videos'.",
+      "source": "YouTube Help 'Spam Policy' (support.google.com/youtube/answer/2801973); Music Ally 'YouTube updates mass-produced and repetitious content policy' (10.07.2025); The Express Tribune (2026)",
+      "source_date": "2025-07 / 2026",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Для YouTube Shorts главный риск — НЕ инфраструктура, а однотипность контента между 20 каналами. Спека должна обеспечивать не только разные IP, но и разные монтаж/хук/озвучку/обложку на каждый канал, иначе кластер по контенту сработает даже при идеальной прокси-гигиене. Заложить параметр CONTENT_VARIANT_PER_CHANNEL и запрет на публикацию одного и того же рендера в более чем 1 канал."
+    },
+    {
+      "claim": "Instagram/Meta разрешает автоматизацию только через официальный Graph API у verified-партнёров; browser-боты и activity-based автоматизация (лайки/подписки/DM) запрещены; в 2026 фиксируются волны банов по 'account integrity'.",
+      "evidence": "'API-based automation through official, Meta-verified partners is allowed; activity-based automation and API abuse are not'; 'Instagram's platform policies allow API-based messaging within their guidelines, while prohibiting unauthorized scraping or browser-based bots that simulate human behavior'; лимит '~200 DMs/hour'. Отмечается 'Instagram's New Account Integrity Ban Wave'.",
+      "source": "IceKulfi 'Instagram Automation Rules 2026'; QuickDM 'Instagram Automation in 2026'; Medium 'Instagram Account Integrity Ban Wave'; Storrito",
+      "source_date": "2026",
+      "kind": "official_policy",
+      "confidence": "medium",
+      "actionable": "Для Reels: публикация через официальный Instagram Graph API (Content Publishing) — единственный низкорисковый путь, но требует Business/Creator-аккаунт + связанную FB Page + прохождение App Review, что для 20 новорег-аккаунтов на гео нереалистично и само выглядит подозрительно. Реалистичный вывод: Reels заливать вручную-подобно через антидетект/облачное устройство, приняв ToS-риск, ИЛИ ограничить Instagram ролью вторичного канала."
+    },
+    {
+      "claim": "Средняя успешность residential-прокси на 'трудных' целях в 2026 — медиана 74.43%, лучший результат 81.23%, т.е. в норме каждая 4-5-я попытка соединения/действия провалится.",
+      "evidence": "'Easy targets median: 99.28%'; 'Hard targets median: 74.43%'; 'Best performer on hard targets: 81.23%'.",
+      "source": "Proxidize 'Proxy Pricing Index 2026' (22.07.2026)",
+      "source_date": "2026-07",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Спека должна проектироваться на отказы: retry с экспоненциальной задержкой, ротация IP ТОЛЬКО в пределах того же country+city+ASN, идемпотентность загрузки (не постить дважды при неопределённом ответе), и метрика success_rate на прокси-провайдера с авто-переключением при падении ниже порога (например 60%)."
+    },
+    {
+      "claim": "Оценка трафика: именно bandwidth, а не цена IP, съедает бюджет $50-200/мес в гео без ISP-покрытия — при in-app прогреве 20 каналов дают 60-90 GB/мес на одно гео.",
+      "evidence": "Расчёт на основе подтверждённых цен ($1/GB DataImpulse residential, $2/GB mobile) и типового веса короткого вертикального видео + потокового потребления фида. Конкретных измерений расхода GB на TikTok-сессию в найденных источниках НЕТ.",
+      "source": "INFERENCE на базе Proxidize Pricing Index 2026 и DataImpulse pricing; источника с замерами трафика TikTok-сессии не найдено",
+      "source_date": "2026-09",
+      "kind": "inference",
+      "confidence": "low",
+      "actionable": "Жёсткие правила спеки: (1) запретить скролл фида через метрируемый прокси — прогрев только на unlimited ISP static или в первые дни на dedicated mobile порт; (2) сжимать загружаемое видео до минимально приемлемого битрейта (целевой размер < 8 MB на 15-30 с); (3) вести учёт GB на аккаунт с hard-cap (например 1.5 GB/аккаунт/мес) и авто-остановкой; (4) в гео без ISP-покрытия держать меньше каналов (5-8 вместо 20)."
+    },
+    {
+      "claim": "Оператор из СНГ сталкивается с двумя отдельными ограничениями, не связанными с прокси: невозможность легально получить SIM целевых стран и риск отказа платёжных систем при оплате инфраструктуры/подписок из СНГ.",
+      "evidence": "Косвенно: проекту нужны номера US/UK/SA/AE/EG/ID/PH/VN/TR/BR/NG/KZ, что решается только покупными виртуальными номерами (5sim, 140 стран). Bright Data требует 'Full KYC'. Прямых данных по отказам платёжек для СНГ-операторов в найденных источниках нет.",
+      "source": "Proxyway 'Best TikTok Proxies 2026' (о KYC Bright Data); INFERENCE по остальному — нет данных",
+      "source_date": "2026",
+      "kind": "inference",
+      "confidence": "low",
+      "actionable": "Выбирать провайдеров без KYC и с крипто/альтернативной оплатой (DataImpulse, 5sim, Dolphin Anty исторически лояльны к СНГ), исключить Bright Data/Oxylabs как enterprise с KYC. В спеке предусмотреть 2 независимых провайдера прокси и 2 SMS-сервиса на случай блокировки платежа, и не держать в аккаунтах провайдеров депозит больше месячного бюджета."
+    }
+  ],
+  "machine_spec_notes": [
+    "КОНСТАНТЫ ЗАПРЕТА: PROXY_TYPE_BLACKLIST = ['datacenter']; DEVICE_ENV_BLACKLIST = ['android_emulator'] (BlueStacks/LDPlayer/Nox/Genymotion) для TikTok; никогда не переиспользовать proxy_id между account_id при type='isp_static'.",
+    "GeoProfile — обязательная неизменяемая сущность на аккаунт, фиксируется на регистрации: {country, city, asn_whitelist[], tz_iana, locale, ui_lang, keyboard_langs[], sms_country, store_country, gps_lat_lon, device_model, ua_string, proxy_id}. Скрипт ОТКАЗЫВАЕТ в сессии при несовпадении любого поля с фактическим состоянием. Смена country после регистрации запрещена (регион TikTok якорится при signup).",
+    "PRE_SESSION_VALIDATION: перед каждой сессией запросить внешний IP, получить country/city/ASN, сверить с GeoProfile.asn_whitelist; при mismatch — взять новый IP, не стартовать сессию. Справочник expected_asn[country] предзаполнить подтверждёнными: US AT&T AS7018/AS20057/AS2685/AS2686/AS6389, T-Mobile AS6614/AS21928/AS17133, Verizon AS6167/AS6256/AS22394; GB EE AS2856, O2 AS29180, Vodafone AS25135; DE DT AS3320, Vodafone AS3209, O2 AS6805; TR Turkcell AS16135, Vodafone AS15897, Turk Telekom AS9121. Для SA/AE/EG/ID/PH/VN/BR/NG/KZ — поле пустое, требует ручного заполнения (нет данных).",
+    "MAX_ACCOUNTS_PER_DEVICE_PROFILE = 3 (дефолт 1 для новорегов, до 3 после 30+ дней). ACCOUNTS_PER_IP: isp_static = 1 (жёстко), mobile_dedicated = 1-3, residential_sticky = 1. Один email = один аккаунт, один SMS-номер = один аккаунт, номера не переиспользовать.",
+    "STICKY_SESSION_POLICY: аккаунт видит один IP на всю сессию. Максимумы провайдеров зашить как лимиты: DataImpulse mobile 7200 s, SOAX mobile 3600 s, SOAX/Byteful residential до 604800 s, Decodo/IPRoyal до 86400 s. При ротации между днями — только тот же country+city+ASN.",
+    "CLUSTER_SIZE = 5-7 аккаунтов на изолированный сегмент. Сегмент = своя машина/облачное устройство + свой прокси-провайдер + своя /24-группа + свой платёжный метод. Не смешивать все 20 каналов гео в одном антидетект-аккаунте или одной подсети (детект TikTok работает кластером).",
+    "BANDWIDTH_GUARD: hard-cap GB на аккаунт (дефолт 1.5 GB/мес) с авто-стопом; запрет in-app скролла фида через метрируемый (per-GB) прокси; целевой размер рендера < 8 MB на 15-30 s; учёт bytes_used по proxy_id и account_id в БД.",
+    "ROUTING_MATRIX по гео: ['US','UK','DE','FR','IT','CA','AU','PL','SE','RO','BE','JP'] -> isp_static, unlimited BW, $0.30-2.00/IP/мес; ['SA','AE','EG','ID','PH','VN','TR','BR','NG','KZ'] -> residential_sticky или mobile, per-GB billing, снизить число каналов до 5-8 на гео вместо 20.",
+    "MOBILE_IP только на критичных этапах: регистрация аккаунта + первые 3-7 дней прогрева (dedicated port $4/день ProxyWing или IPRoyal $10.11/24ч), затем перевод на постоянный isp_static/sticky. Так mobile-затраты масштабируются по числу ПАРАЛЛЕЛЬНЫХ регистраций, а не по числу каналов.",
+    "RETRY_POLICY: ожидать success rate ~74% на 'hard targets'; экспоненциальный backoff, идемпотентный upload (dedup по content_hash), метрика success_rate на провайдера с авто-отключением провайдера при < 60%.",
+    "SMS_MODULE: основной 5sim (API, 140 стран, 340 операторов, $0.013-0.32/номер), резервный HeroSMS. Перед запуском гео проверять stock номеров через API и отклонять гео при stock < 500 (Germany 155, Vietnam 346, Australia 17 — недостаточно). Депозит не более $10-20 за раз. НЕ использовать домен smsactivate.com (по данным конкурентов — фейковый инвентарь после закрытия 29.12.2025, low confidence).",
+    "CONTENT_VARIANT_PER_CHANNEL = обязателен: один рендер = один канал. YouTube с 15.07.2025 явно наказывает 'mass-produced and repetitious content' — разные IP не спасают от кластеризации по контенту.",
+    "PLATFORM_ROUTING: TikTok -> cloud phone (ARM) или реальное устройство, НЕ браузер, НЕ эмулятор; YouTube Shorts -> антидетект-браузер + isp_static (веб-загрузка штатная); Instagram Reels -> либо Graph API Content Publishing (нужен Business + FB Page + App Review, нереалистично для 20 новорегов), либо антидетект/облачное устройство с принятием ToS-риска.",
+    "PROVIDER_SHORTLIST под бюджет (без KYC, per-GB без минималок): DataImpulse residential $1/GB и mobile $2/GB; Proxidize $1-2/GB; Evomi ~$0.99/GB. ISP static: Webshare $0.225-0.30/IP (мин. 20 IP), Rayobyte ~$1.35/IP, ProxyWing $2.00/IP на 50+. Исключить Bright Data и Oxylabs (KYC, $6-8/GB реальная цена входа). Перед закупкой ISP проверять реальный ASN и разброс /24 (часть дешёвых пулов — rotating под видом static, либо cap 2-10 GB/IP/мес)."
+  ],
+  "risks": [
+    "ToS TikTok прямо запрещает 'using automation to register or operate accounts in bulk' и автоматизированное взаимодействие со сервисом — вся схема нарушает ToS. Последствия по документации/отчётам: shadowban (reach -> 0), content restriction, suspension. Вероятность потери отдельных аккаунтов при массовом авто-заливе новорегов — высокая (нет данных по точному %, практики говорят о регулярной потере части парка).",
+    "Кластерный бан: TikTok флагует не отдельный аккаунт, а всю группу, делящую browser-operated/emulated окружение. Один просчёт в изоляции = потеря всех 20 каналов гео одновременно. Это главный системный риск проекта.",
+    "Эмуляторы Android для TikTok практически бесполезны: детект по x86-ABI, нулевым device ID, отсутствию/статичности сенсоров, QEMU-файлам, TTL. Инвестиция в эмулятор-стек — вероятно выброшенные деньги и время.",
+    "Регион аккаунта фиксируется при регистрации и меняется плохо (упоминается ~90-дневный review). Ошибка в консистентности на этапе регистрации не исправляется — канал под нужное гео придётся создавать заново.",
+    "Bandwidth-риск: в гео без ISP-покрытия (MENA/SEA/Африка/LATAM/СНГ) счёт за трафик может неконтролируемо вырасти до $60-90/мес на ОДНО гео при in-app прогреве, что одно выносит весь бюджет $50-200. Без hard-cap на GB проект уйдёт в перерасход.",
+    "Мимикрия цен: заявленные $0.30-1.75/GB у Infatica/Rayobyte/IPRoyal на деле $7-8/GB при малом объёме. Планирование по маркетинговым ценам даст ошибку бюджета в 4-26 раз.",
+    "Дешёвые ISP static нередко оказываются: rotating под видом static, из перекрывающихся /24 (значит соседние аккаунты в одной подсети -> связка), либо с cap 2-10 GB/IP/мес. Риск заплатить за 'static', получить связывание аккаунтов.",
+    "Риск SMS-сервисов: по данным конкурентов SMS-Activate закрылся 29.12.2025, а домен smsactivate.com продолжает принимать невозвратные депозиты. Подтверждения от самого сервиса нет. Депозиты в SMS-сервисах — незащищённые деньги.",
+    "YouTube: политика от 15.07.2025 против 'mass-produced and repetitious content' + удаление 4.7 млрд просмотров AI-спама. Для Shorts-сети риск термина канала идёт от однотипности контента, а не от прокси — идеальная прокси-гигиена не защищает.",
+    "Instagram/Meta: browser-based боты и activity-based автоматизация прямо запрещены; официальный путь (Graph API + Business + FB Page + App Review) для 20 новорег-аккаунтов на гео практически недостижим. Волны 'account integrity'-банов в 2026 фиксируются.",
+    "Платёжный риск оператора из СНГ: enterprise-провайдеры требуют полный KYC (Bright Data явно), возможны отказы платежей. Риск заморозки депозитов у провайдеров. Мера — 2 независимых провайдера и минимальные остатки на балансах.",
+    "Своя SIM-ферма не решает задачу: оператор из СНГ не может легально получить SIM US/UK/SA/AE/EG/ID/PH/VN/TR/BR/NG, поэтому останется зависим от покупных mobile-прокси целевых гео — это постоянная точка отказа и главная статья расхода."
+  ],
+  "open_questions": [
+    "Фактический расход трафика (MB) на одну TikTok-сессию загрузки видео и на минуту скролла фида — измерений в источниках не найдено. Нужен собственный замер на 1 аккаунте за 7 дней перед масштабированием: без этой цифры бюджет на GB непредсказуем.",
+    "Реальная (не вендорская) разница в detection rate между cloud phone на ARM, антидетект-браузером и физическим телефоном для TikTok. Все найденные цифры ('3-5x лучше эмулятора') исходят от продавцов решений. Независимых данных нет.",
+    "Официальная страница TikTok Help Center с лимитом аккаунтов на устройство напрямую не открыта; источники третьих сторон противоречат друг другу (3 vs 3-6) и расходятся в вопросе, можно ли переиспользовать один телефонный номер. Требует прямой проверки.",
+    "Статус закрытия SMS-Activate подтверждён только сайтами конкурирующих SMS-сервисов. Официального анонса не найдено. Нужна проверка малым депозитом или прямой контакт.",
+    "Конкретные ASN мобильных операторов для SA, AE, EG, ID, PH, VN, BR, NG, KZ — нет данных в найденных источниках (только названия операторов). Требуется выгрузка из RIPEstat/BGP-данных по MCC/MNC.",
+    "Точные цены ISP static по конкретным странам (не средние по тиру) — провайдеры их не публикуют публично; известно только, что 'US ISP proxies costing 50-100% more than IPs from Latin America, Asia, or Africa'. Нужны запросы в поддержку провайдеров.",
+    "Цена и доступность SMS-номеров TikTok конкретно для US и UK на 5sim — на просмотренной странице этих строк не было (нет данных).",
+    "Есть ли у cloud-phone провайдеров (GeeLark, GoLogin Cloud Android, VMOS, Redfinger) реальные ARM-устройства в нужных гео и можно ли им задать GPS страны — не проверено. Если устройства физически в одном датацентре, все аккаунты получат общий географический сигнал устройства.",
+    "Держит ли TikTok связку через платёжный профиль Google Play / Apple ID при установке приложения на облачном устройстве, и насколько это сильный сигнал кластеризации — прямых данных нет.",
+    "Есть ли смысл в гибриде 'TikTok Web Upload через ISP static' вместо мобильного устройства: официально поддерживается, но эффект на распределение (For You) относительно загрузки из приложения не документирован — нет данных."
+  ]
+}

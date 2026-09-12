@@ -1,0 +1,364 @@
+{
+  "dimension": "hardware_side",
+  "summary": "ВЕРДИКТ ПО ТРЁМ КАТЕГОРИЯМ.\n\n(1) КОВРИКИ — ЕДИНСТВЕННАЯ РЕАЛИСТИЧНАЯ, но не как источник денег, а как реквизит/мерч. POD-себестоимость подтверждена: Printful Desk Mat $9.89, Gaming Mouse Pad $11.95, обычный pad $9.31 (printful.com, 2026-09-12); Printify pads от $4.37, desk mats от $9.70; Gooten $4.90-5; HugePOD (Китай) $3.10/$7.86; Prodigi UK £6 / £18 gaming (thecleverbusiness.com, 2026-01-02). Доставка Printful: аксессуары ~$4.29-4.99 first item по США, 8-25 раб. дней международно; 26.02.2026 Printful поднял тарифы именно по аксессуарам. При ретейле $29.99 и in-region фулфилменте юнит-экономика: COGS $9.89 + шип $5 + платёжка $1.17 = $16.06 → gross ~$13.9 (46%), net после резерва на брак/возвраты ~$12-13 (40-43%). Это 2-3 месяца подписки по $5-7 за один коврик — то есть коврик НЕ масштабируемая выручка, а инструмент доверия и UGC-реквизит. Альянс с Alibaba (кастом $0.45-3.49/шт при MOQ 100-1000, $0.10-0.85 только от 1000 шт) даёт gross ~60-65%, но требует $300-3500 предоплаты + 3PL в стране назначения, чего при бюджете $50-200/мес нет.\n\n(2) НОУТБУКИ И МИНИ-ПК — НЕВЫПОЛНИМО, вердикт отрицательный, причём не \"низкая маржа\", а отрицательное математическое ожидание. Gross 10-15%, net 6-8% на мид-рейндже; gaming-ноуты 20-25% gross (scaleorder.com, 2025-11-07 — практик/вендорский блог, medium confidence). Разобранный пример: ноут $800 ретейл → net ~$48 (6%). При этом один возврат стоит $60-100, один гарантийный кейс ~$120, один chargeback на $800 ноут = минус $800 + $15-50 fee. Return rate 5-8%, defect rate 4-6% у дешёвых поставщиков, fraud ~1%. На 100 заказах: net $4800 минус 6 возвратов ($480) минус 1 chargeback ($850) = ~$3470, и это ДО стоимости хранения, RMA-логистики и налогов. Реселл требует MOQ-предоплаты порядка $27,000 (50 шт × $540) — в 135-540 раз выше месячного бюджета. Плюс WEEE: при продаже с собственного сайта (не через маркетплейс) продавец = producer, нужна регистрация и Authorised Representative в каждой стране ЕС; в UK поправка 2025 переложила ответственность на маркетплейсы только для продаж ЧЕРЕЗ маркетплейс. Мини-ПК: ретейл $450-1250 (fateka.com, 2026), Beelink = Shenzhen AZW, оптовый канал wholesale@bee-link.com, но публичной дилерской маржи нет данных; бренды сами торгуют почти по street price на Amazon/AliExpress → инференс: single-digit маржа. Единственная допустимая форма участия в железе — АФФИЛИАТ (0 склада, 0 гарантии, 0 WEEE); точные ставки комиссий проверить отдельно, нет данных.\n\n(3) РЕГИОНЫ. Работать физикой можно только там, где есть локальный POD-фулфилмент: US, UK, EU, CA, AU/NZ, JP. Причина №1 — таможня: США отменили de minimis $800 для ВСЕХ стран с 29.08.2025 00:01 EDT (EO 14324), продлено февралём 2026, Federal Register 24.06.2026 — бессрочная приостановка для непочтовых каналов; то есть любая посылка из Китая в США теперь облагается. ЕС отменяет освобождение €150 с 01.07.2026 (решение Совета 13.11.2025), вводится плоские €3 за 4-значную позицию до запуска EU Customs Data Hub (сер. 2028) + ожидаемые €2 handling fee за строку декларации не позднее 01.11.2026 → в сумме €5. UK: отмена duty relief £135 ускорена с 01.03.2029 на 01.10.2028 (объявлено 23.06.2026, драфт 13.07.2026), import VAT не меняется, обсуждается институт \"fiscal representative\" — британская фирма с солидарной ответственностью за таможенный долг зарубежного продавца. ВЫВОД-ПРАВИЛО: печать и отправка ВСЕГДА внутри региона покупателя — это убирает таможню целиком. LATAM/MENA/India/SEA/Africa — физику не предлагать (15-30 дней, высокий undeliverable). Printify НЕ доставляет в РФ и Беларусь — оператор не сможет заказать даже сэмпл себе домой.\n\n(4) СОВМЕСТИМОСТЬ С ПОДПИСКОЙ. Физика ломает автоматизацию в четырёх точках, и только одна из них решается скриптом: (a) фулфилмент — решается, у Printful/Printify/Prodigi есть order API; (b) платёжка — НЕ решается: Stripe недоступен в RU/BY/KZ/UA/GE/AM/KG/UZ (stripe.com/global, 2026-09-12), значит подписка у СНГ-оператора скорее всего идёт через MoR (Paddle/Lemon Squeezy), а они позиционированы под digital/SaaS — явного запрета физики в найденных источниках нет данных, но рассчитывать на неё нельзя → физика требует ОТДЕЛЬНОГО Stripe/Shopify Payments аккаунта и реального юрлица (UK LTD / EE OÜ / US LLC); (c) комплаенс — НЕ автоматизируется: GPSR действует с 13.12.2024, не-ЕС продавцу нужен EU Responsible Person, на этикетке/вкладыше обязательны имя+адрес производителя, идентификатор партии и контакты RP; EPR-регистрации POD-провайдера использовать НЕЛЬЗЯ (Prodigi формулирует прямо), PPWR первые требования с 12.08.2026; единственный найденный чистый путь — Prodigi выступает EU RP (Prodigi B.V., Jan van Riebeeckweg 15, 5928 LG Venlo, NL) но только для товаров, фулфилленных исключительно Prodigi; (d) возвраты — UK: 14 дней на отмену с момента получения + 14 дней на возврат + 14 дней на рефанд, НО персонализированные/сделанные на заказ товары исключены из cooling-off (gov.uk); ЕС: минимум 2 года законной гарантии, дефект в первый год не требует доказательств (europa.eu). Отсюда рабочий приём: коврики продавать как made-to-order/персонализированные (юридически снимает cooling-off), а не как склад готовых дизайнов.\n\nИТОГ ОДНОЙ СТРОКОЙ: коврики — да, но как ~40% net на низком обороте, апселл/лояльность и реквизит для видео; ноутбуки и мини-ПК — нет, только аффилиат; регионы — US/UK/EU/CA/AU/JP с обязательным локальным фулфилментом; физика не убьёт автоматизацию только если её вынести в отдельный магазин с отдельной платёжкой и in-region POD через API.",
+  "findings": [
+    {
+      "claim": "Printful базовые цены на коврики: Desk Mat $9.89, Gaming Mouse Pad $11.95, стандартный Mouse Pad $9.31 (USD, base/fulfillment cost, без доставки и налогов)",
+      "evidence": "Со страниц товаров Printful: gaming mouse pad structured data \"price\":11.95,\"priceCurrency\":\"USD\"; Desk Mat base price $9.89; Mouse Pad $9.31. Printful указывает, что цена зависит от техники печати, размещения принта, размера и локации фулфилмента; доставка и налоги сверху; в Северной Америке фиксированная цена в USD, в Европе — в EUR",
+      "source": "printful.com/custom/mouse-pads/personalized/gaming-mouse-pad, /desk-mat, /mousepad",
+      "source_date": "2026-09-12 (fetched)",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Константы себестоимости для калькулятора маржи: PRINTFUL_DESKMAT_BASE=9.89, PRINTFUL_GAMING_PAD_BASE=11.95, PRINTFUL_PAD_BASE=9.31 USD"
+    },
+    {
+      "claim": "Сравнительная таблица POD-поставщиков ковриков: Printify от $4.37 (pads) / $9.70 (desk mats); Gooten $5 / $4.90; EPROLO $2.07 / $3.96; HugePOD $3.10 / $7.86; Printed Mint $7 / $12.50; ThisNew $7.99 / $12.99; Prodigi $7.94 / $23.83 (gaming); DropshipCN от $6.99; Printful от $8.95",
+      "evidence": "Обзор 8 POD-компаний по коврикам/десктматам с базовыми ценами, сроками производства и локациями фулфилмента. Printify: 90+ фабрик в US, Canada, EU, UK, Australia, China; печать до 7 дней, доставка по миру до 15 раб. дней. Prodigi: US, UK, mainland Europe, 24-72 ч на 80% товаров. Printful: US, EU, Japan, Australia",
+      "source": "thecleverbusiness.com/print-on-demand-desk-mouse-pads/",
+      "source_date": "2026-01-02",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Таблица маршрутизации провайдеров по гео; Printify — самый дешёвый с локальным фулфилментом в 6 регионах, Prodigi — самый дорогой но даёт EU Responsible Person"
+    },
+    {
+      "claim": "Дополнительные POD-поставщики ковриков с ценами: Teelaunch $5.25 (PA/CA, шип $4.75 US); Merchize $8.20-12.30 включая доставку (Китай, только US); HugePOD desk mats $7.86, pads $3.10 (Китай, шип от $10.98 в США); Prodigi £6 / £18 gaming (UK, производство 120 часов); Contrado и Bags Of Love — UK, премиум-цены, Contrado под 2 дня",
+      "evidence": "Обзор 15 POD-поставщиков десктматов/ковриков с ценами, размерами (Gooten 4 размера 10×16\"–18×36\"), локациями и условиями доставки",
+      "source": "passivemarketeer.com/print-on-demand-desk-mats/",
+      "source_date": "нет данных (дата статьи не указана)",
+      "kind": "practitioner_report",
+      "confidence": "low",
+      "actionable": "Teelaunch $5.25+$4.75 шип = $10 all-in по США — самый дешёвый US-фулфилмент из найденных; проверить актуальность цен перед прошивкой в скрипт"
+    },
+    {
+      "claim": "Тарифы доставки Printful — плоские региональные, не по весу: t-shirt по США ~$4.75 первый / ~$2.20 доп.; mug ~$4.69; phone case ~$4.99; stickers ~$4.29; worldwide t-shirt ~$11.99 / ~$6.00. 9 зон: USA, Canada, Europe, UK, EFTA, AU/NZ, Japan, Brazil, Worldwide. 26.02.2026 Printful поднял тарифы адресно по аксессуарам, не по одежде",
+      "evidence": "Каждая товарная категория имеет фиксированную цену first item и меньшую each additional внутри одного заказа. Fulfillment 2-5 раб. дней, US standard 3-8 раб. дней, international standard 8-25 раб. дней, итого по США 5-13 раб. дней",
+      "source": "podvector.ai/articles/printful/shipping/the-complete-guide-to-printful-shipping-rates-times-and-zones",
+      "source_date": "2026-09-06",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Точных тарифов на коврики нет данных → в скрипте считать доставку по коврику как $5.00 US / $8.00 EU-UK / $12.00 worldwide (low confidence), сверять живым калькулятором Printful перед запуском"
+    },
+    {
+      "claim": "Расчётная юнит-экономика коврика через POD при ретейле $29.99 и in-region фулфилменте: net ~$12-13, ~40-43% net margin",
+      "evidence": "Расчёт по подтверждённым константам: COGS $9.89 (Printful Desk Mat) + доставка ~$5.00 (US, оценка) + платёжка 2.9%+$0.30 = $1.17 → итого $16.06; gross $13.93 (46.4%); минус резерв 4% на брак/утерю/реплейсмент $1.20 → net ~$12.7 (42%). При Printify ($9.70) или Teelaunch ($5.25+$4.75) net поднимается до $13-18",
+      "source": "собственный расчёт на данных printful.com (2026-09-12) и thecleverbusiness.com (2026-01-02)",
+      "source_date": "2026-09-12",
+      "kind": "inference",
+      "confidence": "medium",
+      "actionable": "Прошить min retail floor: RETAIL_MIN = COGS*2.2 + shipping; при ретейле ниже $24.99 net падает под 30% и категория теряет смысл"
+    },
+    {
+      "claim": "Отраслевые бенчмарки маржи POD: gross 60-70%, net 20-35%; здоровый net для Etsy-селлера 20-35%; низкочековые commodity-товары падают ниже этого диапазона после всех расходов",
+      "evidence": "Публикуемые диапазоны по POD в целом. Отдельно отмечается, что маржу POD большинство селлеров считают неверно, и именно комиссии платформы, доставка, скидки и реклама съедают видимую прибыль",
+      "source": "trueprofit.io/blog/is-print-on-demand-profitable; mydesigns.io/blog/print-on-demand-profit-margin/",
+      "source_date": "2026 (год указан, точная дата нет данных)",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Расчётные 40-43% на коврике выше отраслевого net 20-35% только потому, что канал трафика органический (шортсы). При любом платном трафике net уходит в 10-20%"
+    },
+    {
+      "claim": "Alibaba кастомные коврики: $1.49-3.49/шт при MOQ 10; $0.45-0.89/шт при MOQ 100-200; $0.10-0.85/шт при MOQ 100-1000; сверхдешёвый тир $0.10-0.35 требует 1000+ шт. Для XXL 900x400x3мм сублимация по полиэстеру есть отдельные листинги с MOQ от 1 до 100 шт",
+      "evidence": "Листинги: \"Custom Personalized Rubber Base Gaming Mat\" $0.10-1.50 при MOQ 1000; \"Premium Custom Gaming Mouse Pads\" $0.15-0.85 при MOQ 100; $0.45-0.80 при MOQ 100; $1.49-3.49 при MOQ 10. Есть отдельный листинг сублимационного коврика с ценой от $0.22/шт при низком MOQ. Явных setup fee и стоимости фрахта в листингах не указано",
+      "source": "electronics.alibaba.com/product/1-dollar-mousepad; alibaba.com/product-detail/900-X-400-X-3-Mm_1601060918547.html; alibaba.com/showroom/dye-sublimation-mousepad.html",
+      "source_date": "2025-2026 (листинги обновляются, точная дата нет данных)",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Закупка в Китае: реалистичный кост XXL брендированного коврика $1.5-3.5/шт при MOQ 100-300 = $150-1050 капитала. Но без 3PL в стране покупателя это не работает — см. таможенные пункты"
+    },
+    {
+      "claim": "Стоимость фрахта из Китая и last-mile из собственного стока — нет данных в проверенных источниках",
+      "evidence": "Ни один из просмотренных листингов Alibaba не раскрывает per-unit shipping или DDP-условия; per-order last-mile тарифы Royal Mail/Evri/DHL для оператора не проверялись",
+      "source": "нет данных",
+      "source_date": "нет данных",
+      "kind": "inference",
+      "confidence": "low",
+      "actionable": "Для модели с собственным стоком в скрипте держать переменные INBOUND_PER_UNIT=$2-6 и LASTMILE_PER_ORDER=$4-8 как low-confidence оценки и НЕ строить решение на них до реальных квот"
+    },
+    {
+      "claim": "Конкурентный ландшафт геймерских ковриков расслоён: перформанс-сегмент занят реальными брендами по $50-130, бюджет $10-20, а POD-сублимация физически может играть только в эстетическом/принтовом сегменте $30-55",
+      "evidence": "Ассортимент LETHAL.GG (USD): ATK 99G Air XSoft $9.99; ATK SKY/X83 XSoft $19.99; ONEofZERO Emboss 900x400x4мм cloth deskpad $30.00; Musashi Void V2 500x500 $39.99; The Masterpiece JX2 $35.99; GHOSTGLIDES Masterpiece V2 $49.99; Kyomi Yuyo $49.99; MITSUKI Kokū $54.99; Kanami Nana/Kattā $59.00; ATK Crimson glass $59.99; XVX glass $59.99; GLSSWRKS ZOFIA $109.00; Rivermuse ZHI $109.99; Musashi Wind glass $109.99; Solstice Amaterasu $129.00; KUON Shiro Niji $129.99",
+      "source": "lethal.gg/collections/mousepads-1",
+      "source_date": "2026-09-12 (fetched)",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Ценовое окно для брендированного POD-коврика: $29.99-39.99. Выше $45 конкурируешь с ATK/Artisan/glass по свойствам скольжения, чего сублимированный POD-коврик не выдержит"
+    },
+    {
+      "claim": "UK-ретейл перформанс-ковриков: Artisan FX Key-83 XL £61.99, FX Zero XL £54.99, FX Hien XL £54.99, FX Type-99 XXL £59.99, FX Key-83 XXL £69.99, SteelSeries QcK Edge XL £37.49, LGG Saturn Pro XL £46.72",
+      "evidence": "Прайс британского эспортс-ретейлера, диапазон ~£34.99-69.99, премиум Artisan £54.99-61.99",
+      "source": "esportsgear.uk/collections/gaming-mousepads",
+      "source_date": "2026-09-12 (fetched)",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "UK-цена брендированного POD-коврика: £27.99-32.99, чтобы стоять ниже SteelSeries QcK Edge XL (£37.49) и не претендовать на Artisan-сегмент"
+    },
+    {
+      "claim": "Artisan Ninja FX Zero XL (~$79) — самый используемый коврик среди отслеживаемых профессиональных FPS-игроков в Valorant, CS2 и Overwatch 2; цена коврика масштабируется с площадью, один и тот же модель в L и XL различается в 2-3 раза",
+      "evidence": "Обзор лучших геймерских ковриков 2026 с ценами, верифицированными 2026-08-05 (US retail)",
+      "source": "knowledgelib.io/consumer-electronics/gaming/gaming-mousepads/2026; xbitlabs.com/blog/best-gaming-mouse-pad/",
+      "source_date": "2026-08-05 (верификация цен)",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Целевая аудитория продукта (13-24, слабый ПК, платит малые деньги) НЕ покупает $79 Artisan. Коврик должен быть $29.99 эстетика/лого, а не заявка на перформанс"
+    },
+    {
+      "claim": "США отменили de minimis $800 для ВСЕХ стран с 29.08.2025 00:01 EDT; продлено исполнительным приказом в феврале 2026; 24.06.2026 Federal Register закрепил бессрочную приостановку для всех каналов кроме международной почты. 2026 — первый полный год, когда практически каждая посылка из любой страны облагается пошлиной независимо от стоимости",
+      "evidence": "Executive Order от 30.07.2025 \"Suspending Duty-Free De Minimis Treatment for All Countries\" (EO 14324); товары стоимостью $800 и ниже из всех стран теряют право на de minimis и облагаются всеми применимыми пошлинами, налогами и сборами. До отмены через de minimis в США входило ~4 млн посылок в день, свыше 1 млрд в год",
+      "source": "whitecase.com/insight-alert/united-states-suspend-customs-de-minimis-entry-most-shipments-august-29-2025; ey.com tax alert; federalregister.gov/documents/2026/06/24/2026-12670; cbp help article 1919; cnbc.com 2025-08-29",
+      "source_date": "2025-07-30 / 2025-08-29 / 2026-06-24",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "ЖЁСТКОЕ ПРАВИЛО: любой заказ с shipping-country=US фулфиллить ТОЛЬКО на американской фабрике (Printful US / Printify US / Teelaunch PA-CA). Прямая отправка из Китая в США больше не считается экономически — пошлина ложится поверх $3 себестоимости"
+    },
+    {
+      "claim": "ЕС отменяет освобождение от таможенной пошлины €150 с 01.07.2026. Переходно вводится плоская пошлина €3 за товарную категорию (4-значная позиция тарифа) для низкостоимостных отправлений, до запуска EU Customs Data Hub в середине 2028, затем обычные тарифные ставки. Отдельно ожидается handling fee €2 за строку таможенной декларации не позднее 01.11.2026 → в сумме €5 за строку",
+      "evidence": "Совет ЕС согласовал отмену €150 порога 13.11.2025. Мандат Совета от июня 2025 предусматривал сбор e-commerce handling fee с ноября 2026; размер сбора всё ещё согласуется между Советом и Европарламентом",
+      "source": "taxation-customs.ec.europa.eu/news/e-commerce-150-eur-customs-duty-exemption-threshold-be-removed-2026-2025-11-13_en; avalara.com blog 2025-11; shippypro.com/blog/en/eu-customs-reform-2026-duty-exemption-abolition; gerlach-customs.com",
+      "source_date": "2025-11-13 (решение Совета), вступление 2026-07-01",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "ЖЁСТКОЕ ПРАВИЛО: заказы в ЕС фулфиллить на фабрике внутри ЕС (Printful Riga/EU, Printify EU, Prodigi Venlo NL). €3+€2 на посылке $30 — это 17% маржи, плюс задержки на таможне и риск отказа получателя"
+    },
+    {
+      "claim": "UK: отмена customs duty relief для товаров £135 и ниже ускорена — вместо 01.03.2029 теперь с 01.10.2028 (объявлено 23.06.2026), драфт законодательства опубликован 13.07.2026. Import VAT для товаров £135 и ниже НЕ меняется. Консультация шла с декабря 2025 по 06.03.2026 и включала вопрос введения административного сбора на низкостоимостные импорты. Обсуждается институт fiscal representatives — британских компаний, принимающих солидарную ответственность за таможенный долг зарубежных продавцов",
+      "evidence": "Формулировка вступления: \"such day as the Treasury may by regulations made by statutory instrument appoint by October 2028 at the latest\"; конкретная дата в пределах окна пока не подтверждена",
+      "source": "gov.uk/government/publications/reforming-customs-rules-for-low-value-imports/reforming-the-customs-treatment-of-low-value-imports-into-the-uk; vatcalc.com; dwfgroup.com insight 2026-01; taxscape.deloitte.com",
+      "source_date": "2026-06-23 / 2026-07-13",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "До 10.2028 UK-импорт под £135 ещё без пошлины, но VAT есть. Всё равно фулфиллить в UK локально (Prodigi UK, Contrado, Bags Of Love, Printify UK). Институт fiscal representative — прямой риск для СНГ-оператора без юрлица в UK, отслеживать"
+    },
+    {
+      "claim": "GPSR (Regulation (EU) 2023/988) полностью применяется с 13.12.2024. Не-ЕС продавцу, включая соло-предпринимателя, обязателен EU Responsible Person. На каждом товаре должны быть: имя, почтовый и электронный адрес производителя, идентификатор товара (тип/партия/серийник) и имя+контакты EU-ответственного лица. Для POD-товаров маркировка должна быть доступна конечному потребителю — на упаковке или вкладышем",
+      "evidence": "Роль responsible person может закрыть: EU-производитель, EU-импортёр, EU-авторизованный представитель или EU fulfilment service provider. Для большинства не-ЕС продавцов основной путь — назначить authorised representative. Требование применяется независимо от размера бизнеса и страны регистрации (Китай, США, Турция, Индия, Великобритания и любая другая не-ЕС страна)",
+      "source": "eugpsr.eu; euverify.com/resource/eu-responsible-person-under-gpsr/; eucompliancepartner.com/eu-responsible-person-service; Regulation (EU) 2023/988",
+      "source_date": "2024-12-13 (вступление), обзоры 2025",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Продажа ковриков в ЕС без EU RP = нарушение. Дешёвый путь: фулфилмент исключительно через Prodigi, который сам выступает RP (см. следующий пункт). Иначе — платный authorised representative, стоимость нет данных"
+    },
+    {
+      "claim": "Prodigi выступает EU Responsible Person, но ТОЛЬКО для товаров, фулфилленных исключительно Prodigi: Prodigi B.V., Jan van Riebeeckweg 15, 5928 LG Venlo, Netherlands. При этом EPR-регистрации Prodigi НЕЛЬЗЯ использовать мерчанту: продавец под своим брендом считается producer для целей EPR даже когда производство и фулфилмент делает POD-провайдер. Использование POD-фулфилмента не переносит EPR-обязанности на провайдера",
+      "evidence": "Прямая цитата провайдера: \"Using a print on demand fulfilment provider doesn't transfer your EPR responsibilities to that provider\"; \"Prodigi's EPR registrations cannot be used by merchants\". EPR администрируется национально, не на уровне ЕС; пороги регистрации и сборы различаются между государствами-членами. PPWR: первые требования с 12.08.2026, дальнейшие фазами до 2040. EUDR: 30.12.2026 (микро и малые операторы — 30.06.2027), печатная продукция выведена из scope поправками декабря 2025",
+      "source": "prodigi.com/blog/eu-compliance-guide/",
+      "source_date": "2026-08-14",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Комплаенс-стек для ЕС: (1) фулфилмент исключительно Prodigi → RP закрыт бесплатно; (2) packaging EPR всё равно на операторе — национальная регистрация в каждой стране продаж. Это НЕ автоматизируется скриптом. Альтернатива: ограничить физику UK+US и в ЕС не продавать вообще"
+    },
+    {
+      "claim": "WEEE для электроники: каждый производитель/дистрибьютор электроники в ЕС обязан получить WEEE-номер и зарегистрировать товары; не-ЕС продавцы обязаны назначить Authorised Representative в каждой стране продаж. UK-поправка 2025 объявила онлайн-маркетплейсы producer'ами за EEE, продаваемое через их платформы зарубежными продавцами, и переложила финансовую ответственность на маркетплейс — НО при продаже напрямую со своего сайта из-за рубежа британскому потребителю producer'ом являешься ты",
+      "evidence": "Обязанности producer: регистрация в национальных органах каждой страны распространения, регулярная отчётность по объёмам проданного EEE, организация или финансирование сбора, обработки, переработки и утилизации своих товаров. Платформы Amazon, eBay, Wish, Temu должны регистрироваться как WEEE producers и вступать в Producer Compliance Scheme за всё EEE, размещённое на UK-рынке продавцами, не учреждёнными в UK",
+      "source": "ecosistant.eu/en/weee-directive/; erp-recycling.org/uk/news-and-events/2025/08/weee-regulations-2025-amendment/; clarity.eco; europa.eu/youreurope/business/product-requirements/recycling-waste-management/weee-responsibilities/",
+      "source_date": "2025-08 (UK amendment), EU Directive действует",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Ноутбуки/мини-ПК со своего сайта в UK/EU = обязательная WEEE-регистрация + отчётность + финансирование утилизации в каждой стране. Это одиночному СНГ-оператору недоступно ни по деньгам, ни по времени. Коврики под WEEE НЕ попадают (не электроника) — если только не RGB-коврик с подсветкой, RGB-версии НЕ делать"
+    },
+    {
+      "claim": "Экономика ноутбучного дропшиппинга: gross 10-15% и net 6-8% на мид-рейндже; gaming-ноуты gross 20-25%; refurbished ~30.8%; business 15-20%; budget/Chromebook 15-20%. Разобранный пример на $800 ретейле: кост поставщика $600, доставка $30, платформа 5% = $40, платёжка 2.9%+$0.30 = $23.50 → база $693.50; CAC $50; ожидаемая стоимость возврата $4.80; ожидаемая гарантия $3.60 → net ~$48 (6%)",
+      "evidence": "Тот же источник: return rate 5-8% (отраслевая норма), refurbished 6-10%, defect rate 4-6% у дешёвых поставщиков и 1-2% у брендовых дистрибьюторов, fraud ~1%. Стоимость одного возврата $60-100 за юнит, гарантийная претензия ~$120, chargeback fee $15-50 за инцидент, кросс-бордер пошлины 5-12%. Пример MOQ-предоплаты у поставщика: $27,000 (50 юнитов × $540), объёмная скидка 5-10%. Средний ретейл: gaming $1,200-2,500, мид $600-900, budget/Chromebook $300-450",
+      "source": "scaleorder.com/blogs/is-dropshipping-laptops-profitable-the-ultimate-data-driven-guide-to-margins-risks-and-strategies/",
+      "source_date": "2025-11-07",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Источник — блог дропшиппинг-сервиса, то есть заинтересованная сторона, цифры скорее оптимистичные. Даже по его собственным цифрам net 6% при return cost $60-100/юнит означает, что один возврат съедает прибыль с 1.5-2 продаж"
+    },
+    {
+      "claim": "Проверка: маржа в ноутбуках действительно крайне низкая. Устоявшиеся электронные ретейлеры имеют в среднем всего 10-15% gross margin на новых ноутбуках и живут за счёт объёма, апселлов и гарантий. Ретейл электроники в целом 15-25% gross из-за жёсткой конкуренции и прозрачности цен. При этом на уровне вендоров gross 49.35% TTM в Consumer Electronics и 40.18% TTM в Computer Hardware (Q1 2026) — вся маржа остаётся у брендов, не у перепродавцов",
+      "evidence": "Заявленный в задании диапазон 3-6% ниже найденных отраслевых средних и соответствует скорее нишевым или промо-периодам и дропшиппинг-моделям, где маржа особенно тонкая",
+      "source": "eightx.co/blog/electronics-brand-unit-economics; csimarket.com/Industry/industry_Profitability_Ratios.php?ind=1012 и ?ind=1002",
+      "source_date": "Q1 2026 (CSIMarket TTM)",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Гипотеза пользователя про 3-6% подтверждается для NET, а не GROSS. Gross 10-15%, net 6-8%. Категория не проходит по абсолютной прибыли на заказ при риске $60-850 на инцидент"
+    },
+    {
+      "claim": "Расчёт на 100 заказах ноутбуков по $800: net $4,800 до инцидентов; минус 6 возвратов × $80 = $480; минус 1 chargeback (fraud ~1%) = $800 + $30 fee = $830; итого ~$3,490, то есть net падает с 6% до ~4.4% — и это без учёта хранения, RMA-логистики, WEEE и налогов. Один chargeback стоит дороже, чем прибыль с 17 успешных продаж",
+      "evidence": "Расчёт по цифрам scaleorder.com (2025-11-07): net $48/заказ, return cost $60-100, chargeback fee $15-50, fraud ~1%, return rate 5-8%",
+      "source": "собственный расчёт на данных scaleorder.com",
+      "source_date": "2026-09-12",
+      "kind": "inference",
+      "confidence": "medium",
+      "actionable": "Не включать ноутбуки/мини-ПК в собственный ассортимент ни в каком виде. Цифра для решения: 1 chargeback = 17 продаж"
+    },
+    {
+      "claim": "Мини-ПК: рынок проектируется в $26.68 млрд в 2026 (CAGR 6.98%); типичная актуальная конфигурация (Ryzen 7 / Ryzen AI 9, 32GB DDR5, 1TB NVMe) в ретейле $450-1,250. Beelink = Shenzhen AZW Technology (Group) Co., Ltd., производство 5,000 кв.м, 300+ сотрудников, официальное членство в Intel; оптовые каналы wholesale@bee-link.com (ПК) и distributors@bee-link.com (аксессуары), закупка требует переговоров по MOQ и условиям оплаты. Beelink даёт лучшую рыночную цену почти во всех диапазонах, Minisforum нацелен на продвинутых пользователей, креаторов и хоумлаб-администраторов",
+      "evidence": "Конкретных дилерских маржей и точных оптовых цен на 2026 в проверенных источниках НЕТ ДАННЫХ — источники прямо указывают, что для маржи и прайса нужно обращаться к производителю",
+      "source": "fateka.com/blog/best-mini-pc-2026/; minipc-review.com/en/minisforum-vs-beelink-vs-acemagic; electronics.alibaba.com/supplier/beelink-mini-pc-distributor; supplyleader.com/beelink",
+      "source_date": "2026 (год указан, точные даты нет данных)",
+      "kind": "industry_data",
+      "confidence": "low",
+      "actionable": "Дилерская маржа мини-ПК — нет данных. Инференс: бренды сами торгуют на Amazon/AliExpress почти по street price, значит окно для перепродавца single-digit %. Запрашивать прайс у wholesale@bee-link.com бессмысленно при бюджете $50-200/мес — MOQ заведомо в тысячах долларов"
+    },
+    {
+      "claim": "Требуемый капитал на железо в 135-540 раз превышает заявленный бюджет оператора",
+      "evidence": "Пример MOQ-предоплаты поставщика ноутбуков: $27,000 (50 × $540) против бюджета оператора $50-200/мес на всю инфраструктуру",
+      "source": "собственный расчёт: scaleorder.com (2025-11-07) vs вводные задания",
+      "source_date": "2026-09-12",
+      "kind": "inference",
+      "confidence": "high",
+      "actionable": "Капитальный барьер снимает вопрос реселла железа полностью. Дропшиппинг без стока снимает барьер входа, но не снимает ни возвраты, ни гарантию, ни WEEE, ни chargeback"
+    },
+    {
+      "claim": "Stripe недоступен для регистрации бизнеса в России, Беларуси, Казахстане, Украине, Грузии, Армении, Кыргызстане и Узбекистане — ни одна из этих стран не входит в список 50+ поддерживаемых регионов. В списке есть Estonia, Latvia, Lithuania, Poland, UK, UAE и др. India и Indonesia помечены как Preview (только через sales)",
+      "evidence": "Официальная страница глобального покрытия Stripe. Отмечено также: Stripe Treasury со стейблкоинами доступен из USA и 100+ стран/регионов, но \"Payments not supported yet\"",
+      "source": "stripe.com/global",
+      "source_date": "2026-09-12 (fetched)",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "СНГ-оператору для физики нужен реальный юрлицо-резидент поддерживаемой страны (UK LTD / Estonia OÜ / US LLC + Stripe Atlas). Это условие блокирующее: без него физику продавать нечем, независимо от маржи"
+    },
+    {
+      "claim": "Paddle и Lemon Squeezy (merchant of record — типовой обход недоступности Stripe для СНГ) позиционируются исключительно под цифровые товары и SaaS. Явного письменного запрета физических товаров в найденных источниках НЕТ ДАННЫХ, но ни один источник не подтверждает поддержку физики",
+      "evidence": "Lemon Squeezy: \"merchant of record for digital products and SaaS\", миссия — упростить продажу цифровых товаров онлайн; выигрывает для software licenses, ebooks, courses. Paddle — MoR для SaaS и digital products. Ни в одном из обзоров 2026 нет упоминания поддержки tangible goods",
+      "source": "docs.lemonsqueezy.com/help/payments/merchant-of-record; lemonsqueezy.com; обзоры fungies.io, comecero.com, fintechspecs.com (2026)",
+      "source_date": "2026",
+      "kind": "platform_docs",
+      "confidence": "medium",
+      "actionable": "АРХИТЕКТУРНОЕ ПРАВИЛО: подписка через MoR (Paddle/LS/Polar) + физика через ОТДЕЛЬНЫЙ Shopify + Shopify Payments/Stripe на отдельном юрлице. Два независимых чекаута, два набора налогов, один бренд. Проверить AUP Paddle напрямую перед запуском — прямой URL не открылся (404)"
+    },
+    {
+      "claim": "UK правила дистанционной торговли: покупатель имеет 14 дней с получения товара, чтобы заявить об отмене; затем ещё 14 дней на возврат товара; продавец обязан вернуть деньги в течение 14 дней с получения товара обратно. Персонализированные или изготовленные на заказ товары исключены из периода охлаждения — рефанд обязателен только при дефекте",
+      "evidence": "Прямые цитаты gov.uk: \"You must offer a refund to customers if they've told you within 14 days of receiving their item that they want to cancel\"; \"They have another 14 days to return the item once they've told you\"; \"You must refund the customer within 14 days of receiving the item back\"; исключение — \"personalised or custom-made items, for example curtains\"",
+      "source": "gov.uk/accepting-returns-and-giving-refunds",
+      "source_date": "2026-09-12 (fetched)",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Продавать коврики как made-to-order/персонализированные (выбор ника, гео, игры на коврике) — это легально снимает 14-дневный cooling-off. Готовые складские дизайны cooling-off НЕ снимают. Прошить в карточку товара явную маркировку персонализации и подтверждение покупателем"
+    },
+    {
+      "claim": "ЕС: минимум 2 года законной гарантии с момента получения товара; если дефект проявился в течение 1 года с поставки, покупателю не нужно доказывать, что он существовал на момент поставки",
+      "evidence": "Прямая цитата europa.eu: \"You always have the right to a minimum 2-year guarantee from the moment you received the goods\"; \"If a defect becomes apparent within 1 year of delivery, you don't have to prove it existed at the time of delivery\". Точные формулировки по 14-дневному праву отказа и кто платит обратную пересылку на этой странице не покрыты — нет данных",
+      "source": "europa.eu/youreurope/citizens/consumers/shopping/guarantees-returns/index_en.htm",
+      "source_date": "2026-09-12 (fetched)",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "2-летняя гарантия на коврик практически безопасна (нет электроники, нет движущихся частей). На ноутбук/мини-ПК 2-летняя обязательная гарантия с обратным бременем доказывания в первый год — это отдельная причина не входить в железо"
+    },
+    {
+      "claim": "Printify не доставляет в Россию, Беларусь, Украину и КНДР (restricted regions)",
+      "evidence": "Printify отправляет по миру в большинство стран, кроме ограниченных регионов: Russia, Belarus, Ukraine, North Korea — что соответствует санкционным ограничениям",
+      "source": "podvector.ai/articles/printify/shipping/where-does-printify-ship-from-shipping-times-locations-international-options",
+      "source_date": "2026 (год указан)",
+      "kind": "platform_docs",
+      "confidence": "medium",
+      "actionable": "Оператор из РФ/РБ не сможет получить физический сэмпл через Printify. Варианты: отправить сэмпл на адрес в KZ/GE/AM/TR или использовать посредника. Без сэмпла нельзя ни снять видео с ковриком, ни проверить качество печати — это блокер на этапе подготовки контента"
+    },
+    {
+      "claim": "Gelato: 250+ производственных хабов в 32 странах, 85%+ заказов производится в стране доставки, 10+ млн заказов, 130+ печатных партнёров. НО ковриков и десктматов в подтверждённом каталоге Gelato НЕТ — каталог покрывает одежду, кружки, чехлы, тоуты, канцелярию, wall art, фотокниги, календари; коврики в продуктовых листингах не упоминаются",
+      "evidence": "Поиск по gelato.com/products и support.gelato.com не дал подтверждения наличия mouse pads / desk mats; источники рекомендуют сверяться с Product Catalog в Gelato Dashboard, так как каталог расширяется",
+      "source": "gelato.com/products; gelato.com/the-power-of-local; support.gelato.com/en/articles/8996278-what-print-products-do-you-offer",
+      "source_date": "2026-09-12 (поиск)",
+      "kind": "platform_docs",
+      "confidence": "medium",
+      "actionable": "Gelato из шорт-листа по коврикам ИСКЛЮЧИТЬ до подтверждения в дашборде. Лучшая локальная сеть, но нужного SKU скорее всего нет. Рабочий шорт-лист: Printify (6 регионов, дёшево), Prodigi (UK/EU/US + EU RP), Teelaunch (US, дёшево)"
+    },
+    {
+      "claim": "Брендирование ковриков в POD: возможна только печать на самом коврике; кастомная упаковка и вкладыши доступны не у всех провайдеров (Printed Mint прямо предлагает custom packaging options). MOQ у POD — ноль/один, объёмные скидки только у HugePOD из найденных",
+      "evidence": "Сводка по 15 провайдерам: у большинства MOQ \"none stated\", брендирование = загрузка дизайна; Printed Mint — custom packaging options; HugePOD — bulk discounts available; Merchize/Gooten — только дизайн",
+      "source": "passivemarketeer.com/print-on-demand-desk-mats/; thecleverbusiness.com/print-on-demand-desk-mouse-pads/",
+      "source_date": "2026-01-02 / нет данных",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Нулевой MOQ у POD — главный и практически единственный аргумент за коврики. Вкладыш с GPSR-данными и QR на Discord/лицензию: проверить, поддерживает ли выбранный провайдер packing slip inserts — от этого зависит и комплаенс, и связка с подпиской"
+    },
+    {
+      "claim": "Автоматизируемость физики: order→fulfilment закрывается API POD-провайдеров (Printful, Printify, Prodigi имеют order API/Shopify-приложения). НЕ автоматизируются: EPR/GPSR/WEEE-регистрации, таможенные декларации, обработка возвратов, розыск потерянных посылок, ответы на тикеты о доставке",
+      "evidence": "Prodigi позиционируется как Print on Demand с Print API и dropshipping; Gelato имеет приложение в Shopify App Store; Printify интегрируется с 90+ фабриками через платформу. Обратная сторона: провайдеры прямо разделяют fulfillment (2-5 раб. дней) и shipping (3-8 US / 8-25 int'l), и подчёркивают, что смешивание этих фаз в коммуникации генерирует support-тикеты",
+      "source": "prodigi.com/products/technology/laptops-and-computers/mouse-mats/; apps.shopify.com/gelato-print-on-demand; podvector.ai (2026-09-06)",
+      "source_date": "2026",
+      "kind": "platform_docs",
+      "confidence": "medium",
+      "actionable": "Оценка ручного времени на физический заказ: 5-15 минут в среднем включая редкие тикеты (low confidence, нет данных). При 20 заказах/мес это 2-5 часов — терпимо. При 200 заказах/мес физика съест оператора целиком и остановит основную работу по заливу видео"
+    },
+    {
+      "claim": "Сочетание железа с подпиской: коврик по $29.99 при net ~$13 равен 2-3 месяцам подписки по $5-7. Как выручка это незначимо; ценность в UGC-реквизите и легитимации бренда",
+      "evidence": "Расчёт: net коврика $12-13 (по подтверждённым POD-костам printful.com 2026-09-12) против подписочного чека; ценовое окно $29.99-39.99 задано конкурентным прайсом lethal.gg (2026-09-12) и esportsgear.uk (2026-09-12). Данных по uplift AOV от бандлинга физического товара к подписке в геймерской нише — НЕТ ДАННЫХ",
+      "source": "собственный расчёт; lethal.gg; esportsgear.uk; printful.com",
+      "source_date": "2026-09-12",
+      "kind": "inference",
+      "confidence": "low",
+      "actionable": "Роль коврика в воронке: (а) реквизит в кадре шортсов — коврик с собственным логотипом в каждом видео про FPS-буст = бесплатный брендинг и доказательство, что за продуктом есть реальный проект; (б) награда за лояльность (3-6 мес подписки) или разовый апселл в отдельном магазине; (в) НЕ первичный CTA — первичный CTA всегда подписка/Discord, потому что она доставляется мгновенно и не имеет ни таможни, ни возвратов"
+    }
+  ],
+  "key_numbers": [
+    "Printful base: Desk Mat $9.89 / Gaming Mouse Pad $11.95 / Mouse Pad $9.31 USD (printful.com, 2026-09-12)",
+    "Printify base: pads от $4.37 / desk mats от $9.70 (thecleverbusiness, 2026-01-02)",
+    "Gooten $5.00 / $4.90; EPROLO $2.07 / $3.96; HugePOD $3.10 / $7.86; Teelaunch $5.25 (+$4.75 US шип)",
+    "Prodigi: mouse mats $7.94 / gaming mats $23.83 (= £6 / £18), фулфилмент US+UK+EU, 24-72ч на 80% товаров",
+    "Printful шип аксессуаров по США: ~$4.29-4.99 first item; повышение тарифов по аксессуарам 2026-02-26",
+    "Сроки: fulfillment 2-5 раб.дней; US 3-8; international 8-25; итого US 5-13 раб.дней",
+    "Коврик $29.99 ретейл: COGS $9.89 + шип $5 + платёжка $1.17 = $16.06 → net ~$12-13 (40-43%)",
+    "Alibaba кастом коврик: $1.49-3.49 при MOQ 10; $0.45-0.89 при MOQ 100-200; $0.10-0.85 при MOQ 100-1000; $0.10-0.35 только от 1000 шт",
+    "Капитал на китайскую партию: $150-1050 (MOQ 100-300 × $1.5-3.5)",
+    "Конкурентный прайс ковриков US: ATK $9.99-19.99 / cloth $30-55 / Artisan XL ~$79 / glass $109-130 (lethal.gg, 2026-09-12)",
+    "Конкурентный прайс UK: SteelSeries QcK Edge XL £37.49; Artisan XL £54.99-61.99; XXL £59.99-69.99 (esportsgear.uk, 2026-09-12)",
+    "Рекомендуемое ценовое окно POD-коврика: $29.99-39.99 / £27.99-32.99",
+    "Ноутбуки: gross 10-15%, net 6-8% (мид); gaming gross 20-25%; refurbished ~30.8% (scaleorder, 2025-11-07)",
+    "Ноут $800: кост $600 + шип $30 + платформа $40 + платёжка $23.50 = $693.50 → net ~$48 (6%)",
+    "Return rate ноутбуков 5-8%; стоимость возврата $60-100/юнит; гарантийный кейс ~$120; chargeback fee $15-50; fraud ~1%; defect 4-6% (дешёвый поставщик) / 1-2% (брендовый дистрибьютор)",
+    "1 chargeback на $800 ноут = прибыль с 17 успешных продаж",
+    "MOQ-предоплата ноутбуков: $27,000 (50 × $540) = 135-540× месячного бюджета оператора ($50-200)",
+    "Мини-ПК ретейл $450-1,250; рынок $26.68 млрд в 2026, CAGR 6.98%; дилерская маржа — нет данных",
+    "Ретейлеры электроники: 10-15% gross на новых ноутбуках; 15-25% gross по электронике в целом; вендоры 40.18-49.35% gross TTM Q1 2026 (CSIMarket)",
+    "US de minimis $800 отменён для всех стран с 2025-08-29 00:01 EDT (EO 14324); бессрочно для непочтовых каналов с 2026-06-24",
+    "EU: освобождение €150 отменено с 2026-07-01; плоские €3 за 4-значную позицию до сер. 2028; +€2 handling fee не позднее 2026-11-01 → €5/строка",
+    "UK: duty relief £135 отменяется с 2028-10-01 (ускорено с 2029-03-01, объявлено 2026-06-23); import VAT не меняется",
+    "GPSR применяется с 2024-12-13: EU Responsible Person обязателен для не-ЕС продавцов; Prodigi B.V., Venlo NL закрывает RP только для Prodigi-only фулфилмента",
+    "PPWR первые требования с 2026-08-12; EUDR с 2026-12-30 (микро/малые 2027-06-30), печатная продукция выведена из scope в дек. 2025",
+    "UK возвраты: 14 дней на отмену + 14 дней на возврат + 14 дней на рефанд; персонализированные товары исключены из cooling-off",
+    "EU гарантия: минимум 2 года; дефект в первый год — без бремени доказывания у покупателя",
+    "Stripe: 50+ регионов, RU/BY/KZ/UA/GE/AM/KG/UZ отсутствуют (stripe.com/global, 2026-09-12)",
+    "Printify не доставляет в RU/BY/UA/KP",
+    "Gelato: 250+ хабов в 32 странах, 85%+ заказов локально — но ковриков в каталоге нет данных",
+    "Оценка ручного времени на физический заказ: 5-15 мин (low confidence, нет данных)"
+  ],
+  "machine_spec_notes": [
+    "ROUTING TABLE (обязательное правило): shipping_country → provider. US → Printify US / Teelaunch (PA,CA) / Printful US. UK → Prodigi UK / Contrado / Printify UK. EU → Prodigi Venlo NL (даёт EU RP) / Printful EU / Printify EU. CA → Printify CA. AU/NZ → Printful AU / Printify AU. JP → Printful JP. Прямая отправка из Китая в US/EU ЗАПРЕЩЕНА в конфиге (de minimis отменён).",
+    "GEO ALLOWLIST для физических SKU: ['US','GB','DE','FR','NL','ES','IT','PL','SE','IE','AT','BE','DK','FI','PT','CZ','CA','AU','NZ','JP']. Все остальные гео — физический товар не показывать в чекауте (15-30 дней доставки, высокий undeliverable). Подписка — без гео-ограничений.",
+    "ДВА НЕЗАВИСИМЫХ ЧЕКАУТА: subscription_processor = MoR (Paddle/Lemon Squeezy/Polar) на цифровой продукт; physical_processor = Shopify Payments/Stripe на отдельном юрлице в поддерживаемой стране. НЕ смешивать в одной корзине. Флаг в конфиге: MERGE_CARTS=false.",
+    "PREREQ-БЛОКЕР: физические SKU не публиковать до наличия юрлица-резидента страны из списка Stripe (UK LTD / EE OÜ / US LLC). Скрипт должен проверять ENTITY_READY=true перед деплоем физического каталога.",
+    "КОНСТАНТЫ СЕБЕСТОИМОСТИ (USD): PRINTFUL_DESKMAT=9.89, PRINTFUL_GAMING_PAD=11.95, PRINTFUL_PAD=9.31, PRINTIFY_PAD_MIN=4.37, PRINTIFY_DESKMAT_MIN=9.70, TEELAUNCH_PAD=5.25, PRODIGI_GAMING_MAT=23.83, HUGEPOD_DESKMAT=7.86.",
+    "КОНСТАНТЫ ДОСТАВКИ (low confidence, сверять живым калькулятором): SHIP_PAD_US=5.00, SHIP_PAD_UK=6.00, SHIP_PAD_EU=8.00, SHIP_PAD_WORLD=12.00 USD.",
+    "ПРАВИЛО ЦЕНЫ: RETAIL_FLOOR = (COGS + SHIP) / 0.55, то есть минимум $29.99 US / £27.99 UK. RETAIL_CEILING = $39.99 / £32.99 — выше упираешься в ATK/SteelSeries/Artisan по перформансу.",
+    "РЕЗЕРВ НА ИНЦИДЕНТЫ по коврикам: DEFECT_RESERVE_PCT=4 (брак печати, утеря, реплейсмент). По железу расчёт не делать — категория отключена.",
+    "МАРКИРОВКА ТОВАРА: каждый коврик оформлять как made_to_order=true / personalised=true с явным подтверждением покупателя в чекауте — это юридически снимает 14-дневный UK cooling-off. Складские готовые дизайны cooling-off НЕ снимают.",
+    "GPSR-ВКЛАДЫШ обязателен для всех EU-заказов: имя + почтовый + email адрес производителя, product identifier (batch/SKU), имя и контакты EU Responsible Person. При фулфилменте через Prodigi RP = Prodigi B.V., Jan van Riebeeckweg 15, 5928 LG Venlo, NL. Проверить, поддерживает ли провайдер packing-slip inserts, до листинга.",
+    "КАТЕГОРИЯ 'ЖЕЛЕЗО' В КАТАЛОГЕ: hardware_own_stock=DISABLED навсегда. Ноутбуки и мини-ПК только как affiliate_link с флагом no_fulfilment=true, no_warranty=true, no_weee=true. Комиссии аффилиат-программ — нет данных, подставлять после проверки.",
+    "ЗАПРЕТ НА RGB: любые коврики с подсветкой/USB классифицируются как EEE и триггерят WEEE-регистрацию в UK/EU. В каталоге фильтр: reject SKU if has_electronics=true.",
+    "НЕ ДЕЛАТЬ RGB/электронные аксессуары, игровые аккаунты и железо в одном чекауте с подпиской — разные налоговые режимы, разные политики платёжек, разный комплаенс.",
+    "СВЯЗКА ВОРОНКИ: primary CTA во всех видео = подписка/Discord (мгновенная автовыдача, ноль логистики). Коврик = (а) реквизит в кадре с собственным логотипом, (б) loyalty-награда после 3-6 месяцев подписки, (в) разовый апселл в отдельном магазине. Коврик НИКОГДА не первичный CTA.",
+    "ЛИМИТ НАГРУЗКИ: если physical_orders_per_month > 50, включать алерт — при 5-15 мин ручного времени на заказ физика начинает вытеснять основную работу по авто-заливу. Порог остановки: PHYSICAL_ORDERS_HARD_CAP=150/мес.",
+    "ДАТЫ-ТРИГГЕРЫ для пересчёта экономики: 2026-08-12 (PPWR первые требования), 2026-11-01 (ожидаемый EU €2 handling fee), 2028-10-01 (отмена UK £135 duty relief), сер. 2028 (EU Customs Data Hub → полные тарифы вместо €3). Заложить в календарь ревизии прайса.",
+    "САМПЛ ДЛЯ КОНТЕНТА: Printify не доставляет в RU/BY/UA — сэмпл коврика заказывать на адрес в KZ/GE/AM/TR или через посредника. Без физического сэмпла нельзя снять видео с брендированным реквизитом; это блокер шага 'коврик в кадре'."
+  ],
+  "open_questions": [
+    "Точные тарифы доставки Printful/Printify именно на коврики и десктматы по зонам US/UK/EU — нет данных, обзоры отсылают к живому калькулятору. Нужно снять из дашборда до прошивки константы.",
+    "Выступают ли Printful и Printify EU Responsible Person по GPSR за мерчанта? Подтверждено только для Prodigi. Если нет — придётся либо платить authorised representative (стоимость нет данных), либо фулфиллить ЕС только через Prodigi, либо не продавать в ЕС.",
+    "Пороги регистрации packaging EPR по странам ЕС и в UK для микро-объёмов (нужна ли регистрация при 20-50 посылках/мес) — нет данных. От этого зависит, реально ли ЕС вообще обслуживать соло.",
+    "Явная политика Paddle / Lemon Squeezy / Polar по физическим товарам — прямой URL AUP Paddle отдал 404. Нужно прочитать AUP и ToS каждого MoR перед выбором архитектуры.",
+    "Актуальная позиция Printify по EU-фулфилменту ковриков: какие именно фабрики в EU/UK печатают mouse pads (не все 90+ фабрик делают все SKU) — нет данных.",
+    "Реальная стоимость фрахта и DDP из Китая на партию 100-300 ковриков в UK/EU/US и тарифы 3PL — нет данных, ни один просмотренный листинг не раскрывает.",
+    "Дилерская маржа и MOQ Beelink / Minisforum / ACEMAGIC — нет данных, доступно только через запрос на wholesale@bee-link.com.",
+    "Ставки аффилиат-комиссий на ноутбуки и мини-ПК (Amazon Associates и брендовые программы) — нет данных, не проверены.",
+    "Наличие ковриков/десктматов в каталоге Gelato — нет данных, требует проверки в Gelato Dashboard.",
+    "Uplift AOV и конверсии от бандла 'коврик + подписка' в геймерской нише — нет данных вообще, ни одного замера в открытых источниках.",
+    "Chargeback-рейт по физическим товарам в аудитории 13-24 (несовершеннолетние, родительские карты, friendly fraud) — нет данных, но риск структурно выше отраслевого 1%.",
+    "Точная дата вступления отмены UK duty relief внутри окна до 2028-10-01 — Treasury пока не объявил."
+  ],
+  "risks": [
+    "Комплаенс-стена вокруг физических товаров в ЕС: GPSR (EU Responsible Person, обязательная маркировка) с 2024-12-13 + национальные EPR-регистрации, которые НЕЛЬЗЯ переложить на POD-провайдера (прямая формулировка Prodigi) + PPWR с 2026-08-12. Ни одно из этих требований не автоматизируется скриптом. Вероятность попадания в реальный enforcement при малых объёмах низкая, но легальный статус — нарушение с первого заказа.",
+    "WEEE для ноутбуков/мини-ПК: продажа со своего сайта делает оператора producer с обязательной регистрацией, отчётностью и финансированием утилизации в каждой стране ЕС + Authorised Representative. UK-поправка 2025 снимает это только при продаже ЧЕРЕЗ маркетплейс, не со своего сайта. Для соло-оператора из СНГ практически невыполнимо.",
+    "Stripe недоступен в RU/BY/KZ/UA/GE/AM/KG/UZ. Без юрлица в поддерживаемой стране физику продать нечем. Использование MoR (Paddle/LS), позиционированного под digital-only, для физических товаров — риск закрытия аккаунта и заморозки выручки ВСЕГО проекта, включая подписку. Это главный системный риск: физика может утащить за собой основной платёжный канал.",
+    "Отрицательное математическое ожидание в железе: при net 6% один возврат ($60-100) съедает прибыль с 1.5-2 продаж, один chargeback на $800 ноут — с 17 продаж. При fraud ~1% и return rate 5-8% категория убыточна без масштаба и без локального RMA-склада.",
+    "Капитальный барьер: MOQ-предоплата у поставщиков ноутбуков порядка $27,000 против бюджета $50-200/мес. Любая попытка войти в реселл требует заёмных денег под категорию с 6% net — комбинация, которая при первом же браке партии обнуляет проект.",
+    "Таможенный сдвиг 2025-2028 уже ломает кросс-бордер: US de minimis отменён с 2025-08-29 для всех стран, EU €150 — с 2026-07-01 (+€3, потом +€2), UK £135 — с 2028-10-01. Прямые отправки из Китая перестают быть дешёвыми, а обсуждаемый в UK институт fiscal representative (британская фирма с солидарной ответственностью за таможенный долг зарубежного продавца) может закрыть UK для зарубежных продавцов без местного партнёра.",
+    "Возвраты и гарантия по праву ЕС: обязательная 2-летняя гарантия с обратным бременем доказывания в первый год делает продажу электроники соло-оператору неуправляемой. По коврикам риск минимален (нет электроники), но складские готовые дизайны не получают исключения из UK 14-дневного cooling-off.",
+    "Support-нагрузка убивает автоматизацию: физический заказ доставляется 5-25 рабочих дней против мгновенной автовыдачи подписки. Каждый заказ генерирует потенциальные тикеты 'где посылка'. При 5-15 мин/заказ и 150+ заказах/мес оператор перестаёт заливать видео — а залив видео и есть источник трафика для подписки.",
+    "Конкурентный риск по коврикам: перформанс-сегмент занят реальными брендами (ATK, Artisan, glass-пады $59-130), а сублимированный POD-коврик физически не конкурирует по скольжению. Попытка позиционировать POD-коврик как 'геймерский перформанс' = мисреп и волна возвратов/негатива в Discord, который является основным каналом удержания подписки.",
+    "Аудитория 13-24 + физическая доставка = адреса, родительские карты, friendly fraud, отказы от получения. Структурно повышенный chargeback-риск на канале, который обслуживает и подписку.",
+    "Оператор из РФ/РБ не может получить сэмпл через Printify (страна в restricted list) — риск запустить листинг товара, которого сам не держал в руках, с неизвестным реальным качеством печати и кромки.",
+    "Смешивание в одном бренде подписки, ковриков и потенциальных игровых аккаунтов кратно повышает вероятность блокировки платёжного провайдера: любой элемент ассортимента, нарушающий AUP, ставит под удар весь мерчант-аккаунт."
+  ]
+}
