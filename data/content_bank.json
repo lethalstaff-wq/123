@@ -1,0 +1,1549 @@
+{
+  "_meta": {
+    "purpose": "Банк форматов и хуков. planner.pick_format()/pick_hook() берут отсюда; scripts/expand_hooks.py размножает шаблоны в тысячи конкретных строк.",
+    "placeholders": {
+      "{game}": "игра из geos.top_games",
+      "{fps}": "стартовое число",
+      "{fps2}": "число после твика",
+      "{gpu}": "модель видеокарты",
+      "{slang}": "локальный сленг из geos.slang"
+    },
+    "rule": "Хук на языке гео. Английский хук на арабское или индонезийское гео режет удержание — это главный рычаг гео-таргетинга, сильнее IP.",
+    "verification_status": "форматы расширяются агентом content_bank_research (прогон w67ujt0g0)"
+  },
+  "games": [
+    "Fortnite",
+    "Valorant",
+    "CS2",
+    "Rust",
+    "Dead by Daylight",
+    "Apex Legends",
+    "Warzone",
+    "Roblox",
+    "Minecraft",
+    "GTA V",
+    "Marvel Rivals",
+    "PUBG",
+    "League of Legends",
+    "Overwatch 2",
+    "Escape from Tarkov",
+    "Delta Force",
+    "Battlefield"
+  ],
+  "gpus": [
+    "GTX 1650",
+    "GTX 1060",
+    "RTX 3050",
+    "RTX 3060",
+    "RTX 4060",
+    "RX 580",
+    "RX 6600",
+    "Iris Xe",
+    "MX550",
+    "RTX 2060"
+  ],
+  "fps_claims": [
+    24,
+    30,
+    35,
+    40,
+    45,
+    55,
+    60,
+    75,
+    90,
+    120,
+    144
+  ],
+  "formats": [
+    {
+      "id": "before_after_fps",
+      "name": "До/после: счётчик FPS в углу",
+      "beats": [
+        "same scene, same settings",
+        "only the tweak changed",
+        "final number on screen"
+      ],
+      "clips_needed": 2,
+      "duration_s": 16,
+      "production_effort": "low",
+      "auto_friendly": true
+    },
+    {
+      "id": "before_after_1percent",
+      "name": "До/после по 1% low (плавность, а не средний FPS)",
+      "beats": [
+        "avg fps looks fine",
+        "1% low is the real problem",
+        "after: flat frametime"
+      ],
+      "clips_needed": 2,
+      "duration_s": 18,
+      "production_effort": "low",
+      "auto_friendly": true
+    },
+    {
+      "id": "one_setting_fix",
+      "name": "Одна настройка — один результат",
+      "beats": [
+        "name the setting",
+        "where to find it",
+        "the measured difference"
+      ],
+      "clips_needed": 1,
+      "duration_s": 12,
+      "production_effort": "low",
+      "auto_friendly": true
+    },
+    {
+      "id": "settings_speedrun",
+      "name": "Все настройки за 15 секунд",
+      "beats": [
+        "open menu",
+        "change 5 things fast",
+        "result"
+      ],
+      "clips_needed": 2,
+      "duration_s": 17,
+      "production_effort": "low",
+      "auto_friendly": true
+    },
+    {
+      "id": "launch_options",
+      "name": "Параметры запуска: что делает каждый",
+      "beats": [
+        "paste this line",
+        "what each flag does",
+        "what it does NOT do"
+      ],
+      "clips_needed": 1,
+      "duration_s": 15,
+      "production_effort": "low",
+      "auto_friendly": true
+    },
+    {
+      "id": "stutter_fix",
+      "name": "Фризы: причина и лечение",
+      "beats": [
+        "show the stutter",
+        "show the cause on graph",
+        "show it gone"
+      ],
+      "clips_needed": 2,
+      "duration_s": 20,
+      "production_effort": "medium",
+      "auto_friendly": true
+    },
+    {
+      "id": "diagnosis",
+      "name": "Диагностика: не тюнить, а найти причину",
+      "beats": [
+        "3 things to check first",
+        "how to read the numbers",
+        "then tweak"
+      ],
+      "clips_needed": 2,
+      "duration_s": 22,
+      "production_effort": "medium",
+      "auto_friendly": true
+    },
+    {
+      "id": "myth_bust",
+      "name": "Разоблачение популярного совета",
+      "beats": [
+        "the claim everyone repeats",
+        "the test",
+        "the actual result"
+      ],
+      "clips_needed": 2,
+      "duration_s": 20,
+      "production_effort": "medium",
+      "auto_friendly": true
+    },
+    {
+      "id": "snake_oil_check",
+      "name": "Проверяем платный 'бустер FPS'",
+      "beats": [
+        "what it promises",
+        "before/after measured",
+        "verdict"
+      ],
+      "clips_needed": 2,
+      "duration_s": 22,
+      "production_effort": "medium",
+      "auto_friendly": true
+    },
+    {
+      "id": "ab_test",
+      "name": "A/B: два ПК, одна настройка",
+      "beats": [
+        "setup",
+        "run",
+        "numbers side by side"
+      ],
+      "clips_needed": 2,
+      "duration_s": 18,
+      "production_effort": "medium",
+      "auto_friendly": true
+    },
+    {
+      "id": "pro_settings",
+      "name": "Настройки про-игрока и зачем они",
+      "beats": [
+        "pro's config",
+        "the one thing that matters",
+        "copy this part only"
+      ],
+      "clips_needed": 1,
+      "duration_s": 16,
+      "production_effort": "low",
+      "auto_friendly": true
+    },
+    {
+      "id": "low_end_run",
+      "name": "Слабое железо: реально ли играть",
+      "beats": [
+        "the specs",
+        "the run",
+        "the honest verdict"
+      ],
+      "clips_needed": 2,
+      "duration_s": 20,
+      "production_effort": "low",
+      "auto_friendly": true
+    },
+    {
+      "id": "thermal_fix",
+      "name": "Ноутбук: троттлинг и температуры",
+      "beats": [
+        "fps drops after 10 min",
+        "temps on screen",
+        "after the fix"
+      ],
+      "clips_needed": 2,
+      "duration_s": 19,
+      "production_effort": "medium",
+      "auto_friendly": true
+    },
+    {
+      "id": "gpu_compare",
+      "name": "Сравнение двух видеокарт в одной игре",
+      "beats": [
+        "card A",
+        "card B",
+        "the gap in fps"
+      ],
+      "clips_needed": 2,
+      "duration_s": 18,
+      "production_effort": "low",
+      "auto_friendly": true
+    },
+    {
+      "id": "build_showcase",
+      "name": "Сборка/мини-ПК: что внутри и сколько даёт",
+      "beats": [
+        "parts",
+        "assembly b-roll",
+        "fps result"
+      ],
+      "clips_needed": 3,
+      "duration_s": 20,
+      "production_effort": "medium",
+      "auto_friendly": true
+    },
+    {
+      "id": "product_showcase",
+      "name": "Товар в деле (коврик/периферия)",
+      "beats": [
+        "unbox short",
+        "in use",
+        "price + link"
+      ],
+      "clips_needed": 2,
+      "duration_s": 14,
+      "production_effort": "low",
+      "auto_friendly": true
+    },
+    {
+      "id": "tier_list",
+      "name": "Тир-лист настроек/железа",
+      "beats": [
+        "S tier",
+        "A tier",
+        "F tier"
+      ],
+      "clips_needed": 1,
+      "duration_s": 20,
+      "production_effort": "low",
+      "auto_friendly": true
+    },
+    {
+      "id": "benchmark_asmr",
+      "name": "Бенчмарк-ASMR: только цифры и звук",
+      "beats": [
+        "fan ramp",
+        "counter climbing",
+        "final score"
+      ],
+      "clips_needed": 2,
+      "duration_s": 15,
+      "production_effort": "low",
+      "auto_friendly": true
+    },
+    {
+      "id": "satisfying_graph",
+      "name": "Satisfying: график фреймтайма выравнивается",
+      "beats": [
+        "spiky graph",
+        "tweak applied",
+        "flat line"
+      ],
+      "clips_needed": 1,
+      "duration_s": 12,
+      "production_effort": "low",
+      "auto_friendly": true
+    },
+    {
+      "id": "carousel_settings",
+      "name": "Карусель настроек (только Instagram)",
+      "beats": [
+        "slide 1 problem",
+        "slides 2-5 settings",
+        "last slide CTA"
+      ],
+      "clips_needed": 1,
+      "duration_s": 0,
+      "production_effort": "low",
+      "auto_friendly": true
+    },
+    {
+      "id": "pov_lag",
+      "name": "POV: ты играешь с лагом",
+      "beats": [
+        "relatable pain",
+        "the moment it ruins",
+        "the fix teaser"
+      ],
+      "clips_needed": 2,
+      "duration_s": 13,
+      "production_effort": "low",
+      "auto_friendly": true
+    },
+    {
+      "id": "rage_clip_fix",
+      "name": "Клип фейла из-за фриза + исправление",
+      "beats": [
+        "the death caused by stutter",
+        "why it happened",
+        "the fix"
+      ],
+      "clips_needed": 2,
+      "duration_s": 16,
+      "production_effort": "low",
+      "auto_friendly": true
+    },
+    {
+      "id": "spec_check_react",
+      "name": "Реакция на характеристики ПК подписчика",
+      "beats": [
+        "read the specs",
+        "verdict",
+        "what to change first"
+      ],
+      "clips_needed": 1,
+      "duration_s": 17,
+      "production_effort": "low",
+      "auto_friendly": true
+    },
+    {
+      "id": "fps_counter_reveal",
+      "name": "Угадай FPS: реванш ожиданий",
+      "beats": [
+        "hide the counter",
+        "ask the guess",
+        "reveal"
+      ],
+      "clips_needed": 2,
+      "duration_s": 14,
+      "production_effort": "low",
+      "auto_friendly": true
+    },
+    {
+      "id": "two_pc_compare",
+      "name": "Один и тот же ПК: до твиков и после",
+      "beats": [
+        "day 1 numbers",
+        "what changed",
+        "day 2 numbers"
+      ],
+      "clips_needed": 2,
+      "duration_s": 18,
+      "production_effort": "medium",
+      "auto_friendly": true
+    },
+    {
+      "id": "quick_win_3sec",
+      "name": "3 секунды: одна кнопка — плюс к плавности",
+      "beats": [
+        "the toggle",
+        "instant result"
+      ],
+      "clips_needed": 1,
+      "duration_s": 8,
+      "production_effort": "low",
+      "auto_friendly": true
+    },
+    {
+      "id": "hidden_setting",
+      "name": "Скрытая настройка, о которой не знают",
+      "beats": [
+        "where it hides",
+        "what it does",
+        "measured gain"
+      ],
+      "clips_needed": 1,
+      "duration_s": 15,
+      "production_effort": "low",
+      "auto_friendly": true
+    },
+    {
+      "id": "driver_truth",
+      "name": "Правда про драйверы: новее не значит лучше",
+      "beats": [
+        "the assumption",
+        "two driver versions tested",
+        "which won"
+      ],
+      "clips_needed": 2,
+      "duration_s": 19,
+      "production_effort": "medium",
+      "auto_friendly": true
+    },
+    {
+      "id": "settings_tierlist",
+      "name": "Настройки по соотношению 'красота/FPS'",
+      "beats": [
+        "biggest fps cost",
+        "biggest visual win",
+        "what to always turn off"
+      ],
+      "clips_needed": 1,
+      "duration_s": 20,
+      "production_effort": "low",
+      "auto_friendly": true
+    },
+    {
+      "id": "community_qa",
+      "name": "Ответ на комментарий сообщества",
+      "beats": [
+        "the question",
+        "the test",
+        "the answer"
+      ],
+      "clips_needed": 2,
+      "duration_s": 17,
+      "production_effort": "low",
+      "auto_friendly": true
+    }
+  ],
+  "hooks": [
+    {
+      "lang": "en",
+      "text": "your {game} runs at {fps} fps because of ONE setting",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "this is why {game} stutters on {gpu}",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "{fps} fps to {fps2} fps in {game} — same PC",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "stop buying a new GPU, do this first",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "your fps is fine. your 1% low is the problem",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "{game} players: turn this OFF right now",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "the setting {game} hides from you",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "i tested the 'fps booster' everyone recommends",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "{gpu} in {game} in 2026 — honest numbers",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "your laptop loses {fps} fps after 10 minutes. here's why",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "3 things to check BEFORE you tweak anything",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "pro players all change this one thing",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "why your frametime graph looks like a mountain",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "POV: you die because of a freeze, not aim",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "the launch options that actually do something",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "guess the fps before the reveal",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "same PC, 2 days apart. what changed?",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "this 'optimization' does literally nothing",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "{game} on a potato PC — does it work?",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "your drivers are NOT the problem",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "turning this on cost me {fps} fps",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "every {game} player should copy this config",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "reading your PC specs: brutal verdict",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "flat frametime is more satisfying than high fps",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "one toggle. instant smoothness.",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "why {game} feels laggy even at high fps",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "the cheapest fps you will ever get",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "i changed 5 settings in 15 seconds",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "{slang} — {game} finally runs smooth",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "en",
+      "text": "input lag test: before vs after",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "es",
+      "text": "tu {game} va a {fps} fps por UNA opcion",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "es",
+      "text": "por esto {game} tiene tirones en {gpu}",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "es",
+      "text": "de {fps} a {fps2} fps en {game} — mismo PC",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "es",
+      "text": "no compres grafica todavia, prueba esto",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "es",
+      "text": "tus fps estan bien, el problema es el 1% low",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "es",
+      "text": "jugadores de {game}: apaga esto ya",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "es",
+      "text": "probe el 'fps booster' que todos recomiendan",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "es",
+      "text": "{game} en un PC humilde — funciona?",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "es",
+      "text": "los pros cambian solo esta opcion",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "es",
+      "text": "adivina los fps antes del final",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "pt",
+      "text": "seu {game} roda a {fps} fps por causa de UMA opcao",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "pt",
+      "text": "e por isso que {game} engasga na {gpu}",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "pt",
+      "text": "de {fps} para {fps2} fps no {game} — mesmo PC",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "pt",
+      "text": "nao compre placa nova, faca isso primeiro",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "pt",
+      "text": "seu fps esta ok, o problema e o 1% low",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "pt",
+      "text": "jogadores de {game}: desliga isso agora",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "pt",
+      "text": "testei o 'fps booster' que todos indicam",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "pt",
+      "text": "{game} em PC fraco — da pra jogar?",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "pt",
+      "text": "os pros mudam so essa configuracao",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "pt",
+      "text": "adivinha o fps antes de revelar",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ar",
+      "text": "لعبتك {game} تشتغل على {fps} فريم بسبب إعداد واحد",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ar",
+      "text": "هذا سبب تهنيج {game} على {gpu}",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ar",
+      "text": "من {fps} إلى {fps2} فريم في {game} بنفس الجهاز",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ar",
+      "text": "لا تشتري كرت شاشة جديد قبل تسوي هذا",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ar",
+      "text": "الفريمات عندك كويسة، المشكلة في الـ1% low",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ar",
+      "text": "لاعبي {game}: اطفي هذا الإعداد الآن",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ar",
+      "text": "جربت برنامج زيادة الفريمات المشهور",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ar",
+      "text": "{game} على جهاز ضعيف — يشتغل ولا لا؟",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ar",
+      "text": "كل البرو يغيرون هذا الإعداد بس",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ar",
+      "text": "خمن عدد الفريمات قبل النتيجة",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "id",
+      "text": "{game} kamu cuma {fps} fps gara-gara SATU setting",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "id",
+      "text": "ini alasan {game} ngelag di {gpu}",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "id",
+      "text": "dari {fps} ke {fps2} fps di {game} — PC sama",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "id",
+      "text": "jangan beli GPU baru, coba ini dulu",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "id",
+      "text": "fps kamu normal, masalahnya di 1% low",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "id",
+      "text": "pemain {game}: matiin ini sekarang",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "id",
+      "text": "aku tes 'fps booster' yang viral itu",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "id",
+      "text": "{game} di PC kentang — bisa gak?",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "id",
+      "text": "pro player cuma ubah satu setting ini",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "id",
+      "text": "tebak fps-nya sebelum ketahuan",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "tr",
+      "text": "{game} {fps} fps calisiyor cunku TEK bir ayar",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "tr",
+      "text": "{gpu} ile {game} bu yuzden takiliyor",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "tr",
+      "text": "{game} icinde {fps} fps'den {fps2} fps'e — ayni PC",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "tr",
+      "text": "yeni ekran karti almadan once bunu dene",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "tr",
+      "text": "fps'in iyi, sorun 1% low",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "tr",
+      "text": "{game} oyuncular: bunu hemen kapat",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "tr",
+      "text": "herkesin onerdigi 'fps booster'i test ettim",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "tr",
+      "text": "{game} dusuk sistemde — calisir mi?",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "tr",
+      "text": "prolar sadece bu ayari degistiriyor",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "tr",
+      "text": "fps'i tahmin et",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ru",
+      "text": "твой {game} идёт в {fps} fps из-за ОДНОЙ настройки",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ru",
+      "text": "вот почему {game} фризит на {gpu}",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ru",
+      "text": "с {fps} до {fps2} fps в {game} — тот же ПК",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ru",
+      "text": "не покупай новую видеокарту, сделай сначала это",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ru",
+      "text": "с фпс всё ок, проблема в 1% low",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ru",
+      "text": "игроки в {game}: выключи это сейчас же",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ru",
+      "text": "протестил тот самый 'бустер фпс'",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ru",
+      "text": "{game} на картошке — реально играть?",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ru",
+      "text": "все про меняют только эту настройку",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ru",
+      "text": "угадай фпс до конца видео",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "fr",
+      "text": "ton {game} tourne a {fps} fps a cause d'UN reglage",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "fr",
+      "text": "voila pourquoi {game} saccade sur {gpu}",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "fr",
+      "text": "de {fps} a {fps2} fps sur {game} — meme PC",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "fr",
+      "text": "n'achete pas de GPU, fais ca d'abord",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "fr",
+      "text": "tes fps vont bien, le probleme c'est le 1% low",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "fr",
+      "text": "joueurs {game} : desactive ca maintenant",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "fr",
+      "text": "j'ai teste le 'fps booster' que tout le monde conseille",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "fr",
+      "text": "{game} sur un PC faible — jouable ?",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "fr",
+      "text": "les pros ne changent que ce reglage",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "fr",
+      "text": "devine les fps avant la reponse",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "de",
+      "text": "dein {game} laeuft mit {fps} fps wegen EINER einstellung",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "de",
+      "text": "deshalb ruckelt {game} auf einer {gpu}",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "de",
+      "text": "von {fps} auf {fps2} fps in {game} — gleicher PC",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "de",
+      "text": "kauf keine neue GPU, mach zuerst das",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "de",
+      "text": "deine fps sind ok, das problem sind die 1% low",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "de",
+      "text": "{game} spieler: schalte das sofort aus",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "de",
+      "text": "ich habe den beliebten 'fps booster' getestet",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "de",
+      "text": "{game} auf schwachem PC — geht das?",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "de",
+      "text": "pros aendern nur diese eine einstellung",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "de",
+      "text": "rate die fps vor dem ergebnis",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "hi",
+      "text": "aapka {game} {fps} fps par chal raha hai sirf EK setting ki wajah se",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "hi",
+      "text": "isi liye {game} {gpu} par lag karta hai",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "hi",
+      "text": "{game} mein {fps} se {fps2} fps — same PC",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "hi",
+      "text": "nayi GPU mat kharido, pehle ye karo",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "hi",
+      "text": "fps theek hai, problem 1% low hai",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "hi",
+      "text": "{game} players: ye abhi off karo",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "hi",
+      "text": "maine wo famous 'fps booster' test kiya",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "hi",
+      "text": "{game} low-end PC par — chalega?",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "hi",
+      "text": "pro sirf ye ek setting badalte hain",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "hi",
+      "text": "fps guess karo reveal se pehle",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "vi",
+      "text": "{game} cua ban chi {fps} fps vi MOT cai setting",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "vi",
+      "text": "day la ly do {game} giat tren {gpu}",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "vi",
+      "text": "tu {fps} len {fps2} fps trong {game} — cung mot PC",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "vi",
+      "text": "dung mua card moi, thu cai nay truoc",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "vi",
+      "text": "fps on, van de la 1% low",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "vi",
+      "text": "nguoi choi {game}: tat ngay cai nay",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "vi",
+      "text": "toi da test 'fps booster' ai cung khen",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "vi",
+      "text": "{game} tren PC yeu — choi duoc khong?",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "vi",
+      "text": "pro chi doi mot setting nay",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "vi",
+      "text": "doan fps truoc khi hien ket qua",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "th",
+      "text": "{game} ของคุณได้แค่ {fps} fps เพราะการตั้งค่าเดียว",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "th",
+      "text": "นี่คือเหตุผลที่ {game} กระตุกบน {gpu}",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "th",
+      "text": "จาก {fps} เป็น {fps2} fps ใน {game} เครื่องเดิม",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "th",
+      "text": "ยังไม่ต้องซื้อการ์ดใหม่ ลองอันนี้ก่อน",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "th",
+      "text": "fps ปกติ แต่ปัญหาคือ 1% low",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "th",
+      "text": "คนเล่น {game} ปิดอันนี้เลย",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "th",
+      "text": "ลองเทสต์ 'fps booster' ที่ทุกคนแนะนำ",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "th",
+      "text": "{game} บนเครื่องสเปคต่ำ เล่นได้ไหม",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "th",
+      "text": "โปรเปลี่ยนแค่ค่านี้",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "th",
+      "text": "ทายค่า fps ก่อนเฉลย",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ja",
+      "text": "{game}が{fps}fpsなのは設定1つのせい",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ja",
+      "text": "{gpu}で{game}がカクつく理由",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ja",
+      "text": "同じPCで{game}が{fps}fpsから{fps2}fpsに",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ja",
+      "text": "GPUを買う前にこれを試して",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ja",
+      "text": "平均fpsは問題ない。1% lowが問題",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ja",
+      "text": "{game}プレイヤー：これを今すぐオフに",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ja",
+      "text": "話題のfpsブースターを検証した",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ja",
+      "text": "低スペックPCで{game}は動くのか",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ja",
+      "text": "プロが変えているのはこの1箇所",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ja",
+      "text": "fpsを当ててみて",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ko",
+      "text": "{game}가 {fps}프레임인 이유는 설정 하나",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ko",
+      "text": "{gpu}에서 {game}이 끊기는 이유",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ko",
+      "text": "같은 PC로 {game} {fps}에서 {fps2}프레임",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ko",
+      "text": "그래픽카드 사기 전에 이걸 먼저",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ko",
+      "text": "평균 프레임은 정상, 문제는 1% low",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ko",
+      "text": "{game} 유저는 이것부터 끄세요",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ko",
+      "text": "다들 추천하는 fps 부스터 테스트",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ko",
+      "text": "저사양 PC에서 {game} 돌아갈까",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ko",
+      "text": "프로들은 이 설정만 바꿉니다",
+      "formats": [],
+      "games": []
+    },
+    {
+      "lang": "ko",
+      "text": "프레임 맞춰보세요",
+      "formats": [],
+      "games": []
+    }
+  ],
+  "cta": [
+    "link in bio",
+    "free checklist in bio",
+    "Discord in bio",
+    "comment FPS",
+    "DM 'FPS'"
+  ],
+  "caption_tails": {
+    "en": [
+      "full settings in bio",
+      "tested on a low-end PC",
+      "save this for later",
+      "more fixes in bio"
+    ],
+    "es": [
+      "ajustes completos en bio",
+      "probado en PC humilde",
+      "guarda esto"
+    ],
+    "pt": [
+      "configuracoes completas na bio",
+      "testado em PC fraco",
+      "salva ai"
+    ],
+    "ar": [
+      "كل الإعدادات في البايو",
+      "تم التجريب على جهاز ضعيف",
+      "احفظ الفيديو"
+    ],
+    "id": [
+      "setting lengkap di bio",
+      "dites di PC kentang",
+      "simpan dulu"
+    ],
+    "tr": [
+      "tum ayarlar bioda",
+      "dusuk sistemde test edildi",
+      "kaydet"
+    ],
+    "ru": [
+      "все настройки в шапке",
+      "тестил на слабом ПК",
+      "сохрани, пригодится"
+    ],
+    "fr": [
+      "reglages complets en bio",
+      "teste sur un PC faible",
+      "enregistre ca"
+    ],
+    "de": [
+      "alle einstellungen in bio",
+      "auf schwachem PC getestet",
+      "speichern"
+    ],
+    "hi": [
+      "poori settings bio mein",
+      "low-end PC par test",
+      "save karo"
+    ],
+    "vi": [
+      "setting day du o bio",
+      "test tren PC yeu",
+      "luu lai"
+    ],
+    "th": [
+      "ค่าทั้งหมดอยู่ในไบโอ",
+      "ทดสอบบนเครื่องสเปคต่ำ",
+      "เซฟไว้"
+    ],
+    "ja": [
+      "設定は全部プロフに",
+      "低スペックPCで検証",
+      "保存推奨"
+    ],
+    "ko": [
+      "설정은 프로필에",
+      "저사양 PC 테스트",
+      "저장하세요"
+    ]
+  },
+  "hashtags": {
+    "default": [
+      "fps",
+      "pcgaming",
+      "gaming",
+      "fpsboost",
+      "pctips"
+    ],
+    "us": [
+      "fps",
+      "pcgaming",
+      "fpsboost",
+      "gamingpc",
+      "pctips",
+      "lowendpc"
+    ],
+    "uk": [
+      "fps",
+      "pcgaming",
+      "fpsboost",
+      "gamingsetup",
+      "pctips"
+    ],
+    "br": [
+      "fps",
+      "pcgamer",
+      "otimizacao",
+      "fpsboost",
+      "pcfraco"
+    ],
+    "id": [
+      "fps",
+      "pcgaming",
+      "fpsboost",
+      "pckentang",
+      "tipspc"
+    ],
+    "sa": [
+      "fps",
+      "pcgaming",
+      "العاب",
+      "تحسين_الاداء",
+      "فريمات"
+    ],
+    "tr": [
+      "fps",
+      "pcoyun",
+      "fpsartirma",
+      "oyuncupc"
+    ],
+    "ru": [
+      "fps",
+      "пк",
+      "фпс",
+      "оптимизация",
+      "игры"
+    ]
+  }
+}

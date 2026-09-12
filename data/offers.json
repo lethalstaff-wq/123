@@ -1,0 +1,50 @@
+{
+  "_meta": {
+    "purpose": "Оффер и CTA по ценовым тирам регионов. planner берёт primary_cta и cta-пул для подписей.",
+    "verification_status": "RESEARCH_PENDING — цены уточняются агентами saa_pricing/pricing_by_geo, античит-безопасные формулировки — агентом anticheat_safety"
+  },
+  "product": {
+    "name": "PC tweaks subscription",
+    "core_promise_safe": "стабильнее FPS и меньше фризов на том же железе",
+    "forbidden_claims": [
+      "гарантированный +N FPS на любом ПК",
+      "работает как апгрейд видеокарты",
+      "любые формулировки, намекающие на преимущество в игре сверх настроек производительности",
+      "обещания, которые невозможно проверить у клиента"
+    ],
+    "required_disclaimer": "Результат зависит от конфигурации; продукт не модифицирует игровые файлы и не взаимодействует с античитами."
+  },
+  "by_price_tier": {
+    "high": {
+      "regions_example": ["us", "uk", "de", "nordics", "au_nz", "ae"],
+      "monthly_usd": [7, 12],
+      "quarterly_usd": [18, 28],
+      "lifetime_usd": [35, 60],
+      "primary_cta": "link in bio",
+      "cta": ["link in bio", "free FPS checklist in bio", "join the Discord in bio"]
+    },
+    "mid": {
+      "regions_example": ["pl", "cee", "tr", "br", "mx", "sa", "th_my", "za"],
+      "monthly_usd": [4, 7],
+      "quarterly_usd": [10, 16],
+      "lifetime_usd": [20, 35],
+      "primary_cta": "link in bio",
+      "cta": ["link in bio", "free guide in bio", "Discord in bio"]
+    },
+    "low": {
+      "regions_example": ["eg", "iq", "id", "ph", "vn", "in", "ng", "ke_tz"],
+      "monthly_usd": [2, 4],
+      "quarterly_usd": [5, 9],
+      "lifetime_usd": [10, 18],
+      "primary_cta": "free guide in bio",
+      "cta": ["free guide in bio", "Discord in bio", "comment FPS"],
+      "note": "Здесь монетизация подписки слабая: гео берётся ради охвата и социальных доказательств, деньги — с high/mid."
+    }
+  },
+  "funnel_entry": {
+    "discord": { "best_for": ["us", "uk", "de", "fr", "es", "it", "pl", "br", "mx", "sa", "ae"], "why": "молодая геймерская аудитория уже живёт там; видно сообщество = доверие" },
+    "telegram": { "best_for": ["ru", "kz_uz", "ua_by", "iq", "eg"], "why": "де-факто мессенджер аудитории в этих регионах" },
+    "site": { "best_for": ["de", "jp", "kr", "nordics"], "why": "аудитория ждёт нормальный лендинг и понятную оплату" },
+    "whatsapp": { "best_for": ["sa", "eg", "maghreb", "id", "br"], "why": "основной мессенджер; но хуже масштабируется, чем Discord" }
+  }
+}

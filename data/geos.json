@@ -1,0 +1,79 @@
+{
+  "_meta": {
+    "purpose": "Гео-профили. Единственный источник истины о том, на каком языке и под какие игры работает гео, куда вести трафик и по какой цене продавать.",
+    "priority": "1 = стартовое гео, 2 = второй эшелон, 3 = третий, 9 = не брать (planner игнорирует всё > 3)",
+    "status": "SEED — 6 профилей заполнено вручную как рабочий минимум. Полные 36 профилей приходят из прогонов waqw6o6ag / w8s97pyh3 / w2k90vq88 и заменяют этот файл целиком.",
+    "field_notes": {
+      "needs_local_ip": "Держать false по умолчанию: гео выдачи задаётся языком и вовлечением, а не IP загрузки. Ставить true только если ресерч подтвердит обратное для конкретной площадки.",
+      "slang": "Локальные словечки геймеров — идут в хуки. Это самый дешёвый способ выглядеть местным."
+    }
+  },
+  "geos": [
+    {
+      "code": "us", "name": "США", "priority": 1,
+      "content_language": "en", "voiceover_language": "en", "subtitle_language": "en",
+      "timezone": "America/New_York",
+      "top_games": ["Fortnite", "Roblox", "Marvel Rivals", "Warzone", "Valorant", "Minecraft"],
+      "slang": ["cracked", "no cap", "goated", "mid", "cooked", "clean"],
+      "price_tier": "high", "entry_point": "discord", "cta_language": "en",
+      "payment_methods": ["card", "paypal", "apple_pay", "crypto"],
+      "needs_local_ip": false,
+      "notes": "Самая дорогая конкуренция за показ. Ставка не на объём, а на качество хука."
+    },
+    {
+      "code": "uk", "name": "Великобритания и Ирландия", "priority": 1,
+      "content_language": "en", "voiceover_language": "en", "subtitle_language": "en",
+      "timezone": "Europe/London",
+      "top_games": ["Fortnite", "EA FC", "CS2", "Minecraft", "Warzone", "Valorant"],
+      "slang": ["proper", "peak", "sound", "mental", "lad"],
+      "price_tier": "high", "entry_point": "discord", "cta_language": "en",
+      "payment_methods": ["card", "paypal", "apple_pay"],
+      "needs_local_ip": false,
+      "notes": "Домашнее гео бренда: проект позиционируется как британский. Здесь имеет смысл единственный 'лицевой' канал с голосом."
+    },
+    {
+      "code": "de", "name": "Германия, Австрия, Швейцария", "priority": 2,
+      "content_language": "de", "voiceover_language": "de", "subtitle_language": "de",
+      "timezone": "Europe/Berlin",
+      "top_games": ["CS2", "Minecraft", "EA FC", "GTA V", "Valorant", "Rust"],
+      "slang": ["hart", "krass", "wild", "safe"],
+      "price_tier": "high", "entry_point": "site", "cta_language": "de",
+      "payment_methods": ["paypal", "card", "klarna", "sofort"],
+      "needs_local_ip": false,
+      "notes": "Высокая платёжеспособность, но аудитория требовательна к достоверности цифр и оформлению оплаты."
+    },
+    {
+      "code": "sa", "name": "Саудовская Аравия", "priority": 2,
+      "content_language": "ar", "voiceover_language": "ar", "subtitle_language": "ar",
+      "timezone": "Asia/Riyadh",
+      "top_games": ["Fortnite", "PUBG", "Warzone", "Roblox", "EA FC", "Valorant"],
+      "slang": ["وناسة", "حلو", "قوي", "خرافي"],
+      "price_tier": "mid", "entry_point": "discord", "cta_language": "ar",
+      "payment_methods": ["mada", "stc_pay", "apple_pay", "card"],
+      "needs_local_ip": false,
+      "notes": "Очень высокое проникновение коротких видео, пик активности сдвинут в ночь. Контент обязательно на арабском."
+    },
+    {
+      "code": "id", "name": "Индонезия", "priority": 2,
+      "content_language": "id", "voiceover_language": "id", "subtitle_language": "id",
+      "timezone": "Asia/Jakarta",
+      "top_games": ["Roblox", "Minecraft", "Valorant", "PUBG", "Fortnite", "GTA V"],
+      "slang": ["kentang", "gacor", "mantap", "anjay", "ngelag"],
+      "price_tier": "low", "entry_point": "discord", "cta_language": "id",
+      "payment_methods": ["gopay", "dana", "qris", "ovo"],
+      "needs_local_ip": false,
+      "notes": "Дешёвый охват, слабая монетизация подписки. Берётся ради объёма просмотров и социальных доказательств, а не выручки."
+    },
+    {
+      "code": "br", "name": "Бразилия", "priority": 2,
+      "content_language": "pt", "voiceover_language": "pt", "subtitle_language": "pt",
+      "timezone": "America/Sao_Paulo",
+      "top_games": ["Fortnite", "Valorant", "CS2", "GTA V", "Roblox", "Minecraft"],
+      "slang": ["pc fraco", "travando", "liso", "monstro", "roda"],
+      "price_tier": "mid", "entry_point": "discord", "cta_language": "pt",
+      "payment_methods": ["pix", "card", "paypal"],
+      "needs_local_ip": false,
+      "notes": "Огромная вовлечённая геймерская аудитория и очень дешёвый охват; Pix обязателен для оплаты."
+    }
+  ]
+}

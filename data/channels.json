@@ -1,0 +1,86 @@
+{
+  "_meta": {
+    "purpose": "Сетка каналов: 20 слотов на каждую платформу на каждое активное гео.",
+    "core_rule": "20 каналов в одном гео выживают только если это 20 РАЗНЫХ каналов. Один шаблон, размноженный 20 раз, — это дублирующий/неаутентичный контент по правилам площадок и взаимная каннибализация показов.",
+    "differentiation_axes": ["игра", "формат", "под-ниша (софт/железо/настройки/мемы)", "персона", "длина видео"],
+    "publish_mode_policy": {
+      "api": "1-2 флагманских слота на платформу — официальное API, полный автомат",
+      "relay": "слоты через сторонний планировщик с мульти-аккаунтом",
+      "kit": "остальные слоты: система готовит пост-кит, публикация с устройства аккаунта"
+    },
+    "handle_note": "handle_pattern подставляет {geo}/{n}/{game}. Ники проверять на занятость перед регистрацией; не делать 20 ников по одному шаблону с цифрами — это самый явный признак сетки."
+  },
+
+  "platform_codes": { "tiktok": "tt", "youtube": "yt", "instagram": "ig", "facebook": "fb" },
+
+  "per_platform": {
+    "tiktok": [
+      { "theme": "Fortnite FPS и настройки", "target_game": "Fortnite", "formats": ["before_after_fps", "settings_speedrun", "one_setting_fix"], "handle_pattern": "{game}fpslab", "bio": "Fortnite FPS fixes daily · {cta}", "persona": "faceless", "posts_per_day": 3, "publish_mode": "kit" },
+      { "theme": "Valorant: input lag и отклик", "target_game": "Valorant", "formats": ["input_lag_test", "one_setting_fix", "pro_settings"], "handle_pattern": "val.lowlatency", "bio": "less input lag, more clicks · {cta}", "persona": "faceless", "posts_per_day": 3, "publish_mode": "kit" },
+      { "theme": "CS2 конфиги и производительность", "target_game": "CS2", "formats": ["launch_options", "before_after_fps", "pro_settings"], "handle_pattern": "cs2.cfgs", "bio": "CS2 configs & fps · {cta}", "persona": "faceless", "posts_per_day": 3, "publish_mode": "api" },
+      { "theme": "Rust: фризы и стабильность", "target_game": "Rust", "formats": ["stutter_fix", "before_after_1percent", "myth_bust"], "handle_pattern": "rust.smooth", "bio": "stop the stutter · {cta}", "persona": "faceless", "posts_per_day": 2, "publish_mode": "kit" },
+      { "theme": "Dead by Daylight: стабильный кадр", "target_game": "Dead by Daylight", "formats": ["stutter_fix", "one_setting_fix", "before_after_fps"], "handle_pattern": "dbd.fpsfix", "bio": "DBD without the freezes · {cta}", "persona": "faceless", "posts_per_day": 2, "publish_mode": "kit" },
+      { "theme": "Warzone / CoD производительность", "target_game": "Warzone", "formats": ["before_after_fps", "settings_speedrun", "one_setting_fix"], "handle_pattern": "wz.fpsboost", "bio": "Warzone fps guides · {cta}", "persona": "faceless", "posts_per_day": 2, "publish_mode": "kit" },
+      { "theme": "Apex Legends настройки", "target_game": "Apex Legends", "formats": ["pro_settings", "one_setting_fix", "before_after_fps"], "handle_pattern": "apex.tweaks", "bio": "Apex settings that matter · {cta}", "persona": "faceless", "posts_per_day": 2, "publish_mode": "kit" },
+      { "theme": "Roblox на слабом ПК", "target_game": "Roblox", "formats": ["low_end_run", "before_after_fps", "one_setting_fix"], "handle_pattern": "roblox.lowend", "bio": "Roblox on potato PCs · {cta}", "persona": "faceless", "posts_per_day": 3, "publish_mode": "kit" },
+      { "theme": "Minecraft: шейдеры и FPS", "target_game": "Minecraft", "formats": ["before_after_fps", "settings_speedrun", "low_end_run"], "handle_pattern": "mc.fpsfix", "bio": "Minecraft fps & shaders · {cta}", "persona": "faceless", "posts_per_day": 2, "publish_mode": "kit" },
+      { "theme": "GTA V / RP оптимизация", "target_game": "GTA V", "formats": ["before_after_fps", "stutter_fix", "settings_speedrun"], "handle_pattern": "gta.optimize", "bio": "GTA RP fps fixes · {cta}", "persona": "faceless", "posts_per_day": 2, "publish_mode": "kit" },
+      { "theme": "Marvel Rivals производительность", "target_game": "Marvel Rivals", "formats": ["before_after_fps", "one_setting_fix", "stutter_fix"], "handle_pattern": "rivals.fps", "bio": "Rivals runs better than this · {cta}", "persona": "faceless", "posts_per_day": 2, "publish_mode": "kit" },
+      { "theme": "PUBG / Tarkov тяжёлые тайтлы", "target_game": "PUBG", "formats": ["before_after_1percent", "stutter_fix", "settings_speedrun"], "handle_pattern": "heavy.fps", "bio": "heavy games, stable frames · {cta}", "persona": "faceless", "posts_per_day": 2, "publish_mode": "kit" },
+      { "theme": "Гейминг на ноутбуке", "target_game": null, "formats": ["low_end_run", "thermal_fix", "before_after_fps"], "handle_pattern": "laptop.fpslab", "bio": "laptop gaming, honest numbers · {cta}", "persona": "faceless", "posts_per_day": 2, "publish_mode": "relay" },
+      { "theme": "Слабое железо: что реально тянет", "target_game": null, "formats": ["low_end_run", "myth_bust", "gpu_compare"], "handle_pattern": "lowend.tested", "bio": "old GPU, new settings · {cta}", "persona": "faceless", "posts_per_day": 2, "publish_mode": "kit" },
+      { "theme": "Мини-ПК и компактные сборки", "target_game": null, "formats": ["build_showcase", "gpu_compare", "before_after_fps"], "handle_pattern": "mini.rigs", "bio": "small PCs, real fps · {cta}", "persona": "faceless", "posts_per_day": 1, "publish_mode": "kit" },
+      { "theme": "Разоблачение мифов об оптимизации", "target_game": null, "formats": ["myth_bust", "ab_test", "snake_oil_check"], "handle_pattern": "fps.mythbust", "bio": "we test the 'fps boosters' · {cta}", "persona": "voice", "posts_per_day": 2, "publish_mode": "api" },
+      { "theme": "Настройки про-игроков", "target_game": null, "formats": ["pro_settings", "one_setting_fix", "tier_list"], "handle_pattern": "pro.cfg", "bio": "what pros actually change · {cta}", "persona": "faceless", "posts_per_day": 2, "publish_mode": "kit" },
+      { "theme": "Почему ПК фризит: разбор причин", "target_game": null, "formats": ["diagnosis", "stutter_fix", "myth_bust"], "handle_pattern": "why.stutter", "bio": "diagnose the stutter · {cta}", "persona": "voice", "posts_per_day": 2, "publish_mode": "kit" },
+      { "theme": "Бенчмарк-ASMR и satisfying-графики", "target_game": null, "formats": ["benchmark_asmr", "before_after_1percent", "satisfying_graph"], "handle_pattern": "fps.satisfy", "bio": "frametime graphs that heal you · {cta}", "persona": "faceless", "posts_per_day": 3, "publish_mode": "kit" },
+      { "theme": "Коврики и периферия (товарная линия)", "target_game": null, "formats": ["product_showcase", "satisfying_graph", "tier_list"], "handle_pattern": "pads.and.fps", "bio": "gear + settings · {cta}", "persona": "faceless", "posts_per_day": 1, "publish_mode": "kit" }
+    ],
+
+    "youtube": [
+      { "theme": "Fortnite FPS guides (Shorts)", "target_game": "Fortnite", "formats": ["settings_speedrun", "before_after_fps", "one_setting_fix"], "handle_pattern": "{game}FpsLab", "bio": "Short Fortnite performance guides. {cta}", "persona": "faceless", "posts_per_day": 2, "publish_mode": "api" },
+      { "theme": "Valorant performance shorts", "target_game": "Valorant", "formats": ["input_lag_test", "pro_settings", "one_setting_fix"], "handle_pattern": "ValLowLatency", "bio": "Latency and fps, tested. {cta}", "persona": "faceless", "posts_per_day": 2, "publish_mode": "kit" },
+      { "theme": "CS2 config shorts", "target_game": "CS2", "formats": ["launch_options", "pro_settings", "before_after_fps"], "handle_pattern": "CS2Cfg", "bio": "CS2 configs explained fast. {cta}", "persona": "faceless", "posts_per_day": 2, "publish_mode": "kit" },
+      { "theme": "Rust stutter fixes", "target_game": "Rust", "formats": ["stutter_fix", "before_after_1percent", "diagnosis"], "handle_pattern": "RustSmooth", "bio": "Rust frametime fixes. {cta}", "persona": "faceless", "posts_per_day": 1, "publish_mode": "kit" },
+      { "theme": "DBD performance", "target_game": "Dead by Daylight", "formats": ["stutter_fix", "one_setting_fix"], "handle_pattern": "DbdFpsFix", "bio": "DBD performance shorts. {cta}", "persona": "faceless", "posts_per_day": 1, "publish_mode": "kit" },
+      { "theme": "Warzone fps", "target_game": "Warzone", "formats": ["settings_speedrun", "before_after_fps"], "handle_pattern": "WzFpsBoost", "bio": "Warzone settings, no fluff. {cta}", "persona": "faceless", "posts_per_day": 2, "publish_mode": "kit" },
+      { "theme": "Apex settings", "target_game": "Apex Legends", "formats": ["pro_settings", "one_setting_fix"], "handle_pattern": "ApexTweaks", "bio": "Apex settings breakdowns. {cta}", "persona": "faceless", "posts_per_day": 1, "publish_mode": "kit" },
+      { "theme": "Roblox low-end", "target_game": "Roblox", "formats": ["low_end_run", "one_setting_fix"], "handle_pattern": "RobloxLowEnd", "bio": "Roblox on weak PCs. {cta}", "persona": "faceless", "posts_per_day": 2, "publish_mode": "kit" },
+      { "theme": "Minecraft fps & shaders", "target_game": "Minecraft", "formats": ["before_after_fps", "settings_speedrun"], "handle_pattern": "McFpsFix", "bio": "Minecraft performance. {cta}", "persona": "faceless", "posts_per_day": 1, "publish_mode": "kit" },
+      { "theme": "GTA RP optimization", "target_game": "GTA V", "formats": ["stutter_fix", "before_after_fps"], "handle_pattern": "GtaOptimize", "bio": "GTA/FiveM performance. {cta}", "persona": "faceless", "posts_per_day": 1, "publish_mode": "kit" },
+      { "theme": "Marvel Rivals fps", "target_game": "Marvel Rivals", "formats": ["before_after_fps", "one_setting_fix"], "handle_pattern": "RivalsFps", "bio": "Rivals performance shorts. {cta}", "persona": "faceless", "posts_per_day": 1, "publish_mode": "kit" },
+      { "theme": "Heavy titles: PUBG/Tarkov", "target_game": "PUBG", "formats": ["before_after_1percent", "stutter_fix"], "handle_pattern": "HeavyFps", "bio": "Stable frames in heavy games. {cta}", "persona": "faceless", "posts_per_day": 1, "publish_mode": "kit" },
+      { "theme": "Laptop gaming", "target_game": null, "formats": ["thermal_fix", "low_end_run", "before_after_fps"], "handle_pattern": "LaptopFpsLab", "bio": "Laptop gaming, measured. {cta}", "persona": "voice", "posts_per_day": 2, "publish_mode": "relay" },
+      { "theme": "Low-end hardware tests", "target_game": null, "formats": ["low_end_run", "gpu_compare", "myth_bust"], "handle_pattern": "LowEndTested", "bio": "Old hardware, new numbers. {cta}", "persona": "voice", "posts_per_day": 1, "publish_mode": "kit" },
+      { "theme": "Mini PC builds", "target_game": null, "formats": ["build_showcase", "gpu_compare"], "handle_pattern": "MiniRigs", "bio": "Small form factor gaming. {cta}", "persona": "faceless", "posts_per_day": 1, "publish_mode": "kit" },
+      { "theme": "Optimization myth busting", "target_game": null, "formats": ["myth_bust", "ab_test", "snake_oil_check"], "handle_pattern": "FpsMythBust", "bio": "We test fps claims. {cta}", "persona": "voice", "posts_per_day": 2, "publish_mode": "api" },
+      { "theme": "Pro player settings", "target_game": null, "formats": ["pro_settings", "tier_list"], "handle_pattern": "ProCfg", "bio": "Pro settings, explained. {cta}", "persona": "faceless", "posts_per_day": 1, "publish_mode": "kit" },
+      { "theme": "Why your PC stutters", "target_game": null, "formats": ["diagnosis", "stutter_fix"], "handle_pattern": "WhyStutter", "bio": "Diagnose before you tweak. {cta}", "persona": "voice", "posts_per_day": 2, "publish_mode": "kit" },
+      { "theme": "Frametime / benchmark shorts", "target_game": null, "formats": ["benchmark_asmr", "satisfying_graph", "before_after_1percent"], "handle_pattern": "FpsSatisfy", "bio": "1% lows and clean graphs. {cta}", "persona": "faceless", "posts_per_day": 2, "publish_mode": "kit" },
+      { "theme": "Gear & peripherals", "target_game": null, "formats": ["product_showcase", "tier_list"], "handle_pattern": "PadsAndFps", "bio": "Gear that changes nothing (and gear that does). {cta}", "persona": "faceless", "posts_per_day": 1, "publish_mode": "kit" }
+    ],
+
+    "instagram": [
+      { "theme": "Fortnite FPS reels", "target_game": "Fortnite", "formats": ["before_after_fps", "one_setting_fix", "carousel_settings"], "handle_pattern": "{game}.fps.lab", "bio": "Fortnite fps fixes · DM 'FPS' · {cta}", "persona": "faceless", "posts_per_day": 2, "publish_mode": "kit" },
+      { "theme": "Valorant latency reels", "target_game": "Valorant", "formats": ["input_lag_test", "one_setting_fix"], "handle_pattern": "val.latency", "bio": "Less delay, more hits · DM 'FPS' · {cta}", "persona": "faceless", "posts_per_day": 2, "publish_mode": "kit" },
+      { "theme": "CS2 settings reels", "target_game": "CS2", "formats": ["launch_options", "pro_settings"], "handle_pattern": "cs2.configs", "bio": "CS2 configs · DM 'CFG' · {cta}", "persona": "faceless", "posts_per_day": 2, "publish_mode": "api" },
+      { "theme": "Rust performance reels", "target_game": "Rust", "formats": ["stutter_fix", "before_after_1percent"], "handle_pattern": "rust.smooth.fps", "bio": "Rust without stutter · {cta}", "persona": "faceless", "posts_per_day": 1, "publish_mode": "kit" },
+      { "theme": "DBD reels", "target_game": "Dead by Daylight", "formats": ["stutter_fix", "one_setting_fix"], "handle_pattern": "dbd.fps", "bio": "DBD performance · {cta}", "persona": "faceless", "posts_per_day": 1, "publish_mode": "kit" },
+      { "theme": "Warzone reels", "target_game": "Warzone", "formats": ["settings_speedrun", "before_after_fps"], "handle_pattern": "wz.fps", "bio": "Warzone fps · DM 'FPS' · {cta}", "persona": "faceless", "posts_per_day": 2, "publish_mode": "kit" },
+      { "theme": "Apex reels", "target_game": "Apex Legends", "formats": ["pro_settings", "one_setting_fix"], "handle_pattern": "apex.cfg", "bio": "Apex settings · {cta}", "persona": "faceless", "posts_per_day": 1, "publish_mode": "kit" },
+      { "theme": "Roblox low-end reels", "target_game": "Roblox", "formats": ["low_end_run", "one_setting_fix"], "handle_pattern": "roblox.potato", "bio": "Roblox on any PC · {cta}", "persona": "faceless", "posts_per_day": 2, "publish_mode": "kit" },
+      { "theme": "Minecraft reels", "target_game": "Minecraft", "formats": ["before_after_fps", "settings_speedrun"], "handle_pattern": "mc.fps", "bio": "Minecraft fps · {cta}", "persona": "faceless", "posts_per_day": 1, "publish_mode": "kit" },
+      { "theme": "GTA RP reels", "target_game": "GTA V", "formats": ["stutter_fix", "before_after_fps"], "handle_pattern": "gta.rp.fps", "bio": "GTA RP performance · {cta}", "persona": "faceless", "posts_per_day": 1, "publish_mode": "kit" },
+      { "theme": "Marvel Rivals reels", "target_game": "Marvel Rivals", "formats": ["before_after_fps", "one_setting_fix"], "handle_pattern": "rivals.fps.fix", "bio": "Rivals fps · {cta}", "persona": "faceless", "posts_per_day": 1, "publish_mode": "kit" },
+      { "theme": "Heavy games reels", "target_game": "PUBG", "formats": ["before_after_1percent", "stutter_fix"], "handle_pattern": "heavy.frames", "bio": "Heavy titles, stable frames · {cta}", "persona": "faceless", "posts_per_day": 1, "publish_mode": "kit" },
+      { "theme": "Laptop gaming reels", "target_game": null, "formats": ["thermal_fix", "low_end_run"], "handle_pattern": "laptop.fps", "bio": "Laptop gaming · DM 'LAPTOP' · {cta}", "persona": "voice", "posts_per_day": 2, "publish_mode": "relay" },
+      { "theme": "Low-end tests", "target_game": null, "formats": ["low_end_run", "gpu_compare"], "handle_pattern": "lowend.fps", "bio": "Weak PC, real tests · {cta}", "persona": "faceless", "posts_per_day": 1, "publish_mode": "kit" },
+      { "theme": "Mini PC reels", "target_game": null, "formats": ["build_showcase", "product_showcase"], "handle_pattern": "mini.pc.gaming", "bio": "Mini PCs · {cta}", "persona": "faceless", "posts_per_day": 1, "publish_mode": "kit" },
+      { "theme": "Myth busting reels", "target_game": null, "formats": ["myth_bust", "snake_oil_check"], "handle_pattern": "fps.myths", "bio": "Testing fps claims · {cta}", "persona": "voice", "posts_per_day": 2, "publish_mode": "kit" },
+      { "theme": "Pro settings carousels", "target_game": null, "formats": ["carousel_settings", "pro_settings"], "handle_pattern": "pro.settings", "bio": "Pro configs · save for later · {cta}", "persona": "faceless", "posts_per_day": 1, "publish_mode": "kit" },
+      { "theme": "Stutter diagnosis reels", "target_game": null, "formats": ["diagnosis", "stutter_fix"], "handle_pattern": "stutter.doctor", "bio": "Find the real cause · DM 'FIX' · {cta}", "persona": "voice", "posts_per_day": 2, "publish_mode": "kit" },
+      { "theme": "Satisfying graphs", "target_game": null, "formats": ["benchmark_asmr", "satisfying_graph"], "handle_pattern": "frametime.asmr", "bio": "Clean frametimes only · {cta}", "persona": "faceless", "posts_per_day": 2, "publish_mode": "kit" },
+      { "theme": "Gear line (коврики)", "target_game": null, "formats": ["product_showcase", "tier_list"], "handle_pattern": "pads.gg", "bio": "Custom pads + settings · {cta}", "persona": "faceless", "posts_per_day": 1, "publish_mode": "kit" }
+    ]
+  }
+}
