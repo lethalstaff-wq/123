@@ -76,22 +76,47 @@ def _clean_slang(items: list) -> list[str]:
     return out[:15]
 
 
+LANG_KEYS = [
+    ("ar", ("arabic", "араб")), ("en", ("english", "англ")),
+    ("es", ("spanish", "испан", "castellano")), ("pt", ("portug", "португ")),
+    ("de", ("german", "немец")), ("fr", ("french", "француз")),
+    ("id", ("indonesi", "индонез", "bahasa")), ("tr", ("turkish", "турец")),
+    ("vi", ("vietnam", "вьетнам")), ("th", ("thai", "тайск")),
+    ("hi", ("hindi", "хинди")), ("ja", ("japan", "япон")), ("ko", ("korea", "корей")),
+    ("ru", ("russian", "русск")), ("it", ("italian", "итальян")), ("pl", ("polish", "поль")),
+]
+
+
 def _lang_code(raw: str | None, geo: str) -> str:
+    """Код языка контента из описания агента.
+
+    Берём язык, упомянутый РАНЬШЕ всех в тексте, а не первый из нашего списка.
+    Отчёт по Саудовской Аравии начинается словом «Арабский», но дальше содержит
+    «только 12% на английском» — наивная проверка по порядку списка давала английский
+    и уводила всё гео на неверный язык контента.
+    """
     if not raw:
         return LANG_FALLBACK.get(geo, "en")
-    t = raw.lower()
-    for code, keys in (
-        ("en", ("english", "англ")), ("ar", ("arabic", "араб")),
-        ("es", ("spanish", "испан", "castellano")), ("pt", ("portug", "португ")),
-        ("de", ("german", "немец")), ("fr", ("french", "француз")),
-        ("id", ("indonesi", "индонез", "bahasa")), ("tr", ("turkish", "турец")),
-        ("vi", ("vietnam", "вьетнам")), ("th", ("thai", "тайск")),
-        ("hi", ("hindi", "хинди")), ("ja", ("japan", "япон")), ("ko", ("korea", "корей")),
-        ("ru", ("russian", "русск")), ("it", ("italian", "итальян")), ("pl", ("polish", "поль")),
-    ):
-        if any(k in t for k in keys):
-            return code
-    return LANG_FALLBACK.get(geo, "en")
+    t = str(raw).lower()
+    hits = []
+    for code, keys in LANG_KEYS:
+        for k in keys:
+            i = t.find(k)
+            if i >= 0:
+                hits.append((i, code))
+                break
+    return min(hits)[1] if hits else LANG_FALLBACK.get(geo, "en")
+
+
+def _clean_game(raw: str) -> str:
+    """Название игры из отчёта: агенты пишут его с пояснениями и переводами.
+
+    'PUBG Mobile (ببجي موبايل) — включая игру на ЭМУЛЯТОРЕ на ПК' -> 'PUBG Mobile'.
+    Без этого пояснительная проза попадала прямо в текст хука на экране.
+    """
+    t = re.split(r"[(\[]|\s—|\s-\s|,", str(raw))[0]
+    t = t.split("/")[0].strip()
+    return t if t and len(t) <= 30 and len(t.split()) <= 5 else ""
 
 
 def _price_tier(mon: dict) -> tuple[str, list[float]]:
@@ -176,6 +201,14 @@ def _needs_local_ip(pg: dict) -> bool:
     return any(pos in t for pos in positive)
 
 
+def load_overrides() -> dict[str, dict]:
+    p = ROOT / "data" / "geo_overrides.json"
+    if not p.exists():
+        return {}
+    return {k: v for k, v in json.loads(p.read_text(encoding="utf-8")).items()
+            if not k.startswith("_")}
+
+
 def load_reports() -> dict[str, dict]:
     out = {}
     for f in sorted(glob.glob(str(RAW / "geo__*.json"))):
@@ -188,6 +221,7 @@ def load_reports() -> dict[str, dict]:
 
 
 def build_geos(reports: dict[str, dict]) -> dict:
+    overrides = load_overrides()
     geos = []
     for code, r in sorted(reports.items(), key=lambda kv: (
             VERDICT_TO_PRIORITY.get(kv[1].get("verdict", ""), 9), kv[0])):
@@ -195,7 +229,8 @@ def build_geos(reports: dict[str, dict]) -> dict:
         mon = r.get("monetization") or {}
         tier, prices = _price_tier(mon)
         content_lang = _lang_code(lang.get("primary_content_language"), code)
-        games = [g.get("game") for g in (r.get("top_games") or []) if g.get("game")]
+        games = [_clean_game(g.get("game")) for g in (r.get("top_games") or []) if g.get("game")]
+        games = [g for g in games if g]
         slang = _clean_slang(lang.get("slang_terms") or [])
         codes = {str(c).lower() for c in (r.get("country_codes") or [])} | {code}
         payment_blocked = bool(codes & BLOCKED_BUYERS)
@@ -223,12 +258,17 @@ def build_geos(reports: dict[str, dict]) -> dict:
             "needs_local_ip": _needs_local_ip(r.get("proxy_and_account_geo") or {}),
             "notes": (r.get("verdict_reason") or "")[:300],
         })
+        # ручные поправки применяются последними: они выражают решения, которые
+        # из отчёта автоматически не выводятся
+        if code in overrides:
+            geos[-1].update({k: v for k, v in overrides[code].items() if not k.startswith("_")})
     return {
         "_meta": {
             "purpose": "Гео-профили: язык, игры, сленг, цена, точка приёма, таймзона.",
             "source": "собрано scripts/build_geos.py из отчётов страновых агентов",
             "priority": "1 = стартовое гео, 2 = второй эшелон, 3 = третий, 9 = не брать (planner игнорирует > 3)",
             "countries": len(geos),
+            "overrides_applied": sorted(set(overrides) & {g["code"] for g in geos}),
             "needs_local_ip_note": "Гранулярность органической гео-выдачи = страна; город IP влияния не имеет. Поле означает только необходимость страново-корректного IP, не города.",
         },
         "geos": geos,

@@ -1560,5 +1560,48 @@
       "оптимизация",
       "игры"
     ]
+  },
+  "comment_ctas": {
+    "_why": "CTA-вопрос даёт +26% комментариев (Metricool 2026). Комментарий — сигнал вовлечения, который сильнее лайка.",
+    "en": [
+      "what GPU are you on?",
+      "which game should I test next?",
+      "is your 1% low this bad too?",
+      "what's your avg fps in this game?"
+    ],
+    "es": [
+      "¿qué GPU tienes?",
+      "¿qué juego pruebo ahora?",
+      "¿tu 1% low está así también?"
+    ],
+    "pt": [
+      "qual é a sua GPU?",
+      "qual jogo testo agora?",
+      "seu PC travando também?"
+    ],
+    "ar": [
+      "ايش كرت الشاشة عندك؟",
+      "اي لعبة اجرب بعدين؟"
+    ],
+    "id": [
+      "GPU kamu apa?",
+      "game apa lagi yang mau dites?"
+    ],
+    "de": [
+      "welche GPU hast du?",
+      "welches Spiel als nächstes?"
+    ],
+    "tr": [
+      "ekran kartın ne?",
+      "sıradaki oyun hangisi?"
+    ],
+    "fr": [
+      "quelle carte graphique tu as ?",
+      "quel jeu je teste ensuite ?"
+    ],
+    "ru": [
+      "какая у тебя видеокарта?",
+      "какую игру тестить следующей?"
+    ]
   }
 }

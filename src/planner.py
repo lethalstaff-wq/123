@@ -196,12 +196,27 @@ def build_caption(slot: ChannelSlot, hook: str, fmt: dict, seed: int) -> tuple[s
     rng = random.Random(seed)
     cta_pool = off.get("cta", bank.get("cta", ["link in bio"]))
     cta = rng.choice(cta_pool)
-    tail_pool = bank.get("caption_tails", {}).get(geo["content_language"], [""])
+    lang = geo["content_language"]
+    tail_pool = bank.get("caption_tails", {}).get(lang, [""])
     tail = rng.choice(tail_pool)
-    caption = f"{hook.rstrip('.')} — {tail}".strip(" —") if tail else hook
+    # Последняя строка — вопрос: CTA на комментарий даёт +26% комментариев
+    # (Metricool 2026), а комментарий сильнее лайка как сигнал вовлечения.
+    ask_pool = bank.get("comment_ctas", {}).get(lang) or bank.get("comment_ctas", {}).get("en", [])
+    ask = rng.choice(ask_pool) if ask_pool else ""
+    parts = [hook.rstrip(".")]
+    if tail:
+        parts.append(tail)
+    if ask:
+        parts.append(ask)
+    caption = " — ".join(parts)
     title = hook if len(hook) <= 95 else hook[:92] + "..."
-    tags = bank.get("hashtags", {}).get(slot.geo) or bank.get("hashtags", {}).get("default", [])
-    n = min(len(tags), platform_limits().get(slot.platform.value, {}).get("recommended_hashtags", 4))
+
+    limits = platform_limits().get(slot.platform.value, {})
+    blocked = {t.lower().lstrip("#") for t in limits.get("hashtag_blocklist", [])}
+    tags = [t for t in (bank.get("hashtags", {}).get(slot.geo)
+                        or bank.get("hashtags", {}).get("default", []))
+            if t.lower().lstrip("#") not in blocked]
+    n = min(len(tags), int(limits.get("recommended_hashtags", 2)))
     return caption, title, rng.sample(tags, n) if n else []
 
 

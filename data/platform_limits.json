@@ -3,7 +3,12 @@
     "purpose": "Лимиты, квоты и требования площадок. Код читает плоские ключи; _sources хранит происхождение и уровень доверия.",
     "rule": "Операционные лимиты намеренно НИЖЕ технических: технический предел площадки не равен безопасному темпу для нового аккаунта.",
     "status": "Заполнено данными ресерча (агенты tiktok_mechanics / shorts_mechanics / reels_mechanics, сентябрь 2026). Значения с confidence=low помечены в _sources и требуют собственной проверки.",
-    "content_environment": "Доля AI-контента в лентах: 59% в TikTok For You против 21% в YouTube Shorts (выборки 500 видео на площадку + 10 742 видео TikTok по 20 категориям). Для дифференциации это аргумент в пользу Shorts."
+    "content_environment": "Доля AI-контента в лентах: 59% в TikTok For You против 21% в YouTube Shorts (выборки 500 видео на площадку + 10 742 видео TikTok по 20 категориям). Для дифференциации это аргумент в пользу Shorts.",
+    "organic_decay_baseline": {
+      "_source": "Metricool 2026: объём контента +80% год к году, средние просмотры -31%, охват -29%, взаимодействия -31%",
+      "planning_rule": "на тот же охват нужно в 1.3-1.45 раза больше заливов, чем год назад",
+      "kpi_rule": "мерить долю просмотров из For You (цель >70%; в Испании 73% просмотров поста приходят с FYP), а не подписчиков"
+    }
   },
   "safe_area": {
     "_why": "UI площадок перекрывает края кадра. Текст в перекрытой зоне не читается, и хук не работает.",
@@ -16,13 +21,16 @@
     "warming_posts_per_day": 1,
     "min_gap_minutes": 240,
     "jitter_minutes": 35,
-    "recommended_hashtags": 4,
+    "recommended_hashtags": 2,
     "hashtag_blocklist": [
       "fyp",
       "foryou",
       "foryoupage",
       "viral",
-      "fypage"
+      "fypage",
+      "parati",
+      "paratipagina",
+      "viralvideo"
     ],
     "caption_max_chars": 2200,
     "hook_window_s": 3,
@@ -81,7 +89,19 @@
       "duration_from_creator_info": true,
       "note": "До аудита приложения публичной публикации через API НЕТ — только приватные посты. Значит публичный авто-залив по API невозможен, пока приложение не одобрено; такие слоты работают в KIT/RELAY."
     },
-    "tos_account_rule": "ToS: 'create only one account for strictly personal purposes'. Удалено 86 000 000+ фейковых аккаунтов за квартал (SEJ, 14.07.2026)."
+    "tos_account_rule": "ToS: 'create only one account for strictly personal purposes'. Удалено 86 000 000+ фейковых аккаунтов за квартал (SEJ, 14.07.2026).",
+    "hashtags_hard_max": 5,
+    "hashtag_effect": {
+      "_source": "Metricool «Algoritmo de TikTok en 2026» (Sara Martín)",
+      "hashtag_traffic_yoy": "+114%",
+      "posts_with_hashtags": "+5% просмотров, +10% взаимодействий",
+      "optimum": "1-2 конкретных хештега, не больше 5; общие теги вида #fyp/#viral/#parati бесполезны"
+    },
+    "cta_effect": {
+      "_source": "то же исследование",
+      "rule": "CTA, просящий комментарий (вопрос в последней строке), даёт +26% комментариев",
+      "consequence": "последняя строка подписи — вопрос, а не 'поставь лайк'"
+    }
   },
   "youtube": {
     "max_posts_per_day": 3,

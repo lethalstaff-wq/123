@@ -1,0 +1,82 @@
+{
+  "_meta": {
+    "purpose": "Локальные тактики и лексика, которых нет в англоязычных гайдах. Идут в хуки, заголовки и в парсинг трендов.",
+    "source": "агент guides_multiling (испанский, португальский BR, арабский, индонезийский, турецкий, французский, немецкий, хинди)"
+  },
+  "by_geo": {
+    "es": {
+      "local_genre": "«Windows optimizado» — кастомные облегчённые ISO как отдельный жанр контента",
+      "proof": "Dreamer Marco «¿CUÁL ES EL MEJOR WINDOWS OPTIMIZADO QUE DA MAS FPS EN FORTNITE?» 432 508 просмотров; его же гайд по FPS/ping/input lag 411 233",
+      "hooks": [
+        "tu Windows vs Windows optimizado",
+        "sin programas",
+        "sin pagar",
+        "subir FPS",
+        "bajar el input lag"
+      ],
+      "product_note": "Продавать платный конфиг ПОВЕРХ стандартной Windows: кастомные ISO — юридический риск по лицензии Microsoft",
+      "strategy_note": "Ниша meta-гайдов по алгоритмам занята авто-дубляжом англоязычных каналов — испаноязычные каналы делать сразу продуктовыми"
+    },
+    "br": {
+      "local_terms": [
+        "PC fraco",
+        "conta nova",
+        "aquecer a conta",
+        "forçar o TikTok a entregar",
+        "zero views",
+        "TikTok Dark",
+        "canal dark",
+        "sem aparecer"
+      ],
+      "proof": "Malazia «ZERANDO O INPUTLAG (FPS BOOST) ISSO NEM NA GRINGA ENSINA!» 755 962; Xerife Tech 744 539; TheLite 599 244; Jhonatas Silva «COMO CRESCER e VIRALIZAR uma CONTA NOVA» 377 867",
+      "hooks": [
+        "PC fraco",
+        "isso nem na gringa ensina",
+        "sem programas",
+        "Fortnite/CS2/Valorant/COD в заголовке"
+      ],
+      "extra_platform": "Kwai — платная программа найма креаторов и KwaiCut для нарезок; второй канал раздачи для BR/LatAm",
+      "audience": "131 млн пользователей TikTok 18+, 58.6% мужчин, охват 80.3% взрослых — крупнейший мужской рынок набора",
+      "money_note": "Весь топовый бразильский контент по оптимизации БЕСПЛАТНЫЙ и живёт с рекламы: конверсия в платную подписку в BRL низкая. Использовать как верх воронки и полигон креативов, деньги ждать с UK/US/DE",
+      "faceless_search_keys": [
+        "tiktok dark",
+        "canal dark",
+        "sem aparecer"
+      ]
+    },
+    "ar_gulf": {
+      "terminology": [
+        "الإكسبلور (explore, а не FYP)",
+        "خوارزمية التيكتوك"
+      ],
+      "extra_platform": "Snapchat Spotlight (منصة الأضواء): Snapchat покрывает 89% взрослых Саудовской Аравии, 25.3 млн пользователей — короткое видео здесь глубже TikTok. Единственное гео набора, где Snapchat оправдан",
+      "audience": "Саудовская Аравия 38.6 млн TikTok 18+, 60.9% мужчин",
+      "content_note": "Арабский гейминг-контент мобильный, не PC: топ выдачи — трюки с VRAM/RAM, Android-эмуляторы, лаги в мобильных Minecraft и PUBG. Полноценные PC-гайды в топе — авто-дубляж англоязычных",
+      "hooks": [
+        "زيادة الفريمات بدون برامج",
+        "تخفيف اللاق"
+      ]
+    },
+    "ar_egypt_iraq": {
+      "audience": "Египет 48.8 млн TikTok 18+, 64.2% мужчин — самая мужская аудитория набора",
+      "money_note": "Объём есть, платёжеспособность в USD почти нулевая; Ирак вдобавок заблокирован платёжками",
+      "split_rule": "Хранить Gulf и Egypt/Iraq как РАЗНЫЕ гео: разная платёжеспособность и разные площадки"
+    },
+    "id": {
+      "local_myth": "Культ «jam FYP» — вера в конкретные часы, в которые залив попадает в FYP. Расписание на этом не строить, но хуки под запрос делать: спрос реальный",
+      "local_terms": [
+        "fyp",
+        "jam FYP",
+        "akun sepi",
+        "nol views",
+        "views stuck di 200-1000",
+        "susah fyp",
+        "akun rusak"
+      ],
+      "proof": "maximalin «CARA PULIHKAN AKUN TIKTOK YANG SEPI/NOL VIEWS» 324 302; Rio Gandhi «Views Stuck di 200-1000? Susah FYP!» 321 890",
+      "audience": "180 млн пользователей TikTok 18+, 88.9% взрослых — крупнейший рынок набора, но 56.3% женщин",
+      "money_note": "Максимум показов на доллар, но конверсии в подписку ждать не стоит: источник дешёвых просмотров и тестов",
+      "schedule_note": "Расписание вести от follower-activity в TikTok Business Center, а не от «магических часов»"
+    }
+  }
+}

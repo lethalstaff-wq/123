@@ -10,7 +10,7 @@
 |---|---|---|---|---|---|
 | `ca` Канада (Canada) — двухъязычный кла… | priority_1 | en | Fortnite, Valorant, Counter-Strike 2 | $6.99 (mid) | discord |
 | `de` Германия / Австрия / Швейцария (DA… | priority_1 | de | CS2, Fortnite, Minecraft | 1,08 USD (mid) | discord |
-| `sa` Саудовская Аравия (KSA) | priority_1 | en | Call of Duty, Fortnite, PUBG | $21 (high) | site |
+| `sa` Саудовская Аравия (KSA) | priority_1 | ar | Call of Duty, Fortnite, PUBG | $21 (high) | site |
 | `us` США (United States of America) | priority_1 | en | Fortnite, Valorant, Counter-Strike 2 | $8.99-11.99 (high) | discord |
 | `za` South Africa (ЮАР) | priority_1 | en | Roblox, Valorant, Fortnite | $10-15 (high) | discord |
 | `ae` United Arab Emirates (ОАЭ) | priority_2 | en | Fortnite, Valorant, Call of Duty: Warzone … | $12 (high) | site |
