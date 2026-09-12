@@ -1,4 +1,9 @@
 {
+  "geo_africa_cis_latam": {
+    "confirmed": 20,
+    "refuted": 1,
+    "size": 41563
+  },
   "platform": {
     "confirmed": 19,
     "refuted": 0,

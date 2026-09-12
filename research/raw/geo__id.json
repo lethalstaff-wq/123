@@ -1,0 +1,716 @@
+{
+  "country": "Индонезия (Republic of Indonesia)",
+  "country_codes": [
+    "ID",
+    "IDN",
+    "62"
+  ],
+  "verdict": "priority_3",
+  "verdict_reason": "РАЗДВОЕННОЕ ГЕО: лучший в мире охват — худшая в мире монетизация под ИМЕННО этот оффер.\n\nЗА: TikTok 180 млн взрослых 18+ (DataReportal Digital 2026: Indonesia, данные за окт 2025) — САМАЯ БОЛЬШАЯ рекламная аудитория TikTok в мире, больше США. Интернет 230 млн / 80.5%, соцсети 180 млн (+26% г/г — самый быстрый рост среди крупных рынков). CPM TikTok <$2, SEA-кластер $0.5-2 против $10-25 в UK/US (Stackmatix/Unpromptd 2026). 1 млн просмотров здесь стоит в 5-15 раз дешевле, чем в UK.\n\nПРОТИВ (решающее):\n1) Оффер = Windows-твики для ПК. Гейминг в Индонезии мобильный: PC $270 млн выручки против mobile $1.38 млрд в 2025 (оценки Newzoo-класса). ~175 млн геймеров, но ПК-ядро оценочно 8-15 млн (low confidence). Mobile Legends 48.99% и Free Fire 23.05% доступа — это телефоны.\n2) Niko Partners: Индонезия = ~половина геймеров ЮВА, но только ~четверть выручки ЮВА. Много глаз, мало денег.\n3) Платёжка. Карт почти нет, всё через QRIS/e-wallet (QRIS: 57+ млн юзеров, 38+ млн мерчантов, 2.6 млрд транзакций за Q1 2025). Midtrans/Xendit/DOKU требуют индонезийское юрлицо (PT/PT PMA + NPWP) — оператору из СНГ недоступно. Paddle/LemonSqueezy/Stripe дают карты и PayPal, которых у 16-летнего индонезийца НЕТ. Конверсия режется в 5-20 раз против UK.\n4) РЕГУЛЯТОРНЫЙ УДАР ПО ЯДРУ ЦА: PP No.17/2025 «PP Tunas» в силе с 28.03.2026 — соцсети только 16+. TikTok на 10.04.2026 деактивировал 780 000 аккаунтов детей <16 (ANTARA, 14.04.2026). Сегмент 13-15 юридически выбит.\n5) Пиратство: исторические ставки 84-86% (BSA), бесплатные кастомные ISO (AtlasOS, ReviOS, Ghost Spectre) и гайды на индонезийском (IDN Gaming, GGWP, Esportsnesia) закрывают потребность за 0 рупий.\n\nИТОГ: НЕ приоритетное гео для выручки. Брать как (а) дешёвую лабораторию тестирования хуков и прогрева аккаунтов и (б) волюм-канал под lifetime-SKU $8-12 с ОБЯЗАТЕЛЬНЫМ QRIS/e-wallet чекаутом. Без локальной платёжки — переводить в skip: $3-15 выручки на 1 млн просмотров при card-only против $80-250 в UK (оценка, low confidence).",
+  "audience": {
+    "internet_users": "230 млн, проникновение 80.5% (DataReportal Digital 2026: Indonesia, данные окт 2025; +18 млн / +8.7% г/г). Годом ранее: 212 млн / 74.6% (Digital 2025: Indonesia, янв 2025).",
+    "tiktok_users": "180 млн рекламный охват 18+ = 88.9% всех взрослых 18+ (DataReportal Digital 2026, окт 2025). САМАЯ КРУПНАЯ рекламная аудитория TikTok в мире. Гендер: 56.3% ж / 43.7% м — мужская гейм-аудитория в TikTok ID в меньшинстве, конкуренция за мужское внимание ниже. Год назад 108 млн 18+ (янв 2025) — рост +67% за год.",
+    "instagram_users": "108 млн рекламный охват = 37.6% населения (DataReportal Digital 2026, окт 2025). Гендер 53.2% ж / 46.8% м. Год назад 103 млн (янв 2025) — рост почти остановился (+4.9%). IG в ID стагнирует относительно TikTok.",
+    "youtube_users": "151 млн рекламный охват = 52.7% населения (DataReportal Digital 2026, окт 2025). В янв 2025 было 143 млн. Платформа №2 по охвату, но Shorts RPM в ID один из самых низких в мире.",
+    "gamers_total": "~175 млн играющих = >80% интернет-пользователей (digitalinasia / оценки Newzoo-класса, 2025-2026). Оценки активно тратящей базы: ~138 млн (Niko Partners) — ~155 млн (Antom). Активных киберспортивных игроков >52 млн. Рынок игр ID ~$1.78-1.9 млрд в 2025.",
+    "pc_gaming_share": "Выручка PC $270 млн против mobile $1.38 млрд (2025) = PC ~15% выручки, mobile ~73%. По людям прямых данных НЕТ. Оценка ПК-геймеров (low confidence): 8-15 млн человек, из них регулярно играют в тайтлы оффера (Valorant/CS2/PUBG/Roblox/Minecraft/Delta Force/Marvel Rivals) — 3-7 млн. Это и есть реальный TAM оффера, а не 175 млн. Косвенное подтверждение массы: Discord «VALORANT Indonesia Community» >242 000 участников (discordbotlist, 2025).",
+    "weak_pc_share_note": "Ядро оффера подтверждено лексически: в индонезийском гейм-сленге есть устойчивые термины 'spek kentang' / 'laptop kentang' / 'PC kentang' (букв. 'картофельные спеки'), вокруг них целый медиапласт: GGWP 'Cara Aman Bermain Valorant di Laptop atau PC Kentang', Esportsnesia '9 Cara Main Valorant di Laptop Kentang', IDN Gaming 'Cara Mengatasi FPS Drop Valorant 2025', ligagame.tv 'Cara Mengatasi Valorant FPS Drops dan Lag'. Реальные цифры по железу в Индонезии отдельно НЕ публикуются (нет данных; Steam не даёт разбивку по странам). Глобальный прокси: Steam Hardware Survey апр-авг 2026 — 8 ГБ RAM всё ещё самая массовая конфигурация ~26.8-27.5%, топовая GPU RTX 3060 всего 3.76-4.15%, апгрейд тормозит из-за цен. В Индонезии картина заведомо хуже глобальной (доход + пошлины + ограничения импорта). Отдельный слой: warnet (игровые интернет-кафе), тариф порядка Rp 4 000-6 000/час; точной статистики по числу warnet за 2025 НЕТ — low confidence.",
+    "age_profile": "Медианный возраст 30.4 года. Структура (DataReportal Digital 2026, окт 2025): 13-17 = 8.4% (~24 млн), 18-24 = 11.0% (~31.5 млн), 25-34 = 15.1% (~43 млн). ЦА оффера 13-24 = ~55 млн. КРИТИЧНО: с 28.03.2026 сегмент 13-15 (~14 млн) выведен из соцсетей по PP 17/2025. Работающая ЦА фактически 16-24 = ~40-42 млн.",
+    "notes": "Население 286 млн, 60% городское, мобильных подключений 331 млн (116% населения). 78.2% интернет-пользователей заходят в соцсети. Индонезийцы в топ-5 мира по времени в мобильных играх (>5 ч/день в 2024, Newzoo). Ключевой разрыв: контент потребляют с телефона, но ИГРАЮТ в целевые игры оффера с ПК. Хук ОБЯЗАН явно называть ПК/ноут/эмулятор в первые 1.5 сек, иначе 80% просмотров — мобильщики, которым нечего продать."
+  },
+  "language": {
+    "primary_content_language": "Bahasa Indonesia. Английский НЕ работает как основной язык для этой ЦА. Индонезийский геймерский язык — это code-mixing: индонезийская грамматика + английские игровые термины (FPS, ping, lag, rank, settings, low spec). Пиши именно так, а не чистым индонезийским и не чистым английским.",
+    "subtitle_language": "Жёсткие вшитые субтитры / текст на экране на Bahasa Indonesia. Игровые термины (FPS, 1% low, input lag, RAM, driver, throttling) оставлять по-английски — аудитория знает их только так, перевод сломает узнаваемость. Шрифт крупный: смотрят с бюджетных Android с малыми экранами.",
+    "voiceover_recommendation": "Вариант А (рекомендуемый): БЕЗ голоса — геймплей + текст на экране + трендовый звук TikTok ID. Снимает проблему акцента, масштабируется скриптом.\nВариант Б: индонезийский TTS (молодой мужской голос) — терпимо, но аудитория ID узнаёт TTS, часть комментариев будет 'suara AI'.\nВариант В: живой индонезийский войсовер с Fiverr/локальных площадок — точных текущих ставок в открытых источниках нет (нет данных), ориентир $5-20 за короткий ролик, low confidence.\nАнглийский войсовер + индонезийские субтитры — рабочий компромисс для 'до/после FPS', где голос почти не нужен.",
+    "english_works": "ЧАСТИЧНО и только в узком слое. Английский понимает ПК-ядро и Valorant/CS2-комьюнити, но массовый охват в TikTok ID английский режет: платформа привязывает начальный пул раздачи к региону и языку контента. Схема: ВЕСЬ верхний контент (хуки, текст на экране) — на индонезийском; продуктовая страница и Discord могут оставаться на английском, но нужен хотя бы один индонезийский раздел в Discord (#indonesia + FAQ на индонезийском), иначе трафик отваливается на шаге входа.",
+    "slang_terms": [
+      "spek kentang — 'картофельные спеки', слабое железо. Главное слово всего гео (подтв.: IDN Gaming, Haluan.co, 2025)",
+      "laptop kentang / PC kentang — слабый ноут / слабый ПК (подтв.: GGWP.id, Esportsnesia)",
+      "ngelag / lag parah — тормозит / жёстко тормозит",
+      "patah-patah — 'рвано', дёрганая картинка, стуттер (подтв.: IDN Gaming 'Settingan Valorant Agar Tidak Patah-Patah Di PC Kentang')",
+      "FPS drop / nge-drop — просадка FPS (используется по-английски)",
+      "mabar — 'main bareng', играть вместе (подтв.: kumparan, detikINET)",
+      "push rank — гриндить ранг (подтв.: mojok.co)",
+      "gacor — 'прёт', работает отлично, в ударе (подтв.: Liputan6, IDN Times)",
+      "cupu — нуб, слабак (подтв.: kumparan)",
+      "sultan — 'султан', богатый игрок, который донатит и покупает топ-железо",
+      "GG — good game (подтв.: detikINET)",
+      "auto — 'сразу, гарантированно' ('auto FPS naik' = FPS сразу вырастет) (подтв.: mojok.co)",
+      "rungkad — сунданское 'рухнул / разнесло вдребезги', виральное (подтв.: Liputan6)",
+      "nolep — от 'no life', задрот без социалки (подтв.: Liputan6)",
+      "warnet — 'warung internet', игровое интернет-кафе",
+      "gaskeun / gas — 'погнали, го' (сунданско-джакартский сленг)",
+      "anjay / anjir — 'ого / офигеть', возглас удивления (подтв.: Liputan6)",
+      "bar-bar — агрессивный, безбашенный стиль игры"
+    ],
+    "notes": "Рабочая формула хука: [проблема на индонезийском] + [английский технический термин] + [число]. Пример: 'PC kentang tapi 240 FPS?'. ИЗБЕГАТЬ: формального индонезийского (звучит как госреклама); слова 'jamet' (уничижительное, классовое — получишь негатив); прямых гарантий вроде 'pasti naik 200 FPS' (юридический и репутационный риск)."
+  },
+  "top_games": [
+    {
+      "game": "Valorant (PC)",
+      "popularity_note": "Главный ПК-тайтл Индонезии для этого оффера. Discord 'VALORANT Indonesia Community' >242 000 участников (discordbotlist, 2025). EVOS Esports (Джакарта) держит активный Valorant-дивизион. Локальная лига VALORANT Indonesia Summer Protocol 2025 (Liquipedia). Выделенного сервера Riot в Индонезии НЕТ — играют на Сингапур/Гонконг, пинг и стабильность постоянная боль (hasagi.gg, 2025).",
+      "why_good_for_offer": "Идеальный матч: игра официально тянет на слабом железе (встроенный Low-Specs Mode), поэтому на ней сидит МАССА людей с kentang-ноутами — ровно ваша ЦА, а не владельцы RTX. При этом соревновательная игра, где 1% low и input lag реально решают исход раунда — есть за что платить.",
+      "fps_pain_level": "10/10. Целый жанр локального контента: ligagame.tv 'Cara Mengatasi Valorant FPS Drops dan Lag', IDN Gaming 'Cara Mengatasi FPS Drop Valorant, Auto Lancar Jaya Di 2025', Esportsnesia '9 Cara Main Valorant di Laptop Kentang'. Типичные жалобы: FPS drop в середине раунда, стуттер при входе в smoke, лаг на Wi-Fi. ВАЖНО: Vanguard — kernel-level античит, любые твики драйверов/ядра/таймеров тестировать отдельно, риск блокировки запуска."
+    },
+    {
+      "game": "Mobile Legends: Bang Bang",
+      "popularity_note": "Игра №1 страны: 48.99% от всех онлайн-игроков Индонезии (tempo.co). Доминирует киберспорт (MPL ID).",
+      "why_good_for_offer": "НЕ прямой матч (мобильная), НО огромная доля играет через эмуляторы на ПК/ноуте, а оптимизация эмулятора (LDPlayer/BlueStacks/MSI App Player) под Windows — это ровно ваш продукт. Локальный конкурент IPAN STORE прямо продаёт 'optimasi emulator', значит спрос валидирован деньгами. Использовать как ТРАФИКОВЫЙ магнит (самый широкий охват в ID) с мостиком 'кто играет с эмулятора — вот вам твик'.",
+      "fps_pain_level": "8/10 в эмуляторном сегменте (низкий FPS, микрофризы, вылеты при 4-8 ГБ RAM). На телефоне — не ваш случай."
+    },
+    {
+      "game": "Free Fire (Garena)",
+      "popularity_note": "23.05% доступа, №2 в стране (tempo.co). Kompas (11.10.2025): Free Fire всё ещё продаётся в Индонезии несмотря на спад жанра BR. GoodStats: FF — игра с наибольшим доходом от индонезийских игроков.",
+      "why_good_for_offer": "Тот же эмуляторный мостик, что у ML. IPAN STORE позиционируется прямо как 'Jasa Optimasi PC Gaming & Boost FPS Free Fire' — прямое доказательство, что за FPS в FF на ПК в Индонезии ПЛАТЯТ.",
+      "fps_pain_level": "8/10 (эмулятор), 5/10 (телефон)."
+    },
+    {
+      "game": "PUBG Mobile / PUBG: Battlegrounds",
+      "popularity_note": "Один из топ-киберспортивных тайтлов ID (PUBG Mobile в списке самых популярных esports-игр 2025, viva.co.id). PC-версия заметно меньше, но есть.",
+      "why_good_for_offer": "Эмулятор + PC-версия. BR-формат хорошо ложится на нарезки 'до/после' — видно разницу в плавности при развороте.",
+      "fps_pain_level": "8/10. Тяжёлый тайтл для kentang-железа, жалобы на стуттер при высадке и в городах."
+    },
+    {
+      "game": "Roblox",
+      "popularity_note": "Топ по загрузкам в ID (Kompas, 29.01.2026 — Block Blast обошёл Roblox/FF/ML по загрузкам, значит Roblox в верхушке). ВНИМАНИЕ: Roblox входит в список 'высокорисковых' платформ по PP Tunas 17/2025 и на апрель 2026 соответствует правилам лишь ЧАСТИЧНО (ANTARA).",
+      "why_good_for_offer": "Огромная база подростков на слабых ноутах. Идеален для 'мой ноут за 3 млн рупий тянет Roblox на 144 FPS'. НО возрастной регулятор бьёт ровно по этой аудитории, и платить она не может.",
+      "fps_pain_level": "7/10 — на слабых ноутах Roblox с тяжёлыми картами (обби, tycoon) реально проседает."
+    },
+    {
+      "game": "CS2",
+      "popularity_note": "Историческое ядро warnet-культуры (Counter-Strike — легендарный warnet-тайтл, viva/indogamers). Steam был заблокирован Kominfo 30.07.2022 за нерегистрацию PSE (вместе с Dota2, CS, Epic Games, PayPal) — сейчас разблокирован, но прецедент показывает регуляторную хрупкость.",
+      "why_good_for_offer": "Классика 'FPS / 1% low / input lag' — самая техничная и покупающая аудитория. Уровень tech-savvy выше среднего, значит и шанс заплатить выше среднего по гео.",
+      "fps_pain_level": "9/10. CS2 после перехода с CS:GO стал заметно тяжелее — универсальная боль, не только индонезийская."
+    },
+    {
+      "game": "Dota 2",
+      "popularity_note": "В топ-6 киберспортивных игр Индонезии 2025 (viva.co.id). Warnet-тайтл номер один по посадочным часам.",
+      "why_good_for_offer": "Warnet-аудитория = люди, которые НЕ владеют железом, а арендуют его. Продавать им подписку сложно (нет прав админа на warnet-ПК). Использовать как охватный, не конверсионный тайтл.",
+      "fps_pain_level": "6/10"
+    },
+    {
+      "game": "Delta Force",
+      "popularity_note": "F2P-прорыв 2024-2025 (Wikipedia / PC Gamer 2025), издатель TiMi/Tencent — сильная дистрибуция в ЮВА, низкий порог входа.",
+      "why_good_for_offer": "F2P + PC + низкий порог = растущая масса игроков на слабом железе. Конкуренция за контент по этой игре в ID пока низкая — окно для новых каналов.",
+      "fps_pain_level": "7/10, low confidence — локальных индонезийских жалоб в открытом поиске мало."
+    },
+    {
+      "game": "Marvel Rivals",
+      "popularity_note": "В январе 2025 — №1 Steam по MAU (Statista / PC Gamer). Глобальный хит, F2P.",
+      "why_good_for_offer": "Тяжёлый на слабом железе + F2P = много людей, у которых он не тянет. Идеально под формат 'GTX 1650 vs Marvel Rivals'.",
+      "fps_pain_level": "9/10 глобально; индонезийских данных нет — low confidence."
+    },
+    {
+      "game": "Minecraft (Java)",
+      "popularity_note": "Постоянный массовый тайтл среди подростков ID, свежей локальной статистики нет (нет данных).",
+      "why_good_for_offer": "Java-версия на слабых ноутах = боль с RAM-аллокацией, шейдерами, чанк-лагами. Очень наглядные 'до/после'. Аудитория молодая: платёжеспособность низкая, виральность высокая.",
+      "fps_pain_level": "8/10"
+    },
+    {
+      "game": "Fortnite",
+      "popularity_note": "СЛАБОЕ гео для Fortnite. Прямых данных по базе в Индонезии в открытых источниках НЕТ (нет данных). Epic Games Store был заблокирован Kominfo в июле 2022, зарегистрировался как PSE 09.08.2022. Косвенно: в индонезийских списках топ-игр 2025 Fortnite не фигурирует вообще — ни в mobile, ни в esports-топах.",
+      "why_good_for_offer": "НЕ приоритет для ID, несмотря на то что это главный тайтл оффера в UK/US. Не выделять под Fortnite отдельные каналы в этом гео — максимум 1 слот как эксперимент.",
+      "fps_pain_level": "нет данных по Индонезии"
+    },
+    {
+      "game": "GTA V / FiveM RP",
+      "popularity_note": "Индонезийское FiveM/RP-комьюнити существует и активно в TikTok, но публичных цифр нет (нет данных, low confidence).",
+      "why_good_for_offer": "FiveM исключительно требователен к 1% low и RAM на слабых машинах, а игроки RP сидят в игре по 4-8 часов подряд — высокая мотивация платить. Ниша с низкой конкуренцией контента.",
+      "fps_pain_level": "9/10 (FiveM на kentang-железе — стабильный источник жалоб глобально)"
+    }
+  ],
+  "platforms": [
+    {
+      "platform": "TikTok",
+      "priority": "high",
+      "local_specifics": "180 млн взрослых 18+ = 88.9% взрослого населения, крупнейшая рекламная аудитория TikTok В МИРЕ (DataReportal Digital 2026, окт 2025). Рост +67% за год (108 млн в янв 2025). Гендер 56.3% ж / 43.7% м — мужская гейм-ниша менее насыщена, чем кажется. TikTok Shop в ID огромен, но вам не нужен и лезть туда без PT нельзя.",
+      "organic_reach_note": "Лучший органический охват на планете по соотношению усилие/просмотры. Реалистично: новый ID-аккаунт при 3-4 роликах в день выходит на первые 10k-50k просмотров за 7-14 дней. Но CPM <$2 работает в обе стороны: просмотр здесь стоит дёшево и СТОИТ дёшево.",
+      "restrictions": "1) PP No.17/2025 (PP Tunas), в силе с 28.03.2026: платформа 16+. TikTok на 10.04.2026 деактивировал 780 000 аккаунтов <16 (ANTARA). ЦА сдвигается на 16-24. 2) Массовое создание аккаунтов и автозалив прямо нарушают Community Guidelines TikTok (spam / inauthentic behavior) — риск веерных банов. 3) Регуляторный прецедент: Kominfo/Komdigi реально блокирует платформы (Steam, Epic, PayPal — 30.07.2022)."
+    },
+    {
+      "platform": "YouTube Shorts",
+      "priority": "high",
+      "local_specifics": "151 млн охвата = 52.7% населения (DataReportal, окт 2025). YouTube в Индонезии — не 'соцсеть', а основная медиатека: сюда идут ИСКАТЬ решение ('cara mengatasi fps drop valorant'). Единственная платформа связки, где работает поисковый интент, а не только лента.",
+      "organic_reach_note": "Охват медленнее TikTok, но: 1) ролики живут месяцами, 2) тянут длинные туториалы, где можно продать осмысленно, 3) SEO-заголовок на индонезийском ('Cara Naikin FPS Valorant di Laptop Kentang 2026') ловит вечнозелёный поиск. RPM для ID-трафика один из самых низких в мире (<$1 за 1000 просмотров) — монетизировать Shorts рекламой БЕССМЫСЛЕННО, только трафик на оффер.",
+      "restrictions": "YouTube (Google) на апрель 2026 — единственная крупная платформа, которая по оценке Komdigi НЕ продемонстрировала готовности соответствовать PP Tunas (ANTARA); риск регуляторного конфликта в ID существует. Плюс reused content policy: чистые нарезки чужого геймплея без добавленной ценности = отказ в монетизации и страйки."
+    },
+    {
+      "platform": "Instagram Reels",
+      "priority": "medium",
+      "local_specifics": "108 млн охвата = 37.6% населения, но рост почти встал (+4.9% г/г против +67% у TikTok). Гендер 53.2% ж. IG в ID смещён в лайфстайл/фэшн/фуд, гейминг — слабая вертикаль.",
+      "organic_reach_note": "Ниже TikTok в 3-10 раз при том же контенте. Держать как бесплатный кросс-постинг (тот же файл без вотермарки), а не как самостоятельное направление. Плюс: лучший инструмент для прогретого ретаргета через сторис + link sticker.",
+      "restrictions": "Instagram/Meta уже полностью соответствует PP Tunas (16+). Meta агрессивно банит сетки аккаунтов с одного устройства/IP. Ссылка только в bio — снижает CTR."
+    },
+    {
+      "platform": "Facebook / Facebook Reels",
+      "priority": "medium",
+      "local_specifics": "121 млн охвата = 42.2% населения, гендер 57.8% м / 41.9% ж — САМАЯ МУЖСКАЯ площадка Индонезии. Facebook Groups по играм и железу ('PC Rakitan', 'Jual Beli PC Bekas', 'Warnet Indonesia') живые и многотысячные — недооценённый канал.",
+      "organic_reach_note": "Facebook Reels в ID до сих пор даёт дешёвый охват, а мужской перекос делает его лучше IG для гейм-оффера. Группы 'Jual Beli PC Bekas' — прямое попадание в людей, только что купивших слабое б/у железо: самый горячий сегмент из возможных.",
+      "restrictions": "Правила групп против рекламы, админы банят быстро. Meta жёстко относится к сеткам аккаунтов. FB полностью compliant с PP Tunas (16+)."
+    },
+    {
+      "platform": "Discord",
+      "priority": "high",
+      "local_specifics": "Точных цифр по ID нет (нет данных). Косвенно: 'VALORANT Indonesia Community' >242 000 участников — ПК-ядро Индонезии живёт в Discord. Совпадает с инфраструктурой продукта (авто-выдача роли).",
+      "organic_reach_note": "Не канал охвата, а канал УДЕРЖАНИЯ и конверсии. Второй шаг воронки, не первый.",
+      "restrictions": "Discord ToS: продажа через сервер допустима, но масс-DM, спам-приглашения и скам-паттерны караются удалением сервера. Не делать масс-DM."
+    },
+    {
+      "platform": "WhatsApp (Channels + Business)",
+      "priority": "medium",
+      "local_specifics": "Самый проникший мессенджер Индонезии (~92% проникновения среди соцмедиа-пользователей, Statista Q3 2024). Локальный конкурент IPAN STORE ведёт всю продажу через 'konsultasi gratis via WhatsApp' — в ID нормальный путь покупки это чат, а не чекаут.",
+      "organic_reach_note": "WhatsApp Channel как лента обновлений + WhatsApp Business как точка поддержки и допродажи. Даёт заметно выше конверсию, чем холодный Discord: не требует установки нового приложения.",
+      "restrictions": "WhatsApp Business API требует верификации бизнеса; без API масс-рассылки = бан номера. Номер должен быть индонезийским для доверия, а ID SIM привязаны к NIK — узкое место для оператора из СНГ."
+    },
+    {
+      "platform": "Telegram",
+      "priority": "low",
+      "local_specifics": "В Индонезии нишевый — файлообмен, пиратский контент, крипта и трейдинг, а не мейнстрим-комьюнити. Точной статистики по ID нет (нет данных).",
+      "organic_reach_note": "Не строить воронку на Telegram в ID. Это типичная ошибка переноса СНГ-привычки.",
+      "restrictions": "Telegram уже попадал под блокировки Kominfo в прошлом (2017)."
+    },
+    {
+      "platform": "Snack Video / Likee / локальные видеоплатформы",
+      "priority": "skip",
+      "local_specifics": "Присутствуют в ID, но аудитория — самый низкодоходный сегмент, ПК-геймеров там практически нет. В DataReportal данных по охвату нет.",
+      "organic_reach_note": "Не тратить слоты.",
+      "restrictions": "нет данных"
+    },
+    {
+      "platform": "X (Twitter)",
+      "priority": "low",
+      "local_specifics": "25.2 млн охвата = 8.8% населения (янв 2025). В ID X — площадка фандомов и 'base'-аккаунтов, гейм-сегмент есть, объёма нет.",
+      "organic_reach_note": "Максимум 1 аккаунт для репутации и публикации скринов отзывов.",
+      "restrictions": "Compliant с PP Tunas (16+)."
+    }
+  ],
+  "posting_schedule": [
+    {
+      "platform": "TikTok",
+      "days": "Пн-Пт",
+      "local_windows": "06:00-07:00 WIB (перед школой/работой), 11:30-13:00 WIB (обед), 19:00-21:30 WIB (главный прайм-тайм)",
+      "utc_windows": "23:00-00:00 UTC (предыдущие сутки), 04:30-06:00 UTC, 12:00-14:30 UTC",
+      "posts_per_day_per_account": "3 (по одному в окно). Новые аккаунты первые 7 дней — 2/день, затем 3.",
+      "rationale": "Индонезийские источники дают три устойчивых будних окна: 06:00-07:00, 11:30-13:00, 19:00-21:00 WIB (Partipost ID, 'Jam Upload TikTok di Tahun 2025'). Вечернее окно совпадает с глобальным консенсусом Metricool 2026 (18:00-20:00 локального) и Buffer 2026 (всплеск 18:00-23:00). Дополнительные прайм-точки ID: 09:00, 16:00, 19:00-20:00, 21:00 (Bloomberg Technoz ID, 'Jadwal FYP TikTok 2026'). Вечер 19:00-21:30 — приоритет №1: совпадает с моментом, когда геймер садится за ПК.",
+      "source": "Partipost Indonesia 'Jam Upload TikTok di Tahun 2025'; Bloomberg Technoz 'Jadwal FYP TikTok 2026'; Metricool Best Time to Post 2026 (2 млн постов / 92 000 аккаунтов); Buffer 2026"
+    },
+    {
+      "platform": "TikTok",
+      "days": "Сб-Вс",
+      "local_windows": "09:00-11:00 WIB, 14:00-16:00 WIB, 20:00-23:00 WIB (выходной сдвиг позже и дольше)",
+      "utc_windows": "02:00-04:00 UTC, 07:00-09:00 UTC, 13:00-16:00 UTC",
+      "posts_per_day_per_account": "3-4 (выходные дают самый высокий объём в ID — люди дома или в warnet)",
+      "rationale": "Buffer 2026 фиксирует воскресенье как сильнейший день TikTok (лучшие слоты Вс 09:00 и Вс 13:00 локального). Индонезийские источники указывают, что выходной паттерн отличается от буднего и сдвигается позже. Для гейм-ниши суббота вечер — пик 'mabar'-сессий, ролик 'подними FPS перед mabar' ловит момент.",
+      "source": "Buffer Best Time to Post 2026; Partipost Indonesia 2025"
+    },
+    {
+      "platform": "YouTube Shorts",
+      "days": "Вт, Ср, Чт (сильнейшие дни)",
+      "local_windows": "15:00-18:00 WIB (после школы / до конца рабочего дня), 20:00-22:00 WIB",
+      "utc_windows": "08:00-11:00 UTC, 13:00-15:00 UTC",
+      "posts_per_day_per_account": "2",
+      "rationale": "Данные по 24k+ Shorts и 6 175 видео: лучшие слоты — будни 15:00-18:00 локального, сильнейшие дни Вт-Чт; Buffer выделяет среду 16:00 как единственный лучший слот. Окно 15:00-18:00 WIB точно попадает на 'школьники вернулись домой'. Второе окно 20:00-22:00 WIB — под вечерний ПК-сеанс.",
+      "source": "PostFast 'Best Time to Post on YouTube 2026' (6 175 постов); FlowShorts 'Best Time to Post YouTube Shorts' (24k+ видео); Buffer 2026"
+    },
+    {
+      "platform": "YouTube Shorts",
+      "days": "Пн, Пт, Сб, Вс",
+      "local_windows": "16:00-18:00 WIB, 21:00-22:30 WIB",
+      "utc_windows": "09:00-11:00 UTC, 14:00-15:30 UTC",
+      "posts_per_day_per_account": "1-2 (в слабые дни экономим контент, приоритет — TikTok)",
+      "rationale": "Вт-Чт статистически сильнее для Shorts, поэтому в остальные дни снижаем частоту и переносим лучший контент на вторник-четверг. Вечернее окно сохраняем — оно универсально по всем пяти исследованиям (Buffer, Sprout Social, Hootsuite, Metricool, SocialPilot сходятся на 18:00-21:00 локального).",
+      "source": "PostFast 2026; консенсус 5 исследований (Buffer / Sprout Social / Hootsuite / Metricool / SocialPilot)"
+    },
+    {
+      "platform": "Instagram Reels",
+      "days": "Пн-Пт",
+      "local_windows": "12:00-13:00 WIB (обед), 19:00-22:00 WIB",
+      "utc_windows": "05:00-06:00 UTC, 12:00-15:00 UTC",
+      "posts_per_day_per_account": "1-2 (кросс-пост лучшего ролика с TikTok без вотермарки, с задержкой 12-24 ч)",
+      "rationale": "Единственное окно, за которое голосуют ВСЕ пять крупных исследований одновременно — 18:00-21:00 локального. Обеденное окно 12:00-13:00 совпадает с индонезийским 'istirahat makan siang'. IG в ID даёт меньший охват, поэтому объём снижен: лить туда 3 поста/день нерентабельно.",
+      "source": "Консенсус Buffer / Sprout Social / Hootsuite / Metricool / SocialPilot 2026; Partipost Indonesia 2025 (обеденное окно)"
+    },
+    {
+      "platform": "Instagram Reels",
+      "days": "Сб-Вс",
+      "local_windows": "11:00-13:00 WIB, 20:00-23:30 WIB",
+      "utc_windows": "04:00-06:00 UTC, 13:00-16:30 UTC",
+      "posts_per_day_per_account": "2",
+      "rationale": "Metricool Short-Form Video Study 2026 указывает на позднюю субботу (около полуночи) как лучший слот для Reels — в ID это ложится на 22:00-23:30 WIB субботы. Выходные — пик домашнего ПК-гейминга.",
+      "source": "Metricool Short-Form Video Study 2026"
+    },
+    {
+      "platform": "Facebook Reels",
+      "days": "Пн-Вс",
+      "local_windows": "19:00-22:00 WIB",
+      "utc_windows": "12:00-15:00 UTC",
+      "posts_per_day_per_account": "1 (полный кросс-пост, нулевая себестоимость)",
+      "rationale": "FB в ID — самая мужская площадка (57.8% м), аудитория старше и платёжеспособнее. Универсальное вечернее окно 18:00-21:00 локального подтверждено консенсусом пяти исследований. Один пост в день — ровно столько, сколько оправдано ожидаемым охватом.",
+      "source": "DataReportal Digital 2026: Indonesia (гендерный сплит FB); консенсус 5 исследований 2026"
+    },
+    {
+      "platform": "TikTok (ночное экспериментальное окно)",
+      "days": "Пт, Сб",
+      "local_windows": "23:00-01:30 WIB (ночные игровые сессии, warnet 'paket malam')",
+      "utc_windows": "16:00-18:30 UTC",
+      "posts_per_day_per_account": "+1 (только на 4-6 аккаунтах сетки как A/B-тест)",
+      "rationale": "Warnet в Индонезии продают ночные пакеты (paket malam), пятница и суббота ночью — реальный пик ПК-гейминга. Прямых исследований по этому окну для ID НЕТ (нет данных, low confidence), поэтому тестируется на подвыборке, а не на всей сетке. Гипотеза: ночью конкуренция за ленту ниже, а доля именно ПК-геймеров в аудитории ВЫШЕ.",
+      "source": "Гипотеза на основе warnet-практики (medcom.id, seva.id о ночных тарифах warnet) — low confidence, требует A/B"
+    },
+    {
+      "platform": "YouTube (длинные видео, не Shorts)",
+      "days": "Сб",
+      "local_windows": "10:00-12:00 WIB (публикация), пик просмотра Сб-Вс вечер",
+      "utc_windows": "03:00-05:00 UTC",
+      "posts_per_day_per_account": "1 видео в неделю на 2-3 'флагманских' канала сетки",
+      "rationale": "Длинный туториал ('Full Tweak Windows 11 buat Valorant di Laptop Kentang — 2026') — SEO-актив с вечнозелёным поисковым трафиком по запросам, которые индонезийцы реально гуглят ('cara mengatasi fps drop valorant'). Такие видео конвертируют в разы лучше Shorts: зритель приходит с осознанным интентом, а не из ленты. Суббота утром — публикация под выходной просмотр.",
+      "source": "Поисковый интент подтверждён массой индонезийских статей по этим запросам (IDN Gaming, GGWP, Esportsnesia, ligagame.tv 2024-2025); тайминг — PostFast YouTube 2026"
+    }
+  ],
+  "channel_plan": {
+    "total_channels_recommended": "20 на гео, но с ОБЯЗАТЕЛЬНОЙ поправкой: 12 TikTok + 5 YouTube Shorts + 3 Instagram Reels. Не делать 20/20/20 — IG в Индонезии не отбивает усилие (рост +4.9% г/г против +67% у TikTok). Запуск волнами: неделя 1 — 6 аккаунтов, неделя 3 — +7, неделя 5 — +7. Одновременный старт 20 аккаунтов с одного скрипта — самый быстрый способ получить веерный бан.",
+    "split_logic": "Три независимые оси разделения, чтобы аккаунты не выглядели клонами.\n\nОСЬ 1 — ИГРА (главная). Один канал = одна игра / один кластер: Valorant, CS2, ML-эмулятор, Free Fire-эмулятор, PUBG, Roblox, Minecraft, Delta Force, Marvel Rivals, FiveM/GTA RP, Dota 2, общий 'kentang-PC'. Разные игры = разный геймплей, хештеги, звуки, аудитории — алгоритм не сводит их в дубли.\n\nОСЬ 2 — ФОРМАТ. Каждому каналу присвоить ОДИН формат и не смешивать: (A) до/после FPS-каунтер сплитскрин, (B) POV-сценка 'warnet vs rumah', (C) сухой техгайд от первого лица 'ini settingan yang gua pake', (D) benchmark-канал 'X vs Y', (E) реакция/разбор жалоб из комментов, (F) шитпост-мем с техническим панчлайном.\n\nОСЬ 3 — ПЕРСОНА. Четыре архетипа: 'anak warnet' (дерзкий пацан из кафе), 'tech nerd' (спокойный, цифры, графики), 'sultan flex' ('у меня топ-железо, а вот как выжать из kentang'), 'no-face' (безликий конвейер текст/TTS).\n\nПРАВИЛА ПРОТИВ ДУБЛЕЙ (жёстко, в скрипт):\n- Ни один ролик не публикуется более чем на 1 TikTok-аккаунте. Кросс-пост только TikTok→Shorts→Reels одного бренда.\n- Уникальный набор на канал: аватар (фото/аниме/логотип/скрин), цвет субтитров, шрифт, позиция FPS-оверлея, музыка.\n- Разные 3-5 хештегов на канал, не общий пул.\n- Разброс времени публикации ±20 минут внутри окна (не ровно в 19:00).\n- Разные структуры bio: где-то эмодзи, где-то нет; где-то ссылка, где-то 'link di komen'.\n- 4-6 аккаунтов из 20 держать БЕЗ ссылки первые 14 дней — они будут самыми живучими.\n\nОЖИДАЕМАЯ ВЫЖИВАЕМОСТЬ: закладывать 30-50% потерь аккаунтов в первые 60 дней. Это не пессимизм, это себестоимость метода.",
+    "channel_slots": [
+      {
+        "slot": "1",
+        "theme": "Valorant на слабом ноуте — флагман сетки",
+        "target_game": "Valorant",
+        "content_format": "A (до/после FPS сплитскрин) + C (техгайд от первого лица). Ролик 12-20 сек: слева 'SEBELUM' 45 FPS и рваный разворот, справа 'SESUDAH' 180 FPS.",
+        "handle_examples": [
+          "valo.kentang",
+          "fpsvaloid",
+          "kentangvalo.id"
+        ],
+        "bio_example": "Valorant di laptop kentang? Gua naikin FPS lu.\n45 → 180 FPS, tanpa beli hardware.\nSettingan lengkap 👇"
+      },
+      {
+        "slot": "2",
+        "theme": "CS2 — техническое ядро, 1% low и input lag",
+        "target_game": "CS2",
+        "content_format": "D (benchmark X vs Y) + C. Графики 1% low, разбор frametime, сравнение конфигов.",
+        "handle_examples": [
+          "cs2.tweak.id",
+          "onepercentlow.id",
+          "cs2kentang"
+        ],
+        "bio_example": "CS2 kerasa nyendat padahal FPS tinggi?\nMasalahnya 1% low, bukan FPS rata-rata.\nGua jelasin + kasih fix."
+      },
+      {
+        "slot": "3",
+        "theme": "Mobile Legends на эмуляторе — самый широкий охват в ID",
+        "target_game": "Mobile Legends (эмулятор на PC)",
+        "content_format": "A + F (мем с техпанчлайном). Оптимизация LDPlayer / BlueStacks / MSI App Player под Windows.",
+        "handle_examples": [
+          "ml.emulator.id",
+          "mabarlancar",
+          "emulatorgacor"
+        ],
+        "bio_example": "Main ML di PC pake emulator tapi patah-patah?\nBukan emulatornya, Windows lu yang berat.\nFix-nya di sini 👇"
+      },
+      {
+        "slot": "4",
+        "theme": "Free Fire на эмуляторе — валидированный платящий спрос",
+        "target_game": "Free Fire (эмулятор)",
+        "content_format": "A + B (POV-сценка). 'Booyah tapi 20 FPS' → фикс.",
+        "handle_examples": [
+          "ff.lancarjaya",
+          "booyahlancar",
+          "ffkentangfix"
+        ],
+        "bio_example": "FF di PC 25 FPS? Itu bukan spek lu.\nBooyah butuh frame stabil, bukan PC mahal.\nCek caranya."
+      },
+      {
+        "slot": "5",
+        "theme": "Roblox на школьном ноуте",
+        "target_game": "Roblox",
+        "content_format": "A + E (реакция на жалобы из комментов). Яркий быстрый монтаж.",
+        "handle_examples": [
+          "roblox.lancar.id",
+          "robloxkentang",
+          "fpsroblox.id"
+        ],
+        "bio_example": "Roblox lag di laptop sekolah?\n30 → 144 FPS cuma dari setting Windows.\nGratis tutor, link di bawah."
+      },
+      {
+        "slot": "6",
+        "theme": "Minecraft Java — RAM, шейдеры, чанк-лаги",
+        "target_game": "Minecraft Java",
+        "content_format": "C (гайд) + D. Аллокация RAM, Sodium/OptiFine + твики Windows.",
+        "handle_examples": [
+          "mc.java.lancar",
+          "minecraftkentang.id",
+          "chunklag.fix"
+        ],
+        "bio_example": "Minecraft Java nge-lag pas load chunk?\nRAM lu salah alokasi. Gua benerin.\nShader jalan di 8GB RAM 👇"
+      },
+      {
+        "slot": "7",
+        "theme": "PUBG (эмулятор + PC) — BR-плавность",
+        "target_game": "PUBG / PUBG Mobile",
+        "content_format": "A + B. Момент высадки и городские бои, где стуттер максимален.",
+        "handle_examples": [
+          "pubg.nolag.id",
+          "pubgkentangid",
+          "dropanlancar"
+        ],
+        "bio_example": "Kalah duel gara-gara nyendat pas nengok?\nItu input lag, bukan skill issue.\nFix-nya ada."
+      },
+      {
+        "slot": "8",
+        "theme": "Delta Force — низкая конкуренция контента, растущий F2P",
+        "target_game": "Delta Force",
+        "content_format": "D + A. Бенчмарки на GTX 1650 / встройке / Ryzen APU.",
+        "handle_examples": [
+          "deltaforce.id.fps",
+          "df.kentang",
+          "dfnolagid"
+        ],
+        "bio_example": "Delta Force di GTX 1650 bisa 100+ FPS?\nBisa. Gua udah buktiin.\nSettingan + tweak di link."
+      },
+      {
+        "slot": "9",
+        "theme": "Marvel Rivals — тяжёлый тайтл, наглядное до/после",
+        "target_game": "Marvel Rivals",
+        "content_format": "A + F. 'Rivals di laptop 8 juta vs laptop 4 juta'.",
+        "handle_examples": [
+          "rivals.lancar.id",
+          "marvelkentang",
+          "rivalsfps.id"
+        ],
+        "bio_example": "Marvel Rivals berat banget di laptop lu?\nGua turunin beban Windows-nya, bukan grafiknya.\nHasilnya 👇"
+      },
+      {
+        "slot": "10",
+        "theme": "FiveM / GTA RP — длинные сессии, высокая мотивация платить",
+        "target_game": "GTA V / FiveM RP",
+        "content_format": "C + E. Длинные RP-сессии, память, 1% low, крэши.",
+        "handle_examples": [
+          "fivem.lancar.id",
+          "rp.nolag",
+          "fivemkentangid"
+        ],
+        "bio_example": "Main RP 5 jam terus crash?\nItu memory leak + setting Windows.\nGua kasih fix permanen."
+      },
+      {
+        "slot": "11",
+        "theme": "Общий 'PC kentang' — универсальный охватный канал без привязки к игре",
+        "target_game": "мульти (все тайтлы)",
+        "content_format": "F (шитпост с техпанчлайном) + E. Самый виральный, самый широкий, самый расходный.",
+        "handle_examples": [
+          "spekkentang.id",
+          "kentangsquad",
+          "pckentangfix"
+        ],
+        "bio_example": "Spek kentang bukan alasan buat kalah.\nTiap hari 1 tweak Windows buat naikin FPS.\nSemua gratis. Yang mau instan, link 👇"
+      },
+      {
+        "slot": "12",
+        "theme": "Warnet-культура — POV-сценки 'warnet vs rumah'",
+        "target_game": "Dota 2 / CS2 / Valorant (warnet-тайтлы)",
+        "content_format": "B (POV-сценка) — самый нативный для ID формат, максимальная виральность.",
+        "handle_examples": [
+          "anakwarnet.fps",
+          "warnet.vs.rumah",
+          "pcwarnetid"
+        ],
+        "bio_example": "Kenapa di warnet lancar, di rumah lag?\nBukan karena PC warnet mahal.\nGua bongkar rahasianya."
+      },
+      {
+        "slot": "13",
+        "theme": "Benchmark-канал по конкретному бюджетному железу",
+        "target_game": "мульти",
+        "content_format": "D (X vs Y). 'Ryzen 5 3400G vs GTX 1650 di 8 game' — цифры, таблицы, без лица.",
+        "handle_examples": [
+          "benchmark.murah.id",
+          "kentangbench",
+          "adubenchid"
+        ],
+        "bio_example": "Benchmark jujur buat PC & laptop murah Indonesia.\nSebelum lu beli, cek di sini dulu.\nTweak buat naikin hasilnya 👇"
+      },
+      {
+        "slot": "14",
+        "theme": "Ошибки, которые убивают FPS — антигайд 'jangan lakuin ini'",
+        "target_game": "мульти",
+        "content_format": "C + E. 'Game booster abal-abal malah bikin turun' — атака на бесплатных конкурентов.",
+        "handle_examples": [
+          "jangansalahsetting",
+          "mitosfps.id",
+          "stopfpsbooster"
+        ],
+        "bio_example": "Game booster gratisan itu nipu.\nGua tunjukin apa yang beneran ngaruh.\nBukti + angka, bukan klaim."
+      },
+      {
+        "slot": "15",
+        "theme": "Input lag / ping / сеть — отдельная боль, отдельный канал",
+        "target_game": "Valorant / CS2 / ML",
+        "content_format": "C + D. Разбор input lag vs ping vs frametime — то, что путают все.",
+        "handle_examples": [
+          "inputlag.id",
+          "pinglancar.id",
+          "delayfix.id"
+        ],
+        "bio_example": "Ping 30 tapi tetep kerasa telat?\nItu input lag, beda sama ping.\nGua jelasin + cara ngilanginnya."
+      },
+      {
+        "slot": "16",
+        "theme": "Ноутбук-специфика: троттлинг, температуры, power plan",
+        "target_game": "мульти (ноутбуки)",
+        "content_format": "C + A. Undervolting, power plan, thermal throttling — самая частая причина просадок на ID-ноутах.",
+        "handle_examples": [
+          "laptopkentang.fix",
+          "notebookfps.id",
+          "antithrottle.id"
+        ],
+        "bio_example": "Laptop lu turun FPS setelah 10 menit main?\nItu thermal throttling.\nFix tanpa bongkar laptop 👇"
+      },
+      {
+        "slot": "17",
+        "theme": "YouTube Shorts-флагман: длинные SEO-туториалы + нарезки",
+        "target_game": "Valorant / CS2 / мульти",
+        "content_format": "C. Полный туториал 8-15 мин + 6 Shorts-нарезок из него. Основной SEO-актив сетки.",
+        "handle_examples": [
+          "TweakID",
+          "FPSLabIndonesia",
+          "SettinganGacor"
+        ],
+        "bio_example": "Tutorial optimasi Windows buat gaming — bahasa Indonesia, tanpa basa-basi.\nUpdate tiap minggu.\nSemua tweak yang gua pake ada di deskripsi."
+      },
+      {
+        "slot": "18",
+        "theme": "YouTube Shorts: конвейер 'до/после' без лица",
+        "target_game": "мульти",
+        "content_format": "A. Чистый конвейер, TTS или без голоса, 2 ролика/день.",
+        "handle_examples": [
+          "FPSNaikID",
+          "SebelumSesudahFPS",
+          "KentangUpgrade"
+        ],
+        "bio_example": "1 video = 1 tweak = FPS naik.\nSemua diuji di laptop kentang beneran."
+      },
+      {
+        "slot": "19",
+        "theme": "Instagram Reels: эстетичный 'tech nerd' — графики, чистый монтаж",
+        "target_game": "Valorant / CS2",
+        "content_format": "D. Reels лучше заходят с визуально чистым 'дорогим' монтажом, чем с шитпостом.",
+        "handle_examples": [
+          "fpslab.id",
+          "tweak.notes.id",
+          "frametime.id"
+        ],
+        "bio_example": "Data, bukan klaim.\nBenchmark & tweak Windows buat gaming.\n🇮🇩 Bahasa Indonesia"
+      },
+      {
+        "slot": "20",
+        "theme": "Instagram + Facebook Reels: комьюнити/UGC — отзывы и скрины подписчиков",
+        "target_game": "мульти",
+        "content_format": "E. Репост присланных 'до/после' от реальных пользователей = социальное доказательство, главный драйвер конверсии в ID.",
+        "handle_examples": [
+          "hasilnyagacor",
+          "buktikentang.id",
+          "fpsnaik.stories"
+        ],
+        "bio_example": "Bukti dari user beneran, bukan iklan.\nKirim screenshot FPS lu, gua repost.\nMau hasil yang sama? Link 👇"
+      }
+    ]
+  },
+  "content_angles": [
+    {
+      "hook": "\"Laptop 4 juta, Valorant 180 FPS.\" — «Ноут за 4 млн рупий (~$240), Valorant 180 FPS.»",
+      "format": "Сплитскрин до/после, 15 сек. Слева счётчик 48 FPS и рваный разворот, справа 182 FPS. В первые 0.8 сек показать ЦЕНУ ноута крупно — это и есть хук.",
+      "why_local": "Индонезиец мыслит ценой в рупиях, а не моделью железа. '4 juta' моментально считывается как 'бюджетный, как у меня'. Valorant официально поддерживает Low-Specs Mode, то есть на нём реально сидит масса людей с kentang-ноутами, и обещание правдоподобно.",
+      "cta": "\"Settingan lengkapnya di bio. Gratis.\" («Полные настройки в bio. Бесплатно.») — на первом касании НЕ продавать."
+    },
+    {
+      "hook": "\"Kenapa di warnet lancar, di rumah lag? Padahal PC warnet murah.\" — «Почему в warnet всё летает, а дома лагает? Хотя ПК в warnet дешёвые.»",
+      "format": "POV-сценка 20-25 сек: кадры warnet → кадры домашней комнаты → техобъяснение (свежая система, нет фоновых процессов, отключены апдейты и телеметрия) → 3 конкретных твика.",
+      "why_local": "Warnet — уникальный индонезийский культурный якорь, которого нет ни в одном другом гео. Каждый ПК-геймер ID лично проживал этот контраст. Даёт мгновенное 'это про меня' и сильный шеринг друзьям в комменты.",
+      "cta": "\"Mau PC rumah lu kayak PC warnet? Link di bio.\" («Хочешь, чтобы домашний ПК был как в warnet? Ссылка в bio.»)"
+    },
+    {
+      "hook": "\"Game booster gratisan itu NIPU. Ini buktinya.\" — «Бесплатные game booster'ы ВРУТ. Вот доказательство.»",
+      "format": "Бенчмарк-разоблачение 30 сек: три прогона одного отрезка — без бустера / с популярным бесплатным бустером / с вашим твиком. Цифры 1% low на экране.",
+      "why_local": "Рынок ID забит именно бесплатными бустерами (Razer Cortex, Wise Game Booster, Smart Game Booster, PC Game Booster), которые активно продвигают локальные медиа: IDN Times, IndoGamers, Telset. Атака на них — единственный способ объяснить, почему за ваш продукт надо платить, когда 'то же самое' лежит бесплатно.",
+      "cta": "\"Yang gua pake ada di link. 7 hari coba dulu.\" («То, что использую я — по ссылке. Сначала попробуй 7 дней.»)"
+    },
+    {
+      "hook": "\"FPS lu 200 tapi tetep kerasa patah-patah? Masalahnya 1% LOW.\" — «У тебя 200 FPS, но всё равно рвано? Проблема в 1% LOW.»",
+      "format": "Обучающий 25 сек с графиком frametime. Два прогона с одинаковым средним FPS, но разным 1% low — дать зрителю почувствовать разницу на геймплее.",
+      "why_local": "Индонезийское комьюнити массово оперирует средним FPS и не знает про 1% low — это видно по местным гайдам (IDN Gaming, ligagame.tv говорят только 'FPS naik dari 30 ke 80'). Вы даёте НОВОЕ знание, а не повтор того, что уже везде. Знание = авторитет = продажа.",
+      "cta": "\"Cek 1% low lu sekarang, tulis di komen berapa.\" — CTA на комментарий, а не на ссылку: разгоняет алгоритм."
+    },
+    {
+      "hook": "\"Ping 30ms tapi nembak duluan tetep kalah duel.\" — «Пинг 30 мс, стреляю первым — и всё равно проигрываю дуэль.»",
+      "format": "Разбор input lag 20 сек: замедленный повтор дуэли в Valorant/CS2 с наложенным таймингом клик→выстрел. Объяснить: ping ≠ input lag.",
+      "why_local": "Прямое попадание в главную фрустрацию соревновательного игрока ID. У Riot НЕТ выделенного сервера в Индонезии — играют на Сингапур/ГК, поэтому тема пинга эмоционально заряжена (hasagi.gg, 2025). Вы переводите разговор с 'у нас плохой сервер' (безнадёжно) на 'у тебя лишние 40 мс на своей стороне' (решаемо) — и продаёте решение.",
+      "cta": "\"Fix input lag-nya ada di bio. Bukan settingan game, settingan Windows.\""
+    },
+    {
+      "hook": "\"Laptop lu lancar 10 menit pertama, terus turun? Itu THROTTLING.\" — «Ноут летает первые 10 минут, потом падает? Это ТРОТТЛИНГ.»",
+      "format": "Тайм-лапс 30 сек: график температуры и FPS рядом, видно синхронное падение. Затем power plan + undervolt + фикс — график остаётся ровным.",
+      "why_local": "Индонезия — тропики: 28-33°C, у большинства нет кондиционера в игровой зоне. Троттлинг тут выражен НАМНОГО сильнее, чем в UK/RU, и локальные гайды его почти не разбирают. Уникальный локальный угол, который невозможно скопировать из англоязычного контента.",
+      "cta": "\"Tanpa bongkar laptop, tanpa ganti thermal paste. Link di bio.\""
+    },
+    {
+      "hook": "\"Emulator ML lu berat? Bukan emulatornya yang salah.\" — «Эмулятор ML тормозит? Дело не в эмуляторе.»",
+      "format": "До/после 20 сек на LDPlayer / MSI App Player: 35 FPS → 90 FPS в ML без смены эмулятора, только твики Windows + распределение ядер.",
+      "why_local": "ML = 48.99% всех онлайн-игроков Индонезии. Эмуляторный сегмент — МОСТ от гигантской мобильной аудитории к вашему ПК-продукту, единственный способ монетизировать mobile-first рынок ПК-оффером. Локальный конкурент IPAN STORE уже продаёт 'optimasi emulator' — спрос доказан деньгами.",
+      "cta": "\"Setting emulator + Windows-nya gua kasih. Link di bio.\""
+    },
+    {
+      "hook": "\"3 setting Windows yang bikin FPS lu turun diam-diam.\" — «3 настройки Windows, которые втихую режут твой FPS.»",
+      "format": "Листикл 25 сек, быстрая нарезка по 3 пунктам (Game DVR/Game Bar, фоновые обновления, энергосхема). Всё показывать на экране — зритель повторяет прямо во время просмотра.",
+      "why_local": "Формат 'полезное бесплатно' — ключ к доверию на рынке с исторически 84-86% пиратства (BSA): здесь сначала должны поверить, что у тебя есть что-то ценное. Game Bar/DVR уже фигурируют в местных гайдах (IDN Gaming) — тема узнаваема, но вы подаёте её в формате, в котором её ещё не подавали.",
+      "cta": "\"Ini baru 3 dari 40+. Sisanya otomatis, 1 klik. Link.\" («Это 3 из 40+. Остальное — автоматом в 1 клик.»)"
+    },
+    {
+      "hook": "\"PC 5 juta vs PC 15 juta. Setelah di-tweak, bedanya cuma segini.\" — «ПК за 5 млн vs ПК за 15 млн. После твиков разница всего вот такая.»",
+      "format": "Бенчмарк-сравнение 35 сек, две системы, один отрезок геймплея, цифры на экране. Ключ: твикнутый дешёвый догоняет нетвикнутый дорогой.",
+      "why_local": "Ценовое сравнение в рупиях — нативный способ мышления. Работает эмоция 'не надо покупать новое' — критично на рынке, где импорт ноутбуков ограничен (KMK 32/2025), де-минимис USD 3 FOB, и апгрейд для подростка нереален. Вы продаёте не софт, а АЛЬТЕРНАТИВУ покупке железа.",
+      "cta": "\"Sebelum lu nabung buat PC baru, coba ini dulu. Harganya gak sampe 1% dari PC.\""
+    },
+    {
+      "hook": "\"Gua tweak PC follower gua. Hasilnya: 52 → 171 FPS.\" — «Я твикнул ПК подписчика. Результат: 52 → 171 FPS.»",
+      "format": "UGC/кейс 25 сек: скрин переписки → скриншоты FPS до и после, присланные самим пользователем → его отзыв текстом. Реальные скрины, реальный ник.",
+      "why_local": "Социальное доказательство от СВОЕГО — решающий фактор доверия в ID, где рынок насыщен скамом и 'jasa abal-abal'. Локальные продавцы (IPAN STORE) строят продажу именно на личном контакте через WhatsApp. Плюс формат даёт бесконечный контент без съёмок.",
+      "cta": "\"Mau giliran lu? Kirim spek lu ke DM / join Discord.\" — CTA на диалог, не на оплату."
+    },
+    {
+      "hook": "\"Spek kentang bukan alasan. Ini buktinya.\" — «Картофельные спеки — не оправдание. Вот доказательство.»",
+      "format": "Мем/шитпост 10-12 сек: интегрированная графика запускает целевой тайтл на играбельном фреймрейте. Один кадр, один панчлайн, трендовый звук TikTok ID.",
+      "why_local": "'Spek kentang' — САМОЕ узнаваемое слово всего гео, вокруг него построен целый медийный пласт. Короткий шитпост с ним — самый дешёвый билет в FYP. Использовать на охватном канале (слот 11) как топливо для алгоритма.",
+      "cta": "Без продающего CTA. Только \"Follow buat tweak tiap hari.\" — формат работает на подписку, не на конверсию."
+    },
+    {
+      "hook": "\"Jangan beli laptop gaming sebelum nonton ini.\" — «Не покупай игровой ноут, пока не посмотришь это.»",
+      "format": "Разбор-предостережение 30 сек: типичный бюджетный ноут из Tokopedia/Shopee, реальные цифры, вывод 'твой текущий ноут после твиков даст 70% этого за 0 рупий'.",
+      "why_local": "Ловит человека в момент ПОКУПАТЕЛЬНОГО НАМЕРЕНИЯ — самая платёжеспособная аудитория, у которой прямо сейчас есть отложенные деньги. Перехватывает бюджет 5-10 млн рупий. Особенно хорошо работает в Facebook Groups 'Jual Beli PC Bekas' (FB в ID — 57.8% мужчин).",
+      "cta": "\"Coba tweak dulu 7 hari. Kalau tetep kurang, baru beli. Link di bio.\""
+    },
+    {
+      "hook": "\"Tetangga gua wifi-an, FPS gua ikut turun. Mitos atau fakta?\" — «Сосед сидит в вайфае — у меня FPS падает. Миф или факт?»",
+      "format": "Миф-бастинг 20 сек. Ответ: FPS — нет, но стабильность соединения и 1% low при сетевом стуттере — да. Затем фикс сетевых настроек.",
+      "why_local": "Общий Wi-Fi (в том числе RT-RW net на несколько домохозяйств) — массовая реальность индонезийского интернета. Тема, которой в англоязычном контенте просто не существует. Мощный локальный дифференциатор.",
+      "cta": "\"Setting network buat gaming ada di Discord, channel #gratis.\""
+    },
+    {
+      "hook": "\"Windows 11 lebih lelet dari Windows 10 buat gaming? Gua tes 8 game.\" — «Windows 11 медленнее Windows 10 для игр? Я протестил 8 игр.»",
+      "format": "Бенчмарк-сериал 35 сек, таблица результатов. Вывод: дело не в версии, а в дефолтных настройках — и вот в каких именно.",
+      "why_local": "Вечный спор индонезийских гейм-форумов и warnet-админов. Тема с гарантированной дискуссией в комментах (сигнал алгоритму) и естественным мостиком к продукту, который 'делает Win11 как Win10, только лучше'.",
+      "cta": "\"Debat di komen. Tweak-nya di bio.\""
+    }
+  ],
+  "funnel": {
+    "entry_point": "ДВУХВЕТОЧНАЯ ВОРОНКА — это не опция, а требование рынка.\n\nШАГ 1 (единый): bio-ссылка → СВОЯ посадочная на индонезийском (не Linktree — нужен контроль над текстом и пикселем). Страница: одно 'до/после' видео, три цифры, цена в РУПИЯХ крупно, две кнопки. Вес страницы <500 КБ — мобильный интернет ID.\n\nВЕТКА A — 'ГОТОВ КУПИТЬ' → прямой чекаут QRIS / DANA / GoPay / ShopeePay → авто-выдача ключа. ЕДИНСТВЕННЫЙ путь, который реально конвертирует в Индонезии. Без локальных платёжек ветка мертва.\n\nВЕТКА B — 'СНАЧАЛА ПОСМОТРЮ' → Discord (авто-роль, канал #gratis с бесплатными твиками, #bukti с отзывами, #indonesia на индонезийском).\n\nПОЧЕМУ НЕ DISCORD ПЕРВЫМ ШАГОМ: Discord в ID — инструмент ПК-ядра (Valorant Indonesia Community >242k подтверждает, что ядро там есть), но для массового TikTok-зрителя это ещё одно приложение и ещё одна регистрация. Ставить его единственным входом = терять 60-80% ветки 'готов купить'. Discord — ретеншн и апселл, не вход.\n\nПОЧЕМУ НЕ TELEGRAM: в Индонезии нишевый, ассоциирован с файлообменом и криптой, не мейнстрим. Типичная ошибка переноса СНГ-привычки — не повторять.\n\nПОЧЕМУ WHATSAPP ВАЖЕН: самый проникший мессенджер страны (~92% проникновения среди соцмедиа-пользователей, Statista Q3 2024). Локальный конкурент IPAN STORE строит ВСЮ продажу на 'konsultasi gratis via WhatsApp'. Индонезиец привык покупать через чат, а не через чекаут. Добавить WhatsApp-кнопку как третий выход для сомневающихся + WhatsApp Channel для анонсов. ОГРАНИЧЕНИЕ: индонезийские SIM привязаны к NIK, оператору из СНГ локальный номер получить сложно (см. proxy_and_account_geo).\n\nПОЧЕМУ НЕ DM: масс-DM нарушают правила TikTok/IG и убивают аккаунты. DM использовать только как ОТВЕТ на входящее.",
+    "cta_wording": "Лестница CTA по температуре трафика (продающий CTA на первом касании на рынке с высоким уровнем скама убивает доверие).\n\nХОЛОДНЫЙ (70% роликов, цель — подписка и комменты):\n• \"Follow, tiap hari gua kasih 1 tweak.\" («Подпишись, каждый день даю по одному твику.»)\n• \"Berapa FPS lu sekarang? Tulis di komen.\" («Сколько у тебя сейчас FPS? Пиши в комменты.»)\n• \"Spek lu apa? Gua carikan settingannya.\" («Какие у тебя спеки? Подберу настройки.»)\n\nТЁПЛЫЙ (20%, цель — клик):\n• \"Tutorial lengkapnya gratis, link di bio.\"\n• \"Semua tweak-nya udah gua kumpulin. Link di bio.\"\n• \"Join Discord, ada 40+ tweak gratis di #gratis.\"\n\nГОРЯЧИЙ (10%, цель — оплата):\n• \"Harga sebungkus rokok, FPS naik permanen. Bayar pake QRIS/DANA.\"\n• \"Sekali bayar, seumur hidup. Rp 149.000. QRIS, DANA, GoPay, ShopeePay.\"\n• \"Gak naik FPS? Duit balik. Serius.\" («Не вырос FPS? Вернём деньги. Серьёзно.»)\n\nОБЯЗАТЕЛЬНЫЕ ЭЛЕМЕНТЫ горячего CTA: цена в РУПИЯХ (не в USD), названия платёжек (QRIS/DANA/GoPay — сигнал 'свой, не скам'), гарантия возврата. Без этих трёх конверсия в ID падает кратно.",
+    "expected_ctr_bio": "Профиль → клик по bio-ссылке: 4-12% от посетителей профиля. Просмотр → посещение профиля в TikTok ID: 0.4-1.5%. Сквозная просмотр → клик: 0.02-0.15%, то есть 200-1500 кликов на 1 млн просмотров. LOW CONFIDENCE — прямых бенчмарков по Индонезии в открытых источниках НЕТ, диапазон построен на общих нишевых нормах.",
+    "expected_conversion": "Полная цепочка (все цифры — ОЦЕНКИ, low confidence, прямых данных по ID нет):\n• 1 000 000 просмотров TikTok ID\n• → 4 000-15 000 посещений профиля (0.4-1.5%)\n• → 200-1 500 кликов по ссылке (5-10% от профилей)\n• → 120-900 дошли до посадочной (отвал на загрузке — мобильный интернет)\n• → 40-300 открыли чекаут\n• → ОПЛАТЫ с локальными платёжками (QRIS/DANA/GoPay/ShopeePay): 4-25 продаж = 1.5-8% от чекаута\n• → ОПЛАТЫ БЕЗ локальных платёжек (только карты/PayPal): 0-4 продажи\n\nВЫРУЧКА НА 1 МЛН ПРОСМОТРОВ:\n• с QRIS/e-wallet, средний чек ~$6: $25-150\n• только карты/PayPal: $0-25\n• ориентир UK по тому же офферу: $80-250 (оценка, low confidence)\n\nВЫВОД ДЛЯ СКРИПТА: разница между 'с локальной платёжкой' и 'без' — это разница между жизнеспособным и мёртвым гео. Это ЕДИНСТВЕННЫЙ рычаг, который здесь реально решает.",
+    "local_community_notes": "Куда идти за первым трафиком и где сидит ядро:\n• Discord 'VALORANT Indonesia Community' — >242 000 участников (discordbotlist). Крупнейшее подтверждённое ПК-гейм-комьюнити ID. Правила серверов запрещают рекламу — заходить как участник с полезным контентом, не со ссылкой.\n• Facebook Groups: 'PC Rakitan', 'Jual Beli PC Bekas', 'Warnet Indonesia' — многотысячные, мужская аудитория (FB ID = 57.8% мужчин), люди с только что купленным слабым б/у железом. Самый горячий сегмент. Точных размеров групп не проверял (нет данных).\n• Локальные гейм-медиа как источник тем и площадки для коллабов: IDN Gaming, GGWP.id, Esportsnesia, ligagame.tv, IndoGamers, Jagat Review (последний — техническое железо, самая релевантная аудитория).\n• Киберспортивная инфраструктура: EVOS Esports (Джакарта, активный Valorant-дивизион), MPL ID, VALORANT Indonesia Summer Protocol (Liquipedia).\n• Warnet как офлайн-канал: партнёрство (предустановка твиков в обмен на промо) — реально работает, но это РУЧНАЯ схема, конфликтует с требованием полной автоматизации. Рассматривать только если гео покажет результат.\n• Reddit: r/indonesia существует, гейм-сабреддиты ID слабые. Утверждение о 'r/IndonesiaGaming: 70% индонезийских геймеров имеют лаг >120ms' встретилось в выдаче, но ПЕРВОИСТОЧНИК НЕ ПОДТВЕРЖДЁН — не использовать в маркетинге как факт."
+  },
+  "monetization": {
+    "willingness_to_pay": "НИЗКАЯ в абсолюте, но НЕ нулевая — ключевая поправка.\n\nМакроконтекст: Niko Partners — Индонезия даёт ~половину геймеров ЮВА, но только ~четверть выручки ЮВА. PC-гейминг $270 млн против mobile $1.38 млрд (2025). UMP 2025: Джакарта Rp 5 396 761/мес (~$330), национальный средний ориентировочно Rp 3.0-3.2 млн (~$185-195). У ЦА 16-24 это не зарплата, а карманные деньги — реалистичный свободный бюджет подростка на цифровые покупки Rp 20 000-150 000/мес ($1.2-9), low confidence, прямых данных нет.\n\nЧТО РАБОТАЕТ:\n• Одноразовый платёж >> подписка. Рекуррент требует привязанной карты, которой нет. LIFETIME — главный SKU.\n• Микроплатежи привычны: индонезийцы массово платят за скины и диаманты в ML и FF (GoodStats: FF — игра с наибольшим доходом от индонезийских игроков). Психология 'заплатить за преимущество в игре' УЖЕ существует.\n• Валидация деньгами: IPAN STORE (ipanstore.my.id) продаёт 'Jasa Optimasi PC Gaming & Boost FPS' с явным 'harga pelajar' (цена для школьника) — рынок платящих школьников за ровно этот оффер существует.\n\nЧТО НЕ РАБОТАЕТ:\n• Цена в USD на странице — нужны рупии.\n• Подписка $9.99/мес = Rp 165 000/мес: за эти деньги здесь берут 3 месяца Netflix. Мгновенный отказ.\n• Только карты и PayPal.",
+    "recommended_price_usd": "ЛОКАЛЬНЫЙ ТАРИФНЫЙ УРОВЕНЬ (обязательно отдельный от UK, с гео-детектом):\n\n• 1 месяц: $1.50-2.50 (Rp 25 000-39 000). Якорь-товар, нужен только чтобы lifetime выглядел выгодным. Выручки от него не ждать.\n• 3 месяца: $3.50-5.00 (Rp 55 000-79 000). Продавать как 'hemat 30%'.\n• LIFETIME: $8-12 (Rp 129 000-199 000). ГЛАВНЫЙ SKU — целевые 60-75% всех продаж в гео. Рекомендуемая витринная цена Rp 149.000 (~$9).\n• Тестовая точка входа: $0.60-1.00 (Rp 9 900-15 000) за 7-дневный доступ — снимает недоверие к скаму, в ID это критично.\n\nПОЧЕМУ НЕ ВЫШЕ: Rp 199 000 — психологический потолок для цифрового товара у подростка; Rp 149 000 примерно равно цене среднего скина в Mobile Legends, то есть знакомая сумма.\nПОЧЕМУ НЕ НИЖЕ: ниже Rp 100 000 продукт читается как 'дешёвка/скам' и растёт нагрузка поддержки на единицу выручки.\n\nОЖИДАЕМЫЙ ARPPU по гео: $6-9 (против $15-30 в UK). Планировать гео по этой цифре, не по UK-модели.",
+    "local_price_anchor": "С чем индонезиец сравнит вашу цену (проверенные цифры):\n• Netflix Mobile Rp 54 000/мес (~$3.3); Basic Rp 65 000; Standard Rp 120 000; Premium Rp 186 000 (Kompas Tekno, 20.02.2025)\n• Spotify: Mini от Rp 10 700; Student Rp 27 500; Individual Rp 54 990; Duo Rp 71 490; Family Rp 86 900 (2025)\n• Warnet: порядка Rp 4 000-6 000/час (ориентир, точных агрегированных данных 2025 нет — low confidence)\n• Скин / диаманты в Mobile Legends: Rp 50 000-150 000 за скин — САМЫЙ ТОЧНЫЙ якорь для вашего продукта\n• Обед (nasi padang / warteg): Rp 15 000-25 000\n• UMP Джакарта 2025: Rp 5 396 761/мес\n\nГОТОВАЯ ФОРМУЛИРОВКА ДЛЯ ЛЕНДИНГА: \"Rp 149.000 sekali bayar. Lebih murah dari 1 skin ML. Tapi ini kepake di semua game, selamanya.\" («149 000 рупий один раз. Дешевле одного скина в ML. Но работает во всех играх и навсегда.») — самый сильный доступный аргумент на этом рынке.",
+    "payment_methods": [
+      "QRIS — ОБЯЗАТЕЛЬНО №1. Единый национальный QR-стандарт Bank Indonesia, покрывает ВСЕ кошельки и банковские приложения одним кодом. Q1 2025: 57+ млн пользователей, 38+ млн мерчантов, 2.6 млрд транзакций за квартал; итог 2025: ~42 млн мерчантов, 13.66 млрд транзакций, рост объёма +175-226% г/г. MDR 0.7%, для микротранзакций до Rp 500 000 — 0%. Без QRIS в этом гео можно не начинать.",
+      "DANA — крупнейший по охвату кошелёк (61-83% usage, 140-180 млн пользователей по разным оценкам). Обязателен.",
+      "GoPay — экосистема Gojek. Обязателен.",
+      "ShopeePay — сильнейший среди молодой аудитории (Shopee — главный маркетплейс подростков). Обязателен.",
+      "OVO — 70-78% usage, ~31% доли рынка, интеграция с Grab. Желателен.",
+      "Bank Transfer / Virtual Account — BCA, BRI, Mandiri, BNI. Обязателен для тех, кто не доверяет кошелькам. BI-FAST как рельс мгновенных переводов.",
+      "Retail cash (Alfamart / Indomaret) — оплата наличными у кассы по коду. Важен для несовершеннолетних и небанкованных. Желателен.",
+      "Карты (Visa/Mastercard) — держать, но НЕ рассчитывать: доля низкая, у ЦА 16-24 карт практически нет.",
+      "PayPal — НЕ рассчитывать. Был заблокирован Kominfo 30.07.2022 за нерегистрацию PSE; доверие подорвано, проникновение низкое.",
+      "Крипта (USDT TRC-20) — резервный канал на 1-3% продаж, не основной. Нулевой чарджбек, но отпугивает мейнстрим."
+    ],
+    "payment_risk": "ГЛАВНЫЙ РИСК ЗДЕСЬ НЕ ФРОД, А НЕВОЗМОЖНОСТЬ ПРИНЯТЬ ДЕНЬГИ.\n\n1) БЛОКЕР ЭКВАЙРИНГА (критический). Локальные гейтвеи — Midtrans, Xendit, DOKU, iPaymu — требуют индонезийское юрлицо (PT или PT PMA) + NPWP + локальный банковский счёт. Оператор-физлицо из СНГ их НЕ получит. Международные MoR (Paddle, Lemon Squeezy, Stripe) закрывают карты и PayPal, но НЕ закрывают QRIS/DANA/GoPay/ShopeePay в нужном ЦА виде. Это структурный разрыв, а не настройка.\n\nРЕАЛЬНЫЕ ОБХОДНЫЕ ПУТИ (все с издержками):\n   а) Продажа ключей через локальные маркетплейсы цифровых товаров — itemku, VCGamers, Tokopedia/Shopee (цифровой товар). Покупатель платит QRIS/e-wallet нативно, площадка берёт комиссию, выплата в IDR. МИНУС: нужен локальный аккаунт продавца и счёт для вывода → нужен доверенный партнёр в ID → РУЧНАЯ работа и контрагентский риск, что прямо конфликтует с целью 'без ручной работы'.\n   б) Локальный партнёр-реселлер с revenue share 20-30%. Проще, но теряется контроль над ценой и данными клиента.\n   в) Крипта (USDT) — автоматизируется полностью, но покрывает 1-3% ЦА.\n   г) Card-only через Paddle/LemonSqueezy — работает автоматически и легально, но конверсия падает в 5-20 раз. Это сценарий 'гео мёртвое'.\n\nРЕКОМЕНДАЦИЯ: сначала запустить (г) как нулевую гипотезу на 30 дней. Если при card-only набирается хотя бы 10-15 продаж — спрос есть и (а)/(б) окупят возню. Если 0-3 продажи — гео закрывать, не тратя ресурс на партнёрскую схему.\n\n2) ЧАРДЖБЕКИ — НИЗКИЙ риск. QRIS и e-wallet — push-платежи (инициирует плательщик), возврат только по доброй воле мерчанта. Это ЛУЧШЕ, чем в UK/US. По картам объём в ID мал, значит мал и абсолютный объём чарджбеков. Держать порог <0.5%.\n\n3) ГЛАВНЫЙ ФАКТИЧЕСКИЙ УБЫТОК — не чарджбек, а ПЕРЕПРОДАЖА И ШЕРИНГ КЛЮЧЕЙ. При исторических 84-86% пиратства (BSA) закладывать, что каждый купленный lifetime-ключ разойдётся на 2-5 устройств, а кряк появится на местных форумах за недели. Обязательно: HWID-привязка, лимит активаций, серверная валидация, ротация билдов. Без этого lifetime-модель разберут за месяц.\n\n4) РЕГУЛЯТОРНЫЙ РИСК. Прецедент 30.07.2022: Kominfo заблокировал Steam, Epic Games, PayPal, Dota2, CS, Origin, Yahoo за нерегистрацию PSE. Иностранный цифровой сервис на Индонезию формально попадает под режим PSE Lingkup Privat. Для микро-оператора риск принудительной регистрации низкий, но риск блокировки по IP/домену — реальный. Иметь резервный домен.\n\n5) НАЛОГИ. НДС 11% на цифровые услуги от иностранных поставщиков (Netflix/Spotify остались на 11% в 2025, повышение до 12% на них не распространилось). При превышении порога иностранный поставщик формально обязан регистрироваться как сборщик НДС. При ваших объёмах практический риск низкий, но это несоблюдение, а не легальность.",
+    "hardware_side_note": "ВЕРДИКТ ПО ЖЕЛЕЗУ: НЕ ЗАХОДИТЬ. Это не 'сложно', а структурно закрыто для иностранного оператора-одиночки.\n\nНОУТБУКИ И МИНИ-ПК — НЕТ:\n• Де-минимис всего USD 3 FOB за посылку (PMK 199/2019, без изменений в 2025-2026). Фактически ЛЮБАЯ посылка облагается.\n• Единый тариф пошлины 7.5% для посылок FOB $3-$1500 (PMK 4/2025) + НДС ~11% + PPh. Итого нагрузка порядка 20%+ к цене.\n• Ноутбуки, субноутбуки, планшеты и смартфоны — в списке ОГРАНИЧЕННЫХ к импорту товаров (KMK 32/2025, режим Persetujuan Impor). Это не пошлина, а лицензирование: без разрешения товар просто не пройдёт.\n• Локальные конкуренты с местной сборкой и сервисом: Advan, Axioo; плюс Tokopedia/Shopee/Blibli с доставкой за день и рассрочкой (cicilan 0%) — механизмом, который вы предложить не сможете. Рассрочка в ID не бонус, а условие покупки техники.\n• Гарантия и постпродажный сервис обязательны по ожиданиям рынка. Одиночке из СНГ невыполнимо.\n\nКОВРИКИ ДЛЯ МЫШИ — ТЕХНИЧЕСКИ ВОЗМОЖНО, ЭКОНОМИЧЕСКИ БЕССМЫСЛЕННО:\n• Пошлина на текстиль/аксессуары выше, чем на электронику; де-минимис $3 всё равно бьёт.\n• Shopee/Tokopedia забиты ковриками по Rp 20 000-70 000 ($1.2-4.3) с бесплатной доставкой.\n• Единственная рабочая схема — локальный print-on-demand подрядчик в Джакарте/Бандунге + дропшип. Это ручная логистика, возвраты, брак, переписка — прямое противоречие цели 'всё автоматизировано скриптом'.\n• Маржа на кастомном коврике при местных ценах: Rp 15 000-40 000 ($1-2.5) с единицы. Чтобы заработать как с одной lifetime-подписки, нужно продать 4-8 ковриков с физической логистикой.\n\nЕСЛИ ОЧЕНЬ ХОЧЕТСЯ ФИЗТОВАР В ID: единственный разумный вариант — АФФИЛИАТ, а не продажа. Shopee Affiliate / Tokopedia Affiliate: ставите партнёрские ссылки на бюджетные ноуты и коврики в те же ролики, товар и логистика не ваши, ставка невелика, издержки нулевые. Оценочно +5-15% к выручке гео без операционной нагрузки.\n\nИГРОВЫЕ АККАУНТЫ — ОТДЕЛЬНЫЙ КРАСНЫЙ ФЛАГ: продажа аккаунтов нарушает ToS Riot (Valorant), Epic (Fortnite), Valve (CS2/Steam) и правила Stripe/PayPal о запрещённых товарах. В Индонезии itemku/VCGamers торгуют аккаунтами открыто, что создаёт ложное впечатление легальности, но риски для ВАС те же: бан платёжного аккаунта, заморозка средств, потеря инфраструктуры. Не смешивать с подписочным бизнесом — один замороженный платёжный аккаунт обнуляет и основной продукт."
+  },
+  "competition": "УРОВЕНЬ: средний по платным решениям, ОЧЕНЬ ВЫСОКИЙ по бесплатным. Главный конкурент — не другой продавец, а бесплатный YouTube-гайд на индонезийском.\n\n1) ЛОКАЛЬНЫЕ ПЛАТНЫЕ УСЛУГИ (прямые конкуренты, спрос валидирован):\n• IPAN STORE (ipanstore.my.id) — 'Jasa Optimasi PC Gaming & Boost FPS Free Fire'. Полный твик CPU/RAM/GPU + оптимизация эмулятора, позиционирование 'harga pelajar' (цена для школьника), бесплатная консультация через WhatsApp. Ваш ближайший аналог. Модель: услуга через чат + удалённый доступ, НЕ продукт. Слабость: не масштабируется, нет автоматизации, привязка к одному человеку. ВАШЕ ПРЕИМУЩЕСТВО: авто-выдача, мгновенно, 24/7, без ожидания ответа в WhatsApp.\n• Широкий пласт 'jasa remote tweak' / 'jasa install ulang + optimasi' на Shopee, Tokopedia, itemku — цены ориентировочно Rp 15 000-100 000 за разовую услугу (точный прайс-рейндж по агрегатору не проверен, low confidence). Это ЦЕНОВОЙ ЯКОРЬ, ниже которого вы не продадите. Ваши Rp 149 000 lifetime должны быть обоснованы формулой 'навсегда + все игры + обновления'.\n\n2) БЕСПЛАТНЫЙ КОНТЕНТ НА ИНДОНЕЗИЙСКОМ (главная угроза):\nЦелая индустрия, закрывающая вашу ценность бесплатно:\n• ligagame.tv — 'Cara Mengatasi Valorant FPS Drops dan Lag'\n• IDN Gaming — 'Cara Mengatasi FPS Drop Valorant, Auto Lancar Jaya Di 2025', 'Anti Lag! Settingan Valorant Agar Tidak Patah-Patah Di PC Kentang'\n• Esportsnesia — '9 Cara Main Valorant di Laptop Kentang'\n• GGWP.id — 'Cara Aman Bermain Valorant di Laptop atau PC Kentang'\n• IDN Times, IndoGamers, Telset.id, gameitu.com — подборки 'Aplikasi Game Booster PC Terbaik'\nЗначит: аудитория УЖЕ знает про Low-Specs Mode, отключение V-Sync, закрытие фоновых процессов, Game Bar/DVR, обновление драйверов. Продавать эти же 5 действий НЕЛЬЗЯ — разоблачат в комментах. Продавать надо ТО, ЧЕГО В ЭТИХ ГАЙДАХ НЕТ: 1% low и frametime, input lag на стороне клиента, троттлинг ноутбука в тропиках, таймеры и планировщик, распределение ядер под эмулятор, готовые power plan. Это ваш дифференциатор и он реальный.\n\n3) БЕСПЛАТНЫЕ ИНСТРУМЕНТЫ (продвигаются локальными медиа):\nRazer Cortex, Wise Game Booster (free 24 часа, потом premium), Smart Game Booster (есть в Steam), MSI Afterburner, PC Game Booster (Uptodown). Все известны индонезийской аудитории. Контент-угол 'game booster gratisan itu nipu' с бенчмарк-доказательством обязателен, иначе вопрос 'зачем платить, если есть Razer Cortex' закроет продажу.\n\n4) БЕСПЛАТНЫЕ КАСТОМНЫЕ ISO:\nAtlasOS, ReviOS, Ghost Spectre — обсуждаются в том числе в индонезийском TikTok-поиске ('best custom ISO for gaming'). Дают 80% эффекта бесплатно. Контраргумент: кастомная ISO = переустановка системы, потеря данных, риск с античитом и Windows Update; ваш продукт — обратимые твики поверх существующей системы. Честный и сильный аргумент.\n\n5) ГЛОБАЛЬНЫЕ ПЛАТНЫЕ:\nHone.gg — прямой западный аналог; EXM Tweaks — референс оффера. Оба на английском, оба берут цену в USD с карты, оба НЕ адаптированы под Индонезию (нет рупий, нет QRIS, нет индонезийского). Это ваше единственное настоящее конкурентное окно в гео: ЛОКАЛИЗАЦИЯ. Первый, кто сделает продукт на индонезийском с QRIS-оплатой за Rp 149 000, займёт нишу — западные игроки в неё не полезут (слишком низкий ARPU), а локальные 'jasa' не умеют в продукт и автоматизацию.\n\nОЦЕНКА ОКНА: реальное, но узкое и ограничено сверху платёжеспособностью. Побеждает не тот, у кого лучше твики, а тот, у кого QRIS на чекауте и индонезийский текст на лендинге.",
+  "proxy_and_account_geo": {
+    "need_local_ip": "НУЖЕН для TikTok — но с честной оговоркой о качестве доказательств.\n\nЧТО ЕСТЬ: TikTok сегментирует начальную раздачу по региону — ролик сначала показывается тестовому пулу (порядка 100-500 зрителей) в регионе, определённом по совокупности сигналов при загрузке: IP-адрес, страна SIM/оператора (MCC/MNC), регион аккаунта, язык устройства, таймзона, язык контента. При конфликте сигналов приоритет отдаётся IP; SIM — поддерживающий сигнал. Перекалибровка при смене локации: 3-7 дней для новых аккаунтов, 2-3 недели для устоявшихся.\n\nКАЧЕСТВО ИСТОЧНИКА — СЛАБОЕ, ЧЕСТНО: эти утверждения происходят из вендорских материалов (vpntous.com, conbersa.ai), то есть компаний, ПРОДАЮЩИХ прокси и VPN. У них прямой коммерческий интерес утверждать, что IP решает всё. Официального подтверждения от TikTok нет. Достоверность: СРЕДНЯЯ-НИЗКАЯ. Не строить на этом всю архитектуру как на факте.\n\nЧТО ТОЧНО РАБОТАЕТ И НЕ ТРЕБУЕТ ВЕРЫ В ВЕНДОРОВ (делать в первую очередь):\n1) Язык контента — индонезийский текст на экране, подписи, хештеги. Сигнал, который TikTok заведомо читает и который вы контролируете на 100%.\n2) Язык приложения и системы устройства — Bahasa Indonesia.\n3) Таймзона — Asia/Jakarta (WIB, UTC+7).\n4) Постинг в индонезийские прайм-тайм окна — тогда первые зрители по определению индонезийцы.\n5) Индонезийский трендовый звук.\n6) Ранние сигналы вовлечения от индонезийских аккаунтов.\n\nПРАКТИЧЕСКАЯ РЕКОМЕНДАЦИЯ: использовать ID-прокси (мобильные/резидентские) как ГИГИЕНУ — стабильный, чистый, непубличный IP, один аккаунт = один IP, без перескоков между странами. Резкие смены гео и datacenter-IP — самый заметный сигнал автоматизации. Но НЕ считать прокси главным рычагом: язык контента и время публикации дадут больше.\n\nДЛЯ YouTube и Instagram локальный IP значит существенно меньше — там таргетинг определяется языком, метаданными и историей зрителей.\n\nОТДЕЛЬНО: массовое создание и автоматическая эксплуатация сеток аккаунтов нарушает Community Guidelines TikTok и правила Meta (spam / inauthentic behavior). Прокси не делает это соответствующим правилам, а лишь меняет профиль риска. Закладывать потерю 30-50% аккаунтов за 60 дней как себестоимость метода.",
+    "city_recommendation": "Приоритет по городам для прокси и профилей:\n1) ДЖАКАРТА (DKI Jakarta, WIB/UTC+7) — основной выбор. Максимальная концентрация интернет-трафика, ПК-гейминга, warnet и киберспорта (EVOS Esports базируется здесь).\n2) БАНДУНГ (Западная Ява) — крупный студенческий город, молодая гейм-аудитория, много warnet.\n3) СУРАБАЯ (Восточная Ява) — второй город страны, сильное гейм-комьюнити.\n4) МЕДАН (Северная Суматра) и МАКАССАР (Южный Сулавеси) — для диверсификации, чтобы 20 аккаунтов не сидели в одном /24.\n\nТАЙМЗОНЫ: Индонезия имеет три зоны — WIB (UTC+7, Ява/Суматра, основная масса населения), WITA (UTC+8, Бали/Сулавеси/Калимантан), WIT (UTC+9, Папуа). Весь расчёт постинга вести по WIB. Но если прокси выбран в Макассаре, таймзону устройства ставить WITA (UTC+8) — иначе несоответствие таймзоны и IP становится сигналом.\n\nРАСПРЕДЕЛЕНИЕ: 60% аккаунтов Джакарта, 20% Бандунг, 10% Сурабая, 10% прочие.",
+    "mobile_carriers": [
+      "Telkomsel — ~48% рынка (2026). Крупнейший, самый 'обычный' профиль. Основной выбор для мобильных прокси.",
+      "Indosat Ooredoo Hutchison (IOH) — ~26%, бренды IM3 и Tri. Второй по приоритету, популярен у молодёжи (дешёвые пакеты данных).",
+      "XLSmart (XL Axiata + Smartfren + SmartTel; слияние Axiata и Sinar Mas завершено в декабре 2024, сделка $6.5 млрд) — ~15%+. Бренды XL, Axis, Smartfren.",
+      "Smartfren — вошёл в XLSmart, бренд пока существует."
+    ],
+    "sms_number_availability": "УЗКОЕ МЕСТО, планировать заранее.\n\nПРОБЛЕМА: в Индонезии обязательна регистрация prepaid SIM с привязкой к NIK (национальный идентификационный номер) и KK (номер семейной карточки). Иностранец без индонезийских документов не может самостоятельно зарегистрировать нужное количество номеров; один NIK имеет лимит на число номеров у оператора.\n\nПРАКТИЧЕСКИ:\n• Виртуальные/арендные ID-номера у SMS-сервисов существуют, но доступность и качество для TikTok/Google/Meta нестабильны — эти платформы активно фильтруют известные VoIP и пулы перепродажи. Актуальных проверенных данных по доступности именно ID-номеров у конкретных сервисов у меня НЕТ (нет данных) — проверять перед закупкой партии.\n• Многие ID-номера уже 'сожжены' предыдущими регистрациями и получат отказ.\n\nРАБОЧАЯ СТРАТЕГИЯ:\n1) Регистрировать аккаунты ПО EMAIL, а не по номеру, где платформа это позволяет. Снимает 80% проблемы. Email-домены свои, не одноразовые.\n2) Номер добавлять позже, только когда платформа принудительно требует, и только на 'выжившие' аккаунты с охватом — так номера не расходуются на тех, кто улетит в бан в первую неделю.\n3) WhatsApp Business (нужен для воронки) — ОТДЕЛЬНАЯ задача: нужен один стабильный долгоживущий индонезийский номер, желательно через доверенного локального партнёра. Виртуальный номер для WhatsApp Business — плохая идея: потеря номера = потеря всей базы переписок.\n4) Резервный вариант: обойтись без WhatsApp вообще — Discord + лендинг. Конверсия ниже, но нет зависимости от NIK-инфраструктуры.",
+    "notes": "ЧЕК-ЛИСТ ГЕО-ГИГИЕНЫ ДЛЯ СКРИПТА:\n• Язык устройства/приложения: Bahasa Indonesia (id-ID)\n• Таймзона: Asia/Jakarta (UTC+7), либо Asia/Makassar (UTC+8) если прокси в WITA — согласовать с IP\n• Регион аккаунта: ID\n• Один аккаунт = один резидентский/мобильный ID-IP, без ротации между странами\n• Не более 2-3 аккаунтов на подсеть; не допускать, чтобы 20 аккаунтов сидели в одном /24 одного провайдера\n• Разные fingerprint устройств (модель, разрешение, версия ОС) — имитировать реальный парк Android в ID: массовые бюджетные модели (Xiaomi/Redmi, Oppo, Vivo, Samsung A-серия), а не флагманы\n• Прогрев 5-7 дней: только просмотр, лайки, подписки на индонезийские гейм-аккаунты — БЕЗ публикаций и БЕЗ ссылки в bio\n• Ссылку в bio ставить не раньше 3-й недели и не раньше 1000 подписчиков\n• Запуск волнами (6 / +7 / +7), не все 20 сразу\n• Обязательный лог: аккаунт → IP → устройство → дата → статус. Без него невозможно понять, что именно вызвало баны."
+  },
+  "kpis": {
+    "expected_views_per_new_account_first_month": "Медиана нового TikTok-аккаунта в ID при 3 роликах/день (~90 роликов за месяц): 15 000-80 000 суммарных просмотров. Распределение крайне неравномерное — ожидать, что 2-4 аккаунта из 20 дадут 70-80% всего объёма сетки.\nПорог здорового аккаунта: хотя бы ОДИН ролик >50 000 просмотров за первые 30 дней. Если за 30 дней и ~90 роликов ни один не пробил 20 000 — аккаунт или контент-слот мёртв, останавливать и заменять.\nСетка из 20 аккаунтов, месяц 2-3 после прогрева: 1.5-6 млн просмотров/мес суммарно. Месяц 4+ при выживших аккаунтах: 4-15 млн/мес.\nYouTube Shorts: медленнее, 5 000-30 000 за первый месяц на аккаунт, но с длинным хвостом — к месяцу 3 совокупный охват канала часто обгоняет месяц 1 в 3-5 раз.\nInstagram Reels: 2 000-15 000 за первый месяц. Самый слабый из трёх в этом гео.\nВСЕ ЦИФРЫ — ОЦЕНОЧНЫЕ, low confidence: публичных бенчмарков по новым гейм-аккаунтам в Индонезии не существует.",
+    "expected_ctr_to_profile": "Просмотр → посещение профиля: 0.4-1.5% (TikTok ID). Гейм-контент с сильным хуком — ближе к верхней границе; шитпост-формат (F) — к нижней.\nПодписка от просмотра: 0.2-0.8%.\nПрофиль → клик по bio-ссылке: 4-12%.\nСквозная просмотр → клик: 0.02-0.15%, то есть 200-1500 кликов на 1 млн просмотров.\nLOW CONFIDENCE — прямых данных по Индонезии нет.",
+    "expected_signup_rate": "Клик по ссылке → посадочная загрузилась: 60-80% (потери на мобильном интернете; страница должна быть <500 КБ).\nПосадочная → Discord join (ветка B): 15-35% от дошедших.\nПосадочная → чекаут открыт (ветка A): 8-20%.\nЧекаут → ОПЛАТА:\n  • с QRIS/DANA/GoPay/ShopeePay: 1.5-8%\n  • только карты/PayPal: 0-1%\nDiscord-участник → покупка в течение 30 дней: 0.5-2% (ID) против 2-5% (UK) — оценка, low confidence.\nСквозная просмотр → оплата: 0.0004-0.0025% с локальными платёжками; практически 0 без них.",
+    "expected_cpm_or_rpm": "СТОИМОСТЬ ОХВАТА (органика, себестоимость производства): при полностью автоматизированном конвейере себестоимость 1000 просмотров в ID стремится к $0.02-0.15 — включая прокси, инфраструктуру и амортизацию банящихся аккаунтов. В 5-15 раз дешевле, чем в UK. Это ЕДИНСТВЕННОЕ настоящее преимущество гео.\nПЛАТНЫЙ ОРИЕНТИР: TikTok CPM в Индонезии <$2; по SEA-кластеру (ID/PH/VN/TH) $0.5-2.0 — одна треть-одна шестая от US/UK. Даже при провале органики охват можно докупать дёшево.\nВЫРУЧКА С ОХВАТА (главная метрика гео), RPM = выручка на 1000 просмотров:\n  • с локальными платёжками: $0.025-0.15 (то есть $25-150 на 1 млн просмотров)\n  • только карты/PayPal: $0.000-0.025\n  • ориентир UK по тому же офферу: $0.08-0.25 (оценка)\nМОНЕТИЗАЦИЯ САМОЙ ПЛАТФОРМЫ: НЕ рассматривать. YouTube Shorts RPM для индонезийского трафика <$1 за 1000 просмотров (часто $0.01-0.07 в зависимости от источника и микса) — это шум, а не доход. Смысл гео только в трафике на оффер.\nARPPU: $6-9 (против $15-30 в UK).\nЦЕЛЕВОЙ БЮДЖЕТ: гео должно укладываться в $30-60/мес из общего бюджета $50-200 (прокси + инфраструктура), иначе не окупится при своём RPM.",
+    "decision_thresholds": "КОНТРОЛЬНАЯ ТОЧКА 1 — ДЕНЬ 30 (после прогрева, сетка 20 аккаунтов, ~1500-2000 роликов):\n✅ ПРОДОЛЖАТЬ, если: суммарно ≥500 000 просмотров И ≥3 аккаунта имеют хотя бы один ролик >50k И ≥300 кликов по ссылке.\n⚠️ ЧИНИТЬ КОНТЕНТ, если: просмотры есть (>500k), но кликов <150 — проблема в хуках и CTA, не в гео. Переписать CTA, вынести цену в рупиях на лендинг.\n❌ СТОП, если: <150 000 просмотров суммарно — контент не заходит вообще; менять формат, не гео.\n\nКОНТРОЛЬНАЯ ТОЧКА 2 — ДЕНЬ 60 (решающая по платёжке):\n✅ ИНВЕСТИРОВАТЬ В ЛОКАЛЬНУЮ ПЛАТЁЖКУ (искать партнёра под QRIS), если: ≥1.5 млн просмотров суммарно И ≥10 продаж даже на card-only чекауте И ≥300 участников Discord из ID. Десять продаж при заведомо неподходящей платёжке — сильный сигнал реального спроса.\n⚠️ ПРОДОЛЖАТЬ БЕЗ ИНВЕСТИЦИЙ, если: трафик хороший (>1.5 млн), но продаж 3-9. Держать как охватное гео и источник соцдоказательств, не вкладываться в платёжную инфраструктуру.\n❌ ПЕРЕВОДИТЬ В SKIP (только контент-лаборатория), если: <3 продаж при >1.5 млн просмотров. Значит спроса за деньги нет, и локальная платёжка его не создаст.\n\nКОНТРОЛЬНАЯ ТОЧКА 3 — ДЕНЬ 90 (экономика):\n✅ МАСШТАБИРОВАТЬ до 30-40 аккаунтов, если: RPM ≥$0.05 ($50 на 1 млн просмотров) И выручка гео ≥3× его инфраструктурных затрат И выживаемость аккаунтов >60%.\n⚠️ ДЕРЖАТЬ НА МИНИМУМЕ (5-8 аккаунтов как лаборатория хуков для других гео), если RPM $0.02-0.05.\n❌ ЗАКРЫВАТЬ ГЕО, если выполнено ЛЮБОЕ: RPM <$0.02 два месяца подряд; выручка гео меньше его инфраструктурных затрат два месяца подряд; выживаемость аккаунтов <30% (себестоимость охвата выше расчётной, метод не работает).\n\nЖЁСТКИЕ СТОП-ФАКТОРЫ (закрывать немедленно, независимо от цифр):\n• Блокировка платёжного провайдера из-за индонезийских транзакций\n• Заморозка средств по подозрению в фроде\n• Массовый бан >70% сетки за 14 дней (паттерн детектится)\n• Подтверждённые случаи, когда твики триггерят античит (Vanguard/EAC/BattlEye) и приводят к банам клиентов в играх — репутационная смерть в тесном комьюнити плюс потенциальные претензии\n\nСРАВНИТЕЛЬНЫЙ ПРИОРИТЕТ: при ограниченном ресурсе оператора-одиночки Индонезия должна получать НЕ БОЛЕЕ 20-25% времени и бюджета. Основной ресурс — в гео с card-ready платёжеспособностью (UK/US/EU/AU). Индонезия — объём, дешёвое тестирование и опцион на будущее, но не источник выручки сегодня."
+  },
+  "risks": [
+    "РЕГУЛЯТОРНЫЙ УДАР ПО ЯДРУ АУДИТОРИИ (критический, уже реализовался): PP No.17/2025 'PP Tunas' в силе с 28.03.2026 — соцсети только 16+. TikTok к 10.04.2026 деактивировал 780 000 аккаунтов детей <16. IG, FB, Threads, X, Bigo Live полностью соответствуют; Roblox частично; YouTube (Google) по оценке Komdigi НЕ продемонстрировал готовности. Последствие: сегмент 13-15 (~14 млн человек) выведен из ваших каналов, ЦА сужается до 16-24. Плюс риск усиления возрастной верификации, которая добавит трения в воронку.",
+    "СТРУКТУРНАЯ НЕВОЗМОЖНОСТЬ ПРИНЯТЬ ДЕНЬГИ (критический): локальные гейтвеи (Midtrans, Xendit, DOKU) требуют PT/PT PMA + NPWP + местный счёт — недоступно оператору-физлицу из СНГ. Международные MoR не закрывают QRIS/DANA/GoPay. Без решения этого вопроса всё гео — генератор просмотров без выручки. Главный риск проекта в Индонезии, важнее всех платформенных.",
+    "НАРУШЕНИЕ ПРАВИЛ ПЛОЩАДОК (высокий, встроен в метод): массовое создание аккаунтов и автоматизированный залив прямо противоречат Community Guidelines TikTok и политикам Meta о spam / inauthentic behavior. Последствия: веерные баны, shadowban, потеря накопленной аудитории. Закладывать 30-50% потерь за 60 дней как себестоимость. Прокси меняет профиль риска, но не делает метод соответствующим правилам.",
+    "ПИРАТСТВО И ПЕРЕПРОДАЖА КЛЮЧЕЙ (высокий): историческая ставка пиратства софта 84-86% (BSA). Lifetime-ключ за Rp 149 000 будет расшарен и выложен на локальных форумах. Обязательны HWID-привязка, лимит активаций, серверная валидация, ротация билдов. Без этого lifetime-модель разбирают за 3-6 недель.",
+    "АНТИЧИТ (высокий, продуктовый и репутационный): Valorant использует Vanguard — kernel-level античит; CS2/Apex/Rust — EAC/VAC/BattlEye/FACEIT AC. Твики, затрагивающие драйверы, таймеры, планировщик, отключение служб или модификацию памяти, могут блокировать запуск игры или привести к бану клиента. Один публичный случай бана в индонезийском Discord-комьюнити (>242k в одном только Valorant-сервере) уничтожает репутацию продукта за дни. Требование: тестировать каждый билд на всех целевых античитах и явно исключать всё, что похоже на вмешательство в процесс игры.",
+    "КОНКУРЕНЦИЯ С БЕСПЛАТНЫМ (высокий): индонезийские медиа (IDN Gaming, GGWP, Esportsnesia, ligagame.tv, IndoGamers, Telset) закрывают базовые твики бесплатно на родном языке; бесплатные инструменты (Razer Cortex, Wise Game Booster, Smart Game Booster, MSI Afterburner) и бесплатные кастомные ISO (AtlasOS, ReviOS, Ghost Spectre) дают большую часть эффекта за 0 рупий. Если продукт не даёт того, чего в этих источниках нет (1% low, frametime, input lag, троттлинг, эмулятор, распределение ядер), продажи не будет.",
+    "НИЗКИЙ ARPU КАК СТРУКТУРНЫЙ ПОТОЛОК (высокий): Niko Partners — ~половина геймеров ЮВА, ~четверть выручки ЮВА. PC $270 млн против mobile $1.38 млрд. Даже при идеальном исполнении выручка на просмотр здесь останется в разы ниже tier-1. Риск потратить основной ресурс одиночного оператора на гео с заведомо ограниченным потолком.",
+    "MOBILE-FIRST РАЗРЫВ (средний): 175 млн геймеров, но подавляющее большинство играет на телефоне — ваш оффер им физически неприменим. Результат: высокий процент 'мусорных' просмотров. Митигация: хук обязан явно называть ПК/ноут/эмулятор в первые 1.5 секунды, иначе вы платите вниманием за нецелевых зрителей.",
+    "РЕГУЛЯТОРНАЯ БЛОКИРОВКА СЕРВИСА (средний, прецедент есть): 30.07.2022 Kominfo заблокировал Steam, Epic Games Store, PayPal, Dota2, CS, Origin, Yahoo за нерегистрацию PSE Lingkup Privat. Epic зарегистрировался 09.08.2022 и был разблокирован. Иностранный цифровой сервис на Индонезию формально попадает под режим PSE. Риск блокировки домена/IP реален. Митигация: резервный домен, зеркало, доставка ключей по email независимо от доступности сайта.",
+    "НАЛОГОВОЕ НЕСООТВЕТСТВИЕ (средний): НДС 11% на цифровые услуги от иностранных поставщиков; при превышении порогов иностранный поставщик обязан регистрироваться как сборщик НДС. При микрообъёмах практический риск низкий, но это несоблюдение требований, а не серая зона.",
+    "SIM/NIK-БАРЬЕР (средний, операционный): регистрация prepaid SIM привязана к NIK и KK; иностранцу массовая регистрация недоступна. Виртуальные ID-номера нестабильны для TikTok/Google/Meta. Последствие: невозможность построить WhatsApp-ветку воронки без локального партнёра и ограничение на восстановление аккаунтов.",
+    "ЖЕЛЕЗО: ИМПОРТ ФАКТИЧЕСКИ ЗАКРЫТ (высокий, если пытаться): де-минимис USD 3 FOB (PMK 199/2019, без изменений в 2025-2026), единый тариф 7.5% при FOB $3-1500 (PMK 4/2025), НДС ~11% + PPh; ноутбуки, субноутбуки, планшеты и смартфоны в списке ОГРАНИЧЕННЫХ к импорту (KMK 32/2025, режим Persetujuan Impor). Плюс укоренившиеся локальные игроки (Advan, Axioo) и маркетплейсы с рассрочкой 0%. Попытка продавать железо в ID приведёт к застрявшим на таможне посылкам и возвратам.",
+    "ПРОДАЖА ИГРОВЫХ АККАУНТОВ (критический, отдельно): нарушает ToS Riot, Epic и Valve, а также правила Stripe/PayPal о запрещённых товарах. В Индонезии торговля аккаунтами на itemku/VCGamers ведётся открыто, что создаёт ложное ощущение допустимости — но риск для ВАС тот же: бан платёжного аккаунта, заморозка средств, потеря инфраструктуры. Категорически не смешивать с подписочным продуктом: один замороженный платёжный аккаунт обнуляет и основной бизнес.",
+    "КОПИРАЙТ НА ГЕЙМПЛЕЙ И ЗВУК (средний): нарезки чужого геймплея без добавленной ценности подпадают под YouTube reused content policy (отказ в монетизации, страйки) и под Content ID по музыке. TikTok-звуки для коммерческих аккаунтов ограничены Commercial Music Library. Митигация: снимать собственный геймплей (для этого продукта естественно — вам всё равно нужны реальные бенчмарки) и использовать только разрешённые звуки.",
+    "ЗАВИСИМОСТЬ ОТ ОДНОГО ЧЕЛОВЕКА (средний, операционный): 20 аккаунтов × 3 платформы × 3 поста в день = ~180 публикаций в сутки на одно гео. При нескольких гео это выходит за пределы возможностей одиночки даже с автоматизацией, а поддержка на индонезийском (комментарии, DM, WhatsApp) вообще не автоматизируется качественно. Риск: гео формально запущено, но 'мертво' из-за отсутствия отклика на входящие — и именно это, а не алгоритм, убивает конверсию."
+  ],
+  "sources": [
+    "DataReportal — Digital 2026: Indonesia (данные за октябрь 2025, опубликовано ноябрь 2025): https://datareportal.com/reports/digital-2026-indonesia — население 286 млн, интернет 230 млн / 80.5%, соцсети 180 млн / 62.9% (+26% г/г), TikTok 18+ = 180 млн / 88.9% взрослых, YouTube 151 млн, Facebook 121 млн, Instagram 108 млн, медианный возраст 30.4, возрастная структура, гендерные сплиты по платформам",
+    "DataReportal — Digital 2025: Indonesia (январь 2025): https://datareportal.com/reports/digital-2025-indonesia — база для расчёта роста: интернет 212 млн / 74.6%, соцсети 143 млн, TikTok 18+ 108 млн, Instagram 103 млн, YouTube 143 млн, мобильных подключений 356 млн",
+    "Campaign Brief Asia — 'Digital 2026: Indonesia reveals social media user identities increased 26% to 180 million' (06.11.2025): https://campaignbriefasia.com/2025/11/06/digital-2026-indonesia-reveals-social-media-user-identities-increased-26-to-180-million/ — Индонезия = крупнейшая рекламная аудитория TikTok в мире",
+    "ANTARA News — 'TikTok sets 16 plus age limit in Indonesia under new rules' (14.04.2026): https://en.antaranews.com/news/412225/tiktok-sets-16-plus-age-limit-in-indonesia-under-new-rules — PP No.17/2025 (PP Tunas) в силе с 28.03.2026; на 10.04.2026 деактивировано 780 000 аккаунтов <16; статус соответствия по платформам (IG/FB/Threads/X/Bigo — полное, Roblox — частичное, YouTube/Google — нет)",
+    "Jakarta Globe — 'Indonesia Restricts Social Media Access for Children Under 16': https://jakartaglobe.id/news/indonesia-restricts-social-media-access-for-children-under-16 ; CMS Law — 'Indonesia: the latest to introduce social media ban for minors'",
+    "digitalinasia / оценки Newzoo-класса — 'Indonesia Gaming Market 2026: 175M Players' (2025-2026): https://digitalinasia.com/indonesia-gaming-market/ — ~175 млн играющих = >80% интернет-пользователей; выручка ~$1.9 млрд в 2025; mobile $1.38 млрд против PC $270 млн",
+    "Niko Partners (через отраслевые обзоры 2025) — Индонезия даёт ~половину геймеров ЮВА, но ~четверть выручки ЮВА; активно тратящая база ~138 млн",
+    "tempo.co — 'Daftar Game Online yang Paling Banyak Dimainkan di Indonesia': https://www.tempo.co/digital/daftar-game-online-yang-paling-banyak-dimainkan-di-indonesia-2057925 — Mobile Legends 48.99% доступа, Free Fire 23.05%",
+    "Kompas Tekno (11.10.2025) — 'Game Free Fire Masih Laris di Indonesia meski Popularitas Battle Royale Menurun': https://tekno.kompas.com/read/2025/10/11/11150047/",
+    "Kompas Tekno (29.01.2026) — 'Ini Game Paling Laris di Indonesia, Bukan Free Fire atau Mobile Legends' (Block Blast — топ по загрузкам 2025, выше Roblox/FF/ML): https://tekno.kompas.com/read/2026/01/29/16070057/",
+    "viva.co.id — 'Deretan Game Esports Paling Populer di Indonesia 2025' (ML, PUBG Mobile, Free Fire, Valorant, Dota 2, Wild Rift): https://digital.viva.co.id/game/5096-deretan-game-esports-paling-populer-di-indonesia-2025-mobile-legends-masih-jadi-raja",
+    "discordbotlist — VALORANT Indonesia Community Discord, >242 000 участников: https://discordbotlist.com/servers/valorantindonesia",
+    "hasagi.gg (2025) — 'Riot Umumkan Penambahan Server VALORANT di Filipina, Indonesia Kapan?': https://hasagi.gg/riot-umumkan-penambahan-server-valorant-di-filipina-indonesia-kapan/ — выделенного сервера Valorant в Индонезии нет",
+    "ligagame.tv — 'Cara Mengatasi Valorant FPS Drops dan Lag': https://www.ligagame.tv/valorant/cara-mengatasi-valorant-lag-dan-fps-drops",
+    "IDN Gaming — 'Cara Mengatasi FPS Drop Valorant, Auto Lancar Jaya Di 2025': https://idngaming.com/cara-mengatasi-fps-drop-valorant-auto-lancar-jaya-di-2025/ и 'Anti Lag! Ikuti Settingan Valorant Agar Tidak Patah-Patah Di PC Kentang'",
+    "Esportsnesia — '9 Cara Main Valorant di Laptop Kentang': https://esportsnesia.com/game/cara-main-valorant-di-laptop-kentang/ — источник сленга 'laptop kentang'",
+    "GGWP.id — 'Cara Aman Bermain Valorant di Laptop atau PC Kentang': https://ggwp.id/media/esports/esports-lain/pc-kentang-untuk-game-valorant",
+    "IPAN STORE — 'Jasa Optimasi PC Gaming & Boost FPS Free Fire', продажа через WhatsApp, 'harga pelajar': https://ipanstore.my.id/ — прямой локальный конкурент, доказательство платящего спроса",
+    "IndoGamers / IDN Times / Telset.id / gameitu.com — подборки бесплатных game booster'ов (Razer Cortex, Wise Game Booster, Smart Game Booster, MSI Afterburner): https://indogamers.com/pc/48142/26012025/rekomendasi-5-aplikasi-untuk-meningkatkan-fps-saat-bermain-game-di-windows-10",
+    "Hone.gg — 'PC Gaming Optimizer & FPS Booster': https://hone.gg/ — глобальный прямой конкурент, не локализован под ID",
+    "Tazapay — 'Local Payment Methods in Indonesia: QRIS, BI-FAST, and the Four-Wallet Market' (2025): https://tazapay.com/blog/local-payment-methods-in-indonesia-dana — QRIS Q1 2025: 57+ млн пользователей, 38+ млн мерчантов, 2.6 млрд транзакций; итог 2025 ~42 млн мерчантов, 13.66 млрд транзакций; MDR 0.7%, 0% до Rp 500 000; наличные упали с 77% (2019) до 36% (2025) POS-объёма; OVO 70-78% usage / ~31% доли; DANA 61-83% usage, 140-180 млн пользователей",
+    "ThePaypers / PaymentsCMI — 'Indonesia: 2025 analysis of payments and ecommerce trends': https://thepaypers.com/payments/expert-views/indonesia-2025-analysis-of-payments-and-ecommerce-trends",
+    "Stripe — 'How to accept payments in Indonesia': https://stripe.com/resources/more/payments-in-indonesia — поддержка GoPay/LinkAja/OVO; QRIS и DANA не подтверждены",
+    "Kompas Tekno (20.02.2025) — 'Daftar Harga Netflix di Indonesia, Mulai Rp 54.000': https://tekno.kompas.com/read/2025/02/20/02350077/daftar-harga-netflix-di-indonesia-mulai-rp-54.000 — Mobile Rp 54 000, Basic Rp 65 000, Standard Rp 120 000, Premium Rp 186 000",
+    "CNBC Indonesia / Tempo (2025) — цены Spotify Indonesia: Mini Rp 10 700, Student Rp 27 500, Individual Rp 54 990, Duo Rp 71 490, Family Rp 86 900; НДС на стриминг остался 11%: https://www.cnbcindonesia.com/tech/20241231205532-37-599951/ppn-12-tak-berlaku-buat-netflix-spotify-segini-biaya-langganan-2025",
+    "Pegadaian — 'Daftar UMR 2025 Seluruh Provinsi di Indonesia & Kenaikannya' (рост +6.5% к 2024, объявлено 29.11.2024): https://pegadaian.co.id/artikel/keuangan/umr-2025 ; Trading Economics — минимальная зарплата Джакарты Rp 5.40 млн (2025) → Rp 5.73 млн (2026): https://id.tradingeconomics.com/indonesia/minimum-wages",
+    "Ortax — 'PMK 4 2025 Simplifikasi Tarif Bea Masuk Barang Kiriman Tertentu': https://ortax.org/pmk-4-2025-simplifikasi-tarif-bea-masuk-barang-kiriman-tertentu-ini-detailnya — единый тариф 7.5% при FOB $3-1500",
+    "sinikirim.com — 'Panduan Pajak & Bea Masuk Impor Indonesia Terbaru (Update September 2025)': https://sinikirim.com/artikel/Update%20Bea%20Masuk%20Barang%20Import%20Indonesia%202025.php — де-минимис USD 3 FOB (PMK 199/2019), без изменений в 2025-2026",
+    "Ortax — 'Impor Smartphone dan Laptop dari Luar Negeri Kini Dibatasi' (KMK 32/2025): https://ortax.org/impor-smartphone-dan-laptop-dari-luar-negeri-kini-dibatasi — ноутбуки, субноутбуки, планшеты и смартфоны ограничены к импорту",
+    "Jagat Review (31.07.2022) — 'Steam dan Epic Games Benar-benar Diblokir Kominfo': https://www.jagatreview.com/2022/07/steam-dan-epic-game-benar-benar-diblokir-kominfo/ ; Liputan6 — блокировка 8 PSE включая Steam, Dota2, CS, Epic, Origin, PayPal (30.07.2022): https://www.liputan6.com/tekno/read/5028040/kominfo-blokir-steam-epic-games-store-hingga-paypal-layanan-tak-bisa-diakses ; Ditjen Aptika Kominfo — Epic Games зарегистрирован PSE 09.08.2022: https://aptika.kominfo.go.id/2022/08/epic-games-terdaftar-pse-tak-lagi-diblokir-kominfo/",
+    "Partipost Indonesia — 'Jam Upload TikTok di Tahun 2025, Lengkap Beserta Hari Posting Terbaik': https://www.partipost.com/resources-guides-indonesia/jam-upload-tiktok-di-tahun-2025-lengkap-beserta-hari-posting-terbaik — будние окна 06:00-07:00, 11:30-13:00, 19:00-21:00 WIB",
+    "Bloomberg Technoz Indonesia — 'Jadwal FYP TikTok 2026 dan Jam Upload Terbaik': https://www.bloombergtechnoz.com/detail-news/113457/jadwal-fyp-tiktok-2026-dan-jam-upload-terbaik-agar-konten-fyp — прайм-точки 09:00, 16:00, 19:00-20:00, 21:00 WIB",
+    "Metricool — 'Best Time to Post on Social Networks 2026' (>2 млн постов, >92 000 аккаунтов): https://metricool.com/best-time-to-post-social-networks/ — TikTok 18:00-20:00; Reels — поздняя суббота",
+    "Buffer — Best Time to Post 2026 (через агрегаторы): лучшие слоты TikTok Вс 09:00, Пн 13:00, Вс 13:00; всплеск 18:00-23:00; YouTube Shorts — среда 16:00",
+    "PostFast — 'Best Time to Post on YouTube in 2026: Data From 6,175 Posts': https://postfa.st/blog/best-time-to-post-on-youtube ; FlowShorts — 'Best Time to Post YouTube Shorts: Data From 24K+ Videos (2026)': https://flowshorts.app/blog/best-time-to-post-youtube-shorts — будни 15:00-18:00, сильнейшие дни Вт-Чт",
+    "Stackmatix — 'TikTok Ads Budget Allocation by Country': https://www.stackmatix.com/blog/tiktok-ads-budget-allocation-by-country и Unpromptd (2026) — TikTok CPM в Индонезии <$2; SEA-кластер (ID/PH/VN/TH) $0.5-2.0 CPM, одна треть-одна шестая от US/UK",
+    "FluxNote — 'YouTube Shorts RPM by Country 2026': https://fluxnote.io/guides/youtube-shorts-rpm-by-country ; AIR Media-Tech / MilX (2026) — трафик ID/IN приносит <$1 на 1000 просмотров Shorts",
+    "Statista — 'Social media in Indonesia': https://www.statista.com/topics/8306/social-media-in-indonesia/ — WhatsApp ~92% проникновения среди соцмедиа-пользователей (Q3 2024)",
+    "IMARC — 'Indonesia Telecom Market': https://www.imarcgroup.com/indonesia-telecom-market ; Numero eSIM / ResearchAndMarkets (2025-2026) — доли операторов: Telkomsel ~48%, IOH ~26%, XL Axiata ~15%, Smartfren остаток; слияние XLSmart (Axiata + Sinar Mas, $6.5 млрд, декабрь 2024); NIK-привязанная регистрация SIM",
+    "Valve — Steam Hardware & Software Survey (апрель-август 2026): https://store.steampowered.com/hwsurvey/ — 8 ГБ RAM ~26.8-27.5% (самая массовая конфигурация), RTX 3060 топовая GPU 3.76-4.15%; апгрейд тормозит из-за цен (PCGamesN, Guru3D, TheFPSReview)",
+    "BSA (исторические данные) — ставка пиратства софта в Индонезии 84% (2007), 86% (2011); свежих данных 2025 в открытом доступе НЕТ — использовать как индикатор культуры, не как текущий факт",
+    "detikINET — 'Arti GG Dalam Bahasa Gaul ML, dan Kata Lainnya di Game Online': https://inet.detik.com/games-news/d-6692883/arti-gg-dalam-bahasa-gaul-ml-dan-kata-lainnya-di-game-online ; mojok.co — '25 Istilah Gim yang Sering Ditemui Saat Kalian Push Rank': https://mojok.co/terminal/25-istilah-gim-yang-sering-ditemui-saat-kalian-push-rank/ ; kumparan — 'Arti Cupu dalam Bahasa Gaul'; Liputan6 — 'Apa Itu Gacor', значения 'nolep', 'rungkad', 'anjay'",
+    "IDN Gaming — 'Daftar Game PC Ringan Terbaik 2025 Yang Ramah Untuk Spek Kentang': https://idngaming.com/daftar-game-pc-ringan-terbaik-2025-yang-ramah-untuk-spek-kentang/ ; Haluan.co — '10 Rekomendasi Game PC Kentang Terbaik 2025' — источники термина 'spek kentang'",
+    "medcom.id — 'Tumbangnya Warnet Browsing dan Bangkitnya Warnet Gaming': https://www.medcom.id/teknologi/news-teknologi/4KZXx0qb-tumbangnya-warnet-browsing-dan-bangkitnya-warnet-gaming ; seva.id — 'Buka Warnet di 2025 Masih Cuan?' — warnet-экономика; точного числа warnet за 2025 в открытых источниках НЕТ",
+    "vpntous.com — 'How TikTok Determines Your Content Region in 2026: SIM Card vs IP vs Language': https://vpntous.com/guides/tiktok-algorithm ; conbersa.ai — 'How to Use Geo-Targeted Proxies for TikTok Distribution' — механика определения региона (IP приоритетнее SIM, начальный пул 100-500 зрителей, перекалибровка 3-7 дней). ВНИМАНИЕ: вендорские источники, продающие VPN/прокси; официального подтверждения TikTok нет, достоверность средняя-низкая",
+    "Liquipedia — VALORANT Indonesia Summer Protocol 2025: https://liquipedia.net/valorant/VALORANT_Indonesia_Summer_Protocol/2025/Statistics ; Wikipedia — EVOS Esports (Джакарта, активный Valorant-дивизион): https://en.wikipedia.org/wiki/EVOS_Esports",
+    "Statista / PC Gamer (2025) — Marvel Rivals №1 в Steam по MAU в январе 2025; Wikipedia — Delta Force (2025 video game), F2P, TiMi/Tencent: https://en.wikipedia.org/wiki/Delta_Force_(2025_video_game)",
+    "GoodStats Data — 'Free Fire Menjadi Game dengan Pendapatan Terbanyak Untuk Pemain Indonesia': https://data.goodstats.id/statistic/free-fire-menjadi-game-dengan-pendapatan-terbanyak-untuk-pemain-indonesia-Wr9fs",
+    "НЕ ПОДТВЕРЖДЕНО, НЕ ИСПОЛЬЗОВАТЬ КАК ФАКТ: утверждение 'r/IndonesiaGaming 2025: 70% индонезийских геймеров имеют лаг >120ms' встретилось в поисковой выдаче, но первоисточник не найден и не верифицирован"
+  ]
+}
