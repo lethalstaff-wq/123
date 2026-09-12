@@ -2,7 +2,8 @@
   "_meta": {
     "purpose": "Платёжный рельс: что физически возможно для оператора из СНГ и кому нельзя продавать.",
     "source": "агент payments_stack (сентябрь 2026)",
-    "why_first_class": "Платёжный рельс определяет, возможен ли бизнес вообще, и ограничивает даже стиль маркетинга: Stripe прямо запрещает 'outrageous claims', 'deceptive testimonials' и 'high-pressure upselling'. Валидатор обещаний (src/claims.py) защищает не только репутацию, но и платёжку."
+    "why_first_class": "Платёжный рельс определяет, возможен ли бизнес вообще, и ограничивает даже стиль маркетинга: Stripe прямо запрещает 'outrageous claims', 'deceptive testimonials' и 'high-pressure upselling'. Валидатор обещаний (src/claims.py) защищает не только репутацию, но и платёжку.",
+    "audited": "Платёжные утверждения перепроверены сводным аудитом западного блока 12.09.2026 по таблице payment-method-support Stripe и официальным страницам операторов. Три рекомендации схем оказались невыполнимыми (IRIS, подписка на BLIK, PayPal через Stripe в US)."
   },
   "hard_constraints": {
     "stripe_not_available_in_cis": true,
@@ -297,7 +298,9 @@
       "entry_point": "сайт + WhatsApp",
       "price_model": "только lifetime в лирах: подписочная культура слабая из-за инфляции, люди не фиксируют ежемесячный отток",
       "market_proof": "MTRX Optimizer продаёт lifetime за 199 TL (около $4.3) и отдельный тариф для интернет-кафе за 500 TL — спрос подтверждён деньгами",
-      "bonus": "Roblox разблокирован 18.06.2026 после 680 дней — свежий недообслуженный сегмент"
+      "bonus": "Roblox разблокирован 18.06.2026 после 680 дней — свежий недообслуженный сегмент",
+      "papara_update": "Отзыв лицензии опубликован в Resmî Gazete 31.10.2025 (дело об отмывании через нелегальный беттинг). Анкарский 25-й админсуд вынес yürütmenin durdurulması, отмена отзыва опубликована 21.01.2026, сервис возобновлён — но компания под управлением TMSF и выставлена на торги в составе PPR Holding (аукцион февраль 2026). Ставить выручку на Papara нельзя.",
+      "discord_update": "Июнь 2026: министр Уралоглу заявил, что Discord выполнил критерии и «может быть открыт в короткий срок». Официальной даты нет, доступ не восстановлен. Для сравнения: Roblox разблокирован 18.06.2026 после 680 дней блокировки."
     },
     "ru": {
       "payments": "Россия заблокирована как страна покупателя у Lemon Squeezy и входит в список стран, которым платёжки не дают платить",
@@ -308,6 +311,123 @@
     },
     "ng": {
       "payments": "Paystack и Flutterwave требуют регистрации CAC, BVN и нигерийского банковского счёта — оператору из СНГ недоступно. Stripe нигерийских мерчантов не онбордит."
+    },
+    "pl": {
+      "blik": "Не поддерживает Subscriptions, Invoicing, Customer Portal, SetupIntents и setup_future_usage. Подписочную сетку на BLIK строить нельзя.",
+      "price_model": "Либо подписка на картах, либо BLIK как lifetime-метод."
+    },
+    "gr": {
+      "iris": "Метод отсутствует в Stripe. Подключить может только греческое юрлицо через DIAS.",
+      "verdict": "Не брать на первом и втором круге."
+    },
+    "pt": {
+      "mb_way": "Рекуррент не поддерживается (нет SetupIntents и Checkout subscription mode).",
+      "audience": "TikTok PT на 63.2% женский."
+    },
+    "us": {
+      "paypal_via_stripe": "Недоступен: US нет в списке мерчант-стран метода paypal у Stripe."
+    }
+  },
+  "local_method_recurring_support": {
+    "_purpose": "Локальный метод и подписка — разные вопросы. Метод может быть обязательным для конверсии и при этом не уметь рекуррент: тогда гео можно запускать только как lifetime-рынок. Проверено по таблице payment-method-support Stripe в аудите западного блока 12.09.2026.",
+    "_verdict_column": "subscriptions",
+    "ideal": {
+      "geo": "nl",
+      "currency": "EUR",
+      "subscriptions": true,
+      "setup_intents": true,
+      "setup_future_usage": true,
+      "note": "Единственный локальный метод западного блока с полноценным рекуррентом. Подписка только через Checkout subscription mode, не charge_automatically."
+    },
+    "blik": {
+      "geo": "pl",
+      "currency": "PLN",
+      "subscriptions": false,
+      "setup_intents": false,
+      "setup_future_usage": false,
+      "invoicing": false,
+      "customer_portal": false,
+      "note": "Рекуррент физически невозможен. Польша — либо подписка на картах (и тогда BLIK не «обязателен»), либо BLIK только на lifetime."
+    },
+    "mb_way": {
+      "geo": "pt",
+      "currency": "EUR",
+      "subscriptions": "только send_invoice",
+      "setup_intents": false,
+      "setup_future_usage": false,
+      "checkout_subscription": false,
+      "note": "Mobile Element только под iOS. Португалия — lifetime-рынок."
+    },
+    "iris": {
+      "geo": "gr",
+      "available_in_stripe": false,
+      "note": "Метода нет в Stripe вообще. Обязанность принимать IRIS (закон с 01.11.2025, фактически с 01.12.2025) лежит на юрлицах, зарегистрированных в Греции, с греческим счётом и оператором DIAS. Оператор из СНГ подключить не может — рекомендация «IRIS обязателен» невыполнима. Лимиты метода: €500/день, с янв-2026 €1000/день, €5000/мес."
+    },
+    "twint": {
+      "geo": "ch",
+      "currency": "CHF",
+      "subscriptions": true,
+      "setup_intents": true,
+      "note": "Мерчант — 35 стран, включая GB."
+    },
+    "bizum": {
+      "geo": "es",
+      "available_in_stripe": "changelog dahlia/2026-05-27",
+      "note": "В основной таблице country/currency на дату аудита ещё не отражён: включать через Dashboard и проверять в тесте."
+    },
+    "cartes_bancaires": {
+      "geo": "fr",
+      "separate_method": false,
+      "note": "Не отдельный payment method type, а card network в строке Cards (со-бейдж Visa/MC). Включать как сеть."
+    },
+    "paypal_via_stripe": {
+      "merchant_countries": [
+        "AT",
+        "BE",
+        "BG",
+        "HR",
+        "CY",
+        "CZ",
+        "DK",
+        "EE",
+        "FI",
+        "FR",
+        "DE",
+        "GR",
+        "IE",
+        "IT",
+        "LV",
+        "LI",
+        "LT",
+        "LU",
+        "MT",
+        "NL",
+        "NO",
+        "PL",
+        "PT",
+        "RO",
+        "SK",
+        "SI",
+        "ES",
+        "SE",
+        "CH",
+        "GB"
+      ],
+      "not_available_for_merchants_in": [
+        "US",
+        "CA",
+        "AU",
+        "NZ",
+        "JP"
+      ],
+      "note": "US-схема на связке Stripe+PayPal не собирается: нужен прямой PayPal-мерчант или Merchant of Record."
+    },
+    "stripe_country_absences": {
+      "turkey": "Турции нет в списке поддерживаемых стран Stripe",
+      "preview_invite_only": [
+        "India",
+        "Indonesia"
+      ]
     }
   }
 }

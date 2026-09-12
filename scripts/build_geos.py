@@ -342,9 +342,21 @@ def build_playbooks(reports: dict[str, dict]) -> str:
                  f"{_entry_point(r.get('funnel') or {})} |")
     L.append("")
 
+    overrides = load_overrides()
     for code, r in order:
         L += ["---", "", f"## {r.get('country', code)} (`{code}`)", "",
               f"**Вердикт:** {r.get('verdict', '?')} — {r.get('verdict_reason', '')}", ""]
+
+        # Правки аудита идут сразу под вердиктом: если ниже по схеме стоит число,
+        # которое аудитор уже поправил, читатель должен увидеть поправку раньше.
+        fixes = (overrides.get(code) or {}).get("audit_corrections") or []
+        if fixes:
+            L.append("### Правки сводного аудита")
+            for f in fixes:
+                L.append(f"- ~~{f['claim']}~~ → **{f['fact']}** "
+                         f"_(источник: {f.get('source', 'n/a')}"
+                         + (f"; эффект: {f['effect']}" if f.get("effect") else "") + ")_")
+            L.append("")
 
         aud = r.get("audience") or {}
         if aud:

@@ -458,6 +458,79 @@ def s_geo() -> str:
                "".join(body))
 
 
+def s_audit() -> str:
+    """Что независимый аудит поправил в выводах страновых агентов.
+
+    Раздел стоит сразу под гео-матрицей намеренно: часть правок меняет саму
+    матрицу (Австралия ушла на приоритет ниже, Турция — с первого), и читатель
+    должен увидеть причину рядом с решением, а не в конце документа.
+    """
+    stats = R.d("audit_stats.json")
+    tot = stats.get("_total", {})
+    checks = sum(tot.get(k, 0) for k in ("confirmed", "partial", "corrected", "refuted", "gap"))
+    blocks = len([k for k in stats if not k.startswith("_")])
+
+    rows = []
+    for g in R.d("geos.json").get("geos", []):
+        for f in g.get("audit_corrections") or []:
+            eff = f.get("effect")
+            rows.append(
+                f'<tr><td class="rowlab">{e(R.NAMES_RU.get(g["code"], g["code"]))}'
+                + (f'<br><span class="chip chip--warn">{e(eff)}</span>' if eff else "")
+                + f'</td><td class="small"><s>{e(f["claim"])}</s></td>'
+                  f'<td class="small"><b>{e(f["fact"])}</b><br>'
+                  f'<span class="code">{e(f.get("sourc" "e", ""))}</span></td></tr>')
+    table = ('<div class="tablewrap"><table><thead><tr><th>Гео</th><th>Было в схеме</th>'
+             '<th>Факт из первоисточника</th></tr></thead><tbody>'
+             + "".join(rows) + '</tbody></table></div>')
+
+    rec = R.d("payments.json").get("local_method_recurring_support", {})
+    bad = []
+    for key, v in rec.items():
+        if key.startswith("_") or not isinstance(v, dict):
+            continue
+        subs = v.get("subscriptions")
+        if subs is True or v.get("available_in_stripe") is True:
+            continue
+        if subs is False or v.get("available_in_stripe") is False or subs:
+            bad.append(f'<tr><td class="rowlab">{e(key.upper())}</td>'
+                       f'<td class="num">{e(v.get("geo", "").upper())}</td>'
+                       f'<td class="small">{e(v.get("note"))}</td></tr>')
+    methods = ('<h3>Локальные методы, которые не тянут подписку</h3>'
+               '<p>Обязательность локального метода и его способность держать рекуррент — разные '
+               'вопросы, и схемы их смешивали. Проверка по таблице payment-method-support Stripe:</p>'
+               '<div class="tablewrap"><table><thead><tr><th>Метод</th><th>Гео</th>'
+               '<th>Что это значит</th></tr></thead><tbody>' + "".join(bad)
+               + '</tbody></table></div>') if bad else ""
+
+    return sec("04", "audit", "Правки аудита",
+               "Пять сводных аудиторов перепроверили выводы страновых агентов заново — не "
+               "пересказом, а прямыми обращениями к первоисточникам. Здесь только то, что "
+               "они изменили.",
+               f'<div class="callout callout--ok"><h4>Объём проверки</h4>'
+               f'<p><b>{checks}</b> утверждений в <b>{blocks}</b> сводных аудитах: '
+               f'<b>{tot.get("confirmed", 0)}</b> подтверждено дословно, '
+               f'<b>{tot.get("partial", 0)}</b> подтверждено частично, '
+               f'<b>{tot.get("corrected", 0)}</b> устарело и пересчитано по свежему источнику, '
+               f'<b>{tot.get("refuted", 0)}</b> опровергнуто, '
+               f'<b>{tot.get("gap", 0)}</b> — пробел, которого не заметила ни одна схема.</p>'
+               f'<p class="small">Проверялись именно те числа, на которых держатся решения: квоты '
+               f'API, лимит публикаций и формула квоты Instagram, ограничение неаудированного '
+               f'клиента TikTok приватным режимом, сроки страйков, охваты площадок по гео, '
+               f'доступность платёжных методов.</p></div>'
+               + '<div class="callout callout--stop"><h4>Системная ошибка, найденная аудитом</h4>'
+                 '<p>Часть страновых агентов взяла DataReportal <b>Digital 2025</b>, часть — '
+                 '<b>Digital 2026</b>. Межстрановые сравнения внутри западного блока на этом '
+                 'ломаются, а занижены оказались именно дешёвые приоритетные гео: Турция на '
+                 '4.7 млн TikTok 18+ и 3.8 млн Instagram, Германия на 1.9 млн, Нидерланды на '
+                 '0.68 млн, Румыния на 0.2 млн. Все занижения работали против решения «брать».</p>'
+                 '<p>Второе: доля ПК бралась из разных метрик без общего знаменателя — США 45% '
+                 '(доля игроков), UK 19% (доля денег), Швеция 12.5% (доля трат), Испания 28% '
+                 '(доля населения). Сопоставимы только US 45% / FR ~40% / DE 34% и отдельно '
+                 'UK 19% / SE 12.5%.</p></div>'
+               + table + methods)
+
+
 def s_factors() -> str:
     rows = ['<div class="tablewrap"><table><thead><tr><th>Сила</th><th>Фактор</th>'
             '<th>Что показывают данные</th><th>Источник</th></tr></thead><tbody>']
@@ -792,25 +865,18 @@ def s_gaps() -> str:
     gaps = gaps[:12]
     items = "".join(
         f'<tr><td class="code">{e(n)}</td><td class="small">{e(q[:300])}</td></tr>' for n, q in gaps)
-    pending = ("Прогон ещё идёт: часть страновых агентов (Великобритания, Польша, Турция, Индонезия, "
-               "Филиппины, Вьетнам, Индия, Япония, Корея, Бразилия, СНГ) и часть тематических "
-               "(прокси-инфраструктура, API автопостинга, покупные аккаунты, железная линейка, кейсы) "
-               "не завершены. Отчёт пересобирается из данных, поэтому по мере готовности эти разделы "
-               "дополняются без переписывания.")
+    pending = ("Прогон закрыт: 36 стран, 24 тематических блока и 5 сводных аудитов собраны. "
+               "Отчёт пересобирается из данных одной командой, поэтому любое уточнение источника "
+               "попадает во все разделы сразу и не требует переписывания текста.")
     audit = R.d("audit_stats.json")
-    conf = sum(v.get("confirmed", 0) for k, v in audit.items() if not k.startswith("_"))
-    refu = sum(v.get("refuted", 0) for k, v in audit.items() if not k.startswith("_"))
+    tot = audit.get("_total", {})
     verified = ""
-    if conf:
-        verified = (f'<div class="callout callout--ok"><h4>Независимая проверка</h4>'
-                    f'<p>Отдельный агент заново проверил самые нагруженные утверждения — не пересказом '
-                    f'исследователей, а прямыми обращениями к первоисточникам: документация разработчика, '
-                    f'официальные справки и политики площадок. Результат: <b>{conf} подтверждено дословно, '
-                    f'{refu} опровергнуто</b>.</p>'
-                    f'<p class="small">Проверялись именно те числа, на которых держится архитектура: квоты '
-                    f'YouTube Data API, лимит публикаций Instagram и формула его квоты, ограничение '
-                    f'неаудированного клиента TikTok приватным режимом, сроки страйков, определение '
-                    f'просмотра Shorts.</p></div>')
+    if tot.get("corrected") or tot.get("refuted"):
+        verified = (f'<div class="callout callout--ok"><h4>Что уже проверено отдельно</h4>'
+                    f'<p>Сводка независимой проверки вынесена в раздел <a href="#audit">'
+                    f'«Правки аудита»</a>: {tot.get("corrected", 0)} утверждений оказались '
+                    f'устаревшими и пересчитаны по свежему источнику, {tot.get("refuted", 0)} — '
+                    f'опровергнуты. Ниже — то, что проверить не удалось вовсе.</p></div>')
 
     meta_geo = R.d("geos.json").get("_meta", {})
     dbl = meta_geo.get("double_checked") or []
@@ -851,14 +917,16 @@ def s_gaps() -> str:
 def build() -> str:
     st = R.stats()
     nav = [("order", "Порядок решений"), ("competitor", "Конкурент"), ("geo", "Гео-матрица"),
-           ("factors", "Гео-факторы"), ("timing", "Тайминги"), ("content", "Контент"),
+           ("audit", "Правки аудита"), ("factors", "Гео-факторы"),
+           ("timing", "Тайминги"), ("content", "Контент"),
            ("product", "Продукт"), ("payments", "Платежи"), ("platforms", "Лимиты"),
            ("gaps", "Пробелы")]
     nav_html = "".join(f'<a href="#{sid}">{i:02d} {e(label)}</a>'
                        for i, (sid, label) in enumerate(nav, start=1))
-    audit = R.d("audit_stats.json")
-    confirmed = sum(v.get("confirmed", 0) for k, v in audit.items() if not k.startswith("_"))
-    refuted = sum(v.get("refuted", 0) for k, v in audit.items() if not k.startswith("_"))
+    audit = R.d("audit_stats.json").get("_total", {})
+    confirmed = audit.get("confirmed", 0)
+    checks = sum(audit.get(k, 0) for k in
+                 ("confirmed", "partial", "corrected", "refuted", "gap"))
     meta = [
         (st["countries"], "стран разобрано"),
         (st["topics"], "тематических блоков"),
@@ -866,7 +934,7 @@ def build() -> str:
         (st["sources"], "уникальных источников"),
     ]
     if confirmed:
-        meta.append((f"{confirmed}/{confirmed + refuted}", "проверок сошлось"))
+        meta.append((f"{confirmed}/{checks}", "проверок сошлось"))
     if st.get("double_checked"):
         meta.append((st["double_checked"], "стран посчитаны дважды"))
     meta_html = "".join(
@@ -893,6 +961,7 @@ def build() -> str:
 {s_decisions()}
 {s_competitor()}
 {s_geo()}
+{s_audit()}
 {s_factors()}
 {s_timing()}
 {s_content()}

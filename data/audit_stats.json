@@ -1,22 +1,49 @@
 {
   "geo_africa_cis_latam": {
-    "confirmed": 20,
-    "refuted": 1,
+    "confirmed": 19,
+    "partial": 1,
+    "corrected": 0,
+    "refuted": 0,
+    "gap": 0,
     "size": 41563
   },
   "geo_mena_asia": {
-    "confirmed": 18,
-    "refuted": 3,
+    "confirmed": 17,
+    "partial": 0,
+    "corrected": 3,
+    "refuted": 0,
+    "gap": 0,
     "size": 15120
   },
+  "geo_west": {
+    "confirmed": 22,
+    "partial": 6,
+    "corrected": 6,
+    "refuted": 3,
+    "gap": 1,
+    "size": 22963
+  },
   "platform": {
-    "confirmed": 19,
-    "refuted": 0,
+    "confirmed": 18,
+    "partial": 0,
+    "corrected": 0,
+    "refuted": 1,
+    "gap": 0,
     "size": 42709
   },
   "product": {
     "confirmed": 20,
+    "partial": 0,
+    "corrected": 0,
     "refuted": 0,
+    "gap": 0,
     "size": 25615
+  },
+  "_total": {
+    "confirmed": 96,
+    "partial": 7,
+    "corrected": 9,
+    "refuted": 4,
+    "gap": 1
   }
 }

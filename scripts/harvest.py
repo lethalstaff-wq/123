@@ -21,6 +21,7 @@ RUN_TAG = {
     "wf_7f7440d1-f8f": "geo_west",
     "wf_c6094453-979": "geo_mena_asia",
     "wf_992be095-60f": "geo_africa_cis_latam",
+    "wf_3971f315-2a9": "geo_west",
 }
 
 
