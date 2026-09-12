@@ -1,0 +1,471 @@
+{
+  "dimension": "payments_stack",
+  "summary": "Hard constraint that decides everything: Stripe is NOT available in any CIS country (50 supported countries as of 2026-09, zero CIS; India/Indonesia preview only), and Stripe's business origin country cannot be changed after live activation. So a CIS operator has exactly three legal paths: (A) a foreign legal entity (the market leader EXM Tweaks does exactly this — EXM TWEAKS s.r.o., Slovakia, \"Payments are processed by Stripe\", per its Refund Policy dated 2026-08-19), (B) a merchant-of-record that pays out to a CIS bank, or (C) crypto. On (B), Lemon Squeezy (Stripe-owned) is the only MoR that publishes bank payouts to CIS: Armenia, Azerbaijan, Kazakhstan, Moldova, Uzbekistan are on its bank-payout list (Georgia, Ukraine, Russia, Belarus, Kyrgyzstan are NOT; Russia is also blocked as a BUYER country), fee 5% + $0.50 +1.5% intl +0.5% subscriptions ≈ 7% + $0.50 all-in, and its prohibited list does not ban PC optimizers. Paddle must be ruled out: its AUP (updated 2026-04-13) explicitly lists \"Technical support services, including any software or service, marketed to repair, maintain, or improve the performance or security of an Electronic Device\" and \"System Health Products... Device Cleaners\" as prohibited/restricted — that is a verbatim description of this product. Gumroad bans \"hacking and cracking materials\" and charges 10% + $0.50. PayPal is usable as a secondary method and, per its Rest-of-World fee schedule (updated 2026-05-28), does publish commercial RECEIVING rates for KZ/GE/AM/AZ/MD/KG/TJ/TM (4.40–5.39% + fixed) — but PayPal nowhere documents per-market receive-vs-send-only capability, so treat CIS receiving as unverified; PayPal's real cost is the dispute fee ($15 standard / $30 high-volume) plus a contractual right to raise your rate on 30 days notice if complaints run high. Crypto is the honest answer to the \"key question\": global crypto ownership is ~6.8% (Triple-A, 2024 data, 560M owners) and skews male 25-34; a 13-24 low-ticket gaming audience will convert in the low single digits on crypto, so crypto is a margin-saving supplement (NOWPayments 1%, BitPay 1%+25c, no chargebacks), never the primary rail. The single best-kept secret in the stack: Stripe's own stablecoin payments support recurring billing YES and dispute support NO — chargeback-immune subscriptions, global customers, USD, settled to your Stripe balance in local currency. Local APMs are largely a trap for a subscription business: on Stripe, Pix/UPI/PayNow/PromptPay are not supported in Checkout subscription mode (Subscriptions/Invoices only via send_invoice), and GCash, GoPay, mada, STC Pay, M-Pesa, Papara, Kaspi and SBP do not exist on Stripe at all. Recommended: PRIMARY = non-CIS entity (Stripe Atlas Delaware LLC, $500 + $100/yr, or an EU s.r.o./Ltd) on Stripe direct; BACKUP = Lemon Squeezy with CIS bank payout; THIRD = crypto (NOWPayments/Stripe stablecoins) for the crypto-native slice and as an outage fallback. Chargeback discipline is existential, not cosmetic: Visa VAMP flags you as non-compliant at a 0.5% dispute ratio with only 5 disputes, and Mastercard ECM fines start at 100 disputes + 1.5% and escalate to $25,000-$50,000 by months 4-5.",
+  "findings": [
+    {
+      "claim": "Stripe is unavailable in every CIS country. Its official global availability page lists 50 supported countries and no CIS market at all (no Kazakhstan, Georgia, Armenia, Ukraine, Russia, Belarus, Uzbekistan, Kyrgyzstan, Azerbaijan, Moldova).",
+      "evidence": "Full list fetched: Australia, Austria, Belgium, Brazil, Bulgaria, Canada, Croatia, Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Gibraltar, Greece, Hong Kong, Hungary, Ireland, Italy, Japan, Latvia, Liechtenstein, Lithuania, Luxembourg, Malaysia, Malta, Mexico, Netherlands, New Zealand, Norway, Poland, Portugal, Romania, Singapore, Slovakia, Slovenia, Spain, Sweden, Switzerland, Thailand, UAE, UK, US. India and Indonesia marked 'Preview' (invite/contact sales). Côte d'Ivoire, Ghana, Kenya, Nigeria, South Africa served via Paystack extended network, not direct Stripe.",
+      "source": "https://stripe.com/global (official availability page)",
+      "kind": "official_policy",
+      "source_date": "fetched 2026-09-12",
+      "confidence": "high",
+      "actionable": "Script must treat 'Stripe direct' as requiring a non-CIS legal entity + non-CIS bank account. Hardcode the 50-country list as the eligibility check for the operator's entity, not for customers."
+    },
+    {
+      "claim": "A Stripe account's business origin country is permanently locked once a live service is activated. You cannot 'upgrade' a CIS account later.",
+      "evidence": "Verbatim: \"After activating a Stripe service on a live account, you can't change the business origin country. To use a different supported country as your primary business location, create a new account.\"",
+      "source": "https://docs.stripe.com/get-started/account/activate",
+      "kind": "platform_docs",
+      "source_date": "fetched 2026-09-12",
+      "confidence": "high",
+      "actionable": "Decide the entity jurisdiction BEFORE the first live charge. Migration later = new account, new API keys, re-subscribe every customer (subscriptions do not transfer)."
+    },
+    {
+      "claim": "Stripe's Restricted Businesses policy does not name game cheats/hacks/tweaks, but four of its prohibited clauses map directly onto how an FPS-boost product is typically marketed — this is the real Stripe risk vector, not the product category.",
+      "evidence": "Prohibited (unfair/deceptive/predatory section): \"Suspicious remote technical support\"; \"Businesses that make outrageous claims, use deceptive testimonials, use high-pressure upselling, or use fake testimonials\"; \"No-value-added services, including the sale or resale of a service without added benefit to the buyer\"; \"Sales of online traffic or engagement\". Also prohibited: \"Any other businesses that Stripe considers unfair, deceptive, or predatory towards consumers\". Separately prohibited: \"Evasion of card network chargeback monitoring programs\".",
+      "source": "https://stripe.com/legal/restricted-businesses",
+      "kind": "official_policy",
+      "source_date": "Last updated 2026-05-13",
+      "confidence": "high",
+      "actionable": "Landing-page copy is a compliance surface. Ban from all ad/landing copy: guaranteed FPS numbers, '+300 FPS', fake review widgets, countdown-timer upsells, invented testimonials. Use ranged/hardware-dependent claims with a disclaimer. Store an archived copy of every landing variant for dispute evidence."
+    },
+    {
+      "claim": "Stripe restricts (not bans) in-game item/currency sales unless you are the game operator, and prohibits IP-infringing software distribution — which is what kills the 'game accounts' expansion idea on card rails.",
+      "evidence": "Restricted: \"Sale of in-game currency or game items, unless the business is the operator of the virtual world\". Prohibited: \"Sales or distribution of music, movies, software, or any other licensed materials without appropriate authorization\"; \"Any other products or services that directly infringe or facilitate infringement upon the trademark, patent, copyright, trade secrets, proprietary, or privacy rights of any third party\". Country-specific restricted (Mexico): \"Game console modification devices\".",
+      "source": "https://stripe.com/legal/restricted-businesses",
+      "kind": "official_policy",
+      "source_date": "Last updated 2026-05-13",
+      "confidence": "high",
+      "actionable": "Never put game-account sales on the same Stripe account (or same legal entity) as the tweaks subscription. Account linkage is how a single category violation kills the whole revenue stream."
+    },
+    {
+      "claim": "Stripe's sanctions clause prohibits supplying IT-support and cloud services to any person located in Russia — a Windows-optimization utility with support is arguably exactly that.",
+      "evidence": "Verbatim: \"Export, re-export, sell, or supply accounting services; trust and corporate formation services; management consulting services; ... information technology (IT) consultancy and design services; and IT-support services and cloud-based services for enterprise management software ... to any person located in Russia.\"",
+      "source": "https://stripe.com/legal/restricted-businesses (High-Risk Jurisdictions and Persons)",
+      "kind": "official_policy",
+      "source_date": "Last updated 2026-05-13",
+      "confidence": "high",
+      "actionable": "Geo-block RU (and align with Lemon Squeezy's blocked-buyer list) at checkout AND at licence activation. Do not rely on the payment processor to do it."
+    },
+    {
+      "claim": "Stripe UK card pricing and dispute economics: 1.5% + 20p standard UK cards, 2.5% + 20p EEA cards, 3.15% + 20p international cards, +2% if currency conversion is required. Dispute received fee £20, dispute countered fee £20 (refunded only if you win).",
+      "evidence": "Verbatim from pricing page: domestic 1.5% + 20p standard UK / 2.8% + 20p premium UK; international 2.5% + 20p EEA (+2% FX), 3.15% + 20p international (+2% FX); 'Dispute received fee £20.00 for each dispute you receive'; 'Dispute countered fee £20.00 ... You get this fee back for won disputes. You don't get this fee back for lost disputes'; Smart Disputes 30% of the disputed amount for each dispute you win; dispute deflection lookups £20/£20/£40.",
+      "source": "https://stripe.com/gb/pricing",
+      "kind": "official_policy",
+      "source_date": "fetched 2026-09-12",
+      "confidence": "high",
+      "actionable": "Blended rate for a UK-entity global seller selling a $10 sub is ~3.15% + 20p + 2% FX ≈ 5.2% + 20p. Model a £40 total cost per contested dispute (received + countered) — at a $10 price point 1 chargeback wipes out ~5 sales."
+    },
+    {
+      "claim": "Visa VAMP flags a merchant as Non-Compliant at a 0.5% dispute+fraud ratio with as few as 5 disputes in a month. Excessive is 1.5% (or 2.2% in CEMEA).",
+      "evidence": "Thresholds table: VAMP count Non-compliant 5 / Excessive 150 in CEMEA, 1,500 elsewhere (AP, Canada, EU, US, LAC). VAMP ratio Non-compliant 0.5% / Excessive 2.2% CEMEA, 1.5% elsewhere. VAMP volume Excessive 75,000 USD in CEMEA. 'Visa assesses fees to merchants that exceed the Excessive threshold and may assess fees to merchants that exceed the Non-Compliant threshold.' Disputes include ALL payment disputes (fraud and non-fraud, TC15) plus TC40 fraud; a transaction in both reports is counted twice.",
+      "source": "https://docs.stripe.com/disputes/monitoring-programs",
+      "kind": "platform_docs",
+      "source_date": "fetched 2026-09-12",
+      "confidence": "high",
+      "actionable": "At low volume the count trigger (5) binds before the ratio. A new store doing 200 sales/month can only absorb ~1 dispute before hitting 0.5%. Build a hard rule: pre-dispute resolution must be faster than the issuer window."
+    },
+    {
+      "claim": "Mastercard ECM fines start at 100 disputes AND a 1.5% rate, escalating to $50,000 by month 5; HECM starts at 300 disputes AND 3%.",
+      "evidence": "ECM: Dispute count 100-299 AND chargeback rate 1.5-2.99%. HECM: 300+ AND 3%. Fines begin in month two. ECM escalation by months above threshold: 0 USD, 1,000 USD, 5,000 USD, 25,000 USD, 50,000 USD. HECM: 0, 1,000, 2,000, 10,000, 50,000 USD (plus issuer recovery assessment). Removal only after chargebacks stay below threshold 3 consecutive months. EFM requires all of: >=1,000 e-commerce MC payments, net fraud volume >$50,000, fraud chargeback rate >0.50%, and 3DS <=10% of MC payments (non-regulated countries).",
+      "source": "https://docs.stripe.com/disputes/monitoring-programs",
+      "kind": "platform_docs",
+      "source_date": "fetched 2026-09-12",
+      "confidence": "high",
+      "actionable": "The EFM 3DS clause is a free safety valve: keeping 3DS above 10% of Mastercard volume removes one of the four EFM conditions entirely. Enable 3DS on all high-risk geos / first purchases."
+    },
+    {
+      "claim": "Stripe stablecoin payments are the only rail found that supports recurring billing with zero chargeback exposure, globally, settled to fiat.",
+      "evidence": "Payment method properties table: Customer locations 'Global' (footnote: 'Excludes sanctioned countries'); Presentment currency USD (others in private preview); Accepted tokens USDC (Tempo, Ethereum, Solana, Polygon, Base), USDP and USDG (US-only); Recurring payments: Yes; Refunds / Partial refunds: Yes / Yes; Dispute support: NO; Connect support: Yes; Manual capture: Not supported. 'completed payments settle in your Stripe balance in your local currency'. Subscriptions supported with send_invoice collection method (private preview).",
+      "source": "https://docs.stripe.com/crypto/stablecoin-payments",
+      "kind": "platform_docs",
+      "source_date": "fetched 2026-09-12",
+      "confidence": "high",
+      "actionable": "Offer stablecoin as a discounted tier (e.g. -15%) to pull price-sensitive and high-risk-geo buyers off cards. Every stablecoin sale is a sale that can never enter your VAMP ratio."
+    },
+    {
+      "claim": "Local APMs cannot auto-renew on Stripe. Pix, UPI, PayNow and PromptPay are explicitly not supported in Checkout subscription mode; Subscriptions/Invoices support them only via the send_invoice collection method.",
+      "evidence": "Real-time payments product support table footnotes: '1 Not supported when using Checkout in subscription mode. 2 Not supported when using Checkout in setup mode. 3 Invoices and Subscriptions only support the send_invoice collection method.' Applied to Pay by Bank, PayNow(1,2,3), PayTo, PromptPay(1,2,3), UPI, Swish(1,2,3). Vouchers (Boleto, Konbini, Multibanco, OXXO) carry the same footnotes.",
+      "source": "https://docs.stripe.com/payments/payment-methods/payment-method-support",
+      "kind": "platform_docs",
+      "source_date": "fetched 2026-09-12",
+      "confidence": "high",
+      "actionable": "For any market where the local method is the only realistic rail, sell one-time licence keys / prepaid 30-90-360-day codes instead of subscriptions. Two product SKUs: card+wallet = recurring; APM+crypto = prepaid duration codes."
+    },
+    {
+      "claim": "Pix and UPI availability on Stripe is narrower than commonly assumed. Pix requires a Brazil (invite only) or United States business location. UPI is open to UK/EU/US/SG/CA/AU business locations.",
+      "evidence": "Payment method table: Pix — currency BRL, business locations 'Brazil (Invite only), United States', customer location Brazil. UPI — currency INR, business locations Austria, Australia, Belgium, Bulgaria, Canada, Switzerland, Cyprus, Czech Republic, Germany, Denmark, Estonia, Spain, Finland, France, United Kingdom, Greece, Croatia, Hungary, Ireland, Italy, Liechtenstein, Lithuania, Luxembourg, Latvia, Malta, Netherlands, Norway, Poland, Portugal, Romania, Sweden, Singapore, Slovenia, Slovakia, United States; customers India.",
+      "source": "https://docs.stripe.com/payments/payment-methods/payment-method-support",
+      "kind": "platform_docs",
+      "source_date": "fetched 2026-09-12",
+      "confidence": "high",
+      "actionable": "If Brazil traffic matters, a US entity unlocks Pix and a UK/EU/US entity unlocks UPI — that is an argument for Stripe Atlas (US) over an EU entity if BR+IN are priority geos."
+    },
+    {
+      "claim": "GCash, GoPay, mada, STC Pay, M-Pesa, Papara, Kaspi and SBP do not exist as Stripe payment methods. None appear anywhere in Stripe's payment-method support matrix.",
+      "evidence": "Full method list in the support matrix: Alipay, Amazon Pay, Bancontact, BLIK, Boleto, Cash App Pay, GrabPay, iDEAL/Wero, Klarna, Konbini, Multibanco, OXXO, Pay by Bank, PayNow, PayPal, PayPay, PayTo, Pix, Pre-authorized debit (CA), PromptPay, Revolut Pay, SEPA debit, Stablecoin payments, Swish, TWINT, UPI, WeChat Pay, Zip, plus cards/wallets and BNPL providers. Grep for GCash, GoPay, mada, STC, M-Pesa, Papara, Kaspi, SBP returned zero matches.",
+      "source": "https://docs.stripe.com/payments/payment-methods/payment-method-support",
+      "kind": "platform_docs",
+      "source_date": "fetched 2026-09-12",
+      "confidence": "high",
+      "actionable": "For PH/ID/SA/KE/TR/KZ/RU, either accept cards only, or route through a specialist aggregator (dLocal/PayTabs/Xsolla class) as a SEPARATE checkout — do not try to force these into the Stripe subscription flow. Note: no primary-source pricing for those aggregators was obtainable in this session."
+    },
+    {
+      "claim": "Paddle explicitly lists PC-performance software as a prohibited/restricted category. This is the clearest single disqualification in the whole stack.",
+      "evidence": "Under 'Prohibited Categories', verbatim: \"Technical support services, including any software or service, marketed to repair, maintain, or improve the performance or security of an Electronic Device (Restricted Category)\" and \"System Health Products, including but not limited to: Device Cleaners, Antivirus\". Also listed: \"VPN and Proxies (Restricted Category)\", \"Captcha Solving\", products enabling \"unauthorized access to data\" (spyware, keyloggers, phone/device unlocking), \"Automated Social Media Marketing, including but not limited to those that purport to increase/optimize engagement (posts, clicks, likes, views)\", \"Where there is no bona fide software or service sold, including but not limited to donations, crowdfunding, community access\".",
+      "source": "https://paddle.com/support/aup/",
+      "kind": "official_policy",
+      "source_date": "Last Updated 13 April 2026",
+      "confidence": "high",
+      "actionable": "Drop Paddle from the candidate list. If used anyway, expect enhanced due diligence and a non-trivial rejection/termination probability; do not build the auto-delivery integration against it."
+    },
+    {
+      "claim": "Paddle also has the worst payout mechanics for a small operator: $100 minimum monthly accrual, paid only by the 15th of the following month, $15 per international wire, up to 1.5% FX margin, and up to a 20 GBP/USD/EUR fee per chargeback OR pre-chargeback alert.",
+      "evidence": "Clause 7.2: 'Provided the Supplier Fee accrued during each month is above $100, €100 or £100 ... Paddle shall pay the Supplier Fee to you on or before the 15th of the following month'. Clause 7.4: 'A charge of $15 will be payable by you for each international bank transfer (€15 ... £15) ... conversion margin of up to 1.5%'. Clause on deductions: '(iii) in the case of a Chargeback or Pre-Chargeback Alert, a fee of up to 20 GBP, USD or EUR, or 40 AUD or CAD'. Clause 3.12: 'As Merchant of Record, Paddle reserves the right to set the price or licence fee at which the Product is offered for sale to Buyers.' Clause 10.2: Paddle 'shall be entitled to cancel a Transaction and grant the Buyer a refund of the full price paid'.",
+      "source": "https://www.paddle.com/legal (Paddle Seller Terms)",
+      "kind": "official_policy",
+      "source_date": "fetched 2026-09-12",
+      "confidence": "high",
+      "actionable": "Note the structural MoR risk generally: the MoR, not you, decides refunds and can set price. Any MoR choice means giving up unilateral control of the refund policy you write."
+    },
+    {
+      "claim": "Lemon Squeezy is the only merchant-of-record found that publishes bank payouts into CIS countries — Armenia, Azerbaijan, Kazakhstan, Moldova and Uzbekistan are on the list; Georgia, Ukraine, Russia, Belarus and Kyrgyzstan are not.",
+      "evidence": "Bank-payout country list includes (CIS/adjacent): Armenia, Azerbaijan, Kazakhstan, Moldova, Uzbekistan, Serbia, Turkey, UAE, Georgia ABSENT, Ukraine ABSENT, Russia ABSENT, Belarus ABSENT, Kyrgyzstan ABSENT. 'PayPal payouts are supported in 200+ countries and regions.' Footnote: Stripe accepts new India accounts invite-only since May 2024, so Indian merchants must use PayPal payouts.",
+      "source": "https://docs.lemonsqueezy.com/help/getting-started/supported-countries",
+      "kind": "platform_docs",
+      "source_date": "fetched 2026-09-12",
+      "confidence": "high",
+      "actionable": "This is the single most decision-relevant fact for a CIS operator: a Kazakhstan/Armenia/Azerbaijan/Uzbekistan/Moldova resident can legitimately sell worldwide via Lemon Squeezy with a local bank payout and no foreign company. Georgian and Ukrainian operators must use the PayPal payout path or a foreign entity."
+    },
+    {
+      "claim": "Lemon Squeezy blocks purchases from 18 countries including the Russian Federation — meaning RU buyers cannot pay you at all on this rail.",
+      "evidence": "Unsupported customer countries: Central African Republic, Cuba, Democratic People's Republic of Korea, Democratic Republic of the Congo, Eritrea, Guinea-Bissau, Iran, Iraq, Lebanon, Libya, Mali, North Korea, Russian Federation, Somalia, South Sudan, Sudan, Syrian Arab Republic, Yemen.",
+      "source": "https://docs.lemonsqueezy.com/help/getting-started/supported-countries",
+      "kind": "platform_docs",
+      "source_date": "fetched 2026-09-12",
+      "confidence": "high",
+      "actionable": "Hardcode this exact 18-country blocklist into the checkout geo-gate and into ad-targeting exclusions for the auto-upload network — do not spend ad budget driving traffic that cannot convert."
+    },
+    {
+      "claim": "Lemon Squeezy all-in cost for a global subscription product is ~7% + $0.50, plus 1% payout fee for non-US banks.",
+      "evidence": "Platform fee 5% + $0.50 of total order value, plus '+1.5% for international (outside of the US) transactions', '+1.5% for PayPal transactions', '+0.5% for subscription payments'. Worked example on the page: France buyer, $20 product + 20% VAT = $24 total, platform fee ($0.50 + 5% of total + 1.5% intl) = $2.06, net $17.94. Payout fees: Stripe payouts free for US bank accounts, 1% per payout for non-US banks; PayPal payouts $0.50 flat US, 3% capped at $30 non-US. Marketing add-ons: +5% abandoned-cart-recovered payments, +3% affiliate referrals (merchant side), +2% affiliate payouts.",
+      "source": "https://docs.lemonsqueezy.com/help/getting-started/fees",
+      "kind": "official_policy",
+      "source_date": "fetched 2026-09-12",
+      "confidence": "high",
+      "actionable": "Card+intl+subscription = 5+1.5+0.5 = 7% + $0.50, then 1% on payout ≈ 8% + $0.50 effective for a CIS bank. On a $10/mo sub that is ~$1.30, vs ~$0.72 on Stripe direct. The ~6pp delta is the price of not owning a foreign entity — and it buys away all VAT/sales-tax work and all chargeback handling."
+    },
+    {
+      "claim": "Lemon Squeezy's prohibited-products list does NOT ban PC optimizers or game utilities, and explicitly names Software & SaaS as acceptable — but it does ban 'services of any kind' and anything you lack IP rights to.",
+      "evidence": "'As a general rule, we allow selling of digital goods that can be fulfilled through Lemon Squeezy's website.' Acceptable: Software & SaaS, eBooks, PDFs, design assets, photos, audio, video. Prohibited includes: 'Services of any kind (including marketing, design, web development, consulting or other related services)'; 'Spyware or parental control apps'; 'Products or content for which you do not hold a proper license or intellectual property rights'; 'Marketplaces'; PLR/MRR products; 'NFT & Crypto related products'; 'Any products restricted by our payment processing partners'. Warning: 'you risk getting your store placed in review or suspended without notice'.",
+      "source": "https://docs.lemonsqueezy.com/help/getting-started/prohibited-products",
+      "kind": "official_policy",
+      "source_date": "fetched 2026-09-12",
+      "confidence": "high",
+      "actionable": "Two hard rules: (1) never sell a 1-on-1 remote-optimization SESSION through Lemon Squeezy (that is a prohibited 'service' — EXM sells exactly such sessions, so if you copy that SKU it needs a different rail); (2) the 'restricted by our payment processing partners' clause imports Stripe's whole restricted list by reference, so Stripe's deceptive-claims rules bind you here too."
+    },
+    {
+      "claim": "Gumroad prohibits 'hacking and cracking materials' and unauthorized software copies, and charges 10% + $0.50 — roughly double Stripe-direct cost. Its policy is the most explicitly hostile of the MoRs to anything adjacent to game modification.",
+      "evidence": "Prohibited list, verbatim: 'hacking and cracking materials which includes manuals, how-to guides, information, or equipment enabling illegal access to software, servers, website, or other protected property'; 'copyrighted media and software which includes unauthorized copies of books, music, movies, software, video games, and other licensed or protected materials'; 'currency exchange, virtual currency, cryptocurrency, and other crypto products'; 'services (including... get rich quick schemes, business opportunities)'; 'AI services... fulfilled outside of Gumroad'; 'quasi-cash or stores of value'; 'reselling private label rights products'; 'eSIMs'. Pricing page title: 'Gumroad pricing: 10% + 50¢ direct, 30% via Discover'; 'No monthly charges'.",
+      "source": "https://gumroad.com/prohibited ; https://gumroad.com/pricing",
+      "kind": "official_policy",
+      "source_date": "Prohibited list last revised 2026-08-02; pricing fetched 2026-09-12",
+      "confidence": "high",
+      "actionable": "Not recommended as primary (10% + $0.50 and weak subscription/licence-key tooling). Its value is as a last-resort emergency rail: no monthly fee means an idle standby Gumroad product costs $0 to keep alive."
+    },
+    {
+      "claim": "PayPal's Acceptable Use Policy has no clause about game cheats, hacks, mods or PC tweaks at all. The applicable clauses are about illegality, stolen digital goods and IP infringement.",
+      "evidence": "Prohibited activities, verbatim: '...(d) items that encourage, promote, facilitate or instruct others to engage in illegal activity, (e) stolen goods including digital and virtual goods, ... (h) items that infringe or violate any copyright, trademark, right of publicity or privacy or any other proprietary right under the laws of any jurisdiction'. Activities Requiring Approval include Category 7 Cryptocurrency: 'Any digital representation of value that can be digitally traded, transferred, or used for payment, including, but not limited to, crypto currencies, virtual in-game currencies, or non-fungible tokens' and Category 6 Gambling/games of skill with a prize.",
+      "source": "https://www.paypal.com/us/legalhub/acceptableuse-full",
+      "kind": "official_policy",
+      "source_date": "Last updated October 29, 2022",
+      "confidence": "high",
+      "actionable": "A Windows tweak utility is NOT a named prohibited category on PayPal. Freeze risk therefore comes from dispute rate and account-linkage, not category. But selling in-game currency or game accounts WOULD require PayPal pre-approval — keep it off the same account."
+    },
+    {
+      "claim": "PayPal's true cost is the dispute fee, not the MDR: $15.00 / £12.00 / EUR 14.00 standard, doubling to $30.00 / £24.00 / EUR 28.00 for high-volume dispute accounts. Card-network chargebacks carry a separate settlement fee.",
+      "evidence": "Standard Dispute Fees table: 15.00 USD, 12.00 GBP, 14.00 EUR, 25.00 AUD, 20.00 CAD, 20.00 SGD, 300.00 MXN, 65.00 BRL, 1,080.00 INR, 760.00 PHP, 1,125.00 RUB. High Volume Dispute Fees: 30.00 USD, 24.00 GBP, 28.00 EUR, 50.00 AUD, 130.00 BRL. Separate 'Chargeback Fees' apply 'for transactions that are not processed either through a buyer's PayPal account or through a guest checkout'. UK international commercial receiving 2.9% + fixed fee; a 3.4% + 0.20 GBP tier also appears.",
+      "source": "https://www.paypal.com/uk/webapps/mpp/merchant-fees",
+      "kind": "official_policy",
+      "source_date": "Last Updated 15 July 2026",
+      "confidence": "high",
+      "actionable": "On a $10 subscription, one PayPal dispute costs 1.5x-3x the transaction value. Any PayPal-on-a-cheap-sub strategy must be paired with a refund-before-dispute mechanic that is faster and easier than opening a PayPal case."
+    },
+    {
+      "claim": "PayPal contractually reserves the right to RAISE your percentage transaction fees on 30 days notice if your account attracts disproportionate complaints or chargebacks — a slow-motion version of a freeze.",
+      "evidence": "Verbatim: 'If PayPal determines that your Account receives, or is likely to receive a disproportionately higher number of customer complaints, Reversals, Chargebacks, Claims, or other indicators of a serious level of risk, PayPal may increase the percentage components of your Transaction Fees after giving you 30 days prior notice of the increase.'",
+      "source": "https://www.paypal.com/uk/webapps/mpp/merchant-fees",
+      "kind": "official_policy",
+      "source_date": "Last Updated 15 July 2026",
+      "confidence": "high",
+      "actionable": "Monitor PayPal dispute rate as a first-class metric in the ops dashboard, separately from card dispute rate. A 30-day notice email is the last warning before the economics break."
+    },
+    {
+      "claim": "PayPal detects and links accounts using name, address, phone, email, card, bank, device and geolocation data, and bans controlling an account linked to one that violated its rules. This is the structural reason multi-account payment setups fail.",
+      "evidence": "Restricted Activities, verbatim: 'Control a PayPal account that is linked to another PayPal account that has engaged in any of these restricted activities. We determine that accounts are linked based on information we collect ... by taking into account registration and use information (e.g. name, address, phone and email address), transaction information (e.g. card and bank account information) including device information, technical usage data and geolocation information.' Also restricted: 'Legitimate requests by buyers (either filed with us or card issuers) to invalidate payments made to you in a number or at a rate which exceeds acceptable thresholds set by the relevant card network or acquirer'; 'Access the PayPal services from a country that is not included on our permitted countries list'; 'Cause us to receive a disproportionate number of claims that have been closed in favour of the claimant'.",
+      "source": "https://www.paypal.com/uk/legalhub/useragreement-full",
+      "kind": "official_policy",
+      "source_date": "fetched 2026-09-12",
+      "confidence": "high",
+      "actionable": "One payment identity per legal entity. Do not mirror the 20-channels-per-geo social strategy on the payments side — social account sprawl is a growth tactic, payment account sprawl is an account-termination tactic."
+    },
+    {
+      "claim": "PayPal Seller Protection does cover intangible/digital goods (not just shipped physical items) under the UK user agreement, with no cap on the number of covered payments.",
+      "evidence": "Verbatim: 'If you have sold something to a buyer and have already shipped the physical item or provided an intangible good and the transaction is later disputed or reversed under Reversals, Claims or Chargebacks, you may be eligible for reimbursement under PayPal's Seller Protection program. When it applies, PayPal's Seller Protection program entitles you to retain the full purchase amount. There is no limit on the number of payments for which you can receive coverage.'",
+      "source": "https://www.paypal.com/uk/legalhub/useragreement-full",
+      "kind": "official_policy",
+      "source_date": "fetched 2026-09-12",
+      "confidence": "high",
+      "actionable": "Seller Protection for intangibles requires meeting the program page's evidence conditions (proof of delivery/access). Log and retain: IP, timestamp, licence-key issuance, HWID bind event, Discord role grant event, and first-launch telemetry for every order — that log IS the seller-protection claim."
+    },
+    {
+      "claim": "PayPal DOES publish commercial receiving rates for CIS markets (Kazakhstan, Georgia, Armenia, Azerbaijan, Moldova, Kyrgyzstan, Tajikistan, Turkmenistan, Ukraine) in its 148-market Rest-of-World schedule — 4.40% to 5.39% + fixed fee for international receipts.",
+      "evidence": "paypal.com/kz/business/paypal-business-fees resolves to a Rest-of-World schedule (last updated 28 May 2026) whose Relevant Market/Region list contains 148 markets including Kazakhstan (KZ). Receiving international transactions: sellers in AD, AL, AZ, BA, FO, GE, MD, RS -> 4.69% + fixed (EEA & UK buyers) / 5.39% + fixed (all other markets); sellers in AO, BF, BH, BJ, CD, CI, CM, DZ, ET, FJ, GA, GN, JO, KG, MG, NA, NC, NG, OM, PF, PW, RW, SA, SL, TG, TJ, TM, TN, TZ, UG, ZM, ZW -> 4.90% + fixed (all markets); 'All other markets' (includes KZ) -> 4.40% + fixed. Fixed fee 0.30 USD / 0.20 GBP / 0.35 EUR. Withdrawal to a US bank account costs 3.00% for a list including AZ, GE, KG, MD, TJ, TM; local bank withdrawal 'All other markets (where available)' = No Fee.",
+      "source": "https://www.paypal.com/kz/business/paypal-business-fees",
+      "kind": "official_policy",
+      "source_date": "Last Updated 28 May 2026",
+      "confidence": "medium",
+      "actionable": "Treat as documented-but-unverified. The phrase 'where available' on withdrawals is exactly where the well-known send-only limitation hides, and PayPal publishes no per-market receive/withdraw capability table. Verify empirically with a $1 test receipt + withdrawal before designing the stack around it."
+    },
+    {
+      "claim": "PayPal's 'permitted countries list' — the list its user agreement points to for account access — does include Armenia, Azerbaijan, Georgia, Kazakhstan, Kyrgyzstan, Tajikistan, Turkmenistan, Belarus, Moldova and Ukraine.",
+      "evidence": "The UK user agreement's 'permitted countries list' hyperlink resolves to paypal.com/uk/webapps/mpp/country-worldwide. That page lists, among others: Armenia, Azerbaijan, Georgia, Kazakhstan, Kyrgyzstan, Tajikistan, Turkmenistan (Asia section), Belarus, Moldova, Ukraine (Europe section). The page states language availability per market and does not distinguish send-only from receive-enabled markets.",
+      "source": "https://www.paypal.com/uk/webapps/mpp/country-worldwide",
+      "kind": "official_policy",
+      "source_date": "fetched 2026-09-12",
+      "confidence": "high",
+      "actionable": "Presence on the permitted-countries list is necessary but not sufficient evidence of commercial receiving. Do not cite it as proof a CIS PayPal business account can be paid out."
+    },
+    {
+      "claim": "Stripe Atlas is the cheapest documented route to a Stripe-eligible entity: $500 one-time for a Delaware C-corp or LLC, $100/yr registered agent thereafter, with $2,500 in Stripe credits. Startups in 175+ countries have used it.",
+      "evidence": "Verbatim: 'Incorporate for $500 and get over $50,000 in discounts'; includes 'Company incorporation in Delaware, including next-day expedited processing and state filing fees', company tax ID (EIN), founder equity issuance, 83(b) election filing, '$2,500 in Stripe product credits for your first year after incorporation'; '$500 one-time setup fee (includes government fees and your first year of registered agent services)'; '$100 annually after your first year (renews automatically)'; 'Startups in over 175 countries have chosen Atlas'. Legal docs prepared with Cooley LLP. Atlas docs page also advertises a specific flow for 'a company with Indian resident founders'.",
+      "source": "https://stripe.com/atlas ; https://docs.stripe.com/atlas",
+      "kind": "official_policy",
+      "source_date": "fetched 2026-09-12",
+      "confidence": "high",
+      "actionable": "$500 + $100/yr is inside the operator's $50-200/mo infra budget as a one-off. It also unlocks Pix (US business location) and UPI. Budget separately for US tax filings (Form 5472 + 1120 for a foreign-owned single-member LLC) — Atlas does not include ongoing tax prep."
+    },
+    {
+      "claim": "Stripe Atlas publishes no country-eligibility or excluded-founder-nationality list in its docs. Whether a Russian or Belarusian resident can complete Atlas onboarding and Stripe verification is not documented.",
+      "evidence": "Fetched stripe.com/atlas and docs.stripe.com/atlas: no eligibility, sanctions, or excluded-countries section found. Only '175+ countries have chosen Atlas' and an India-specific flow. docs.stripe.com/atlas/faq returned HTTP 404.",
+      "source": "https://docs.stripe.com/atlas",
+      "kind": "platform_docs",
+      "source_date": "fetched 2026-09-12",
+      "confidence": "low",
+      "actionable": "Nо data. Inference only (low confidence): Atlas + Stripe are US-regulated and OFAC-bound, so RU/BY resident founders and RU/BY-issued ID/addresses should be assumed high-rejection; KZ/GE/AM/UZ/AZ/MD residents should be assumed workable. Verify by attempting onboarding before committing to the architecture."
+    },
+    {
+      "claim": "The dominant competitor in this exact niche runs a Stripe-on-EU-entity stack, not an MoR and not crypto — a strong signal about what actually survives underwriting in this category.",
+      "evidence": "EXM Tweaks Refund Policy, verbatim: 'Every purchase on exmtweaks.com is made from EXM TWEAKS s.r.o., registered in Slovakia. We are the seller for all orders, wherever you are in the world, and we are the company named on your invoice. Payments are processed by Stripe. Your currency is determined at checkout based on your location, and any applicable tax is calculated and shown to you before you pay.' Products are one-time licences, not subscriptions: 'EXM Plus and EXM Premium are one-time purchases, not subscriptions. There is no recurring charge, no billing period, and nothing to cancel.' Licence is HWID-bound to one PC with free transfer via a HWID reset ticket.",
+      "source": "https://exmtweaks.com/en-us/refund-policy",
+      "kind": "industry_data",
+      "source_date": "Refund Policy last updated 19 August 2026",
+      "confidence": "high",
+      "actionable": "Two copyable decisions: (1) a Slovak s.r.o. (or any EU/UK company) is a proven underwriting-passing entity for this category on Stripe; (2) the leader chose ONE-TIME licences over subscriptions — which sharply reduces recurring-charge disputes ('I forgot I was subscribed' is the #1 friendly-fraud reason for cheap subs)."
+    },
+    {
+      "claim": "The competitor's refund policy contains an explicit minor-purchase refund ground — direct evidence that under-18 chargebacks are a real, priced-in problem in this niche.",
+      "evidence": "Under 'When we refund': 'A minor purchased without permission. A purchase made by someone under 18 without the consent of a parent or guardian.' The policy also grants refunds for 'It didn't make a difference on your machine' and states: 'You do not need to prove anything to get a refund. We do not require benchmark screenshots, before-and-after figures, or evidence that your performance got worse.' And: 'If you would rather not troubleshoot at all, say so. We will process the refund under Section 3 without pushing back.' No fixed deadline: 'We do not apply a fixed deadline to these.'",
+      "source": "https://exmtweaks.com/en-us/refund-policy",
+      "kind": "industry_data",
+      "source_date": "Last updated 19 August 2026",
+      "confidence": "high",
+      "actionable": "Copy the mechanism, not just the words: make the self-serve refund cheaper and faster than a chargeback. A parent who gets an instant refund does not call the bank; a parent who gets a support queue does, and that dispute counts toward VAMP at 0.5%."
+    },
+    {
+      "claim": "The competitor's chargeback clause is a usable template: contact-us-first, access suspended during dispute, permanent ban plus collections referral for fraudulent or post-refund chargebacks, affiliate commission auto-reversed.",
+      "evidence": "Verbatim Section 5 'Chargebacks and abuse': 'Please contact us before contacting your bank. Almost every refund request is resolved faster by talking to us, and a chargeback locks the transaction while it is investigated. Filing a chargeback without contacting support first may result in your account and licences being suspended for the duration of the dispute. Chargebacks found to be fraudulent, or filed after a refund has already been issued, will result in permanent removal of access without further refund and may be referred for collection. Repeated refund requests across multiple accounts, payment methods or machines are treated as abuse and may result in refusal of future purchases.' Section 6: 'Where a purchase is refunded or charged back, any affiliate commission earned on that transaction is automatically voided and reversed from the affiliate's balance.' Section 7: refunds to original payment method only, 'Funds typically appear within 5-10 business days'; 'We cannot refund to a different card, account, or person than the one that paid'; licence deactivated on refund. Decline grounds include: 'The request follows a pattern of repeated refunds across accounts, payment methods, or HWIDs' and 'The stated reason is contradicted by our own activation and usage records.'",
+      "source": "https://exmtweaks.com/en-us/refund-policy",
+      "kind": "industry_data",
+      "source_date": "Last updated 19 August 2026",
+      "confidence": "high",
+      "actionable": "Ship this near-verbatim. The load-bearing parts for dispute defence are: (a) 'contradicted by our own activation and usage records' — only works if you log activations; (b) affiliate clawback — otherwise refund-farming affiliates are free money; (c) refund-to-original-method-only."
+    },
+    {
+      "claim": "For EU/UK consumers the 14-day distance-selling withdrawal right must be actively waived at checkout for digital content, or every buyer has an unconditional 14-day money-back right regardless of your policy.",
+      "evidence": "Verbatim: 'If you are a consumer in the EU or the UK, you normally have 14 days to withdraw from a distance purchase. Because EXM software is digital content supplied immediately, you are asked at checkout to expressly request immediate access and to acknowledge that doing so ends your statutory right of withdrawal once download and activation have begun. Where you have not given that consent, or where download has not begun, the 14-day right applies in full and you may withdraw for any reason. Nothing in this policy limits rights you have under mandatory consumer law.' For services: 'Where you ask us to begin the service within that period, you keep that right until the service has been fully performed... If you withdraw after work has started, you owe a proportionate amount for the work already delivered.'",
+      "source": "https://exmtweaks.com/en-us/refund-policy",
+      "kind": "industry_data",
+      "source_date": "Last updated 19 August 2026",
+      "confidence": "high",
+      "actionable": "MANDATORY checkout element: a separate, unticked-by-default checkbox reading 'I request immediate access to the software and acknowledge that I lose my 14-day right of withdrawal once download and activation begin.' Store the timestamped consent per order — it is both a legal requirement and dispute evidence."
+    },
+    {
+      "claim": "Global crypto ownership is ~6.8% (560M+ owners) and skews to men aged 25-34 — structurally the wrong demographic for a 13-24 gaming audience.",
+      "evidence": "Verbatim: 'As of 2024, we estimated global digital currency ownership at an average of 6.8%, with over 560 million digital currencies owners worldwide.' Dashboard figures: world average 6.9%; UAE 31.0%; Singapore 24.4%; Turkey 19.3%; Argentina 18.9%; Thailand 17.6%; Brazil 17.5%. Demographics: 61% male / 39% female; 34% aged 25-34. The page also claims '65% Prefer Crypto Payments' — that is a vendor statistic about existing owners, not the general population, and Triple-A is a crypto payments company (treat as marketing).",
+      "source": "https://www.triple-a.io/crypto-ownership-data",
+      "kind": "industry_data",
+      "source_date": "2024 ownership data; page fetched 2026-09-12",
+      "confidence": "medium",
+      "actionable": "Answer to the key question: crypto cannot be the primary rail for this audience. Model it as a single-digit-percent share of checkouts. Its value is (a) chargeback immunity, (b) reaching buyers in geo-blocked or card-poor markets, (c) an outage fallback — not volume."
+    },
+    {
+      "claim": "Crypto adoption is highest in exactly the geos this business targets for cheap traffic — India #1, Pakistan #3, Vietnam #4, Brazil #5, Nigeria #6, Indonesia #7, Ukraine #8, Philippines #9, Russia #10 — so crypto share will vary enormously by geo, not uniformly.",
+      "evidence": "Chainalysis 2025 Global Crypto Adoption Index overall ranking (151 countries ranked; four sub-indices weighted by population and PPP-adjusted GDP per capita, geometric mean, normalized 0-1): 1 India, 2 United States, 3 Pakistan, 4 Vietnam, 5 Brazil, 6 Nigeria, 7 Indonesia, 8 Ukraine, 9 Philippines, 10 Russian Federation, 11 United Kingdom, 12 Ethiopia, 13 Bangladesh, 14 Turkiye, 15 Korea Rep., 16 Yemen Rep., 17 Thailand, 18 Venezuela RB. 'In 2025, APAC furthered its status as the global hub of grassroots crypto activity, led by India, Pakistan, and Vietnam.' Methodology caveat stated by Chainalysis: based on web-traffic-derived volume estimates, imperfect due to VPN use.",
+      "source": "https://www.chainalysis.com/blog/2025-global-crypto-adoption-index/",
+      "kind": "industry_data",
+      "source_date": "Published September 2, 2025",
+      "confidence": "high",
+      "actionable": "Make the crypto option geo-weighted in the checkout UI: surface it prominently for IN/PK/VN/BR/NG/ID/UA/PH/TR, bury it for US/UK/DE/FR/CA/AU. Also note the overlap: UK (#11) ranks higher than expected, so a UK-positioned brand is not crypto-hostile."
+    },
+    {
+      "claim": "Dedicated crypto processors cost ~1% and structurally eliminate chargebacks. NOWPayments charges a 1% service fee and offers Subscriptions and Mass Payouts products; BitPay charges 1% + 25c with daily fiat settlement.",
+      "evidence": "NOWPayments pricing page: '1% Service fee'; navigation includes 'Subscriptions', 'Zero-fee Mass Payouts', 'Custody'; marketing claim 'Save up to 90% on transaction costs compared to PayPal'; AML/KYC Policy linked. BitPay pricing: 'Transaction Fee 1% + 25¢*' with footnote '*Higher fees applicable for high-risk industries'; 'Eliminate fraud chargebacks'; 'Daily fiat settlements, direct to your bank account'; 'Get settled in your local currency, cryptocurrency or any combination of the two.' Cryptomus exposes Recurring payments endpoints (create / info / list / cancel) in its API docs, but its gateway fee percentage is JS-rendered and could not be read from the primary page — no data.",
+      "source": "https://nowpayments.io/fees ; https://bitpay.com/pricing/ ; https://doc.cryptomus.com/",
+      "kind": "platform_docs",
+      "source_date": "fetched 2026-09-12",
+      "confidence": "medium",
+      "actionable": "Crypto rail costs ~1% vs ~5% blended on cards and carries no dispute fee, no VAMP exposure, no reserve. The offsetting costs are volatility/settlement handling, KYC on the operator, and a conversion rate on this audience that is likely under 5%. BitPay's 'higher fees for high-risk industries' footnote means the 1% quote is not guaranteed for this category."
+    },
+    {
+      "claim": "No primary-source fee or policy data could be obtained for the platforms most popular in gaming Discord communities — Sellix, Shoppy, Whop and Payhip. This is a genuine gap, not an absence of relevance.",
+      "evidence": "sellix.io and docs.sellix.io: connection refused by the egress proxy (connect_rejected), no content retrievable. whop.com returns a JavaScript SPA shell for /pricing, /legal, /legal/products, /legal/acceptable-use and all help.whop.com and dev.whop.com routes — every fetch returned the same ~960KB shell with no policy or fee text. payhip.com and help.payhip.com returned HTTP 403 to all requests. shoppy.gg via the Wayback Machine returned 'Blocked by egress policy'. No fee percentage, no prohibited-products list, and no supported-payout-country list for any of these four could be verified.",
+      "source": "Fetch attempts: sellix.io/pricing, sellix.io/terms-of-service, docs.sellix.io, whop.com/pricing, whop.com/legal/*, help.whop.com, dev.whop.com, payhip.com/pricing, payhip.com/terms, web.archive.org/shoppy.gg",
+      "kind": "platform_docs",
+      "source_date": "attempted 2026-09-12",
+      "confidence": "high",
+      "actionable": "Do NOT put numbers for these four into the machine spec. Assign a human task: manually read Sellix and Whop fee + AUP pages and their payout-country lists. These matter specifically because they are the category's native Discord-auto-role platforms; Whop in particular is the default for paid Discord communities."
+    },
+    {
+      "claim": "FastSpring is a genuine MoR alternative for software/digital goods worldwide but publishes no rates at all, making it unusable for a spec-driven build.",
+      "evidence": "Verbatim: 'Our pricing works on a revenue-sharing model and our fees vary depending on the transaction volume you move through FastSpring. This is best discussed during a meeting with an Account Executive.' 'FastSpring's merchant of record model is a unique service available to sellers of SaaS, software, and digital goods - anywhere in the world. A merchant of record ... will process payments, deliver revenue, collect and remit sales taxes, manage your subscriptions, monitor fraud, increase approval rates, keep you compliant, and respond to any audits related to sales taxes or VAT.' No published percentage or fixed fee anywhere on the pricing page.",
+      "source": "https://fastspring.com/pricing/",
+      "kind": "platform_docs",
+      "source_date": "fetched 2026-09-12",
+      "confidence": "high",
+      "actionable": "Skip for a solo operator at this scale — sales-gated pricing implies a volume minimum and a negotiation cycle the operator does not have time for. Revisit only above ~$20-30k/mo."
+    },
+    {
+      "claim": "Merchant-of-record structurally means the MoR, not you, controls refunds and pricing — which directly conflicts with the refund-policy-as-chargeback-defence strategy.",
+      "evidence": "Paddle Seller Terms, clause 3.12: 'As Merchant of Record, Paddle reserves the right to set the price or licence fee at which the Product is offered for sale to Buyers.' Clause 10.1: 'you shall not issue any invoice or make any demand for payment to any Buyer ... If you agree with the Buyer to issue a refund ... you will not make this payment directly to the Buyer but will inform Paddle'. Clause 10.2: 'Paddle shall be entitled to cancel a Transaction and grant the Buyer a refund of the full price paid'. Clause 8.4/9.x: Paddle may suspend the account and retain fees, and may terminate if 'Paddle determines (in its absolute discretion) that the Product falls outside of the Acceptable Use Policy or is otherwise outside of Paddle's risk tolerance'. Clause 9.2 requires seller URLs to 'clearly reflect Paddle's status as a reseller'. Lemon Squeezy similarly warns stores can be 'placed in review or suspended without notice'.",
+      "source": "https://www.paddle.com/legal ; https://docs.lemonsqueezy.com/help/getting-started/prohibited-products",
+      "kind": "official_policy",
+      "source_date": "Paddle terms fetched 2026-09-12; LS fetched 2026-09-12",
+      "confidence": "high",
+      "actionable": "Under an MoR you write a refund policy you cannot fully enforce, and the MoR's name (not yours) appears on the buyer's statement. Compensate with a very clear statement descriptor note on the thank-you page and in the delivery email: 'Your bank statement will show <MoR NAME>' — unrecognized descriptors are a top friendly-fraud trigger."
+    },
+    {
+      "claim": "Payment-rail choice determines whether auto-delivery can be event-driven. Stripe and Lemon Squeezy both expose webhooks and subscription lifecycle events; Paddle's $100 payout floor and monthly cycle, and the Stripe APM send_invoice constraint, break the assumption of instant recurring auto-delivery.",
+      "evidence": "Stripe: full Subscriptions/Customer Portal support for Cards and Link per the payment-method matrix; stablecoin recurring supported via send_invoice (private preview). Lemon Squeezy charges an explicit '+0.5% for subscription payments', indicating native subscription billing. Paddle: payout only if monthly accrued fee exceeds $100/EUR100/GBP100, paid by the 15th of the following month (clause 7.2). Stripe real-time methods (Pix, UPI, PayNow, PromptPay) and vouchers (Boleto, Konbini, OXXO, Multibanco): 'Not supported when using Checkout in subscription mode' and 'Invoices and Subscriptions only support the send_invoice collection method'.",
+      "source": "https://docs.stripe.com/payments/payment-methods/payment-method-support ; https://www.paddle.com/legal ; https://docs.lemonsqueezy.com/help/getting-started/fees",
+      "kind": "platform_docs",
+      "source_date": "fetched 2026-09-12",
+      "confidence": "high",
+      "actionable": "Auto-delivery must be driven by a single internal 'entitlement granted' event that any rail can emit, with per-rail adapters (Stripe webhook, Lemon Squeezy webhook, crypto processor IPN, manual). Never couple Discord role grant or licence issuance directly to one provider's webhook shape."
+    },
+    {
+      "claim": "Stripe prohibits 'evasion of card network chargeback monitoring programs' as a named restricted use — so the response to a rising dispute ratio must be genuine reduction, and any load-spreading across accounts is itself a terminable violation.",
+      "evidence": "Prohibited uses of Stripe products list: 'Evasion of card network chargeback monitoring programs'; 'Use of Stripe products to facilitate transactions on behalf of another undisclosed merchant or for products or services that weren't disclosed in the business's Stripe account application'.",
+      "source": "https://stripe.com/legal/restricted-businesses",
+      "kind": "official_policy",
+      "source_date": "Last updated 2026-05-13",
+      "confidence": "high",
+      "actionable": "The only compliant levers are: lower dispute volume (refund fast, clear descriptor, cancel-anytime self-serve), raise transaction count denominator, and enable 3DS. Also: whatever the business actually does must match the Stripe application — describe it as 'Windows performance optimization software, one-time licence / subscription' at signup, not as something vaguer."
+    },
+    {
+      "claim": "Micropayment pricing exists on PayPal for sub-£5 tickets and is materially better than standard rates at that price point, but requires application and pre-approval and applies account-wide.",
+      "evidence": "Verbatim: 'Subject to application and pre-approval by PayPal, you may upgrade an existing account to receive the Micropayment rate. Micropayment rates can be ideal as an alternative to standard commercial transaction rates for business that process payments under 5.00 GBP. If you upgrade to the Micropayment rate, this rate will apply to all commercial transaction payments received into your PayPal account.' Rates: domestic micropayments 5% + micropayments fixed fee; other international micropayments 6% + micropayments fixed fee.",
+      "source": "https://www.paypal.com/uk/webapps/mpp/merchant-fees",
+      "kind": "official_policy",
+      "source_date": "Last Updated 15 July 2026",
+      "confidence": "high",
+      "actionable": "Only relevant if the price point is under ~£5/month. Note the account-wide trap: if you also sell a £60 annual plan, micropayment rates make that transaction much worse. Decide by weighted average ticket, not by the cheapest SKU."
+    }
+  ],
+  "key_numbers": [
+    "Stripe supported countries: 50; CIS countries supported: 0; India + Indonesia = 'Preview' only (stripe.com/global, 2026-09-12)",
+    "Stripe UK cards: 1.5%+20p standard UK / 2.8%+20p premium UK / 2.5%+20p EEA / 3.15%+20p international / +2% FX conversion",
+    "Stripe dispute fees: £20 received + £20 countered (countered refunded only on win); Smart Disputes 30% of disputed amount on win; deflection lookups £20/£20/£40",
+    "Visa VAMP non-compliant: 0.5% ratio AND 5 disputes/month. Excessive: 1.5% ratio (2.2% CEMEA) AND 1,500 count (150 CEMEA) / $75,000 volume CEMEA",
+    "Visa VAMP enumeration excessive: 300,000 count AND 20% ratio",
+    "Mastercard ECM: 100-299 disputes AND 1.5-2.99% rate; fines by month 0 / 1,000 / 5,000 / 25,000 / 50,000 USD",
+    "Mastercard HECM: 300+ disputes AND 3%+ rate; fines 0 / 1,000 / 2,000 / 10,000 / 50,000 USD",
+    "Mastercard EFM triggers (all four required): >=1,000 e-comm MC payments + >$50,000 net fraud volume + >0.50% fraud CB rate + 3DS <=10% of MC payments",
+    "Stripe Atlas: $500 one-time (Delaware C-corp or LLC, incl. state fees + year 1 registered agent), $100/yr after, $2,500 Stripe credits, 175+ countries served",
+    "Lemon Squeezy: 5% + $0.50 platform fee, +1.5% international, +1.5% PayPal, +0.5% subscriptions => ~7% + $0.50 for a global card sub",
+    "Lemon Squeezy payout fees: Stripe free (US bank) / 1% (non-US bank); PayPal $0.50 (US) / 3% capped $30 (non-US)",
+    "Lemon Squeezy marketing add-ons: +5% abandoned-cart recovery, +3% affiliate referral, +2% affiliate payout",
+    "Lemon Squeezy worked example: $20 product + 20% VAT = $24 total, fee $2.06, net $17.94",
+    "Lemon Squeezy CIS bank payouts AVAILABLE: Armenia, Azerbaijan, Kazakhstan, Moldova, Uzbekistan (+ Serbia, Turkey, UAE). NOT available: Georgia, Ukraine, Russia, Belarus, Kyrgyzstan",
+    "Lemon Squeezy blocked BUYER countries (18): Central African Republic, Cuba, DPRK/North Korea, DR Congo, Eritrea, Guinea-Bissau, Iran, Iraq, Lebanon, Libya, Mali, Russian Federation, Somalia, South Sudan, Sudan, Syria, Yemen",
+    "Gumroad: 10% + $0.50 direct, 30% via Gumroad Discover, no monthly fee",
+    "PayPal Standard Dispute Fee: $15.00 USD / £12.00 GBP / EUR 14.00 / AUD 25 / CAD 20 / BRL 65 / INR 1,080 / PHP 760",
+    "PayPal High Volume Dispute Fee: $30.00 USD / £24.00 GBP / EUR 28.00 (2x standard)",
+    "PayPal UK international commercial receiving: 2.9% + fixed fee (a 3.4% + £0.20 tier also published)",
+    "PayPal micropayments (<£5, pre-approval, account-wide): 5% + fixed domestic / 6% + fixed international",
+    "PayPal Rest-of-World receiving (148 markets, updated 2026-05-28): KZ and other 'all other markets' 4.40% + fixed; GE/MD/AZ/AL/AD/BA/RS 4.69% (EEA+UK buyers) / 5.39% (elsewhere); KG/TJ/TM/NG/SA etc 4.90%",
+    "PayPal fixed commercial fee: $0.30 USD / £0.20 GBP / EUR 0.35 / BRL 0.60 / INR n-a / PHP 15.00 / RUB 10.00",
+    "PayPal withdrawal to US bank account: 3.00% for AZ, GE, KG, MD, TJ, TM (among others); local bank 'all other markets (where available)' = no fee",
+    "PayPal may raise your % transaction fees on 30 days notice if complaints/chargebacks are disproportionate",
+    "Paddle chargeback or pre-chargeback-alert fee: up to 20 GBP/USD/EUR (40 AUD/CAD), charged to seller",
+    "Paddle payout: $100/EUR100/GBP100 monthly minimum accrual, paid by the 15th of following month, $15/EUR15/GBP15 per international wire, up to 1.5% FX margin",
+    "Crypto processors: NOWPayments 1% service fee; BitPay 1% + $0.25 (higher for high-risk industries), daily fiat settlement",
+    "Global crypto ownership: 6.8% average / 560M+ owners (2024 data); 61% male, 34% aged 25-34; UAE 31.0%, Singapore 24.4%, Turkey 19.3%, Argentina 18.9%, Thailand 17.6%, Brazil 17.5%",
+    "Chainalysis 2025 adoption index top 10: India, United States, Pakistan, Vietnam, Brazil, Nigeria, Indonesia, Ukraine, Philippines, Russian Federation (151 countries ranked)",
+    "Stripe stablecoin payments: recurring YES, disputes NO, customers global (excl. sanctioned), presentment USD, USDC on Tempo/Ethereum/Solana/Polygon/Base",
+    "Competitor refund processing time benchmark: 5-10 business days to original payment method (EXM Tweaks, 2026-08-19)",
+    "EU/UK statutory withdrawal right: 14 days, waivable for digital content only with express request for immediate access + acknowledgment"
+  ],
+  "machine_spec_notes": [
+    "CONSTANT STRIPE_SUPPORTED_COUNTRIES = the 50-country list from stripe.com/global (AU AT BE BR BG CA HR CY CZ DK EE FI FR DE GI GR HK HU IE IT JP LV LI LT LU MY MT MX NL NZ NO PL PT RO SG SK SI ES SE CH TH AE GB US). Used to validate the OPERATOR's entity country, never the customer's.",
+    "CONSTANT LS_BANK_PAYOUT_CIS = [Armenia, Azerbaijan, Kazakhstan, Moldova, Uzbekistan]. If operator_country is in this set, the Lemon Squeezy backup rail is viable with a local bank; otherwise the backup must use PayPal payout or a foreign entity.",
+    "CONSTANT BLOCKED_BUYER_COUNTRIES = [CF, CU, KP, CD, ER, GW, IR, IQ, LB, LY, ML, RU, SO, SS, SD, SY, YE]. Enforce at three layers: (1) checkout geo-gate, (2) licence activation, (3) ad-targeting exclusion list for the auto-upload network. Do not spend impressions on traffic that cannot pay.",
+    "RULE: operator entity country is IMMUTABLE after first live Stripe charge. The spec must require operator_entity_country as a required config field set before any live key is installed, and refuse to run in live mode if it is unset.",
+    "CONSTANT DISPUTE_RATIO_LIMITS = {visa_noncompliant_ratio: 0.005, visa_noncompliant_count: 5, visa_excessive_ratio: 0.015, visa_excessive_ratio_cemea: 0.022, mc_ecm_count: 100, mc_ecm_ratio: 0.015, mc_hecm_count: 300, mc_hecm_ratio: 0.03}. The ops dashboard must compute rolling monthly dispute_count and dispute_count/captured_payments_prev_month and alert at 60% of the 0.5%/5-count trigger.",
+    "RULE: 3DS must be enabled such that 3DS payments stay above 10% of Mastercard volume — this alone removes one of the four mandatory EFM conditions. Make it a monitored metric, not a one-time setting.",
+    "CONSTANT COST_MODEL per rail (for price/margin calc): stripe_direct_intl = 0.0315*amount + 0.20 GBP + 0.02*amount FX; lemon_squeezy_card_sub_intl = 0.07*amount + 0.50 USD + 0.01 payout; gumroad = 0.10*amount + 0.50; paypal_intl_uk = 0.029*amount + 0.20 GBP; paypal_row_kz = 0.044*amount + 0.30 USD; crypto_nowpayments = 0.01*amount; bitpay = 0.01*amount + 0.25.",
+    "CONSTANT DISPUTE_COST per rail: stripe = 20 GBP received + 20 GBP countered; paypal = 15 USD standard / 30 USD high-volume; paddle = up to 20 GBP/USD/EUR incl. pre-chargeback alerts. Feed into a break-even guard: refund_threshold_amount below which auto-refunding is always cheaper than disputing.",
+    "RULE: APM/local-method SKUs must be PREPAID DURATION CODES (30/90/365 day), never subscriptions, because Stripe does not support Pix/UPI/PayNow/PromptPay/Boleto/OXXO/Konbini/Multibanco in Checkout subscription mode (Subscriptions/Invoices only via send_invoice).",
+    "RULE: two product families in the catalog — family A (cards, wallets, Link, stablecoins) = recurring subscription; family B (local APMs, vouchers, non-Stripe crypto) = one-time prepaid code. Entitlement duration, not billing cycle, is the canonical field.",
+    "RULE: crypto checkout option visibility is geo-weighted. Surface prominently for IN, PK, VN, BR, NG, ID, UA, PH, TR, BD, ET, VE, TH; de-emphasize for US, GB, DE, FR, CA, AU, NL, SE. Expected crypto share: model 2-6% of checkouts (low confidence), not 20%+.",
+    "RULE: single internal event 'entitlement.granted {order_id, user_id, rail, sku, duration_days, hwid_slots}' drives ALL auto-delivery (licence key issue, HWID bind, Discord role grant). Per-rail webhook adapters normalize into it. Never wire Discord role grants directly to a provider webhook payload shape.",
+    "RULE: for every order persist a dispute-evidence bundle: checkout IP + country, timestamp, user agent, the exact landing-page variant id, the timestamped EU/UK withdrawal-waiver consent, licence key issuance time, HWID bind event, Discord role grant event, first software launch telemetry, and every support message. This bundle is both the Stripe dispute response and the PayPal Seller Protection claim for intangible goods.",
+    "RULE: statement descriptor must be set explicitly and shown to the buyer on the thank-you page AND in the delivery email ('Your bank statement will show: <DESCRIPTOR>'). Unrecognized descriptors are a primary friendly-fraud trigger for a 13-24 audience paying on a parent's card.",
+    "RULE: self-serve instant refund available in-app and via Discord bot for orders under a configurable amount (suggest <= 2x monthly price) with no support queue and no proof required. Log it as refund_reason. Target: refund path strictly faster and lower-friction than opening a bank/PayPal dispute.",
+    "RULE: self-serve instant cancellation of recurring billing, exposed in-app, in the Discord bot, and linked in every renewal email sent 3-7 days BEFORE each charge. 'I forgot I was subscribed' is the dominant friendly-fraud reason on cheap subs — consider following the category leader and selling one-time licences instead of subscriptions.",
+    "CONSTANT REFUND_POLICY_CLAUSES (ship near-verbatim, derived from the category leader's published policy): (1) named seller legal entity + country + 'payments processed by <PSP>'; (2) refund grounds incl. won't run on your system, defect prevents use, no worthwhile improvement on your machine, MINOR PURCHASED WITHOUT PARENTAL CONSENT, duplicate/accidental purchase; (3) no proof, benchmarks or screenshots required; (4) no fixed deadline, reviewed individually; (5) decline grounds: licence shared/resold/unauthorized activation, repeated-refund pattern across accounts/payment-methods/HWIDs, stated reason contradicted by our own activation and usage records; (6) EU/UK 14-day withdrawal + express immediate-access waiver + 'nothing limits mandatory consumer law'; (7) chargeback clause: contact us before your bank, access suspended for the dispute duration, permanent ban + no further refund + possible collections referral for fraudulent or post-refund chargebacks, repeated cross-account refund requests treated as abuse; (8) affiliate commission auto-voided and reversed on refund or chargeback; (9) refunds to ORIGINAL payment method only, 5-10 business days, licence deactivated on refund; (10) 'the policy version that applies is the one published on the date you bought'.",
+    "CONSTANT CHECKOUT_REQUIRED_CONSENTS = [withdrawal_waiver_checkbox (unticked by default, EU/UK), age_confirmation (18+ or parental consent), tos_accept, refund_policy_accept]. Persist each with timestamp + policy version hash per order.",
+    "RULE: marketing-copy compliance linter over all landing pages, ad creatives and video descriptions. BLOCK: guaranteed FPS figures, absolute '+N FPS' claims, fabricated testimonials or review counts, countdown/scarcity upsell timers, 'remote tech support' framing. Rationale: Stripe prohibits 'outrageous claims', 'deceptive testimonials', 'high-pressure upselling', 'no-value-added services' and 'suspicious remote technical support'. Archive every published variant for dispute evidence.",
+    "RULE: hard product-scope separation. Game accounts, in-game currency and in-game items must NEVER share a legal entity, PSP account, domain or Discord server with the tweaks subscription. Stripe restricts in-game item sales to the game operator and prohibits IP infringement; PayPal requires pre-approval for virtual in-game currency; PayPal links accounts across name/address/phone/email/card/bank/device/geolocation. One category violation would terminate the entire revenue stream.",
+    "RULE: one payment identity per legal entity. The 20-channels-per-geo social strategy must NOT be mirrored on the payments side. Payment-account sprawl triggers PayPal linked-account termination and Stripe's undisclosed-merchant prohibition.",
+    "EXCLUDE Paddle from the rail candidate list entirely: its AUP (2026-04-13) names 'any software or service, marketed to repair, maintain, or improve the performance or security of an Electronic Device' and 'System Health Products... Device Cleaners' as prohibited/restricted. Do not build an integration.",
+    "GAP / DO NOT FABRICATE: no fee, prohibited-products or payout-country data could be retrieved for Sellix, Shoppy, Whop or Payhip (sellix.io blocked by egress policy; whop.com and its help/dev subdomains return a JS SPA shell on every route; payhip.com returns 403; shoppy.gg Wayback blocked). Leave these as null in the spec and flag for manual human verification — Whop especially, as it is the default paid-Discord platform in this niche.",
+    "GAP: no primary-source pricing or CIS-availability data for the aggregators that actually carry GCash, GoPay, mada, STC Pay, M-Pesa, Papara, Kaspi or SBP (dLocal 404, Xsolla pricing JS-rendered, FastSpring sales-gated). Treat all non-Stripe local-APM coverage as unpriced until verified.",
+    "GAP: PayPal publishes commercial RECEIVING rates for KZ/GE/AM/AZ/MD/KG/TJ/TM but nowhere documents per-market receive-vs-send-only capability, and qualifies bank withdrawal with 'where available'. Spec must require an empirical $1 receive + withdraw test before treating a CIS PayPal business account as a live payout path.",
+    "GAP: Stripe Atlas publishes no country-eligibility or excluded-nationality list; docs.stripe.com/atlas/faq is 404. Whether RU/BY-resident founders can pass Atlas + Stripe verification is undocumented. Require an onboarding attempt before architecting around it.",
+    "GAP: no direct data found on what share of a 13-24 gaming audience can actually pay in crypto. Global ownership is 6.8% skewed to men 25-34, and under-18s generally cannot pass exchange KYC. Model 2-6% with LOW CONFIDENCE; instrument the real number from day one via per-rail checkout-initiated vs completed events."
+  ],
+  "open_questions": [
+    "Can a Kazakhstan / Georgia / Armenia / Uzbekistan / Azerbaijan PayPal BUSINESS account actually receive and withdraw commercial payments, or is it send-only in practice? PayPal publishes receiving rates for these markets (4.40-5.39% + fixed, updated 2026-05-28) but no per-market capability table, and qualifies withdrawals with 'where available'. Only a $1 live test settles it.",
+    "Will Stripe Atlas + Stripe verification accept a founder resident in Kazakhstan, Georgia, Armenia, Uzbekistan or Moldova? And is it effectively closed to Russian and Belarusian residents? Atlas publishes no eligibility list and its FAQ page is 404.",
+    "What are Whop's actual fees, prohibited-products policy and payout countries? It is the category-native platform for paid Discord communities with built-in role auto-delivery, and it is the single biggest unmeasured option in this stack. Its entire site is a JS SPA that returns no policy text to a fetcher.",
+    "Same for Sellix (egress-blocked here) and Shoppy — both are standard in gaming Discord communities and both need manual review of fees, AUP stance on game utilities, and Discord auto-role delivery mechanics.",
+    "Does Lemon Squeezy's underwriting actually accept a Windows performance-optimization utility? Its written prohibited list does not ban it, but the catch-all 'any products restricted by our payment processing partners' imports Stripe's restricted list (including 'suspicious remote technical support' and the deceptive-claims clauses) by reference. Only a real store review answers this.",
+    "What is the real dispute rate for this product category at a $5-20 price point with a 13-24 audience? No industry benchmark for game-tweak utilities could be sourced. This number determines whether cards are viable at all, since VAMP flags at 0.5% with only 5 disputes.",
+    "What percentage of checkouts will actually complete on crypto for this audience? No data exists; global ownership (6.8%, skewed 25-34 male) suggests low single digits but geo mix (India #1, Brazil #5, Nigeria #6, Philippines #9) could push it higher in specific funnels.",
+    "Is Stripe's stablecoin-payments subscription support out of private preview, and what is the fee? The docs state recurring YES and dispute support NO but do not publish a rate. A chargeback-immune recurring rail at a known price would materially change the recommended stack.",
+    "For the physical-goods expansion (laptops, mini-PCs, mousepads): Paddle and Lemon Squeezy both prohibit physical goods outright, so that line needs an entirely separate merchant account and entity. Not scoped here.",
+    "What is the effective VAT/sales-tax burden if going Stripe-direct rather than MoR? The category leader sells from a Slovak s.r.o. and shows tax at checkout, implying real VAT registration and remittance work (EU OSS, UK, plus US state nexus). No cost estimate was obtainable for a one-person operation.",
+    "Does Discord's own ToS or monetization policy restrict selling paid roles for game-modification software, and could a Discord ban destroy the delivery mechanism independently of the payment rail? Not researched in this dimension.",
+    "Which statement descriptor and brand name minimize 'I don't recognize this charge' disputes for a parent reviewing a teenager's spending? Untested — worth an A/B test on descriptor wording, since descriptor confusion is a leading friendly-fraud cause."
+  ],
+  "risks": [
+    "EXISTENTIAL: Stripe does not operate in any CIS country and the business origin country locks permanently at first live charge. Without a foreign entity the primary rail simply does not exist, and there is no later migration that preserves subscriptions.",
+    "HIGH: Paddle explicitly prohibits/restricts 'any software or service marketed to repair, maintain, or improve the performance or security of an Electronic Device' and 'System Health Products' (AUP 2026-04-13). Onboarding there would likely be rejected or terminated after revenue had already accumulated, with fees retained at Paddle's discretion.",
+    "HIGH: Stripe can terminate for marketing style rather than product category. 'Outrageous claims', 'deceptive testimonials', 'high-pressure upselling', 'no-value-added services' and 'suspicious remote technical support' are all named prohibited conduct. Typical FPS-boost landing pages ('+250 FPS guaranteed', fake review counters, countdown timers) sit directly inside those clauses.",
+    "HIGH: chargeback math is brutal at this price point. Visa VAMP flags non-compliance at a 0.5% ratio with just 5 disputes/month; a store doing 200 sales/month can absorb roughly one dispute. Mastercard ECM fines reach $25,000-$50,000 by months 4-5. A 13-24 audience paying on parents' cards is the highest-friendly-fraud demographic there is.",
+    "HIGH: per-dispute cost exceeds transaction value by 1.5-4x. Stripe £20 + £20, PayPal $15 rising to $30 for high-volume dispute accounts, Paddle up to 20 GBP/USD/EUR including pre-chargeback ALERTS (charged even when no chargeback lands). On a $10 sub, each dispute erases 3-6 sales.",
+    "MEDIUM-HIGH: PayPal can quietly raise your percentage fees on 30 days notice for disproportionate complaints, and can freeze funds. Its Restricted Activities also ban controlling an account linked to a violating one, with linkage inferred from name, address, phone, email, card, bank, device and geolocation.",
+    "MEDIUM-HIGH: merchant-of-record means losing control of refunds and pricing. Paddle reserves the right to set the retail price and to unilaterally refund buyers; Lemon Squeezy can place a store 'in review or suspended without notice'. A carefully drafted refund policy is only partially enforceable under an MoR.",
+    "MEDIUM: single-rail dependency. Any one processor decision (rejection, review, freeze, category reclassification) stops 100% of revenue instantly, while the traffic machine keeps burning budget. Without a live, tested secondary rail the whole funnel is a single point of failure.",
+    "MEDIUM: crypto cannot carry this audience. Global ownership is 6.8%, skewed to men 25-34, and under-18 buyers generally cannot pass exchange KYC. Building the business on a crypto-first checkout would sharply cut conversion. Treat the 'crypto solves the CIS problem' idea as a myth at this audience and price point.",
+    "MEDIUM: local payment methods do not support recurring billing on Stripe (Pix, UPI, PayNow, PromptPay, Boleto, OXXO, Konbini, Multibanco all excluded from Checkout subscription mode), and GCash, GoPay, mada, STC Pay, M-Pesa, Papara, Kaspi and SBP do not exist on Stripe at all. Any 'local methods everywhere' plan needs a second processor and a second product model.",
+    "MEDIUM: EU/UK consumers have an unconditional 14-day withdrawal right on digital content unless an express immediate-access waiver is captured at checkout. Without that checkbox, every EU/UK sale is refundable on demand for 14 days no matter what the policy says — and the UK/EU is the stated positioning market.",
+    "MEDIUM: geo-blocking obligations are real and asymmetric. Lemon Squeezy blocks 18 buyer countries including Russia; Stripe prohibits supplying IT-support and cloud services to any person located in Russia. A traffic strategy that reaches RU/BY audiences converts into compliance exposure, not revenue.",
+    "MEDIUM: the game-accounts expansion is incompatible with card rails. Stripe restricts in-game item/currency sales to the game operator and prohibits IP infringement; PayPal requires pre-approval for virtual in-game currency and prohibits stolen digital goods. Beyond platform rules, selling accounts breaches Epic/Riot/Valve terms. Co-locating it with the tweaks business risks losing both.",
+    "LOW-MEDIUM: Paddle's $100 monthly payout floor and mid-following-month payment cycle create a real cash-flow gap for an operator running a $50-200/mo infrastructure budget — early months could accrue no payout at all.",
+    "LOW-MEDIUM: no verified data exists for the four platforms most native to this niche (Sellix, Shoppy, Whop, Payhip). Building the spec on assumed fees or assumed policy for any of them would inject fabricated constants into the auto-delivery system.",
+    "LOW: micropayment pricing on PayPal applies account-wide once granted (5%/6% + fixed). If the catalog mixes a £4 monthly plan with a £60 annual plan, opting in makes the high-ticket transactions materially worse.",
+    "LOW: US tax compliance for a foreign-owned Delaware LLC (Form 5472 + 1120, with substantial penalties for non-filing) is not covered by the $500 Atlas fee and is an easy thing for a solo non-US operator to miss entirely."
+  ]
+}

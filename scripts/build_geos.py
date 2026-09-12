@@ -46,6 +46,10 @@ LANG_FALLBACK = {
 
 VERDICT_TO_PRIORITY = {"priority_1": 1, "priority_2": 2, "priority_3": 3, "skip": 9}
 
+# Страны, которым платёжные системы не дают платить (data/payments.json).
+# Лить на них показы бессмысленно: аудитория есть, оплатить не может.
+BLOCKED_BUYERS = {"cf","cu","kp","cd","er","gw","ir","iq","lb","ly","ml","ru","so","ss","sd","sy","ye"}
+
 
 def _clean_slang(items: list) -> list[str]:
     """Достаёт из отчёта короткие сленговые слова, отбрасывая пояснения.
@@ -193,10 +197,16 @@ def build_geos(reports: dict[str, dict]) -> dict:
         content_lang = _lang_code(lang.get("primary_content_language"), code)
         games = [g.get("game") for g in (r.get("top_games") or []) if g.get("game")]
         slang = _clean_slang(lang.get("slang_terms") or [])
+        codes = {str(c).lower() for c in (r.get("country_codes") or [])} | {code}
+        payment_blocked = bool(codes & BLOCKED_BUYERS)
+        priority = VERDICT_TO_PRIORITY.get(r.get("verdict", ""), 9)
+        if payment_blocked:
+            priority = max(priority, 3)
         geos.append({
             "code": code,
             "name": r.get("country") or code,
-            "priority": VERDICT_TO_PRIORITY.get(r.get("verdict", ""), 9),
+            "priority": priority,
+            "payment_blocked": payment_blocked,
             "verdict_reason": (r.get("verdict_reason") or "")[:600],
             "content_language": content_lang,
             "voiceover_language": _lang_code(lang.get("voiceover_recommendation"), code),
@@ -354,7 +364,7 @@ def main() -> int:
     (ROOT / "docs" / "02-geo-playbooks.md").write_text(build_playbooks(reports), encoding="utf-8")
     print(f"собрано стран: {len(reports)}")
     for g in geos["geos"]:
-        print(f"  {g['code']:10} p{g['priority']}  lang={g['content_language']:3} "
+        print(f"  {g['code']:10} p{g['priority']}{'!' if g.get('payment_blocked') else ' '} lang={g['content_language']:3} "
               f"tier={g['price_tier']:5} entry={g['entry_point']:9} "
               f"games={len(g['top_games']):2} slang={len(g['slang']):2} "
               f"local_ip={'да' if g['needs_local_ip'] else 'нет'}")

@@ -1,0 +1,399 @@
+{
+  "dimension": "guides_ru_en",
+  "summary": "Разбор реальных гайдов (RU+EN) по алгоритмам коротких видео, faceless/cash-cow каналам, заливу УБТ-трафика и продаже цифровых продуктов через шортсы. ВАЖНО ПРО МЕТОД: бюджет WebSearch в этой сессии был исчерпан до начала работы (200/200), поэтому вместо поисковика я снимал данные напрямую с YouTube (curl + парсинг ytInitialData) и точечно через WebFetch. Это дало БОЛЕЕ жёсткие данные, чем обычный поиск: реальные счётчики просмотров, даты, число подписчиков, число видео и полные списки Shorts у прямых конкурентов по твикам. Все цифры ниже — снимок на 2026-09-12; относительные даты (\"5 months ago\") — как отдаёт YouTube.\n\nГЛАВНЫЙ ВЫВОД ПО ПРИМЕНИМОСТИ: прямые конкуренты в нише твиков (EXM Tweaks, Paragon Tweaks, xNet Tweaks) льют трафик ПОЧТИ ИСКЛЮЧИТЕЛЬНО через YouTube Shorts + инвайт в Discord, а TikTok у них практически пустой (у @exmtweaks в TikTok 0 видео / 1 подписчик, у @paragontweaks 1 видео / 416 подписчиков, у @xnettweaks 0/0). То есть проверенный канал — Shorts, а TikTok — открытая полоса, но без чужого доказательства работоспособности в этой нише. Медиана Shorts у EXM ~20K просмотров при 48 видео и сумме ~1,045,000 — это референс, к которому нужно калибровать модель.\n\nВТОРОЙ ГЛАВНЫЙ ВЫВОД (против плана \"20 каналов на гео\"): по Socialinsider (2M видео / 214,507 профилей) аккаунты с 1-5K подписчиков в 2025 давали в среднем 350 просмотров на пост — против 860 в 2024 (падение в 2.5 раза). 20 свежих аккаунтов ≠ 20× охват; без выигрышного креатива сеть новорегов даёт суммарно околонулевой трафик. Число каналов масштабирует только УЖЕ работающий креатив.\n\nТРЕТИЙ: разделение консенсуса и карго-культа. Консенсус (подтверждён и офиц. документацией, и замерами, и практиками): хук в первые 1-3 сек, watch-through/completion как главный сигнал, шеры/sends как сильнейший сигнал у Reels, FYP-раздача не зависит от числа подписчиков, отсутствие водяных знаков, объём публикаций, TikTok-SEO/ключевики в тексте. Карго-культ: \"новый алгоритм каждый месяц\" (сериал Robert Benjamin с обвалом просмотров 242K→8-11K), \"фикс шэдоубана за 10 минут\", \"прогрев аккаунта по ритуалу N дней\" (нет ни одного измеренного теста), перенос A/B-тестов превьюшек на Shorts (официальный инструмент YouTube — только для long-form превью), хэштег-стаффинг как драйвер охвата.",
+  "key_numbers": [
+    "Socialinsider TikTok benchmarks (2M видео / 214,507 профилей, янв 2024 - дек 2025): средние просмотры на пост по тирам подписчиков 2025: 1-5K = 350 (2024: 860), 5-10K = 945 (1,575), 10-50K = 3,240 (3,655), 50-100K = 9,900 (8,688), 100K-1M = 34,900 (25,198)",
+    "Socialinsider ER by views 2025: 1-5K = 4.40%, 5-10K = 4.00%, 10-50K = 3.90%, 50-100K = 3.75%, 100K-1M = 3.95%; средний по платформе 3.85% (Q2 2026)",
+    "Socialinsider постов в месяц 2025 по тирам: 8 / 12 / 16 / 18 / 23 (рост в среднем на 40% год к году)",
+    "Metricool TikTok Study (12 мая 2026): 2,314,756 постов, 92,000+ аккаунтов; видео даёт 5x просмотров и 6x взаимодействий против картинок; 44% аккаунтов до 100K подписчиков выросли 2025→2026; For You Page = 7 из 10 просмотров; +72% опубликованных видео год к году",
+    "EXM Tweaks YouTube @exmtweaks (снимок 2026-09-12): 53K подписчиков, 'joined Aug 31, 2018', в About заявлено 284 видео, в About заявлено 900,000+ пользователей продукта; вкладка Shorts: 48 роликов, min 2.3K / median 20K / max 65K просмотров, сумма ~1,044,800; вкладка long videos = 0 элементов",
+    "Paragon Tweaks @ParagonTweaks: 9.06K подписчиков, 35 видео, 'joined Oct 19, 2014', в About заявлено 500,000+ геймеров, сайт paragontweaks.net, CTA 'Book a session today'; Shorts: 19 штук, min 1.3K / median 2.6K / max 34K, сумма 95,300",
+    "xNet Tweaks @xNetTweaks: Shorts 32 штуки, min 908 / median 1.6K / max 8.6K, сумма 72,708; discord.gg/xnettweaks вписан прямо В ЗАГОЛОВОК ролика; один и тот же заголовок переопубликован 3+ раза",
+    "TikTok в нише твиков пустой: @exmtweaks = 0 видео / 1 follower / 0 likes; @paragontweaks = 1 видео / 416 followers / 2,184 likes (bio: discord.gg/paragontweaks); @xnettweaks = 0/0/0",
+    "Спрос на тему (long-form EN, доказательство объёма рынка): Codelife 'How PROS Optimize Windows For FPS Boost' 1,556,355 просмотров; Kxng 'Optimizing a Office Laptop Until I Get 240 FPS' 1,207,615; marrentm '33 PC Tweaks For Zero Input Delay' 758,707; Lecctron 'The Only Fortnite Optimization Guide...2026' 612,702; CHARLATAN 'How Valorant PROS Optimize Windows' 279,810",
+    "Codelife @Codelife: 470K подписчиков при всего 45 видео (Epic Partner) - ниша даёт крайне высокий подписчик/видео",
+    "dmscales: канал 21.4K подписчиков, ВСЕГО 5 видео, 'The Entire Shorts Algorithm Explained in 180 Seconds' = 546,819 просмотров (5 мес назад, 3:00); 'The Entire TikTok Algorithm Explained in 120 Seconds' = 23,575",
+    "Robert Benjamin @RobertBenjaminChannel 922K подписчиков: обвал серии 'новый алгоритм' - 'HOW TO FIX A TIKTOK SHADOW BAN IN 10 Minutes' (4 года назад) 242,444 просмотра -> сентябрь 2026 'TikTok New Algorithm Changes Explained' 8,273, август 2026 Shorts-версия 11,176, сентябрь 2026 Instagram-версия 7,316",
+    "Клиппинг-экономика (масштаб рынка): Dan Kieft 'How To Actually Make Money with Whop Clipping' 1,254,752 просмотра; Money Mind 'Full Whop Clipping Tutorial' 691,563; Matt The Method 'How I Made $16,705.83 On Whop' 155,527; Skai Generated 'I Tried Every Clipping Platform (Whop, Vyro & More)' 74,579",
+    "Крупнейшие faceless-курсы (бесплатные, на YouTube): Baddie In Business 1,872,156 просмотров; Saad Rashid 'YouTube Automation Full Course' 5:30:07 = 1,302,821; Fabio Morena 'FULL COURSE' 1:41:54 = 727,885; Make Money Matt 1:36:54 = 253,732; Pasha Mogadam 'Complete Faceless Instagram Theme Pages Course 2026' 4:16:45 = 186,123 и 5.5-часовой 41,624",
+    "RU УБТ: Fomobase 'Как я нашёл клиентов на арбитраж трафика из Tik Tok в Telegram' 136,939; Денис Марков (@denismarkov, 11.7K подписчиков) 'Я год лил трафик из TikTok... 8 вещей' 67,606; Тиктоматика 'Как попасть в РЕКОМЕНДАЦИИ в TikTok' 204,847; Елисей Ламанов 'Полный курс по TikTok монетизации на 2026' 47:28 = 64,108; синдикат 'Трафик из ТикТок в Телеграм... 1000$ за месяц' 51,622; GRIDASOV (разоблачение) 31,639",
+    "RU вендоры автозалива - крайне низкий охват (сигнал незрелости/скама): LuxuryTool 'Автозалив YouTube Shorts - Как вести 200+ каналов ежедневно' 742 просмотра; его же '100+ каналов' 252; NEXO 'Как вести 100+ аккаунтов в YouTube без банов' 771",
+    "Instagram официально (about.instagram.com/blog/announcements/instagram-ranking-explained, 31 мая 2023): сигналы Reels по важности - 1) ваша активность, 2) история взаимодействия с автором, 3) информация о рилсе, 4) информация об авторе; прогнозируются reshare, дослушивание до конца, лайк, переход на страницу аудио; рилсы с водяными знаками и рамками делаются 'less visible'"
+  ],
+  "machine_spec_notes": [
+    "КАЛИБРОВКА МОДЕЛИ ТРАФИКА (обязательно в спеку как константы): baseline_views_per_post по тиру подписчиков = {0-5K: 350, 5-10K: 945, 10-50K: 3240, 50-100K: 9900, 100K-1M: 34900} (Socialinsider 2025). Не планировать 'по 5-10K просмотров с новорега' - это на порядок выше медианы.",
+    "NICHE_BENCHMARK_SHORTS = {exm: {n:48, median:20000, max:65000, min:2300, total:1044800}, paragon: {n:19, median:2600, max:34000, min:1300, total:95300}, xnet: {n:32, median:1600, max:8600, min:908, total:72708}}. Цель для собственного канала на старте: median 1.5-3K, не 20K (20K = зрелый канал с 53K подписчиков и брендом).",
+    "ПРИОРИТЕТ ПЛАТФОРМ для этой конкретной ниши: 1) YouTube Shorts (доказано конкурентами), 2) TikTok (открытая полоса, но нет чужого пруфа в нише - тестировать как гипотезу, не как базу), 3) Instagram Reels (слабее всего для 13-24 геймеров на слабых ПК; нет данных по нише). Не распределять бюджет равномерно 1/3-1/3-1/3.",
+    "ЗАПРЕТ НА ВОДЯНЫЕ ЗНАКИ - жёсткое правило пайплайна: рендерить мастер-видео БЕЗ логотипа платформы, экспортировать отдельные чистые версии под каждую платформу. Instagram официально понижает видимость рилсов с watermark и borders (офиц. документ Instagram). Это не миф, это политика.",
+    "ФОРМУЛА ЗАГОЛОВКА/ХУКА, снятая с реальных выигрышных Shorts EXM (median 20K): шаблоны = ['STOP Using THIS Windows Setting ASAP {emoji}', 'This ONE Setting Will DOUBLE Your FPS {emoji}', 'You NEED To Change THIS Setting NOW {emoji}', 'Windows Is HIDING THIS Setting {emoji}', 'How To Fix FPS Drops INSTANTLY {emoji}', 'Get MORE FPS With THIS Windows Tweak {emoji}', 'This Setting Gives You AIMBOT {emoji}']; emoji-пул = ['😲','🤯','🎮']; CAPS на 1-2 словах (THIS/ONE/NEED/STOP/DOUBLE); обещание бинарное и мгновенное ('в секундах', 'мгновенно'). Заложить как title_templates с подстановкой игры/настройки.",
+    "HOOK_WINDOW = 0-3 сек, целевая метрика пайплайна = watch-through / completion rate, НЕ лайки. Оптимизировать длину ролика под полный просмотр (в нише твиков конкуренты держат Shorts короткими; точная длина - нет данных, ставить 15-25 сек как гипотезу с замером).",
+    "CTA-МЕХАНИКА, как делают конкуренты: discord.gg-инвайт как основная точка входа (paragontweaks bio в TikTok = discord.gg/paragontweaks; xNet вписывает discord.gg прямо в заголовок Shorts). В спеку: поле cta_target = discord_invite, вариант cta_in_title = true/false как A/B-переменная.",
+    "МЕТРИКА УСПЕХА НА РОЛИК, а не на аккаунт: считать долю роликов, пробивших порог (например >3x медианы аккаунта), и переливать только победителей на остальные аккаунты сети. Число аккаунтов масштабирует ТОЛЬКО подтверждённый победитель.",
+    "ЛОКАЛИЗАЦИЯ ПОД ГЕО: план '20 каналов на гео' требует не только перевода, но и разных игр по гео (нет данных по распределению игр по гео в этой нише - внести в open_questions, не хардкодить).",
+    "ОТКАЗ ОТ РЕПОСТА ЧУЖИХ КЛИПОВ: xNet публикует одинаковые заголовки повторно и имеет худшую медиану (1.6K) из трёх конкурентов. Не закладывать re-upload одного и того же файла как стратегию; закладывать генерацию N вариантов хука на один смысловой сюжет.",
+    "АЛЬТЕРНАТИВА СЕТИ АККАУНТОВ, которую надо оценить численно в спеке: клиппинг-кампания (платить клипперам за просмотры) вместо/вместе с 20 своими аккаунтами. Рынок подтверждён охватами гайдов (Dan Kieft 1.25M, Money Mind 691K). Переменные: cpm_payout, min_views_threshold, платформа кампании. Это переносит риск бана с оператора на клипперов и снимает ручную работу.",
+    "АВТОВЫДАЧА: Discord-роль через платёжную платформу с подписками - формат подтверждён гайдами Gehsture (25,255 и 38,758 просмотров, 'Discord Subscription System w/ Whop'). В спеке: webhook оплата -> выдача роли + лицензионный ключ, без ручного шага.",
+    "СТЕК АВТОГЕНЕРАЦИИ/АВТОПОСТИНГА, по которому есть публичные рабочие шаблоны: n8n (Nate Herk 'I Built a 24/7 Viral Shorts Machine with No-Code, free n8n template' 361,205 просмотров; 'This Workflow Auto-Posts to 9 Different Socials' 113,742; Website Learners 244,536; Ricardo 'How To Post To Tiktok With N8N' 32,703; AI Agents A-Z 'FREE social media post scheduling API' 47,784). Это реальные бесплатные шаблоны, а не платные курсы - брать их как отправную точку для спеки.",
+    "НЕ ВНОСИТЬ В СПЕКУ как правило: (а) ритуальный 'прогрев аккаунта' по фиксированному числу дней/действий - нет ни одного измеренного теста, только вендорский и анекдотический контент; (б) A/B-тест превью - официальный инструмент YouTube работает для long-form превьюшек, а не для Shorts; (в) хэштег-стаффинг (xNet стаффит хэштеги и имеет худшую медиану).",
+    "ЧАСТОТА ПУБЛИКАЦИЙ: верхний реальный ориентир по индустрии - 23 поста/мес на аккаунт для тира 100K-1M (Socialinsider 2025). Планы '10 постов в день на аккаунт' не имеют опоры в измеренных данных - только в анекдотических тестах отдельных креаторов. Ставить 1-3/день на аккаунт как дефолт с замером."
+  ],
+  "open_questions": [
+    "Есть ли у EXM Tweaks активный TikTok под другим хэндлом? Проверен только @exmtweaks (0 видео, 1 подписчик). Вывод 'TikTok - открытая полоса в нише' держится на medium confidence, пока не проверены альтернативные хэндлы и TikTok-поиск по ключевикам fps boost / tweaks.",
+    "Расхождение по числу видео у @exmtweaks: в About заявлено 284 видео, вкладка Shorts отдала 48, вкладка long videos - 0 элементов. Причина неясна (пагинация / скрытые / удалённые / плейлисты). Нужен полный обход канала с пагинацией, чтобы получить истинное распределение просмотров.",
+    "Нет данных по оптимальной длине Shorts в нише твиков (у конкурентов длина в списке Shorts не отдаётся). Нужен отдельный замер по 30-50 роликам конкурентов.",
+    "Нет данных по конверсии 'просмотр Shorts -> заход в Discord -> платная подписка' ни у одного конкурента и ни в одном найденном гайде. Конверсионная воронка полностью не оцифрована - это критичная дыра для финмодели. Оценивать только своими замерами.",
+    "Нет данных по распределению целевых игр (Fortnite / Valorant / Rust / CS2 / DBD) по гео - какие игры давать на какое гео.",
+    "Транскрипты YouTube недоступны без авторизации (captionTracks отсутствует в выдаче), поэтому конкретные тезисы внутри крупных гайдов (dmscales 546K, Kallaway 891K, Mike Yanda 259K) не верифицированы построчно - они проиндексированы по названию, охвату и дате, но их внутренние утверждения я не подтверждал.",
+    "Telegram-источники не проверены: tgstat.ru отдал 403, telemetr.me 404 из этой среды. Конкретные Telegram-каналы по УБТ/автозаливу назвать не могу - нет данных. Все RU-источники ниже - YouTube.",
+    "Socialinsider оговаривает, что данные '2026' - это фактически 2025 (мало данных за начало года). Тренд падения просмотров у мелких аккаунтов (860 -> 350) может быть частично артефактом выборки Socialinsider, а не только платформенным сдвигом.",
+    "Бюджет WebSearch (200/200) был исчерпан до начала этой задачи, поэтому кросс-проверка через независимый поисковик не выполнялась; Mojeek/DuckDuckGo/lite-DDG из этой среды отдали 403/CAPTCHA. Все цифры сняты напрямую с YouTube/TikTok/двух блогов."
+  ],
+  "risks": [
+    "ЖЁСТКИЙ РИСК ПОЛИТИК: вся модель '20 новорег-аккаунтов на гео' - это ровно то, что TikTok и YouTube классифицируют как spam/unoriginal/inauthentic content и координированное неаутентичное поведение. Практический исход - не разовый бан, а тихое обнуление охвата на части сети. Вероятность массовых потерь аккаунтов на горизонте 6-12 мес я оцениваю как высокую (low confidence на точную цифру - измеренных публичных данных по survival rate сетей нет ни в одном найденном источнике).",
+    "Покупка новорег-аккаунтов - нарушение ToS всех трёх платформ само по себе, независимо от контента. Дополнительно: аккаунты, купленные у перепродавцов, часто уже имеют историю нарушений, которая переносится на нового владельца - это анекдотический консенсус практиков УБТ (Денис Марков, Темный Арбитражник), измеренных данных нет.",
+    "Instagram ОФИЦИАЛЬНО понижает видимость рилсов с водяными знаками и рамками. Наивный кросс-постинг TikTok-файла в Reels - это не 'экономия времени', а гарантированное урезание охвата по политике платформы.",
+    "YouTube 'reused / repetitious / inauthentic content' бьёт по монетизации канала. Для этого проекта монетизация не нужна (нужен трафик), поэтому прямой финансовый урон ниже - НО те же сигналы коррелируют с ограничением раздачи и удалением каналов. Не считать 'нам монетизация не нужна' индульгенцией.",
+    "Вся faceless/cash-cow индустрия гайдов структурно заинтересована продать курс/софт. Заявленные доходы (Romayroh '$1,620,985 With 4 Faceless Channels', Chris Barrera '$0-$45,186 In 30 Days') - НЕПРОВЕРЯЕМЫЕ пустые заявления: нет скриншотов, аудита, названий каналов. Использовать такие видео как источник тактик, но не как источник цифр для финмодели.",
+    "RU-вендоры автозалива ('LuxuryTool', 'NEXO | Система трафика') имеют охваты 250-771 просмотр на рекламное видео. Это сигнал либо совсем молодого, либо мусорного/скам-предложения. Не отдавать им деньги и не строить на их 'антибан'-обещаниях архитектуру. Само обещание 'вести 100-200+ каналов без банов' - это маркетинг, а не измеренный результат.",
+    "В RU-сегменте есть прямое разоблачение ниши: GRIDASOV, 'УБТ арбитраж. Как вас разводят инфогипсы?' 31,639 просмотров. Ниша УБТ-обучения насыщена скамом - любой платный RU-курс по заливу трафика по умолчанию рассматривать как высокорисковую покупку.",
+    "Карго-культный риск в спеке: если заложить в скрипт ритуалы из гайдов без измерения (фиксированный 'прогрев', обязательные N хэштегов, публикация в 'виральное время'), скрипт получит сложность и хрупкость без доказанной отдачи. Каждое такое правило должно быть флагом с возможностью отключения и A/B-замером.",
+    "Нишевая специфика контента: тема 'твики Windows для FPS' граничит с тем, что платформы могут трактовать как вредоносное ПО / вмешательство в систему. У xNet Tweaks заголовок 'ULTIMATE FREE PC Tweaking Utility' и discord.gg прямо в заголовке - это одновременно и рабочая тактика, и повышенный риск модерации по спаму/ссылкам. Нет данных о фактических страйках у конкурентов.",
+    "Модель 'наши 20 аккаунтов' против модели 'платим клипперам': вторая снимает с оператора риск бана и ручную работу, но добавляет риск, что клипперы будут гнать накрученные просмотры. В найденных гайдах по клиппингу (Caleb Ortega, Skai Generated) вопрос фрода клипперов обсуждается, но измеренных ставок фрода нет - нет данных.",
+    "Заявления конкурентов о размере базы ('trusted by 900,000+ Users' у EXM, '500,000+ gamers' у Paragon) - это маркетинговые self-claims со страницы About, не аудированные цифры. Не использовать как ориентир рынка."
+  ],
+  "findings": [
+    {
+      "claim": "В нише PC-твиков для геймеров рабочий канал трафика - YouTube Shorts с медианой ~20K просмотров на ролик у лидера, а не TikTok",
+      "evidence": "Снимок @exmtweaks 2026-09-12: 53K подписчиков, joined Aug 31 2018, вкладка Shorts = 48 роликов, просмотры min 2.3K / median 20K / max 65K, сумма ~1,044,800; вкладка long videos отдала 0 элементов. Параллельно TikTok @exmtweaks = 0 видео / 1 подписчик / 0 лайков. Заголовки Shorts: 'STOP Using THIS Windows Setting ASAP 😲' (46K), 'This ONE Setting Will DOUBLE Your FPS 😲' (30K), 'PC Tips That WILL Double YOUR FPS In Seconds 😲' (24K), 'How to Fix FPS Drops ASAP 🎮' (20K)",
+      "source": "youtube.com/@exmtweaks (вкладки /about и /shorts) + tiktok.com/@exmtweaks, прямой снимок",
+      "source_date": "2026-09-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Ставить YouTube Shorts первым приоритетом пайплайна; TikTok - как тестовую гипотезу с отдельным бюджетом, а не как равную треть. Скопировать title_templates EXM целиком в спеку генератора."
+    },
+    {
+      "claim": "Второй и третий конкуренты в нише на порядок слабее лидера - медиана 2.6K и 1.6K просмотров, то есть 20K у EXM это результат бренда, а не самой ниши",
+      "evidence": "@ParagonTweaks: 9.06K подписчиков, 35 видео, Shorts = 19 штук, min 1.3K / median 2.6K / max 34K, сумма 95,300. @xNetTweaks: Shorts = 32 штуки, min 908 / median 1.6K / max 8.6K, сумма 72,708. Тот же контент-тип, те же игры, разница в медиане 12x против EXM",
+      "source": "youtube.com/@ParagonTweaks и youtube.com/@xNetTweaks, /about и /shorts, прямой снимок",
+      "source_date": "2026-09-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Плановая медиана нового канала на старте: 1.5-3K просмотров/ролик, не 20K. Финмодель строить на 1.5-3K, а 20K держать как upside после 6-12 мес."
+    },
+    {
+      "claim": "Аккаунты с 1-5K подписчиков в TikTok дают в среднем 350 просмотров на пост - падение в 2.5 раза за год; сеть новорегов не масштабирует охват линейно",
+      "evidence": "Socialinsider, выборка 2M видео / 214,507 профилей, янв 2024 - дек 2025. Средние просмотры на пост по тирам: 1-5K = 860 (2024) -> 350 (2025); 5-10K = 1,575 -> 945; 10-50K = 3,655 -> 3,240; 50-100K = 8,688 -> 9,900; 100K-1M = 25,198 -> 34,900. То есть просмотры перетекли из малых аккаунтов в крупные",
+      "source": "socialinsider.io/social-media-benchmarks/tiktok",
+      "source_date": "выборка янв 2024 - дек 2025, страница с данными Q2 2026",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Забить в спеку baseline_views_per_post = {0-5K:350, 5-10K:945, 10-50K:3240, 50-100K:9900, 100K-1M:34900}. 20 новорегов x 350 = ~7,000 просмотров на волну - это и есть реалистичный старт, а не 100K+."
+    },
+    {
+      "claim": "Раздача в TikTok не привязана к числу подписчиков - For You Page даёт 7 из 10 просмотров, и 44% аккаунтов до 100K подписчиков выросли за год",
+      "evidence": "Metricool TikTok Study: 2,314,756 постов из 92,000+ аккаунтов по миру; 'The For You Page drives 7 out of every 10 views'; '44% of accounts under 100K followers grew between 2025 and 2026'; видео даёт '5x more views and 6x more interactions than images'; объём публикаций у пользователей Metricool вырос на +72% по видео",
+      "source": "metricool.com/tiktok-study (сопутствующее видео: Metricool, 'TikTok Algorithm 2026: Explained by 2.3 Million Posts', 2,615 просмотров, youtu.be/a6KujgGkmhM)",
+      "source_date": "2026-05-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Не тратить ресурс на 'набор подписчиков' как самоцель и не покупать подписчиков - оптимизировать под FYP-раздачу (хук + completion). Не публиковать карусели/картинки вместо видео: 5x разница."
+    },
+    {
+      "claim": "Instagram официально понижает видимость Reels с водяным знаком и рамками - наивный кросс-постинг TikTok-файла в Reels урезает охват по политике, а не по слухам",
+      "evidence": "Официальный пост Instagram 'Instagram Ranking Explained': Instagram стремится 'make certain reels less visible', включая те, что 'watermarked' или содержат 'borders'. Там же сигналы Reels по важности: 1) ваша активность, 2) история взаимодействия с автором, 3) информация о рилсе, 4) информация об авторе; прогнозируются reshare, полный просмотр, лайк, переход на аудио",
+      "source": "about.instagram.com/blog/announcements/instagram-ranking-explained",
+      "source_date": "2023-05-31",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "В пайплайне рендерить чистый мастер без логотипов и без рамок/леттербоксов, экспортировать отдельный файл под каждую платформу. Это hard-правило, не опция."
+    },
+    {
+      "claim": "Главный оптимизируемый сигнал у Reels - reshare/sends и полный просмотр, а не лайки",
+      "evidence": "Официальный документ Instagram: для Reels предсказывается 'how likely you are to reshare a reel, watch a reel all the way through, like it, and go to the audio page' - reshare назван первым в списке предсказаний; resharing отдельно указан как top engagement prediction",
+      "source": "about.instagram.com/blog/announcements/instagram-ranking-explained",
+      "source_date": "2023-05-31",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Писать сценарии так, чтобы ролик хотелось отправить другу ('отправь это своему тимейту с 40 фпс'). Метрика успеха в дашборде скрипта: sends/shares и completion rate, а не лайки."
+    },
+    {
+      "claim": "Формат 'вся механика алгоритма за 120-180 секунд' - самый высококонверсионный образовательный формат по охвату на единицу усилия: канал с 5 видео собрал 546K просмотров на одном ролике",
+      "evidence": "dmscales: канал 21.4K подписчиков, всего 5 видео. 'The Entire Shorts Algorithm Explained in 180 Seconds…' - 546,819 просмотров, 5 мес назад, длина 3:00 (youtu.be/N-q-XLQymnU). 'The Entire TikTok Algorithm Explained in 120 Seconds…' - 23,575 просмотров, 4 мес назад, 2:00 (youtu.be/AGkRkNuhO_o)",
+      "source": "youtube.com/@dmscales, прямой снимок",
+      "source_date": "2026-09-12",
+      "kind": "practitioner_report",
+      "confidence": "high",
+      "actionable": "Применимо напрямую: делать ролики 'весь гайд по оптимизации Valorant за 120 секунд' - плотный исчерпывающий микро-гайд. Это одновременно и трафик, и демонстрация экспертизы, которая продаёт подписку."
+    },
+    {
+      "claim": "Хуки - единственная тема в англоязычных гайдах, где масштаб просмотров устойчиво выше остальных тактик, то есть рынок сам подтверждает, что хук - узкое место",
+      "evidence": "Kallaway: 'Give me 15 mins, and I'll make your hooks impossible to skip' 944,139 просмотров (youtu.be/2byPP_9F0-Q); 'How to Create Irresistible Hooks (and blow up your content)' 809,722 (youtu.be/LmXpbP7dD48); 'How Social Media Algorithms Actually Work (And How to Beat Them)' 891,226, 17:21 (youtu.be/8cQidXgtGmU). Канал 40.4K подписчиков, в bio заявлено 650K+ подписчиков в коротких видео и 1B+ просмотров. heyDominik: 'I Studied 1,000 Hooks, Here's How to ACTUALLY Go Viral' 745,936 (youtu.be/Xqy9L-88wcw). LOGAN SMITH: 'How to get retention SO HIGH your shorts always go viral' 333,545 (youtu.be/IPW-MF8Kp0I). Jade Beason: 'I studied 100+ hooks' 56,821 (youtu.be/dNT7gd3ulAg)",
+      "source": "youtube.com search snapshot: 'first 3 seconds hook retention data short form video'",
+      "source_date": "2026-09-12",
+      "kind": "practitioner_report",
+      "confidence": "high",
+      "actionable": "Генерировать не N роликов, а N вариантов ХУКА на один сюжет. В спеке: hook_variants_per_topic = 4-8, одинаковое тело ролика, разные первые 3 секунды. Это ключевая переменная A/B."
+    },
+    {
+      "claim": "Генерация 4+ вариаций хука на один выигрышный ролик - тактика, оформленная как продукт, то есть индустриальный стандарт для сетей аккаунтов",
+      "evidence": "GrowthGPT, 'Scale Winning Videos: 4 Hook Variations for A/B Testing' 681 просмотр, 3 недели назад (youtu.be/FjEJu61H4-Y). Repurpose.io, 'how to a/b test reels to find which is most viral (before you post it)' 1,394 просмотра (youtu.be/UdGVsH0x1ZE). Охваты низкие - это вендорский контент, а не массовый гайд",
+      "source": "youtube.com search snapshot: 'same video different hook AB test views experiment shorts'",
+      "source_date": "2026-09-12",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Заложить в скрипт цикл: сюжет -> 4-8 хуков -> раскатка по аккаунтам -> победитель (>3x медианы) переливается на остальную сеть. Уровень доказательств слабый (вендоры), поэтому реализовать с замером, а не как догму."
+    },
+    {
+      "claim": "КАРГО-КУЛЬТ: A/B-тестирование превью, о котором говорят гайды, официально существует только для long-form превьюшек YouTube и не применимо к Shorts; есть и прямое опровержение пользы",
+      "evidence": "Официальное видео YouTube Creators 'A/B testing on YouTube' 191,522 просмотра, 9 мес назад (youtu.be/jKRiib3Xzoo) - про thumbnails. Kevin Chee, 'Your channel doesn't grow if you use A/B testing. Here's proof.' 11,343 просмотра (youtu.be/jn2UFbpeOgM). vidIQ, 'Does A/B Thumbnail Testing HURT Your Channel?' 33,761 (youtu.be/-rBAZR6_-a8). ClickTheory, 'YouTube's A/B Testing Has a Huge Problem For Small Creators' 167 (youtu.be/-R5PQolxx3I)",
+      "source": "youtube.com search snapshot + официальный канал YouTube Creators",
+      "source_date": "2026-09-12",
+      "kind": "myth_debunk",
+      "confidence": "high",
+      "actionable": "НЕ закладывать в спеку 'A/B превью' для Shorts - такого инструмента нет. A/B делать самому на уровне хука и заголовка, по внешним метрикам."
+    },
+    {
+      "claim": "КАРГО-КУЛЬТ: сериал 'новый алгоритм каждый месяц' - формат с выгоревшей аудиторией и без измеренных данных; обвал просмотров 242K -> 8-11K",
+      "evidence": "Robert Benjamin, @RobertBenjaminChannel, 922K подписчиков. 'HOW TO FIX A TIKTOK SHADOW BAN IN 10 Minutes' (4 года назад) - 242,444 просмотра. Свежие выпуски той же серии: 'TikTok's New Algorithm Changes Explained for September 2026' 8,273 просмотра, 10 дней назад (youtu.be/5eSmd-GJvVY); 'YouTube's NEW Shorts Algorithm Changes Explained for August 2026' 11,176 (youtu.be/PJ2N-mG6kVs); 'Instagram's NEW Algorithm Update Explained for September 2026' 7,316, 7 дней назад (youtu.be/yKDiu4bwHUA); 'The EASIEST Way to Go Viral on TikTok in 2026 (New TikTok Algorithm Change)' 11,097. Ежемесячное переиздание одного тезиса при 922K подписчиков и 8-11K просмотров",
+      "source": "youtube.com/@RobertBenjaminChannel, прямой снимок search-выдачи",
+      "source_date": "2026-09-12",
+      "kind": "myth_debunk",
+      "confidence": "high",
+      "actionable": "Не переписывать спеку под 'изменения алгоритма месяца'. Фиксировать архитектуру на устойчивых сигналах (хук, completion, shares, без watermark) и менять только по измеренному падению своих метрик."
+    },
+    {
+      "claim": "КАРГО-КУЛЬТ: 'прогрев аккаунта' и 'фикс шэдоубана' - тема, представленная исключительно вендорским и анекдотическим контентом, без единого измеренного теста",
+      "evidence": "Выдача по 'warming up new tiktok account 2026': Barsin 'How to Properly Warm Up Your TikTok Account to Avoid Getting Shadowbanned' 38,382 просмотра (youtu.be/pTEInggIwm0); OnlineDopamine 3,934; Kuya R 4,560; Simonas Dip '3 Ways To Automate TikTok Account Warm Up' 4,584; Shortimize 1,532; далее вендорские каналы с 10-201 просмотрами (ClipMyApp 36, 'Marketing Auto Software' 10, 'Marketing Automation Tools' 201). Ни одного видео с замеренным контролем/выборкой. По шэдоубану аналогично: Robert Benjamin 242K (4 года назад), Shortimize 4,300, Agent 29,889 - все в формате 'как проверить/починить', без данных",
+      "source": "youtube.com search snapshots: 'warming up new tiktok account 2026 before posting', 'tiktok shadowban myth debunked test experiment'",
+      "source_date": "2026-09-12",
+      "kind": "myth_debunk",
+      "confidence": "high",
+      "actionable": "Не хардкодить ритуал прогрева в скрипт. Если реализовывать - только как отключаемый флаг с логированием, чтобы можно было измерить разницу на своей сети. Не платить за 'антибан'-софт на основе этих гайдов."
+    },
+    {
+      "claim": "КАРГО-КУЛЬТ/АНТИПАТТЕРН: хэштег-стаффинг и повторная публикация одинаковых заголовков коррелируют с худшим результатом в этой самой нише",
+      "evidence": "@xNetTweaks стаффит хэштеги прямо в заголовки ('how to edit fast on fortnite😳 #fortnite #fortniteclips #tweaks #fps #ping #delay #prosettings') и публикует один и тот же заголовок 3+ раза ('The Best Tweaks😲 (discord.gg/xnettweaks) #fortnite #fortniteclips #Tweaks #fps #prosettings #fn' повторён трижды). Его медиана - 1.6K просмотров, худшая из трёх конкурентов; у EXM, который хэштеги в заголовки не стаффит, медиана 20K",
+      "source": "youtube.com/@xNetTweaks/shorts vs youtube.com/@exmtweaks/shorts, прямой снимок",
+      "source_date": "2026-09-12",
+      "kind": "myth_debunk",
+      "confidence": "medium",
+      "actionable": "Заголовок - это хук, а не контейнер для хэштегов. В спеке: title = только hook-фраза; хэштеги (если вообще) - в описание, ограничить 3-5. Это корреляция на выборке из 3 каналов, не causation - помечено medium."
+    },
+    {
+      "claim": "Инвайт в Discord - фактическая точка входа воронки у всех трёх конкурентов, причём один вписывает ссылку прямо в заголовок ролика",
+      "evidence": "@paragontweaks TikTok bio: '✧Advanced PC Tweaker / ✧State Certified IT Professional / discord.gg/paragontweaks'. @xNetTweaks: 'discord.gg/xnettweaks' внутри заголовков Shorts. @ParagonTweaks YouTube About: 'Book a session today: paragontweaks.net'. @exmtweaks About: '⬇️ Download EXM for FREE ... Website: exmtweaks.com' - то есть EXM ведёт на бесплатную загрузку, а не сразу на оплату",
+      "source": "tiktok.com/@paragontweaks, youtube.com/@xNetTweaks/shorts, youtube.com/@ParagonTweaks/about, youtube.com/@exmtweaks/about",
+      "source_date": "2026-09-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Воронка: Shorts -> бесплатная утилита/бесплатный тир (как у EXM) -> Discord -> платная подписка. НЕ вести с ролика напрямую на оплату. cta_target = discord_invite + free_download; cta_in_title как A/B-флаг."
+    },
+    {
+      "claim": "Автовыдача Discord-роли по подписке - стандартная задокументированная механика, гайды по ней собирают десятки тысяч просмотров",
+      "evidence": "Gehsture: 'How to Set up a Subscription System in your Discord Server w/ Whop 2025! (Updated Whop Guide)' 25,255 просмотров (youtu.be/UKNRYxh9TbI); 'How to Setup a Discord Subscription System w/ Whop 2025! (Updated 4.0 Guide)' 38,758 (youtu.be/FICMXcxpG3M); 'The BEST Discord Subscription Bot to MONETIZE Your Server!' 27,510 (youtu.be/XOsKH0DOuNM). MemberSpace 'How to Create a Paid Discord Server [2026 Update]' 595 (youtu.be/ufHRjc9tySw). thekendalia 'How This Trading Community Generates $6,289/Month on Discord' 969 (youtu.be/i3qSgtdrCYM)",
+      "source": "youtube.com search snapshot: 'sell discord subscription membership with short form video'",
+      "source_date": "2026-09-12",
+      "kind": "practitioner_report",
+      "confidence": "high",
+      "actionable": "Требование 'без ручной работы' закрывается связкой платёжка-с-подписками -> webhook -> выдача Discord-роли + генерация лицензионного ключа. Это решённая задача, не изобретать."
+    },
+    {
+      "claim": "Клиппинг-экономика (плата клипперам за просмотры) - зрелый рынок с миллионными охватами гайдов; это прямая альтернатива содержанию 20 своих аккаунтов на гео",
+      "evidence": "Dan Kieft 'How To Actually Make Money with Whop Clipping - It's Simple' 1,254,752 просмотра (youtu.be/sTvsM0ej4Eg); Money Mind 'Full Whop Clipping Tutorial (with Earnings Shown)' 691,563 (youtu.be/eRp5bKpha7c); Matt The Method 'How I Made $16,705.83 On Whop (as a low iq 21 year old)' 155,527 (youtu.be/VuXxqcUDgdU) и 'The NEW Way to Make Money With Whop Clipping in 2026' 14,854 (1 день назад, youtu.be/JhQFp0VPKgU); Caleb Ortega 'Don't Start Whop Clipping, Use THIS Clipping Strategy Instead' 87,347 (youtu.be/Ab_bbDEjlDc) и 'This clipping strategy makes $413/day' 6,625; Skai Generated 'I Tried Every Clipping Platform So You Don't Have To (Whop, Vyro & More)' 74,579 (youtu.be/eaYPT1Remus); Ethan's Hustle 'How To Grow a TikTok Clipping Page to 10k Followers (Earn $1,000+)' 51,266 (youtu.be/_mq1okc0mSc)",
+      "source": "youtube.com search snapshot: 'clipping campaigns whop discord paid clipping 2026'",
+      "source_date": "2026-09-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Оценить численно в спеке как отдельный канал: платить за просмотры клипперам вместо/вместе с сетью новорегов. Переносит риск бана с оператора на клипперов, снимает ручную работу, но добавляет риск накрутки - нужен порог min_views и проверка."
+    },
+    {
+      "claim": "Существуют бесплатные публичные шаблоны полного пайплайна 'генерация видео -> автопостинг в 9 соцсетей' на n8n - брать их как отправную точку, а не платные курсы",
+      "evidence": "Nate Herk 'I Built a 24/7 Viral Shorts Machine with No-Code (free n8n template)' 361,205 просмотров, 31:23 (youtu.be/BcfjIBd49C8); 'This Workflow Auto-Posts to 9 Different Socials (free template)' 113,742 (youtu.be/QovlUE_VlWQ); Andy Lo 'How I Used $0 to Create 1000+ Videos on Autopilot With This AI Agent System (No Paid API Needed)' 285,716, 45:32 (youtu.be/PeelSIEewUY); Website Learners 'Automating Faceless Shorts with AI (No Code + n8n Template)' 244,536 (youtu.be/zSkv2ydB54M); Builders Central 'This is How I Automated Viral AI Videos for FREE (n8n + Veo 3)' 248,728 (youtu.be/0rMMWOWVBo0); Ricardo 'How To Post To Tiktok With N8N (For Free!)' 32,703 (youtu.be/6qQYLr2HhR4); AI Agents A-Z 'FREE social media post scheduling API - n8n automation (TikTok, YouTube, IG)' 47,784 (youtu.be/Q5a9q-PzNz4); Nid Academy 'Automate TikTok Posting with AI and n8n (100% Free)' 19,439 (youtu.be/5mgA6oQwRrQ); Calvin Hia 'I Built the ULTIMATE TikTok AI Agent That Posts For Me Daily!' 33,857 (youtu.be/7GikVUQSDpc)",
+      "source": "youtube.com search snapshot: 'bulk video generation automation n8n tiktok posting api'",
+      "source_date": "2026-09-12",
+      "kind": "practitioner_report",
+      "confidence": "high",
+      "actionable": "Архитектуру автозалива проектировать по этим шаблонам (n8n или собственный аналог их графа). Бюджет 50-200 USD/мес это покрывает. Не покупать RU-вендорский 'автозалив' софт."
+    },
+    {
+      "claim": "Крупнейшие faceless/cash-cow курсы выложены на YouTube БЕСПЛАТНО и целиком - платить за обучение по автозаливу нет причин",
+      "evidence": "Baddie In Business 'How to Start YouTube Automation (STEP BY STEP) NO FACE | NO EDITING | FREE COURSE' 1,872,156 просмотров, 26:18 (youtu.be/xwNRyKItpOk); Saad Rashid (канал 218K подписчиков) 'YouTube Automation Full Course | Complete GUIDE' 1,302,821, длина 5:30:07 (youtu.be/GKkU1smMGiA); Fabio Morena 'How To Grow A Faceless Youtube Channel In 2026 | FULL COURSE' 727,885, 1:41:54 (youtu.be/Bbjv9-00tv0); Make Money Matt 'How to Start YouTube Automation in 2026 (Step By Step) NO FACE | FREE COURSE' 253,732, 1:36:54 (youtu.be/J-suhuECjBw); Joshua Mayo 'How To Start a Faceless YouTube Channel That Makes Money in 2026' 192,314, 39:23 (youtu.be/-WSoI1zL_Z4); Pasha Mogadam (@pashamoga, 11.5K подписчиков) 'The Complete Faceless Instagram Theme Pages Course 2026' 186,123, 4:16:45 (youtu.be/YV5PLxuFok0) и 'Beginners Complete Faceless Instagram Theme Page Tutorial for 2026 (5.5+ Hour Guide)' 41,624, 5:34:56 (youtu.be/GWUBly65t5w)",
+      "source": "youtube.com search snapshots: 'faceless youtube automation guide 2025', 'faceless theme page tiktok 2026 guide grow'",
+      "source_date": "2026-09-12",
+      "kind": "practitioner_report",
+      "confidence": "high",
+      "actionable": "Извлечь тактики из этих бесплатных многочасовых курсов в спеку. Бюджет на обучение = 0. Обратная сторона: раз всё бесплатно и посмотрено миллионами - конкуренция на этих тактиках максимальная, преимущество даёт только нишевая экспертиза (твики), которой у faceless-толпы нет."
+    },
+    {
+      "claim": "В faceless-нише есть измеренный контр-нарратив: самостоятельные 30-дневные тесты собирают охват сопоставимый с курсами, то есть аудитория сама сомневается в заявленных доходах",
+      "evidence": "Stickman Matt 'I Tried Faceless YouTube Automation for 30 Days Realistic Results' 218,397 просмотров (youtu.be/2n2P-rpql34); Parker Henderson 'I Tried Starting A TikTok Theme Page In 1 Week (Honest Results)' 1,155 (youtu.be/LBH0rqM2k2o); Ashley T. 'I Tested Posting Every Day for 30 Days (The Results Shocked Me)' 20,352 (youtu.be/wF6_8Uy4MI4); annie's diaries 'i tried posting 10x a day to go viral on tiktok' 13,093 (youtu.be/7KJ1jZ0rt7Y); Chronically Online 'I posted 3x/day on Tiktok so you dont have to' 1,091 (youtu.be/kK3bSfAyKKY); Modern Millie 'I posted to TikTok EVERY DAY for 108 days | Here's what happened 😳' 31,621 (youtu.be/AoCT5YZycp0)",
+      "source": "youtube.com search snapshots: 'how many times a day should I post tiktok experiment results'",
+      "source_date": "2026-09-12",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Использовать формат 'я 30 дней тестировал' и для СВОЕГО продукта ('я 30 дней играл с этими твиками - вот график 1% low'). Это и контент, и доказательство продукта. Сами же чужие тесты - n=1, брать как гипотезы, не как константы."
+    },
+    {
+      "claim": "Заявления о доходах в faceless-гайдах - непроверяемые пустые заявления; их нельзя использовать в финмодели",
+      "evidence": "Romayroh '$1,620,985 With 4 Faceless Channels - (YouTube Automation Guide For Beginners)' 34,288 просмотров (youtu.be/lag7d1pPKKs) и 'The BORING Faceless Channels that made me $31,364 in 90 Days' 52,087 (youtu.be/RQs3so8RHGw); Chris Barrera '$0-$45,186 In 30 Days With Faceless YouTube Automation (Showing Everything Lol)' 120,635 (youtu.be/HOEqRYPD7sE) и 'F*ck it. Zero to $1,000/Day With Faceless YouTube Automation (Just Copy Me)' 51,966 (youtu.be/h8_2FVvCEe0); Andrew 'how I got this faceless youtube channel to $10k/week with AI' 505 просмотров (58 минут назад, youtu.be/halPBYESEu4); Travis Nicholson 'How I Made $33,248 Using Only Organic Traffic' 9,713 (youtu.be/ftfJxc31Lw0); Wendy Nolan 'How I Made $116K in 30 Days Selling Digital Products Without Ads' 28,125 (youtu.be/-BC06qERE-g). Ни в одном случае не раскрыты названия каналов для независимой проверки",
+      "source": "youtube.com search snapshots (faceless automation, digital products)",
+      "source_date": "2026-09-12",
+      "kind": "myth_debunk",
+      "confidence": "high",
+      "actionable": "Тактики из этих видео - можно. Цифры - нельзя. Для финмодели использовать только Socialinsider/Metricool и собственные замеры."
+    },
+    {
+      "claim": "Реальная индустриальная частота публикаций - 8-23 поста в МЕСЯЦ на аккаунт, а не 3-10 в день; планы гиперпостинга опираются только на анекдоты",
+      "evidence": "Socialinsider 2025 (2M видео / 214,507 профилей): постов в месяц по тирам подписчиков 1-5K = 8, 5-10K = 12, 10-50K = 16, 50-100K = 18, 100K-1M = 23; рост частоты год к году в среднем на 40%. Против этого - только n=1 видео вроде 'i tried posting 10x a day' (13,093 просмотра)",
+      "source": "socialinsider.io/social-media-benchmarks/tiktok",
+      "source_date": "выборка янв 2024 - дек 2025",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "posts_per_account_per_day дефолт = 1-3, не 10. При сети 20 аккаунтов на гео это уже 20-60 публикаций/день на гео - достаточный объём без риска выглядеть как спам-фарма."
+    },
+    {
+      "claim": "TikTok-SEO/ключевики в тексте - тема с устойчивым, но умеренным охватом; консенсусная, но второстепенная по сравнению с хуком",
+      "evidence": "Modern Millie 'THE TIKTOK ALGORITHM EXPLAINED | Your 2026 Guide To TikTok Success!' 132,695 просмотров (youtu.be/diJ172jDsxA); HubSpot Marketing 'TikTok SEO Tutorial - Optimize your Business Page (10 Simple Tricks!)' 24,001 (youtu.be/xuAMtJKGHbc); Kapwing 'TikTok SEO: How to Get More Views on TikTok Using Keywords' 66,467 (youtu.be/ZygrShWb16w); Exploding Topics 'How TikTok SEO Works (And How to Rank Higher in 2026)' 1,169 (youtu.be/eIOFz5EIv28); ZoCo Marketing 'TikTok Keyword Research in 2026 (Using Free NEW Tool)' 3,032 (youtu.be/vvaYRGowzv0); Youri van Hofwegen 'YouTube SEO 2026: How I Rank #1 on YouTube' 59,907 (youtu.be/kp5tuB99ByQ)",
+      "source": "youtube.com search snapshot: 'tiktok search seo keywords 2026 get views strategy'",
+      "source_date": "2026-09-12",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Применимо очень хорошо к этой нише: запросы вида 'fortnite fps boost', 'valorant input lag fix', 'best settings low end pc' - это поисковые интенты с долгим хвостом. Забить в спеку keyword_pool на игру и вставлять ключевик в заголовок + on-screen текст + описание."
+    },
+    {
+      "claim": "Кросс-постинг одного видео в три платформы даёт разные результаты - это измеренный тест, а не теория; значит нужны отдельные экспорты и отдельные метрики по платформам",
+      "evidence": "Katie Steckly 'I posted the same video to Reels, TikTok and Shorts. Here's what happened.' 52,722 просмотра, 29:54, 11 мес назад (youtu.be/oSjCahkH5Nc). Coaches On Fire 'Should You Cross-Post Video Content Across MULTIPLE Social Media Sites? [Answer From META]' 35,308 (youtu.be/g2xm9PqOEaQ). Modern Millie 'SHOULD YOU POST TO MULTIPLE SOCIAL MEDIA? How To Repurpose Content' 45,052 (youtu.be/bEGQmOhTXqo). Taro 4ORTE 'faceless tiktok vs youtube shorts, which is better in 2026?' 3,410 (youtu.be/flfbIZezwLQ)",
+      "source": "youtube.com search snapshots",
+      "source_date": "2026-09-12",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "В спеке: одна база сюжета, но три отдельных рендера (разные обложки/первые кадры/подписи, без watermark) и три отдельных набора метрик. Не переиспользовать один файл-в-три-места."
+    },
+    {
+      "claim": "Управление сетями TikTok-аккаунтов - публично описанная практика с охватом в сотни тысяч просмотров, но методы обхода антифрода продаются вендорами антидетект-браузеров, а не подтверждены данными",
+      "evidence": "Business Lifehacks 'Here's How PRO Influencers Run Multiple TikTok Account NETWORKS' 270,696 просмотров, 6 мес назад (youtu.be/NmuBBph3F_o); Daniel | Tech & Data 'How to Run Multiple TikTok Accounts SAFELY in 2026' 18,168 (youtu.be/Ydx0QI-MwVg); Incogniton (вендор антидетект-браузера) 'Run Multiple TikTok Accounts With Incogniton' 16,897, 1 мес назад (youtu.be/ygr7GqhwFuk); Money Mind 'Repurpose.io: How to Repost on ALL Social Media platforms at ONCE' 31,273 (youtu.be/dFc-nyasqhQ); TikMatrix (вендор) 'How to Post Different Videos to Multiple TikTok Accounts' 0 просмотров, 37 минут назад (youtu.be/p7_hbwHe5MY)",
+      "source": "youtube.com search snapshot: 'posting same video on multiple tiktok accounts strategy'",
+      "source_date": "2026-09-12",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Практика существует и документирована - но ключевые 'как не забанят' разделы идут от продавцов софта. Инструкций по обходу антифрода я не привожу. Для спеки важно другое: спроектировать систему так, чтобы потеря половины аккаунтов не убивала проект (нет единой точки отказа, весь контент и метрики хранятся у оператора, а не в аккаунтах)."
+    },
+    {
+      "claim": "RU-сегмент: самый информативный источник по заливу УБТ из TikTok в Telegram - Денис Марков, и его центральный вывод подаётся как 'год лил трафик и понял 8 вещей'",
+      "evidence": "@denismarkov, 11.7K подписчиков. 'Я год лил трафик из TikTok на Telegram-каналы и партнерки и понял 8 вещей | Арбитраж трафика ТикТок' 67,606 просмотров, 14:13 (youtu.be/8PTELW8TS8Q); 'Залив УБТ из TikTok на Телеграм канал 2025: от нуля до первой монетизации' 10,358, 21:43 (youtu.be/1ZRY6Gok4Qk); 'УБТ трафик в 2026 году: 5 лучших связок' 6,348, 18:34 (youtu.be/zeerB0k_QP0); 'УБТ: полный гайд по уникализации видео в 2026' 3,489, 10:15 (youtu.be/gmE8upfo_nk); 'Как настроить Telegram-канал перед заливом трафика' 828 (youtu.be/M_LxBvfJOBU)",
+      "source": "youtube.com/@denismarkov + search snapshot 'залив трафика с тиктока на телеграм 2025'",
+      "source_date": "2026-09-12",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Это единственный RU-источник с последовательной серией и годовым горизонтом - смотреть как основной RU-референс. Но: его аудитория льёт на Telegram-партнёрки/беттинг, а не на SaaS-подписку с англоязычным Discord - переносить только механику залива, не воронку."
+    },
+    {
+      "claim": "RU-сегмент по УБТ насыщен скамом, и это зафиксировано изнутри самого сегмента",
+      "evidence": "GRIDASOV 'УБТ арбитраж. Как вас разводят инфогипсы? Готовая схема для развода и разоблачение' 31,639 просмотров (youtu.be/1kAkKKXYcK8). Контраст охватов: разоблачение 31,639 против вендоров автозалива LuxuryTool 742 и 252, NEXO 771. Также в выдаче есть явно накрученно-мусорные каналы с 22-98 просмотрами и заголовками капсом ('УБТ ТРАФИК 2026: ПОЛНЫЙ ГАЙД ПО ЗАРАБОТКУ НА ПЕРЕЛИВЕ ИЗ TIKTOK В TELEGRAM', 0:29 длиной)",
+      "source": "youtube.com search snapshots: 'УБТ трафик тикток гайд 2026', 'нейроканал шортс заработок 2026 автозалив видео'",
+      "source_date": "2026-09-12",
+      "kind": "myth_debunk",
+      "confidence": "high",
+      "actionable": "Не покупать RU-курсы и RU-софт автозалива. Бесплатные EN-курсы (см. выше) на порядки качественнее и подтверждены миллионными охватами."
+    },
+    {
+      "claim": "RU-вендоры обещают ведение 100-200+ каналов в Shorts 'без банов', но их собственные рекламные видео собирают 250-771 просмотр - сигнал нерабочего или скам-предложения",
+      "evidence": "LuxuryTool - Автозалив shorts для YouTube: '🔥 Автозалив YouTube Shorts — Как вести 200+ каналов ежедневно | Арбитраж трафика 2026' 742 просмотра, 21:30 (youtu.be/DdcXxi1e8kk); '🔥 Лучший Автозалив YouTube Shorts — Как вести 100+ каналов | Арбитраж трафика 2026 УБТ' 252 просмотра, 27:37 (youtu.be/hekHkCiyCMc). NEXO | Система трафика: 'Автозалив YouTube — Как вести 100+ аккаунтов в YouTube без банов | Арбитраж трафика 2026' 771 просмотр (youtu.be/gScJx-ENunc). Paranoya | Арбитраж: 'ЗАЛИВ ШОРТС 2026 | Как зарабатывать 100 000₽+ на YouTube Shorts без монетизации' 320 просмотров и 'Мои результаты спустя 7 дней' 161",
+      "source": "youtube.com search snapshot: 'нейроканал шортс заработок 2026 автозалив видео'",
+      "source_date": "2026-09-12",
+      "kind": "myth_debunk",
+      "confidence": "high",
+      "actionable": "Строить автозалив самому по бесплатным n8n-шаблонам. Обещание '100+ каналов без банов' считать маркетингом; в спеке заложить деградацию (часть аккаунтов выпадает) как норму, а не как аварию."
+    },
+    {
+      "claim": "RU-сегмент подтверждает жизнеспособность модели 'шортсы -> трафик без монетизации платформы', что совпадает с целью проекта (трафик, не AdSense)",
+      "evidence": "Пётр Сысоев 'Быстрый заработок на YouTube Shorts БЕЗ АДСЕНСА И МОНЕТИЗАЦИИ в 2026! УБТ ТРАФИК с Ютуб' 374 просмотра (youtu.be/8HD9C5GqeuA); The Tutorial Girl 'Забудь про встроенную монетизацию: Как реально зарабатывать на YouTube Shorts без показа лица' 807 (youtu.be/xqHBFZBOeQM); TRUWAS TRAFFIC 'АРБИТРАЖ УБТ ТРАФИКА на ГЕМБЛИНГ через ЮТУБ ШОРТС 2026 | От 0 до ПЕРВЫХ ДЕПОЗИТОВ (НЕ КЛИКБЕЙТ)' 1,749 (youtu.be/pOqJvf11zeU); Павел Булушиев 'Арбитраж Трафика через Инстаграм. Как заливать УБТ через REELS 2026' 7,619 (youtu.be/FLonH93Lqqc) и 'Полный ГАЙД по УБТ от А до Я' 1,570 (5 дней назад, youtu.be/9S-u6TqknyY)",
+      "source": "youtube.com search snapshots (RU)",
+      "source_date": "2026-09-12",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Подтверждает стратегический выбор: не гнаться за монетизацией каналов, считать каналы чисто трафиковыми. Следствие для спеки: политики про reused/inauthentic content бьют по монетизации (нам не критично), но не отменяют риск удаления каналов - его и надо минимизировать."
+    },
+    {
+      "claim": "Воронка 'короткие видео -> Telegram/мессенджер -> продажа цифрового продукта' в RU описана подробно, но её охваты в 10-50x ниже EN-аналогов - обучающая база слабее",
+      "evidence": "Артем Сенаторов 'Самая простая воронка из рилсов. Как продавать в Инстаграм' 35,657 просмотров (youtu.be/FP3zHTxh6jM); Виктор Ремигайло 'YouTube + Telegram = $10,000/месяц воронка продаж' 9,075 (youtu.be/weB2eIVmxEI); Игорь Зуевич 'Бесплатный Трафик для Воронок Продаж в Telegram' 6,164 (youtu.be/767D9Ke565U); Дарья Виноградова 'ПОЛНАЯ СХЕМА создания ВОРОНКИ продаж в Инстаграм, Телеграм, Ютюб' 4,342, 34:36 (youtu.be/GaQFamNgrkM); Pulatov/PuzzleBot 'Секретная воронка продаж через Telegram-бота: настройка за 10 минут' 1,124 (youtu.be/dcbPUZlKbbw). Против EN: Baddie In Business 'How to Start Selling Digital Products in 2026 (STEP BY STEP) FREE COURSE' 98,615 (youtu.be/QopRRjoOyyg); Rochelle Be 'How I Market My Digital Products (It's Literally FREE)' 145,825 (youtu.be/YvtQQdqEWZI); Tia TX '100 WEBSITES to Sell Digital Products 2026 (FREE TRAFFIC)' 35,929 (youtu.be/Q1vjaKKfNtM); Richard Yu 'The Simplest Way to Sell Digital Products in 2026 (Free Tools)' 24,074 (youtu.be/piDNZXCb8SY); Alston Godbolt 'If I Had to Start Selling Digital Products on TikTok in 2026, I'd Do This' 3,965 (youtu.be/3Bk_MGKocIQ)",
+      "source": "youtube.com search snapshots (RU и EN)",
+      "source_date": "2026-09-12",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Учиться по EN-источникам (продукт англоязычный, Discord англоязычный) - RU-воронки завязаны на Telegram-бота, который в UK-геймерской аудитории 13-24 не является нативным каналом. Заменить 'Telegram-бот' на 'Discord-бот' во всей механике."
+    },
+    {
+      "claim": "Ниша оптимизации ПК под игры имеет подтверждённый спрос на миллионы просмотров в long-form - то есть тема не нишевая, а массовая, и Shorts-формат её ещё не выбрал полностью",
+      "evidence": "Codelife (@Codelife, 470K подписчиков при всего 45 видео, Epic Partner) 'How PROS Optimize Windows For FPS Boost (Optimization Guide)' 1,556,355 просмотров, 14:06 (youtu.be/eSebSEeejOM); Kxng 'Optimizing a Office Laptop Until I Get 240 FPS' 1,207,615, 10:06 (youtu.be/jCYROr4n9xw) - прямо про слабое железо, точное попадание в ЦА; marrentm '33 PC Tweaks For Zero Input Delay and Better FPS' 758,707, 17:22 (youtu.be/G_Xwgw2PWiE); Lecctron 'The Only Fortnite Optimization Guide You Will Ever Need in 2026' 612,702, 23:01 (youtu.be/CjHvpGGmRp8); CHARLATAN | Radiant Coach 'How Valorant PROS Optimize Windows For FPS Boost (Full Optimization Guide)' 279,810, 43:36 (youtu.be/PP1s7Avr1kE); ParagonTweaks long-form 'How Valorant Pros Optimize Windows for MAX FPS (Hidden Settings Guide)' 72,013 (youtu.be/aA21FtyOW_E); exm long-form 'The Only Valorant Optimization Guide You Need for 2026' 20,476, 6 дней назад (youtu.be/DrwxSyXy2Zk); Xilly 'Valorant Ultimate Optimization Guide - MAX FPS & Lowest Input Lag' 33,039 (youtu.be/UHyTbjtOmcw); xNet Tweaks 'ULTIMATE FREE PC Tweaking Utility 🔧 Boost FPS & Get ZERO Input Delay' 26,657 (youtu.be/ypKzPwu6-eI)",
+      "source": "youtube.com search snapshot: 'fortnite valorant fps boost optimization guide youtube tweaks'",
+      "source_date": "2026-09-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Два вывода для спеки. (1) Заголовочные паттерны long-form победителей переносить в Shorts: 'How PROS Optimize...', 'The Only X Optimization Guide You Need for 2026', 'Optimizing a [слабое железо] Until I Get [N] FPS', '33 Tweaks For Zero Input Delay'. (2) 'Слабый ноутбук -> 240 FPS' (1.2M просмотров) - самый сильный подтверждённый угол под целевого клиента; сделать это отдельной контент-рубрикой."
+    },
+    {
+      "claim": "Специализированные гайды по росту игрового канала существуют и собирают сотни тысяч просмотров - есть готовая методичка именно под геймерскую нишу",
+      "evidence": "Nathan 'The NEW Way to Start a Successful Gaming Channel in 2026' 324,414 просмотра, 19:08 (youtu.be/gONKj7rVYmI); vidIQ и Austin John Plays 'If I Started a Gaming Channel in 2026, I'd Do This' 110,503, 10:54 (youtu.be/1U8P07aMVzU); Ethan's Hustle 'How To Grow a TikTok Clipping Page to 10k Followers' 51,266 (youtu.be/_mq1okc0mSc); merked 'How To Grow On TikTok FAST for Gamers!' 32,164 (5 лет, youtu.be/S0vrDD7TgLY); tqvylor 'How to Grow FAST on Roblox TikTok & YouTube in 2026' 5,319 (youtu.be/dxTG9mg03sc)",
+      "source": "youtube.com search snapshot: 'how to grow gaming tiktok account clips 2026'",
+      "source_date": "2026-09-12",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Это ближайшие к задаче источники по игровой нише конкретно. tqvylor - отдельно про Roblox, что попадает в список целевых игр проекта."
+    },
+    {
+      "claim": "Mike Yanda - наиболее структурированный EN-источник по 30-дневному плану старта в TikTok с нуля, с охватом 259K",
+      "evidence": "@MikeYanda, 78.7K подписчиков, 123 видео, joined Sep 13 2013. 'Your 30 day plan to blow up on TikTok in 2026' 259,104 просмотра, 25:35 (youtu.be/MBxjPb8hRws); 'If I Started On TikTok In 2026, I'd Do This' 469,743, 13:29 (youtu.be/EbmRp4SdEaw); 'How to BEAT the TikTok Algorithm in 12 minutes' 128,396 (youtu.be/VgUZJo0qDRc); 'If I started from 0 on TikTok in 2026, this is what I'd do' 87,219, 16:20 (youtu.be/YmhFC_4JL2k); 'New Creators: Do THIS and the TikTok Algorithm Will LOVE You!' 61,802, 24:46 (youtu.be/MGIBt_2zdaA)",
+      "source": "youtube.com/@MikeYanda + search snapshots",
+      "source_date": "2026-09-12",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Использовать как основной EN-референс по старту аккаунта с нуля (именно под кейс 'новый аккаунт, 0 подписчиков', который у оператора будет 20 раз на каждое гео). Тезисы внутри роликов я не верифицировал - транскрипты недоступны."
+    },
+    {
+      "claim": "vidIQ - единственный крупный источник (2.43M подписчиков) с регулярным разбором изменений монетизации и правил YouTube; его материал о снятии/переименовании политики 'inauthentic content' собрал 95K за месяц",
+      "evidence": "@vidIQ, 2.43M подписчиков, 498 видео, joined Feb 22 2013. 'New YouTube Monetization Update: Inauthentic Content Has Gone!' 95,326 просмотров, 1 мес назад, 10:09 (youtu.be/JvZ0MXl70fc); 'The Complete Guide to the YouTube Algorithm' 138,920, 20:51 (youtu.be/SIp7MeYbz8U); 'The New Rules of YouTube (2026)' 117,923, 9:38 (youtu.be/ZKsldrcO_fU); 'How Much YouTube ACTUALLY Pays for Shorts in 2026?' 56,346 (youtu.be/nvSrftWNu-w); 'Shorts vs Longs (How to Get More Views in 2026)' 43,902 (youtu.be/oYrFyTYc6dg); 'How to Avoid Reused and Repetitious Demonetization on YouTube' 122,960 (youtu.be/5jDI6QTqUmo). Официальный Creator Insider: 'YouTube Reused Content Policy — Explained!' 109,731 (youtu.be/YPrCfgbX71E)",
+      "source": "youtube.com/@vidIQ + search snapshots; Creator Insider - официальный канал YouTube для креаторов",
+      "source_date": "2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "medium",
+      "actionable": "Мониторить vidIQ как трекер изменений правил вместо сериалов 'новый алгоритм месяца'. ВАЖНО: я НЕ смог подтвердить содержание политики напрямую - support.google.com/youtube отдал 404 на проверяемой странице, а страницы TikTok (community-guidelines, support faq) отдают JS-оболочку без текста. Точные формулировки политик должны прийти из dimension, который занимается политиками, а не из этого."
+    },
+    {
+      "claim": "Тема 'как отбить claim reused content' - отдельный живой поджанр, что доказывает: массовый faceless-контент реально получает эти клеймы",
+      "evidence": "moneyboymax (@moneyboymaxx, 28.8K подписчиков) 'how to win \"reused content\" claim on youtube shorts' 39,906 просмотров, 14:51 (youtu.be/XvUMSymO5V4); Money Mind Unfiltered 'how to win \"content reuse\" claim on yt shorts' 50,731 (youtu.be/yXmOq_py09M); MarYohooo 'How to Appeal YouTube Monetization Rejected REUSED CONTENT' 126,601 (youtu.be/hXHzIgHvJDg); Princess chiamaka 'YouTube Demonitized My Faceless Channel for Reused Content, here's how I Got It Back!' 17,582 (youtu.be/W7YWz7RCWbI); STOCUT 'How To Avoid Reused Content On Editing Channels' 8,306 (youtu.be/P35ey5alInU); Alan Spicer 'Reused Content Monetization Fix' 48,622 (youtu.be/8vMbA86kylU)",
+      "source": "youtube.com search snapshot: 'reposting reused content youtube shorts monetization policy 2025 inauthentic'",
+      "source_date": "2026-09-12",
+      "kind": "practitioner_report",
+      "confidence": "high",
+      "actionable": "Прямое предупреждение по рискам: механическая перезаливка получает клеймы в массовом порядке. Для проекта, где монетизация каналов не нужна, это менее болезненно - но сигнал тот же, который может урезать раздачу. Закладывать генерацию оригинального материала (свои скриншоты бенчмарков, свой замер FPS до/после), а не нарезку чужого."
+    },
+    {
+      "claim": "RU-источник по алгоритму TikTok с максимальным охватом - Тиктоматика (204K), но качество доказательств там ниже, чем в EN-сегменте",
+      "evidence": "Тиктоматика 'Как попасть в РЕКОМЕНДАЦИИ на TikTok? Как работают АЛГОРИТМЫ | Заработок и монетизация' 204,847 просмотров, 5:27 (youtu.be/ShbUalQymm0); Елисей Ламанов 'Полный курс по TikTok монетизации на 2026 год | Как сделать первые 2-3 тысячи долларов на TikTok?' 64,108, 47:28 (youtu.be/a2yI26ZlwNw); синдикат 'Как попасть в рекомендации TikTok в 2026 (все методы)' 5,746 (youtu.be/HJGWQNO_rbw) и 'Трафик из ТикТок в Телеграм или Как Заработать 1000$ за Один Месяц!' 51,622 (youtu.be/fk1N-rsXNtM); Мегабит 'Как работает алгоритм TikTok? Почему одни видео ЗАЛЕТАЮТ, а другие — НЕТ?! ПОДРОБНЫЙ разбор' 9,053 (youtu.be/5ObltZ685iM); Новое сообщение 'Как стать популярным в TikTok?' 23,473, 32:49 (youtu.be/GGwAszaa1w8); Ivan Makaroff 'Как попасть в реки TikTok в 2026 | Новые алгоритмы рекомендаций' 8,698 (youtu.be/amoQ9sN4hNc); ChatPlace 'Всё об алгоритмах INSTAGRAM REELS 2026 за 5 минут' 10,477 (youtu.be/h2ZY1yR3250); Евгения Бушман 'Как продвигать инстаграм 2026 - полный гайд от директора Instagram про алгоритмы' 59,322, 16:16 (youtu.be/gBPcgaKNSKA) и 'Как ТЕПЕРЬ работает ПРОДВИЖЕНИЕ БЛОГА (сентябрь 2026)' 5,348 (youtu.be/oaFIHPVe3d4)",
+      "source": "youtube.com search snapshot: 'алгоритм тикток 2026 как работает продвижение'",
+      "source_date": "2026-09-12",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Для англоязычного продукта RU-гайды по алгоритму избыточны - механика одна, а EN-источники доказательнее. Ценность RU-сегмента для этого проекта только в одном: механика УБТ-залива и ведения сетей аккаунтов (Денис Марков, Павел Булушиев), которой в EN faceless-сегменте почти нет - там учат одному 'нормальному' каналу, а не сети."
+    },
+    {
+      "claim": "Термин 'реки' (rivers) как модель раздачи TikTok - появляется только в одном RU-источнике с малым охватом и нигде не подтверждён официально; это непроверенная концепция",
+      "evidence": "Ivan Makaroff 'How to Get Into TikTok's Rivers in 2026 | New Recommendation Algorithms' 8,698 просмотров, 10 мес назад, 7:09 (youtu.be/amoQ9sN4hNc). Ни в официальном материале Instagram, ни в данных Metricool/Socialinsider, ни в EN-гайдах с высоким охватом этот термин не встречается. Официальные страницы TikTok проверить не удалось (JS-оболочка)",
+      "source": "youtube.com search snapshot (RU) + отсутствие подтверждений в остальных собранных источниках",
+      "source_date": "2026-09-12",
+      "kind": "myth_debunk",
+      "confidence": "low",
+      "actionable": "Не закладывать 'реки' в спеку как модель. Помечаю low confidence в обе стороны: я не могу ни подтвердить, ни опровергнуть, потому что официальную документацию TikTok из этой среды прочитать не удалось."
+    },
+    {
+      "claim": "Конверсия 'просмотр короткого видео -> клик по ссылке в био -> платящий подписчик' не оцифрована ни в одном найденном гайде - это самая большая дыра в доступной литературе",
+      "evidence": "Выдача по 'link in bio conversion rate tiktok traffic to website data' не дала ни одного источника с измеренной конверсией: только реклама инструментов (Beacons AI 1,781 просмотр, LinksTrackly 8 просмотров) и туториалы по трекингу (ECOM KNTRL 'How to Find TikTok Traffic in Google Analytics (2026)' 38 просмотров; ClickFlare CAPI 95; Marf Digital 14). Ближайшее по смыслу - Steven Cravotta 'How To Reach 10,000 App Users (Beginner Marketing)' 232,425 просмотров (youtu.be/e_t1gYkvZkI), но без конверсионных ставок для шортсов",
+      "source": "youtube.com search snapshot: 'link in bio conversion rate tiktok traffic to website data'",
+      "source_date": "2026-09-12",
+      "kind": "inference",
+      "confidence": "high",
+      "actionable": "Не брать конверсию из гайдов - её там нет. Обязательно встроить в скрипт сквозной трекинг с первого дня: уникальная UTM/короткая ссылка на аккаунт и на ролик -> заходы в Discord -> оплаты. Без этого вся 20-канальная сеть будет работать слепо. Это критичное требование к спеке, а не опция."
+    }
+  ]
+}
