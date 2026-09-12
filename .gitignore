@@ -3,6 +3,9 @@ __pycache__/
 .env
 .venv/
 state.db
+# индекс медиа строится командой `assets scan` по локальной папке с
+# исходниками — у каждого оператора она своя, в репозиторий не входит
+data/assets.json
 out/
 downloads/
 *.mp4
