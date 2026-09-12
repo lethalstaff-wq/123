@@ -1,0 +1,341 @@
+{
+  "dimension": "geo_targeting_truth",
+  "summary": "ГЛАВНЫЙ ВЫВОД: органическая гео-таргетация работает ТОЛЬКО на уровне СТРАНЫ (иногда страна+язык). Город IP (New York vs Washington) не имеет подтверждённого влияния на органику — ни в одной официальной документации TikTok/Meta/YouTube нет входного сигнала мельче страны, а прямой эксперимент с sock-puppet аккаунтами, у которых IP и GPS были подделаны под Манхэттен / Collin County TX / Cobb County GA, дал одинаковую структуру выдачи во всех трёх штатах (arXiv 2501.17831). Подстрановая гранулярность (штат/DMA/город/zip) существует ИСКЛЮЧИТЕЛЬНО в платных кабинетах.\n\nСИЛА ФАКТОРОВ (органика, по убыванию, с доказательствами):\nS-tier (структурный гейт, определяет пул кандидатов):\n1. Страна аккаунта = регион, выведенный из SIM и/или IP (TikTok privacy policy прямо: \"approximate location, including location information based on your SIM card and/or IP address\"). Аудит Boeker & Urman: локация задавалась выделенным прокси-IP на аккаунт, вывод — \"different locations have a strong impact on the posts shown by TikTok\", и \"language does not influence the RS as strong as the location does\". Это сильнейший измеренный гео-фактор.\n2. Поведение первых зрителей (дослушивание/досмотр, реплеи, шеры). TikTok официально: \"A strong indicator of interest, such as whether a user finishes watching a longer video from beginning to end, would receive greater weight than a weak indicator, such as whether the video's viewer and creator are both in the same country.\" То есть досмотр ПЕРЕБИВАЕТ гео-совпадение.\n3. Граф подписок/взаимодействий. Boeker & Urman: \"the follow-feature influences the recommendation algorithm the strongest, followed by the video view rate and like feature\". Подписчики-американцы — единственный ДОЛГОИГРАЮЩИЙ гео-якорь.\n\nA-tier:\n4. Язык озвучки + язык текста на экране — не как метаданные, а как механизм: они физически убивают досмотр у не-англоязычной аудитории, то есть работают через фактор №2. Это самый дешёвый рычаг.\n5. Платный таргет — единственный инструмент с точным гео-контролем (TikTok Ads: country/state/county/district/DMA/city/zip, до 3000 локаций на ad group; Google Ads: страны, области внутри стран, радиус от 1 км).\n6. Язык метаданных (captions/hashtags/title/description). TikTok: \"video information\" (captions, sounds, hashtags) — фактор второго по силе блока. YouTube: defaultLanguage / defaultAudioLanguage / localizations — записываемые поля API.\n\nB-tier (слабые, официально названы \"lower weight\"):\n7. Языковая настройка устройства/аккаунта, country setting, device type. TikTok официально: эти сигналы \"receive lower weight in the recommendation system relative to other data points\" т.к. не выражают активного предпочтения. Hootsuite (01.06.2026) расшифровывает: \"Country setting (you may be more likely to see content from people in your own country, or videos that are particularly popular in your country)\".\n8. Время постинга — официальный сигнал это тайм-зона ЗРИТЕЛЯ (низкий вес); операционно важно только тем, что определяет, кто физически онлайн в первый час.\n9. Аудиотрек/локальные звуки — только косвенно (через \"sounds\" в video information); прямых данных по гео-эффекту нет.\n10. Коллаборации с локальными аккаунтами — прямых данных нет, но через фактор №3 (follow-граф самый сильный) это логичный сильный рычаг. Inference, medium.\n\nZ-tier (нулевое подтверждённое влияние):\n11. Город IP загрузки. Нет данных ни за, ни (косвенно) против на уровне страны — а на подстрановом уровне есть отрицательный результат эксперимента.\n12. IP каждой отдельной загрузки (в отличие от IP/SIM при регистрации) — нет данных, low confidence.\n\nПО ПЛАТФОРМАМ — РАЗНЫЙ ОБЪЁМ ДОКАЗАТЕЛЬСТВ:\n- TikTok: лучше всех документирован + есть воспроизводимый аудит. Гео-сигнал официально назван на уровне страны и назван слабым. Ключевой факт: TikTok ЗАБАНЕН В ИНДИИ с 29.06.2020 (MeitY) — жалоба \"льют индийские просмотры\" на TikTok органически невозможна; если в аналитике TikTok видно Индию, это VPN-трафик/боты/неверное чтение отчёта.\n- Instagram Reels: единственный официальный гео-сигнал во всей семье system cards Meta — в карточке \"Instagram Reels Chaining\": входной сигнал \"How much time has viewers from your country spent on this reel\". КОНКРЕТНО СТРАНА. В карточках IG Explore, IG Feed Recommendations и Facebook Reels гео-сигналов НЕТ ВООБЩЕ. Это значит: продукт сам не будет исправлять вашу географию, но в Reels есть петля обратной связи по стране, которая усиливает уже начавшийся перекос.\n- YouTube Shorts: хуже всех документирован. Официальная страница howyoutubeworks/recommendations вообще не упоминает location/country/language. Единственное официальное подтверждение страновых бакетов: Trending Charts \"aren't personalized and display the same trending videos to all viewers in the same country\". Рычаги — только метаданные языка и авто-дубляж.\n\nЖАЛОБА \"ЛЬЁТ ИНДИЯ/ПАКИСТАН/БАНГЛАДЕШ, НУЖЕН US\" — МЕХАНИКА:\nа) Базовая ставка. India #1 рынок и на YouTube (518M юзеров vs US 259M), и на Instagram (413.85M vs US 171.7M). Ненаправленный exploration-трафик по чистой арифметике в 2-2.4x вероятнее уйдёт в Индию, чем в US, а по объёму дешёвого свободного inventory — сильнее.\nб) У холодного аккаунта нет follow-графа — то есть отсутствует самый сильный персонализационный фактор. Рекомендер работает почти только по \"info about the reel/video\", и первая когорта, которая досмотрела, СТАНОВИТСЯ вашим seed'ом.\nв) В Reels это самоусиливается через официальный сигнал \"viewers from your country\" — индийская когорта досмотрела -> сигнал по Индии вырос -> реколс толкает глубже в индийский пул.\nг) Скорость закрепления: в TikTok-аудите специализация фида по интересу наступала в среднем через ~65.7 просмотренных видео для gaming-ботов (быстрее всех интересов; food — ~140), почти все onset-точки внутри первых 200 видео. Т.е. окно, в котором аккаунт \"лепится\", очень короткое — счёт идёт на десятки единиц контакта, не на недели.\nд) Покупные просмотры/подписчики с SMM-панелей — преимущественно южноазиатские; они отравляют seed-когорту. (Опыт практиков, citable данных нет — low confidence.)\n\nЧТО РЕАЛЬНО ПОМОГАЕТ (по силе):\n1. Правильная страна на этапе РЕГИСТРАЦИИ (SIM/IP), а не на этапе загрузки. High для TikTok, medium для Reels, unknown для Shorts.\n2. Контент, физически недосматриваемый не-целевым гео: английский текст на экране, английская озвучка, US/UK-специфичные референсы (названия серверов, ping, региональные турниры). Это единственный рычаг, который официально назван СИЛЬНЕЕ гео-совпадения.\n3. Явные языковые метаданные + ОТСУТСТВИЕ локализаций на hi/id/pt/ar. На YouTube localizations — записываемое поле; добавляя переводы, вы сами открываете чужие языковые пулы.\n4. Платный посев с гео-таргетом, особенно TikTok Spark Ads: официально \"all views, comments, shares, likes, and follows gained from boosting the video during the promotion are attributed to your organic posts\" + \"Lasting marketing impact beyond the campaign\".\n5. Набор US follow-графа (подписчики, коллабы/дуэты/стичи с US-аккаунтами) — через сильнейший фактор аудита.\n6. Постинг в US prime time.\n7. НЕ покупать просмотры/подписчиков.\n\nМОЖНО ЛИ ПЛАТНЫМ ТАРГЕТОМ \"РАЗОГНАТЬ\" ГЕО, ЧТОБЫ ДАЛЬШЕ АЛГОРИТМ НЁС САМ: частично ДА, но не через тот механизм, на который обычно рассчитывают. Официально подтверждено только то, что платная вовлечённость НАВСЕГДА приписывается органическому посту (TikTok Spark Ads). Ни одна платформа официально не заявляет, что платная вовлечённость является входом органического рекомендера. Долгоиграющий эффект надёжно идёт через ПОДПИСЧИКОВ (follow — сильнейший фактор), а не через рейтинг конкретного видео. Планировать бюджет надо как \"покупаю US-фолловер-базу и US-досмотры на конкретных видео\", а не как \"покупаю переключение гео органики\". Уверенность: механизм medium, величина эффекта — нет данных.\n\nОТВЕТ НА ПРЯМОЙ ВОПРОС ПРО ГОРОД IP (New York vs Washington): для органики — НЕ ИМЕЕТ ЗНАЧЕНИЯ, влияние ограничено уровнем страны. Шесть независимых доказательств: (1) формулировка TikTok — \"both in the same country\"; (2) единственный гео-вход в system cards Meta — \"viewers from your country\"; ни одного city/region/DMA-входа в 4 проверенных карточках; (3) YouTube Trending — \"the same trending videos to all viewers in the same country\"; (4) собственное определение Google для IP-локации: \"A general area is larger than 3 sq km, and has at least 1000 users\" — и это про зрителя, не про загружающего; (5) прямой эксперимент arXiv 2501.17831: сотни аккаунтов с per-state VPN + GPS-спуфингом в конкретные города, эффект идентичен во всех трёх штатах (NY t=5.82, TX t=9.21, GA t=5.83), \"These asymmetries exist across all three states\"; (6) подстрановая гранулярность существует только в платных кабинетах и оба кабинета сами дисклеймят точность. ВЫВОД ДЛЯ СПЕКИ: не платить за city-level прокси/резидентские IP конкретного города для органики — платить за чистые country-correct мобильные/резидентские IP; city/DMA использовать только в платном кабинете.\n\nМЕТОДОЛОГИЧЕСКАЯ ЧЕСТНОСТЬ: бюджет WebSearch был исчерпан (200/200) до начала моей работы, а публичные поисковики (DuckDuckGo, Mojeek, Ecosia, searx, Yahoo, Google) вернули CAPTCHA/403/500, Bing деградировал до навигационных брендовых результатов. Поэтому вместо поиска использовано ~35 прямых WebFetch по официальной документации + arXiv API (он даёт полноценный поиск по академическим источникам). Это смещает выборку в сторону официальных политик и академических аудитов и НЕДОпредставляет опыт практиков — там, где у меня нет citable источника, помечено \"нет данных / low confidence\".",
+  "findings": [
+    {
+      "claim": "TikTok официально называет страну (не город) как гео-сигнал и явно относит его к СЛАБЫМ, прямо противопоставляя досмотру",
+      "evidence": "Вербатим: 'Device and account settings like your language preference, country setting, and device type' входят в сигналы, но 'receive lower weight in the recommendation system relative to other data points'. И ключевое: 'A strong indicator of interest, such as whether a user finishes watching a longer video from beginning to end, would receive greater weight than a weak indicator, such as whether the video's viewer and creator are both in the same country.' Также: 'neither follower count nor whether the account has had previous high-performing videos are direct factors in the recommendation system'",
+      "source": "TikTok Newsroom, 'How TikTok recommends videos #ForYou', https://newsroom.tiktok.com/en-us/how-tiktok-recommends-videos-for-you",
+      "source_date": "первичная публикация 2020-06-18, страница поддерживается TikTok как актуальное описание",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Гранулярность гео-сигнала = СТРАНА. Оптимизировать не под 'страну', а под досмотр целевой страны: досмотр официально перебивает same-country. Константа спеки: geo_granularity=country."
+    },
+    {
+      "claim": "Воспроизводимый sock-puppet аудит TikTok: локация (заданная прокси-IP) влияет на выдачу СИЛЬНЕЕ, чем язык аккаунта",
+      "evidence": "Методология: 'assigned a dedicated proxy with a specific IP address to every test user', язык — 'set up via their TikTok profiles'. Сценарии: US vs Canada (en), US(en) vs Germany(de), и 4 языковые пары внутри US. Результаты вербатим: 'different locations have a strong impact on the posts shown by TikTok' и 'language does not influence the RS as strong as the location does'. Эффект локации сохранялся, даже когда пользователи 'switch their location in the meantime'. Итоговый рейтинг силы факторов: 'the follow-feature influences the recommendation algorithm the strongest, followed by the video view rate and like feature'. Базовый шум пересечения фидов: доля различающихся постов/авторов/хэштегов/звуков = 66.17% / 66.05% / 58.62% / 64.47%",
+      "source": "Boeker M., Urman A., 'An Empirical Investigation of Personalization Factors on TikTok', arXiv:2201.12271; полный текст https://ar5iv.labs.arxiv.org/html/2201.12271",
+      "source_date": "2022-01-28",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "IP-выведенная страна > язык профиля. В спеке: country-correct IP — обязательное условие, язык интерфейса — второстепенное. Caveat: аудит измеряет ПОТРЕБЛЕНИЕ (что видит бот), не РАСПРЕДЕЛЕНИЕ (куда уходит твоя загрузка) — переносить с пометкой inference."
+    },
+    {
+      "claim": "ПРЯМОЙ ОТВЕТ ПРО ГОРОД: эксперимент с per-state VPN + GPS-спуфингом в конкретные города показал идентичную структуру выдачи во всех трёх штатах США",
+      "evidence": "Методология вербатим: 'we dedicated an Android smartphone, namely Samsung Galaxy A34 5G, to each of the 21 accounts created every week'; 'we employed AnyTo for GPS coordinate spoofing, setting New York bots to <<40.7308, -73.9976>> in Manhattan, New York City, Texas bots to <<33.148, -96.638>> in Collin County, and Georgia bots to <<33.961, -84.537>> in Cobb County'; 'to align each bot's network identity with the intended state's geo-location, we tunnel each phone's public IP address to one of three custom VPN servers we hosted on third-party cloud providers'. Результат: 'These asymmetries exist across all three states and persist when accounting for video- and channel-level engagement metrics'; эффект подтверждён отдельно в NY (t=5.82), TX (t=9.21), GA (t=5.83). Масштаб: сотни аккаунтов, ~394,000 просмотренных видео, 30.04.2024–11.11.2024",
+      "source": "Ibrahim H., Jang H.D., Aldahoul N., Kaufman A.R., Rahwan T., Zaki Y., 'TikTok's recommendations skewed towards Republican content during the 2024 U.S. presidential race', arXiv:2501.17831; https://ar5iv.labs.arxiv.org/html/2501.17831",
+      "source_date": "2025-01-29",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Подстрановая локация (штат/город, включая GPS-точку в Манхэттене) не изменила структуру выдачи. NY vs Washington = не важно для органики. НЕ покупать city-targeted прокси для органики. Caveat честности: работа измеряла партийную асимметрию, а не напрямую 'меняет ли город контентный пул' — это сильнейшее доступное, но косвенное доказательство."
+    },
+    {
+      "claim": "Meta официально использует сигнал уровня СТРАНЫ в рекомендере Reels — и это единственный гео-вход во всей семье system cards",
+      "evidence": "В system card 'Instagram Reels Chaining' среди входных сигналов вербатим: 'How much time has viewers from your country spent on this reel' (используется в предсказании комментирования). Ни одного входа city/region/DMA/locale. Проверены и НЕ содержат вообще никаких гео/языковых входов: Instagram Explore (29 перечисленных сигналов), Instagram Feed Recommendations, Facebook Reels",
+      "source": "Meta Transparency Center, system cards: https://transparency.meta.com/en-us/features/explaining-ranking/ig-reels-chaining/ , /ig-explore/ , /ig-feed-recommendations/ , /fb-reels/",
+      "source_date": "актуальные версии на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "В Reels есть страновая петля обратной связи: досмотры от индийской когорты официально усиливают дальнейшую раздачу в индийский пул. Значит первые 24-72 часа критичны. Город в рекомендере отсутствует. Константа: reels_geo_signal=country_watchtime_aggregate."
+    },
+    {
+      "claim": "Instagram публично ранжирует сигналы Reels и гео там вообще не фигурирует",
+      "evidence": "Вербатим: 'The most important signals, roughly in order of importance, are: Your activity... Your history of interacting with the person who posted... Information about the reel... Information about the person who posted.' Плюс явные штрафы: 'we aim to make certain reels less visible for other reasons, such as low-resolution or watermarked reels, reels that are muted or contain borders'",
+      "source": "Instagram, 'Instagram Ranking Explained', https://about.instagram.com/blog/announcements/instagram-ranking-explained",
+      "source_date": "опубликовано 2023-05-31, поддерживается как актуальное",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Для Reels гео — не рычаг; рычаг = поведение зрителя. КРИТИЧНО для авто-залива: водяные знаки (TikTok-логотип), моно/mute-аудио и чёрные бордеры официально снижают видимость. В спеке: обязательный ресайз без бордеров, удаление watermark, аудиотрек обязателен."
+    },
+    {
+      "claim": "YouTube официально подтверждает страновые бакеты контента только для Trending, и вообще не упоминает гео в описании рекомендаций",
+      "evidence": "Trending вербатим: 'Trending Charts aren't personalized and display the same trending videos to all viewers in the same country', обновление 'roughly every 30 minutes'. При этом официальная страница про рекомендации перечисляет только: 'Understanding a user's viewing behavior, likes, dislikes, subscriptions, and feedback, including from satisfaction surveys' + репутация/качество канала — ни location, ни country, ни language не упоминаются",
+      "source": "YouTube Help 'Trending on YouTube' https://support.google.com/youtube/answer/7239739 ; YouTube 'How YouTube Works: Recommendations' https://www.youtube.com/howyoutubeworks/product-features/recommendations/",
+      "source_date": "актуальные версии на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Shorts — платформа с минимальной официальной гео-документацией. Бакетирование подтверждено на уровне СТРАНЫ. Не строить спеку Shorts на гео-гипотезах; строить на языковых метаданных."
+    },
+    {
+      "claim": "Google сам определяет IP-локацию с разрешением грубее города: 'general area' > 3 кв.км и минимум 1000 пользователей",
+      "evidence": "Вербатим: 'IP addresses are roughly based on geography. This means that any website you use, including google.com, may get some information about your general area.' И: 'A general area is larger than 3 sq km, and has at least 1000 users so that the general area of your search does not identify you, helping to protect your privacy.' Точная локация отдельно: 'Precise location means exactly where you are, such as a particular address' — только с разрешением",
+      "source": "Google Search Help, 'Manage your location when you search on Google', https://support.google.com/websearch/answer/179386",
+      "source_date": "актуальная версия на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Даже там, где Google использует IP, это намеренно не город-точка. Подкрепляет: не платить за 'IP конкретного города'. Относится к зрителю, не к загружающему — помечено."
+    },
+    {
+      "claim": "TikTok определяет страну пользователя по SIM-карте и/или IP; точная геолокация — только с разрешения",
+      "evidence": "Вербатим: 'We collect information about your approximate location, including location information based on your SIM card and/or IP address.' И отдельно: 'With your permission, we may also collect precise location data (such as GPS).' Использование: 'Consistent with your permissions, to provide you with location-based services, such as advertising and other personalized content.' Политика при этом НЕ заявляет прямо, что approximate location используется для рекомендаций",
+      "source": "TikTok Privacy Policy (Rest of World), https://www.tiktok.com/legal/page/row/privacy-policy/en",
+      "source_date": "актуальная версия на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Два входа страны: SIM и IP. Для сети новорег-аккаунтов это значит, что страна прибивается на этапе регистрации/первичной сессии. В спеке: country_signal_sources=[sim_mcc, ip_geo]; precise GPS не запрашивать."
+    },
+    {
+      "claim": "TikTok забанен в Индии с 29.06.2020 — жалоба 'индийские просмотры в TikTok' органически невозможна",
+      "evidence": "Вербатим-факты: дата 29 июня 2020, орган — Ministry of Electronics and Information Technology, основание — приложения 'prejudicial to the sovereignty and integrity of India, defence of India, security of the state, and public order'; контекст — столкновение в Галванской долине. Бан не отменён на дату источника. Отдельно: 'TikTok had 200 million users in India before it was banned in June 2020'",
+      "source": "Wikipedia 'Censorship of TikTok' https://en.wikipedia.org/wiki/Censorship_of_TikTok ; DemandSage TikTok User Statistics https://www.demandsage.com/tiktok-user-statistics/",
+      "source_date": "Wikipedia — актуальная версия 2026-09; DemandSage — 2026-07-09",
+      "kind": "myth_debunk",
+      "confidence": "high",
+      "actionable": "Если скрипт видит India в аналитике TikTok — это флаг аномалии (VPN/боты/накрутка), а не гео-перекос. В спеке: alert_if(tiktok_analytics.country=='IN' and share>2%) -> подозрение на bot traffic. Реальные дешёвые гео для TikTok: PK 66.9M, PH 62.3M, BD 46.5M, VN 40.9M, ID 108M."
+    },
+    {
+      "claim": "Базовая ставка против US: Индия — крупнейший рынок и YouTube, и Instagram, с 2-2.4x перевесом по числу пользователей",
+      "evidence": "YouTube: India 518M, US 259M, Indonesia 151M, Brazil 149M. Instagram: India 413.85M, US 171.7M, Brazil 140.7M, Indonesia 103.4M, Turkey 58.45M, Japan 57.45M, Mexico 48.75M, UK 33.4M, Germany 31.25M, Argentina 28.9M. TikTok (для сравнения, без Индии): US 136M, Indonesia 108M, Brazil 91.7M, Mexico 85.4M, Pakistan 66.9M, Philippines 62.3M, Bangladesh 46.5M, Vietnam 40.9M",
+      "source": "DemandSage YouTube Statistics https://www.demandsage.com/youtube-stats/ (обновлено 2026-08-27); DemandSage Instagram Statistics https://www.demandsage.com/instagram-statistics/ (2026-06-08, ссылается на DataReportal/Statista); DemandSage TikTok User Statistics https://www.demandsage.com/tiktok-user-statistics/ (2026-07-09)",
+      "source_date": "2026-06 — 2026-08",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Ненаправленный exploration по чистой арифметике уводит в IN. Для UK-позиционирования отдельно учесть: UK Instagram = 33.4M, это 1/5 от US — UK-only таргет резко сужает потолок. Рекомендация спеки: целевой пул = US+UK+CA+AU (англоязычный), не UK-only. Confidence medium: агрегатор третьей стороны, не первоисточник."
+    },
+    {
+      "claim": "Аккаунт 'лепится' под интерес за десятки контактов, причём gaming специализируется быстрее всех протестированных интересов",
+      "evidence": "Вербатим: 'Most onset points occur within the first 200 videos viewed', средний onset 'approximately 65.7 videos for single-interest Gaming bots, 140 videos for single-interest Food bots'. Доля интерес-совпадающего контента на плато: 'Gaming 67.4%, Food 52.3%, Gaming+Food 67.2%'. Масштаб: 42 бота (14 Gaming / 14 Food / 14 Gaming+Food), 128,148 видео (66,672 уникальных), ~3,000 видео на бота за цикл, июнь-август 2024. Локация: 'proxies to spoof the bots' locations to American servers' чтобы гарантировать 'exposure to U.S.-based content'; все эксперименты 'within American time zones (9 AM to 2 AM EST)'",
+      "source": "Baumann F., Arora N., Rahwan I., Czaplicka A., 'Dynamics of Algorithmic Content Amplification on TikTok', arXiv:2503.20231; https://ar5iv.labs.arxiv.org/html/2503.20231",
+      "source_date": "2025-03-26",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Окно формирования профиля ≈ 66 видео для gaming (самый быстрый интерес — это в плюс нашей нише). Константа спеки: account_warmup_target≈70-200 просмотров целевого контента ДО первой публикации. Плюс: исследователи сами используют US-прокси как способ гарантировать доступ к US-контенту — это независимое подтверждение, что IP-страна определяет национальный пул."
+    },
+    {
+      "claim": "TikTok Spark Ads: платная вовлечённость НАВСЕГДА приписывается органическому посту — официально",
+      "evidence": "Вербатим: 'all views, comments, shares, likes, and follows gained from boosting the video during the promotion are attributed to your organic posts'. И: 'Lasting marketing impact beyond the campaign since all of the Spark Ads post engagement will be attributed to the original organic post'",
+      "source": "TikTok Business Help Center, Spark Ads, https://ads.tiktok.com/help/article/spark-ads?lang=en",
+      "source_date": "актуальная версия на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Это ЕДИНСТВЕННОЕ официальное подтверждение механизма 'платный посев -> органический объект'. В спеке: посев делать через Spark Ads на уже опубликованный органический пост (не через отдельный ad creative), чтобы US-досмотры и US-подписки осели на объекте и на аккаунте."
+    },
+    {
+      "claim": "'Платный таргет разгоняет гео, дальше алгоритм несёт сам' — подтверждено ЧАСТИЧНО, и не через тот механизм, на который обычно рассчитывают",
+      "evidence": "Подтверждено официально только: (а) атрибуция платной вовлечённости органическому посту навсегда (TikTok Spark Ads, выше); (б) follow-фактор — сильнейший персонализационный фактор в аудите (Boeker & Urman). НЕ подтверждено ни одной платформой: что платная вовлечённость является входом органического рекомендера. В system cards Meta среди входов нет ни одного 'paid'/'ad' сигнала. TikTok в описании сигналов платный трафик не упоминает",
+      "source": "Синтез: TikTok Spark Ads help (ads.tiktok.com/help/article/spark-ads); arXiv:2201.12271; Meta system cards (transparency.meta.com/en-us/features/explaining-ranking/ig-reels-chaining/)",
+      "source_date": "2022-01 — 2026-09",
+      "kind": "inference",
+      "confidence": "medium",
+      "actionable": "Бюджетировать как 'покупаю US-фолловер-базу + US-досмотры на конкретных видео', а НЕ как 'покупаю переключение гео органики'. Долгоиграющий якорь = подписчики, не рейтинг видео. Величина эффекта — НЕТ ДАННЫХ, требует собственного A/B."
+    },
+    {
+      "claim": "Подстрановая гранулярность существует только в платных кабинетах, и оба кабинета сами дисклеймят точность",
+      "evidence": "TikTok Ads поддерживает: Country/Region, State/Province, County, District, DMA, City, Zip/Postal Code, Urban District, Department. Лимит: 'up to 3,000 location selections at a time, per ad group'. Канада — только 3-буквенные почтовые (L6V, не L6V 1A4); 'Zip code + 4 targeting is not supported'. Дисклеймер вербатим: 'location targeting is based on a variety of signals to serve ads to users who align with your location targeting selections' и 'Due to the fact that signals vary, our delivery is not guaranteed and accuracy is not guaranteed in every situation'. Google Ads: Countries, areas within countries (regions/cities/postal codes, зависит от страны), radius от 1 км, location groups; сигналы — 'users' settings, devices, and behavior on our platform' (IP явно НЕ назван); дисклеймер: 'Because these signals vary, 100% accuracy is not guaranteed in every situation'",
+      "source": "TikTok Business Help Center, Location Targeting, https://ads.tiktok.com/help/article/location-targeting?lang=en ; Google Ads Help, About location targeting, https://support.google.com/google-ads/answer/1722043",
+      "source_date": "актуальные версии на 2026-09",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Город/DMA/zip — только платно. Для US-игрового оффера DMA-таргет бессмыслен (интерес не географичен внутри страны); брать country=US (+UK/CA/AU) и экономить на гранулярности. Константа: paid_geo_level=country, кроме явных тестов."
+    },
+    {
+      "claim": "YouTube: языковые метаданные — записываемые поля API, страновые ограничения задокументированы только для чтения",
+      "evidence": "Вербатим: 'The regionRestriction object contains information about the countries where a video is (or is not) viewable.' regionRestriction.allowed[]: 'A list of region codes that identify countries where the video is viewable. If this property is present and a country is not listed in its value, then the video is blocked from appearing in that country.' regionRestriction.blocked[]: 'A list of region codes that identify countries where the video is blocked.' Документация НЕ указывает явно, записываемы ли эти свойства при insert/update. Языковые поля: defaultLanguage — 'The language of the text in the video resource's snippet.title and snippet.description properties'; defaultAudioLanguage — 'specifies the language spoken in the video's default audio track'; localizations — явно записываемо: 'Use the localizations object to add, update, or delete localized titles'",
+      "source": "YouTube Data API v3, Videos resource reference, https://developers.google.com/youtube/v3/docs/videos",
+      "source_date": "актуальная версия на 2026-09",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "В спеке auto-upload ОБЯЗАТЕЛЬНО: defaultLanguage='en', defaultAudioLanguage='en-US', английские captions. И ОБЯЗАТЕЛЬНО НЕ заполнять localizations для hi/id/pt/ar — перевод метаданных сам открывает чужие языковые пулы. regionRestriction.blocked как гео-фильтр — пометить NEEDS_TEST (записываемость не подтверждена; по опыту доступна владельцам контента/Content ID, не обычному каналу) — low confidence."
+    },
+    {
+      "claim": "YouTube авто-дубляж: 24 исходных языка, английский дублируется в 18; выбор дорожки — по предпочтению зрителя, не по его стране",
+      "evidence": "Вербатим (декабрь 2024, запуск): 'If your video is in English, it will be dubbed into French, German, Hindi, Indonesian, Italian, Japanese, Portuguese, and Spanish. If your video is in any of those other languages, it will be dubbed into English.' Раскатка: 'available to hundreds of thousands of channels in the YouTube Partner Program that are focused on knowledge and information'. Актуальная справка: поддержка 24 исходных языков, английский — в 18 целевых. Выбор дорожки вербатим: 'Viewers can indicate their preferred languages for audio, titles and descriptions, or they can switch between the original and dubbed audio tracks for any specific video.' Как система выбирает дорожку по умолчанию (устройство/аккаунт/локация) — в справке НЕ указано",
+      "source": "YouTube Blog, 'Auto dubbing on YouTube', https://blog.youtube/news-and-events/auto-dubbing-on-youtube/ (2024-12-10); YouTube Help, auto-dubbing, https://support.google.com/youtube/answer/15569972",
+      "source_date": "2024-12-10 / актуальная справка 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Авто-дубляж = РИСК гео-размытия: он автоматически открывает hi/id/pt пулы для англоязычного контента. Для US-таргетинга авто-дубляж на канале ОТКЛЮЧИТЬ. Константа спеки: youtube.auto_dubbing=off."
+    },
+    {
+      "claim": "Instagram Trial Reels — официальный механизм тестирования на не-подписчиках с авто-раскаткой при успехе",
+      "evidence": "Trial Reels позволяют 'post a reel with a select group of non-followers, to see how they react to it'; 'The reel won't appear in your follower's feeds, or on your Instagram profile'. Авто-раскатка: 'If Instagram sees your trial reel performing well within the first 72 hours, it can automatically share it with your followers.' Метрики через 24 часа: views, likes, comments, shares, saves, accounts reached, replays, watch time, average watch time. Гео-таргета в Trial Reels НЕТ",
+      "source": "Buffer, 'Instagram Trial Reels', https://buffer.com/resources/instagram-trial-reels/",
+      "source_date": "2025-02-24",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Trial Reels даёт чистый замер unconnected-reach БЕЗ загрязнения профиля — идеальный дешёвый A/B-стенд для проверки, какая креативная упаковка притягивает US. Окно решения — 72 часа. Гео-таргета нет, так что geo проверяется только по факту в инсайтах."
+    },
+    {
+      "claim": "Индустриальные источники 2026 подтверждают ту же формулировку: страновая настройка — фактор низкого веса, город не упоминается нигде",
+      "evidence": "Hootsuite (01.06.2026) вербатим перечисляет user-information сигналы низкого веса: 'Language preference', 'Country setting (you may be more likely to see content from people in your own country, or videos that are particularly popular in your country)', 'Time zone and day'; и: 'User information doesn't have as much influence as user actions or video details, but they still play a role.' Sprout Social (06.02.2026): 'The main information it looks at are: Country settings, Language preferences, Device type, Category selection' + 'since users don't actively express them as preferences, they don't hold as much weight as the other two factors'. Buffer (17.12.2025): 'Factors like location, language preference, and device type also play a (less important) role' + про посев: 'If a video performs well with a small initial audience, TikTok may test it with a larger one. But that next boost depends on how that new audience reacts, not just the engagement numbers alone'",
+      "source": "Hootsuite 'TikTok algorithm' https://blog.hootsuite.com/tiktok-algorithm/ (2026-06-01); Sprout Social https://sproutsocial.com/insights/tiktok-algorithm/ (2026-02-06); Buffer https://buffer.com/resources/tiktok-algorithm/ (2025-12-17)",
+      "source_date": "2025-12 — 2026-06",
+      "kind": "practitioner_report",
+      "confidence": "high",
+      "actionable": "Три независимых индустриальных источника 2025-2026 сходятся: гранулярность = страна, вес = низкий. Ни один не упоминает город. Отсутствие city-упоминаний в отрасли — дополнительный (негативный) аргумент к ответу на прямой вопрос."
+    },
+    {
+      "claim": "Instagram-источники вообще не содержат гео/языковых факторов Reels — 'unconnected reach' описан без географии",
+      "evidence": "Socialinsider (10.02.2025): гео-, страновых и языковых упоминаний в разборе алгоритма Reels НЕТ ВООБЩЕ. Описанные метрики: watch time, likes per reach, sends per reach. Разделение: 'connected reach' = 'people who already follow you', 'unconnected reach' = 'users who don't follow you yet'. Данных по географическому распределению reach нет. Отдельно (DemandSage 2026-06-08): 'Reels account for half of the time spent on Instagram'; средний reach rate 30.81%; падение reach у аккаунтов 10k-50k подписчиков с 16,800 до 6,243 (2022->2023)",
+      "source": "Socialinsider, Instagram Reels algorithm, https://www.socialinsider.io/blog/instagram-reels-algorithm/ (2025-02-10); DemandSage Instagram Statistics (2026-06-08)",
+      "source_date": "2025-02 — 2026-06",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Для Reels в спеке НЕ закладывать гео-рычагов кроме: страна аккаунта, язык контента, время постинга, платный посев. Оптимизировать под sends per reach и watch time — единственные подтверждённые драйверы unconnected reach."
+    },
+    {
+      "claim": "Официального органического гео-контроля не существует ни на одной из трёх платформ — это НЕ решаемо настройками",
+      "evidence": "Проверено прямым чтением документации: TikTok Ads даёт гео только в платном кабинете; в органическом постинге TikTok гео-поля нет. Meta system cards не содержат ни одного управляемого гео-параметра для Reels/Explore/Feed. YouTube: единственное, что документировано, — regionRestriction (только для чтения в docs) и языковые поля. Ни одна платформа не предоставляет creator-facing настройки 'показывать только в стране X'",
+      "source": "Синтез прямых фетчей: ads.tiktok.com/help/article/location-targeting; transparency.meta.com/en-us/features/explaining-ranking/ (ig-reels-chaining, ig-explore, ig-feed-recommendations, fb-reels); developers.google.com/youtube/v3/docs/videos; support.google.com/youtube/answer/10059070",
+      "source_date": "актуальные версии на 2026-09",
+      "kind": "inference",
+      "confidence": "high",
+      "actionable": "Спека не должна содержать вызова 'выставить целевое гео' — такого API нет. Гео достигается только комбинацией: страна регистрации + язык контента + время постинга + платный посев + follow-граф."
+    },
+    {
+      "claim": "Механика жалобы 'льёт дешёвое гео' — самоусиливающийся цикл холодного старта, а не баг настроек",
+      "evidence": "Сборка из подтверждённых звеньев: (1) у нового аккаунта нет follow-графа — отсутствует сильнейший персонализационный фактор (arXiv:2201.12271); (2) Instagram официально: топ-сигналы — 'Your activity' и 'Your history of interacting with the person who posted', у нового аккаунта их нет, остаётся только 'Information about the reel'; (3) арифметика inventory: IN 413.85M vs US 171.7M в IG, 518M vs 259M в YT; (4) официальный страновой сигнал Reels 'How much time has viewers from your country spent on this reel' превращает случайную первую когорту в закреплённый пул; (5) специализация закрепляется за ~66-200 контактов (arXiv:2503.20231)",
+      "source": "Синтез: arXiv:2201.12271; arXiv:2503.20231; about.instagram.com/blog/announcements/instagram-ranking-explained; transparency.meta.com/en-us/features/explaining-ranking/ig-reels-chaining/; DemandSage YT/IG stats",
+      "source_date": "2022-01 — 2026-08",
+      "kind": "inference",
+      "confidence": "medium",
+      "actionable": "Лечится ТОЛЬКО на этапе холодного старта: первые ~70-200 контактов аккаунта и первые 24-72 часа каждого видео. После закрепления дешевле создать новый аккаунт, чем переучивать старый. Константа спеки: если share(target_geo) < 30% после 10 публикаций — retire аккаунт, не 'лечить'."
+    },
+    {
+      "claim": "Самый сильный рычаг против дешёвого гео — не настройки, а физическая недосматриваемость контента чужой аудиторией",
+      "evidence": "Это прямое следствие официальной формулировки TikTok: досмотр до конца ('a strong indicator of interest... whether a user finishes watching a longer video from beginning to end') получает БОЛЬШИЙ вес, чем гео-совпадение ('a weak indicator, such as whether the video's viewer and creator are both in the same country'). Соответственно язык озвучки и текста на экране влияют на гео не как метаданные, а через фактор №1 — они обнуляют watch-through у не-англоязычных зрителей и тем самым не дают алгоритму закрепить чужой пул",
+      "source": "Вывод из TikTok Newsroom 'How TikTok recommends videos #ForYou' https://newsroom.tiktok.com/en-us/how-tiktok-recommends-videos-for-you + Instagram Ranking Explained",
+      "source_date": "официальные формулировки актуальны на 2026-09",
+      "kind": "inference",
+      "confidence": "high",
+      "actionable": "Ранжирование рычагов для спеки: 1) плотный английский текст на экране + английский TTS/озвучка; 2) US/UK-специфичные референсы (ping, region servers, названия турниров, '$' цены); 3) НЕ использовать не-англоязычные трендовые звуки; 4) НЕ добавлять мультиязычные субтитры. Это дешевле и надёжнее любых манипуляций с IP."
+    },
+    {
+      "claim": "Follow-граф — единственный долгоиграющий гео-якорь; коллаборации работают через него",
+      "evidence": "Boeker & Urman вербатим: 'the follow-feature influences the recommendation algorithm the strongest, followed by the video view rate and like feature'. Instagram официально ставит 'Your history of interacting with the person who posted' вторым по важности сигналом. При этом TikTok официально заявляет обратное про исходящую сторону: 'neither follower count nor whether the account has had previous high-performing videos are direct factors in the recommendation system' — то есть количество подписчиков не бустит раздачу, но подписчики как ЗРИТЕЛИ дают гарантированный US watch-through",
+      "source": "arXiv:2201.12271; about.instagram.com/blog/announcements/instagram-ranking-explained; newsroom.tiktok.com/en-us/how-tiktok-recommends-videos-for-you",
+      "source_date": "2020-06 — 2026-09",
+      "kind": "inference",
+      "confidence": "medium",
+      "actionable": "Дуэты/стичи/коллабы с US-аккаунтами и набор US-подписчиков — самый надёжный способ гарантировать US-когорту в первые минуты. Прямых замеров эффекта коллабов на гео — НЕТ ДАННЫХ, помечено inference. Важно: подписчики не бустят раздачу напрямую (официально), они дают качественный seed."
+    },
+    {
+      "claim": "Время постинга влияет на гео операционно, а не алгоритмически",
+      "evidence": "Официальный сигнал — тайм-зона и день ЗРИТЕЛЯ, в блоке низкого веса (Hootsuite вербатим: 'Time zone and day' в списке user information низкого веса). Косвенное подтверждение операционной логики из академической практики: исследователи TikTok намеренно ограничивали эксперименты 'within American time zones (9 AM to 2 AM EST)' + американские прокси, чтобы гарантировать 'exposure to U.S.-based content'",
+      "source": "blog.hootsuite.com/tiktok-algorithm/ (2026-06-01); arXiv:2503.20231 (2025-03-26)",
+      "source_date": "2025-03 — 2026-06",
+      "kind": "inference",
+      "confidence": "medium",
+      "actionable": "Ставить постинг в US prime time (примерно 12:00-03:00 UTC для покрытия US ET/PT вечера) — не потому что алгоритм это учитывает, а потому что это определяет, кто физически онлайн в первый час. Константа спеки: post_window_utc для US = 16:00-04:00 UTC; для UK = 17:00-21:00 UTC."
+    },
+    {
+      "claim": "Покупные просмотры/подписчики отравляют seed-когорту — но citable данных по их гео-составу нет",
+      "evidence": "НЕТ ДАННЫХ по проверяемым источникам о географическом составе SMM-панельного трафика. Механизм следует из подтверждённых звеньев: официальный страновой сигнал Reels агрегирует watch-time по стране зрителя, а специализация фида закрепляется за ~66-200 контактов. То есть любой входящий трафик неверного гео работает как обучающий сигнал",
+      "source": "Механизм — из transparency.meta.com/en-us/features/explaining-ranking/ig-reels-chaining/ и arXiv:2503.20231. Гео-состав панелей — источник не найден",
+      "source_date": "н/д",
+      "kind": "inference",
+      "confidence": "low",
+      "actionable": "Жёсткое правило спеки: никаких покупных просмотров/лайков/подписчиков. Дополнительно к нарушению ToS это напрямую ломает единственный доступный гео-механизм. Диапазон гео-состава панелей — НЕТ ДАННЫХ."
+    },
+    {
+      "claim": "Аккаунтный регион TikTok привязывается на этапе регистрации и не меняется вручную — официального подтверждения найти не удалось",
+      "evidence": "Подтверждено официально только то, что страна выводится из SIM и/или IP (TikTok Privacy Policy). Справочные страницы TikTok Support (support.tiktok.com -> tiktok.com/support/faq_detail) рендерятся через JS и вернули пустое тело — верифицировать заявление 'регион нельзя сменить' не удалось. Диапазон оценки по опыту практиков: регион привязан к первичной сессии, смена требует смены SIM/IP и не гарантирована — LOW CONFIDENCE, официального текста нет",
+      "source": "tiktok.com/legal/page/row/privacy-policy/en (подтверждённая часть); support.tiktok.com — контент недоступен для верификации",
+      "source_date": "2026-09",
+      "kind": "practitioner_report",
+      "confidence": "low",
+      "actionable": "В спеке считать страну аккаунта НЕИЗМЕНЯЕМОЙ после регистрации (консервативное допущение). Значит: страна задаётся один раз, на этапе создания аккаунта, и ошибку исправить нельзя — только пересоздать. Пометить как NEEDS_TEST."
+    },
+    {
+      "claim": "Влияние IP КАЖДОЙ ОТДЕЛЬНОЙ ЗАГРУЗКИ (в отличие от IP регистрации) на географию раздачи — НЕТ ДАННЫХ",
+      "evidence": "Ни в одной официальной документации TikTok/Meta/YouTube загрузочный IP не упоминается как сигнал раздачи. Академические аудиты измеряют только сторону ПОТРЕБЛЕНИЯ (какой фид видит бот с данным IP), не сторону РАСПРЕДЕЛЕНИЯ. Прямых воспроизводимых экспериментов 'один и тот же аккаунт грузит с US IP vs с не-US IP, сравнить гео зрителей' найти не удалось",
+      "source": "Отсутствие данных подтверждено прямыми фетчами: newsroom.tiktok.com; transparency.meta.com system cards; developers.google.com/youtube/v3/docs/videos; arXiv API (запросы по TikTok+location, sock puppet+TikTok, YouTube Shorts, Instagram Reels+audit)",
+      "source_date": "2026-09",
+      "kind": "inference",
+      "confidence": "low",
+      "actionable": "НЕ строить спеку на гипотезе 'загрузочный IP определяет гео'. Держать country-consistent IP как гигиену (чтобы не триггерить антифрод несоответствием), но не как гео-рычаг. Это самый дешёвый собственный эксперимент: 2 группы по 5 аккаунтов одной страны регистрации, разный загрузочный IP, сравнить гео-распределение зрителей через 10 публикаций."
+    },
+    {
+      "claim": "Академических аудитов гео-эффектов для Instagram Reels и YouTube Shorts не существует — НЕТ ДАННЫХ",
+      "evidence": "Поиск по arXiv API: запрос 'Instagram Reels' AND 'audit' вернул одну работу (arXiv:2507.12571, 4,492 видео по Reels/TikTok/Shorts) — она про небезопасный контент для подростков, гео/языковые эффекты НЕ измеряет. Запрос 'TikTok' AND 'cross-country' — 0 результатов. Из 29 работ по 'YouTube Shorts' ни одна не измеряет влияние страны/IP на раздачу; те, что помечены как geographic (arXiv:2507.04605, 2507.04534, 2507.21467, 2604.00994), исследуют геополитические ТЕМЫ контента, а не гео-таргетинг",
+      "source": "arXiv API export.arxiv.org/api/query — 4 запроса; arXiv:2507.12571",
+      "source_date": "2026-09",
+      "kind": "inference",
+      "confidence": "high",
+      "actionable": "Для Reels и Shorts воспроизводимых экспериментов по гео НЕ СУЩЕСТВУЕТ. Всё, что вы найдёте в блогах про гео-таргет Reels/Shorts — не верифицировано. Значит: собственный A/B обязателен, и его надо заложить в спеку как первый этап, а не как оптимизацию."
+    },
+    {
+      "claim": "Единственные органические исключения, где город теоретически имеет значение — opt-in локационные поверхности; их объём неизвестен",
+      "evidence": "Косвенное: TikTok Privacy Policy подтверждает сбор location-тегов: 'we collect location information (such as tourist attractions, shops, or other points of interest) if you choose to add location information to your User Content' — то есть локация уровня POI существует, но только как ДОБРОВОЛЬНЫЙ тег контента. Верифицировать объём трафика с локационных поверхностей (TikTok Nearby, IG location tags, поиск по месту) не удалось — НЕТ ДАННЫХ",
+      "source": "tiktok.com/legal/page/row/privacy-policy/en",
+      "source_date": "2026-09",
+      "kind": "platform_docs",
+      "confidence": "low",
+      "actionable": "Для игрового оффера локационные теги бесполезны (аудитория не географична внутри страны) и вредны (сужают пул). Константа спеки: location_tag=none. Исключает последнее теоретическое место, где город мог бы сработать."
+    }
+  ],
+  "key_numbers": [
+    "Гранулярность гео-сигнала в органике: СТРАНА (ISO-2). Подтверждено 3 платформами независимо. Город: 0 подтверждённых входных сигналов.",
+    "Google IP-локация 'general area': >3 кв.км, минимум 1000 пользователей (официальное определение Google)",
+    "Эксперимент по штатам США (arXiv:2501.17831): эффект идентичен в NY (t=5.82), TX (t=9.21), GA (t=5.83); сотни аккаунтов, ~394,000 видео, 30.04.2024-11.11.2024; GPS-спуфинг в точки 40.7308/-73.9976 (Манхэттен), 33.148/-96.638 (Collin Co TX), 33.961/-84.537 (Cobb Co GA) + per-state VPN",
+    "Окно формирования профиля аккаунта: onset специализации в среднем 65.7 просмотренных видео для GAMING (самый быстрый интерес), 140 для food; почти все onset внутри первых 200 видео (arXiv:2503.20231, 42 бота, 128,148 видео)",
+    "Плато интерес-совпадающего контента: Gaming 67.4%, Food 52.3%, Gaming+Food 67.2%",
+    "Базовый шум пересечения фидов TikTok (Boeker & Urman): доля РАЗЛИЧАЮЩИХСЯ постов 66.17%, авторов 66.05%, хэштегов 58.62%, звуков 64.47%",
+    "Рейтинг силы персонализационных факторов TikTok (аудит): follow > video view rate > like; location > language",
+    "YouTube пользователи: India 518M, US 259M, Indonesia 151M, Brazil 149M (DemandSage, обн. 2026-08-27)",
+    "Instagram пользователи: India 413.85M, US 171.7M, Brazil 140.7M, Indonesia 103.4M, Turkey 58.45M, Japan 57.45M, Mexico 48.75M, UK 33.4M, Germany 31.25M, Argentina 28.9M (DemandSage 2026-06-08)",
+    "TikTok пользователи (Индии НЕТ — бан с 29.06.2020): US 136M, Indonesia 108M, Brazil 91.7M, Mexico 85.4M, Pakistan 66.9M, Philippines 62.3M, Bangladesh 46.5M, Vietnam 40.9M (DemandSage 2026-07-09)",
+    "Перевес IN/US: 2.0x на YouTube, 2.41x на Instagram — базовая ставка против US при ненаправленной раздаче",
+    "TikTok Ads гео-уровни: Country/Region, State/Province, County, District, DMA, City, Zip, Urban District, Department; лимит 3,000 локаций на ad group; Canada только 3-буквенные почтовые; zip+4 не поддерживается",
+    "Google Ads: страны, области внутри стран, радиус от 1 км, location groups; 'IP' в списке сигналов НЕ упомянут",
+    "YouTube авто-дубляж: 24 исходных языка; английский -> 18 целевых (в декабре 2024 запуск был на 8: FR, DE, HI, ID, IT, JA, PT, ES)",
+    "Instagram Trial Reels: метрики через 24 часа, авто-раскатка на подписчиков при хорошем перформансе 'within the first 72 hours'",
+    "Instagram средний reach rate 30.81%; Reels = 'half of the time spent on Instagram'; падение reach 10k-50k аккаунтов с 16,800 до 6,243 (2022->2023)",
+    "YouTube Trending Charts: обновление 'roughly every 30 minutes', страновые бакеты, без персонализации",
+    "YouTube Shorts монетизация: 1,000 подписчиков + 10 млн qualified Shorts views за 90 дней; изменение подсчёта views с 31.03.2025"
+  ],
+  "machine_spec_notes": [
+    "CONST geo_granularity = 'country' (ISO-3166-1 alpha-2). Никаких city/DMA/zip-полей в органической части спеки. Подтверждено 6 независимыми доказательствами.",
+    "CONST paid_geo_level = 'country'. Город/DMA/zip доступны в TikTok Ads и Google Ads, но для игрового оффера не дают дифференциации. Исключение: явно помеченные тесты.",
+    "CONST target_geo_pool = ['US','GB','CA','AU'] — англоязычный пул. UK-only даёт 33.4M IG-юзеров против 171.7M US; не сужать до UK, даже при UK-позиционировании бренда.",
+    "RULE account_country_immutable = true. Страна задаётся ОДИН раз при регистрации (источники сигнала: SIM MCC + IP по privacy policy TikTok). Consequence: ошибка страны -> retire аккаунта, не 'лечение'. Пометка NEEDS_TEST (официального текста о невозможности смены найти не удалось).",
+    "RULE ip_policy: country-consistent мобильный/резидентский IP как ГИГИЕНА (несоответствие SIM/IP/язык/тайм-зона = риск антифрода), НЕ как гео-рычаг. Запретить покупку city-targeted IP для органики — экономия без потери эффекта.",
+    "RULE request_precise_location_permission = false. GPS не нужен, органического эффекта нет, добавляет fingerprint-риск.",
+    "PIPELINE account_warmup: перед первой публикацией прогреть аккаунт 70-200 просмотрами целевого (gaming, англоязычного, US-креаторов) контента. Обоснование: onset специализации для gaming = 65.7 видео, почти все onset < 200.",
+    "CREATIVE hard requirements (влияют на гео СИЛЬНЕЕ любых настроек, т.к. работают через watch-through, который официально перебивает same-country): (1) плотный английский текст на экране в каждом кадре; (2) английская озвучка/TTS; (3) US/UK-специфичные референсы: ping в ms, region servers (NA-East/EU-West), '$' цены, названия US-турниров; (4) запрет не-англоязычных трендовых звуков.",
+    "CREATIVE hard bans (официальные штрафы видимости Instagram): no watermark (особенно TikTok-логотип при кросс-посте), no black borders/pillarbox, аудиотрек обязателен (muted reels официально понижаются), no low resolution. Спека должна ресайзить под каждую платформу нативно, а не переливать с вотермарком.",
+    "YOUTUBE upload API constants: defaultLanguage='en', defaultAudioLanguage='en-US', английские captions обязательны. localizations = ПУСТО (не добавлять hi/id/pt/ar/es переводы — они сами открывают чужие языковые пулы). auto_dubbing=off на уровне канала.",
+    "YOUTUBE regionRestriction.blocked как гео-фильтр: NEEDS_TEST. Документировано для чтения; записываемость при insert/update в docs не подтверждена (вероятно доступно только content owners). Не закладывать как рабочий механизм до проверки.",
+    "INSTAGRAM/REELS: органических гео-полей НЕТ. Единственный подтверждённый гео-механизм — обратная связь 'How much time has viewers from your country spent on this reel'. Consequence: критично окно первых 24-72 часов; оптимизировать под sends-per-reach и watch-time.",
+    "INSTAGRAM Trial Reels как A/B-стенд: публиковать вариант креатива как Trial Reel (виден только не-подписчикам, не попадает в профиль), читать метрики через 24 ч, решение до 72 ч. Дешёвый способ замерить гео-состав unconnected reach без загрязнения аккаунта.",
+    "POSTING WINDOWS (операционные, не алгоритмические): US -> 16:00-04:00 UTC; UK -> 17:00-21:00 UTC. Обоснование: официальный сигнал = тайм-зона ЗРИТЕЛЯ (низкий вес); реальный эффект — кто физически онлайн в первый час и формирует seed-когорту.",
+    "TIKTOK ALERT: if analytics.country=='IN' and share > 2% -> flag BOT_TRAFFIC, не GEO_DRIFT. TikTok забанен в Индии с 29.06.2020, органические индийские просмотры невозможны.",
+    "KILL SWITCH: if share(target_geo_views) < 30% after 10 publications -> retire account, создать новый. Обоснование: специализация закрепляется за ~66-200 контактов; переучивание дороже пересоздания.",
+    "PAID SEEDING: использовать TikTok Spark Ads НА УЖЕ ОПУБЛИКОВАННЫЙ органический пост (не отдельный ad creative). Официально: все views/comments/shares/likes/follows от промо приписываются органическому посту навсегда. Метрика успеха посева = прирост US-ПОДПИСЧИКОВ (долгоиграющий якорь), а не views на видео.",
+    "PAID BUDGET MODEL: считать платный посев как покупку US-фолловер-базы + US-досмотров на конкретных видео. НЕ моделировать как 'разовая покупка переключения гео органики' — величина такого эффекта НЕ ПОДТВЕРЖДЕНА ни одной платформой (НЕТ ДАННЫХ).",
+    "HARD BAN: покупка просмотров/лайков/подписчиков/накрутка. Двойной вред: нарушение ToS всех трёх платформ + прямое отравление единственного доступного гео-механизма (страновой агрегат watch-time).",
+    "LOCATION TAGS: location_tag=none на всех платформах. Единственная органическая поверхность с городской гранулярностью — добровольные POI-теги; для игрового оффера бесполезны и сужают пул.",
+    "REQUIRED OWN EXPERIMENT #1 (самый дешёвый и самый недостающий): 2 группы x 5 аккаунтов одинаковой страны регистрации; группа A грузит с US IP, группа B с не-US IP; идентичные креативы и расписание; сравнить гео-распределение зрителей после 10 публикаций. Закрывает пробел 'влияет ли загрузочный IP' — по этому вопросу НЕТ ДАННЫХ ни у платформ, ни в академии.",
+    "REQUIRED OWN EXPERIMENT #2: для Reels и Shorts воспроизводимых гео-экспериментов НЕ СУЩЕСТВУЕТ (проверено через arXiv API). Все блоговые утверждения о гео-таргете Reels/Shorts не верифицированы. Заложить собственный A/B как ПЕРВЫЙ этап пайплайна, не как оптимизацию.",
+    "TELEMETRY: логировать по каждой публикации: account_country, upload_ip_country, post_time_utc, creative_lang_variant, has_onscreen_text, audio_lang, + из аналитики top-5 стран зрителей и их доли. Без этой таблицы гео-оптимизация не поддаётся замеру, а платформы гео-контроля не дают."
+  ],
+  "risks": [
+    "ФАКТОЛОГИЧЕСКИЙ РИСК: нет ни одного официального заявления какой-либо платформы о том, что IP/страна ЗАГРУЗКИ влияет на географию раздачи. Академические аудиты (включая сильнейший, Boeker & Urman) измеряют сторону ПОТРЕБЛЕНИЯ — какой фид видит бот с данным IP, — а не сторону распределения. Любая спека, построенная на 'грузим с US IP -> получаем US-зрителей', опирается на inference, а не на доказательство.",
+    "РИСК ПЕРЕНОСА ВЫВОДА: главный эксперимент по городам (arXiv:2501.17831) измерял партийную асимметрию политического контента, а не 'меняет ли город контентный пул'. Это сильнейшее доступное доказательство страновой (а не городской) гранулярности, но оно косвенное. Вероятность, что город всё же имеет остаточный эффект в каких-то вертикалях: низкая, но не нулевая.",
+    "РИСК ToS — сеть новорег-аккаунтов: массовое создание аккаунтов, автоматизированный постинг и координированное поведение нарушают условия использования TikTok, Instagram и YouTube (координированное неаутентичное поведение / spam). Вероятность блокировок высокая и растёт с числом аккаунтов на одном отпечатке/IP-подсети. Это не гео-риск, а базовый операционный риск модели '20 каналов на гео'.",
+    "РИСК ПОКУПНЫХ АККАУНТОВ: купленные новореги имеют неизвестную историю страны регистрации (SIM/IP первичной сессии). Поскольку страна аккаунта, вероятно, неизменяема, покупка аккаунта неизвестного происхождения = покупка неизвестного гео. Верифицировать страну до покупки надёжно невозможно.",
+    "РИСК АВТО-ДУБЛЯЖА YouTube: включённый по умолчанию на части каналов YPP, он автоматически создаёт hi/id/pt дорожки для англоязычного видео и открывает именно те пулы, от которых нужно уйти. Если не отключить явно — гео-размытие произойдёт без участия оператора.",
+    "РИСК ЛОКАЛИЗАЦИИ МЕТАДАННЫХ: добавление localizations/переводов заголовков — типовая 'оптимизация роста', которая прямо противоречит цели US-таргетинга. Инструменты и советы в отрасли будут толкать к этому.",
+    "РИСК НЕОБРАТИМОСТИ ХОЛОДНОГО СТАРТА: специализация закрепляется за ~66-200 контактов, а страновой сигнал Reels самоусиливается. Ошибка в первых публикациях аккаунта, вероятно, не лечится — только пересоздание. Это меняет экономику: аккаунты надо считать расходным материалом с явным kill-switch, а не активом.",
+    "РИСК ПЕРЕОЦЕНКИ ПЛАТНОГО ПОСЕВА: официально подтверждена только атрибуция метрик органическому посту (TikTok Spark Ads). Что платная вовлечённость является входом органического рекомендера — НЕ заявлено ни одной платформой, и в system cards Meta paid-сигналов нет вообще. Планировать окупаемость посева через 'алгоритм дальше понесёт сам' — это ставка без доказательной базы.",
+    "РИСК ДОСТОВЕРНОСТИ ЧИСЕЛ ПО ПОЛЬЗОВАТЕЛЯМ: цифры по странам взяты у агрегатора третьей стороны (DemandSage, ссылается на DataReportal/Statista), а не из первоисточника. Порядок величин и соотношение IN/US надёжны; точные значения — medium confidence.",
+    "РИСК МОЕЙ ВЫБОРКИ: бюджет WebSearch был исчерпан (200/200) ДО начала работы, публичные поисковики вернули CAPTCHA/403/500, Bing деградировал до брендовых навигационных результатов. Работа велась через ~35 прямых WebFetch по официальной документации + arXiv API. Следствие: официальные политики и академические аудиты представлены хорошо, ОПЫТ ПРАКТИКОВ (форумы, Reddit, приватные сообщества роста) — сильно недопредставлен. Если у практиков есть воспроизводимые находки по гео, я их не увидел.",
+    "РИСК JS-РЕНДЕРИНГА: справочные страницы TikTok Support (support.tiktok.com -> tiktok.com/support/faq_detail) и Meta Business Help Center вернули пустое тело. Часть официальных формулировок (смена региона TikTok, детали boosted posts Meta) осталась неверифицированной.",
+    "РИСК ПРОДУКТОВЫХ ИЗМЕНЕНИЙ: Meta system cards и справка TikTok обновляются без версионирования. Найденный ключевой сигнал 'How much time has viewers from your country spent on this reel' может исчезнуть или измениться. Спеку надо перепроверять по этим URL раз в квартал."
+  ],
+  "open_questions": [
+    "Влияет ли IP КОНКРЕТНОЙ ЗАГРУЗКИ (при фиксированной стране регистрации аккаунта) на географию зрителей? НЕТ ДАННЫХ — ни официальных, ни академических. Это главный незакрытый вопрос и самый дешёвый собственный эксперимент (2x5 аккаунтов, 10 публикаций).",
+    "Действительно ли регион аккаунта TikTok неизменяем после регистрации, и что именно его фиксирует — MCC SIM-карты, IP первичной сессии, или оба? Официальный текст верифицировать не удалось (JS-рендеринг support.tiktok.com).",
+    "Записывается ли YouTube regionRestriction.blocked через Data API v3 videos.insert/update для обычного канала, или только для content owners? Docs не говорят. Если записывается — это единственный ПРЯМОЙ органический гео-фильтр из всех трёх платформ.",
+    "Какова величина эффекта платного посева на последующую ОРГАНИЧЕСКУЮ географию? Подтверждена только атрибуция метрик. Сколько $ Spark Ads на US нужно, чтобы органика закрепилась в US, и закрепляется ли вообще — НЕТ ДАННЫХ.",
+    "Есть ли у TikTok/Meta страновое партиционирование ПУЛА КАНДИДАТОВ (а не только ранжирующий сигнал)? Аудит Boeker & Urman косвенно указывает на это ('different locations have a strong impact'), но официального описания архитектуры нет.",
+    "Читает ли рекомендер ТЕКСТ НА ЭКРАНЕ (OCR) как языковой сигнал напрямую, или только опосредованно через досмотр? TikTok официально называет 'captions, sounds, hashtags', OCR не упоминает. Разница важна: если OCR читается — текст на экране работает как метаданные; если нет — только через watch-through.",
+    "Как YouTube выбирает аудиодорожку по умолчанию при наличии дубляжа — по языку устройства, языку аккаунта или по стране IP? Справка называет только явное предпочтение зрителя. Для гео-контроля это ключевая деталь.",
+    "Каков реальный географический состав трафика SMM-панелей? НЕТ ДАННЫХ. Диапазон 'преимущественно Южная Азия' — практический фольклор без citable источника (low confidence).",
+    "Каков объём трафика с локационных поверхностей (TikTok Nearby, IG location tags, поиск по месту) — единственных мест с городской гранулярностью в органике? НЕТ ДАННЫХ. Оценочно пренебрежимо мал для игровой вертикали, но не подтверждено.",
+    "Различаются ли англоязычные пулы US / UK / CA / AU, или они сливаются в один? Boeker & Urman нашли различие между US(en) и CA(en), то есть НЕ сливаются полностью. Насколько сильно — численно не опубликовано (результаты представлены как heat maps, Figures 3-5, без табличных значений Jaccard).",
+    "Существует ли порог доли 'чужих' просмотров, после которого аккаунт уже не восстанавливается? Kill-switch 30% после 10 публикаций — моя оценка из onset-кривой (65.7-200 видео), а не измеренная величина.",
+    "Есть ли различие в гео-механике между TikTok Promote (in-app boost) и TikTok Ads Manager / Spark Ads? Справку по Promote верифицировать не удалось — все попытки (ads.tiktok.com/help/article/promote*, support.tiktok.com) вернули ошибки или пустое тело.",
+    "Меняет ли Instagram/Meta гео-поведение для НОВЫХ аккаунтов иначе, чем для зрелых? В system cards различий по возрасту аккаунта нет; 'Information about the person who posted' — самый слабый из 4 блоков. НЕТ ДАННЫХ о специальном cold-start гео-режиме."
+  ]
+}

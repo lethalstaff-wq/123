@@ -16,7 +16,7 @@ import subprocess
 from pathlib import Path
 from typing import Sequence
 
-from .config import settings
+from .config import platform_limits, settings
 from .models import Asset, RenderResult, VideoPlan, utcnow
 
 W, H, FPS = 1080, 1920, 30
@@ -38,7 +38,16 @@ GRADES = [
     "eq=contrast=0.97:saturation=1.15",
     "curves=preset=lighter",
 ]
-HOOK_Y = ["h*0.08", "h*0.12", "h*0.16", "h*0.72"]
+# Позиции текста считаются от безопасной зоны из data/platform_limits.json:
+# верхние 12% и нижние 20% кадра перекрыты интерфейсом площадки, и текст там не читается.
+def _safe_y_positions() -> list[str]:
+    sa = platform_limits().get("safe_area", {})
+    top = float(sa.get("top_pct", 12)) / 100
+    bottom = 1 - float(sa.get("bottom_pct", 20)) / 100
+    span = bottom - top
+    return [f"h*{top + span * k:.3f}" for k in (0.02, 0.10, 0.20, 0.62)]
+
+
 HOOK_SIZE = [64, 72, 80, 88]
 BOX_STYLES = [
     dict(box=1, boxcolor="black@0.55", boxborderw=18, fontcolor="white"),
@@ -50,6 +59,33 @@ BOX_STYLES = [
 
 class RenderError(RuntimeError):
     pass
+
+
+def audio_policy_allows_music(platform) -> bool:
+    """Можно ли подмешивать музыкальный трек на этой площадке.
+
+    YouTube: каждый лицензированный трек уменьшает долю выручки Shorts
+    (0 треков = 100%, 1 = 50%), поэтому для Shorts музыку не подмешиваем.
+    Instagram: API не умеет прикреплять лицензированную музыку, а тишина режет
+    видимость — используем звук источника.
+    TikTok: музыка допустима.
+    """
+    name = getattr(platform, "value", str(platform))
+    policy = platform_limits().get(name, {}).get("audio_policy", {})
+    if policy.get("prefer") == "source_sfx_or_own_audio":
+        return False
+    if name == "instagram":
+        return False
+    return True
+
+
+def target_duration_for(platform, requested: float) -> float:
+    """Приводит длительность к вилке площадки (sweet spot), не ломая замысел формата."""
+    name = getattr(platform, "value", str(platform))
+    v = platform_limits().get(name, {}).get("video", {})
+    lo, hi = (v.get("sweet_spot_s") or [10, 60])[:2]
+    hard_max = v.get("claim_safe_max_s") or v.get("max_duration_s") or hi
+    return float(max(lo, min(requested, hi, hard_max)))
 
 
 def _font() -> str:
@@ -119,6 +155,7 @@ def build_command(plan: VideoPlan, assets: Sequence[Asset], out_path: Path,
     rng = random.Random(plan.variant_seed)
     font = _font()
     speed = rng.choice(SPEEDS)
+    plan.target_duration_s = target_duration_for(plan.platform, plan.target_duration_s)
     zoom = rng.choice(ZOOMS)
     grade = rng.choice(GRADES)
     segs = _segment_plan(assets, plan.target_duration_s * speed, rng)
@@ -151,7 +188,7 @@ def build_command(plan: VideoPlan, assets: Sequence[Asset], out_path: Path,
     parts.append(
         f"[{last}]drawtext=fontfile={font}:text='{esc(hook)}':"
         f"fontsize={rng.choice(HOOK_SIZE)}:fontcolor={style['fontcolor']}:{box}:"
-        f"x=(w-text_w)/2:y={rng.choice(HOOK_Y)}:line_spacing=10:"
+        f"x=(w-text_w)/2:y={rng.choice(_safe_y_positions())}:line_spacing=10:"
         f"enable='between(t,0,{rng.uniform(2.2, 3.6):.2f})'[hk]"
     )
     last = "hk"
@@ -165,7 +202,7 @@ def build_command(plan: VideoPlan, assets: Sequence[Asset], out_path: Path,
             parts.append(
                 f"[{last}]drawtext=fontfile={font}:text='{esc(wrap(beat, 26))}':"
                 f"fontsize=56:fontcolor=white:box=1:boxcolor=black@0.5:boxborderw=14:"
-                f"x=(w-text_w)/2:y=h*0.78:line_spacing=8:"
+                f"x=(w-text_w)/2:y=h*0.68:line_spacing=8:"
                 f"enable='between(t,{t:.2f},{t+step:.2f})'[b{j}]"
             )
             last = f"b{j}"
@@ -175,17 +212,26 @@ def build_command(plan: VideoPlan, assets: Sequence[Asset], out_path: Path,
         parts.append(
             f"[{last}]drawtext=fontfile={font}:text='{esc(plan.cta_text)}':"
             f"fontsize=52:fontcolor=white:box=1:boxcolor=black@0.6:boxborderw=16:"
-            f"x=(w-text_w)/2:y=h*0.88:"
+            f"x=(w-text_w)/2:y=h*0.74:"
             f"enable='gte(t,{max(plan.target_duration_s - 4.0, 1.0):.2f})'[out]"
         )
         last = "out"
 
     filter_complex = ";".join(parts)
     cmd += ["-filter_complex", filter_complex, "-map", f"[{last}]"]
-    if music:
+
+    # Звук обязателен: у Instagram отсутствие звука официально названо причиной
+    # снижения видимости. При этом для Shorts подмешивать лицензированную музыку
+    # невыгодно — каждый трек режет долю выручки, поэтому там берём звук источника.
+    use_music = music is not None and audio_policy_allows_music(plan.platform)
+    if use_music:
         vol = rng.uniform(0.35, 0.7)
         cmd += ["-map", f"{len(segs)}:a", "-af", f"volume={vol:.2f},afade=t=out:st="
                 f"{max(plan.target_duration_s - 1.2, 0.5):.2f}:d=1.2", "-shortest"]
+    else:
+        # звук первого клипа; если у источника его нет — тишина, но дорожка есть,
+        # потому что файл вообще без аудиопотока хуже, чем тихий
+        cmd += ["-map", "0:a?", "-af", "aresample=44100"]
     cmd += [
         "-t", f"{plan.target_duration_s:.2f}",
         "-c:v", "libx264", "-preset", "veryfast", "-crf", str(rng.choice([20, 21, 22])),
@@ -207,6 +253,13 @@ def render(plan: VideoPlan, assets: Sequence[Asset], music: Asset | None = None)
         (out_dir / f"{plan.plan_id}.cmd.txt").write_text(shlex.join(cmd), encoding="utf-8")
         return RenderResult(plan.plan_id, str(out_path), None, plan.target_duration_s,
                             W, H, checksum="dry-run", rendered_at=utcnow())
+
+    available = sum((a.duration_s or probe_duration(a.path)) for a in assets)
+    if available < plan.target_duration_s * 0.95:
+        # молча выпускать ролики короче вилки площадки нельзя: это режет и охват,
+        # и выручку, а причина (короткие исходники) со стороны не видна
+        print(f"  предупреждение {plan.plan_id}: материала {available:.1f}s < цели "
+              f"{plan.target_duration_s:.1f}s — ролик выйдет короче вилки площадки")
 
     res = subprocess.run(cmd, capture_output=True, text=True)
     if res.returncode != 0 or not out_path.exists():

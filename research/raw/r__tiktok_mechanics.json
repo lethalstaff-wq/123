@@ -1,0 +1,400 @@
+{
+  "dimension": "tiktok_mechanics",
+  "summary": "TikTok официально раскрывает только три семейства сигналов (user interactions > video information > device/account settings) и прямо заявляет, что число подписчиков и прошлые успешные видео НЕ являются прямыми факторами — это главный технический аргумент в пользу сети новых каналов. Всё, что касается «порогов» (200-500 первичных зрителей, 70% completion для выхода в широкую выдачу, волны раздачи, «200-view jail»), НЕ подтверждено официально: это измерения и модели вендоров 2026 года, их надо считать эвристиками, а не константами. Проверяемые твёрдые числа есть в трёх местах: (1) официальная документация Content Posting API — 6 запросов/мин на user access_token, неаудированный клиент может публиковать ТОЛЬКО в приватном режиме (SELF_ONLY), 4 ГБ, чанки 5-64 МБ, до 1000 чанков, 23-60 fps, 360-4096 px, upload_url живёт 1 час; (2) индустриальные датасеты по длине видео (Socialinsider, 6 млн видео, янв-июн 2026): максимальный ER на 15-30 c (6.00%), максимальный медианный охват на 120-180 c (11 136 просмотров) — цель ролика определяет длину; (3) частота постинга (Buffer, 11+ млн постов): 11+ постов/неделю дают +34% просмотров на пост, то есть массовый залив НЕ штрафуется по охвату сам по себе. «Shadowban» официально не существует как термин — существует «not eligible for the For You feed» (видео-уровень и аккаунт-уровень), проверяется в Account status и в аналитике конкретного видео (traffic source: норма 60-80% из FYP). Безопасного числа постов в день официально нет — данных нет. Ключевой правовой риск модели оператора: покупка новорег-аккаунтов и сеть по 20 каналов на гео прямо попадает в политику spam and platform manipulation (боты, скрипты, bulk automation) и fake engagement — это основание для удаления аккаунтов без предупреждения; публичных данных о вероятности бана нет.",
+  "key_numbers": [
+    "Content Posting API: 6 requests/minute на один user access_token (официально)",
+    "Content Posting API: неаудированный клиент = 100% постов только private/SELF_ONLY (официально)",
+    "Видео через API: max 4 GB, chunk min 5 MB / max 64 MB (финальный до 128 MB), max 1000 чанков, upload_url валиден 1 час",
+    "Видео через API: MP4/WebM/MOV, H.264/H.265/VP8/VP9, 23-60 fps, 360-4096 px, до 10 мин (реальный лимит аккаунта отдаёт creator_info: max_video_post_duration_sec, напр. 300)",
+    "Длина vs engagement rate (6 млн видео, янв-июн 2026): 0-15 c = 5.90%, 15-30 c = 6.00%, 30-60 c = 4.20%, 60-90 c = 4.80%, 90-120 c = 5.15%, 120-180 c = 5.50%, >180 c = 5.90%",
+    "Длина vs медианные просмотры: 1-15 c = 1 274; 15-30 c = 1 000; 30-60 c = 2 200; 60-90 c = 7 200; 90-120 c = 9 620; 120-180 c = 11 136; >180 c = 10 150",
+    "Частота (Buffer, 11+ млн постов): 2-5 постов/нед = +17% просмотров на пост, 6-10 = +29%, 11+ = +34%",
+    "Альтернативный датасет (1.5 млн постов, SocialPilot): оптимум 2-3 поста/неделю — прямое противоречие с Buffer",
+    "Хештеги: 1-5 штук = reach rate 1.16% (максимум); #fyp/#foryou охвата не добавляют",
+    "Бенчмарки по размеру аккаунта (2 млн видео / 214 507 профилей, янв 2024-дек 2025): ER 1-5K = 4.40%, 5-10K = 4.00%, 10-50K = 3.90%, 50-100K = 3.75%, 100K-1M = 3.95%",
+    "Средние просмотры на пост: 1-5K подписчиков = 350, 5-10K = 945, 10-50K = 3 240, 50-100K = 9 900, 100K-1M = 34 900",
+    "FYP даёт 7 из 10 просмотров (Metricool, 2 314 756 постов, 92 000+ аккаунтов, 2026)",
+    "Заявленный порог completion rate для широкой выдачи 2026: ~70% (было ~50% в 2024) — вендорская оценка, не официально",
+    "Заявленный первичный тест: 200-500 зрителей, преимущественно подписчики; плато после 2-3 волн, вирус на 4-5 волне — вендорская оценка",
+    "Qualified view = 5+ секунд просмотра (вендорская формулировка, официально не подтверждено)",
+    "TikTok как поисковик: 49% потребителей в США (было 41% в 2024), 65% Gen Z (Adobe Express, опрос 807 чел., янв 2026)",
+    "84% поисков в TikTok — на стадии exploration (без конкретного бренда)",
+    "Видео 3-8 минут = 41% всего времени просмотра в США (было 9% в 2022)",
+    "Норма traffic source из FYP для здорового видео: 60-80%; <10% — признак ограничения (практика, не официально)",
+    "Анекдотические сроки снятия ограничений: 7-14 дней (одно видео), 14-30 (поведенческие флаги), 30-90 (страйки); часто называют ~2 недели — официальных сроков не существует"
+  ],
+  "findings": [
+    {
+      "claim": "Официально TikTok ранжирует по трём семействам сигналов: user interactions (лайки, шеры, комментарии, подписки, созданный контент), video information (подписи, звуки, хештеги), device & account settings (язык, страна, тип устройства). Третье семейство имеет наименьший вес.",
+      "evidence": "Дословно: 'User interactions such as the videos you like or share, accounts you follow, comments you post, and content you create'; 'Video information, which might include details like captions, sounds, and hashtags'; 'Device and account settings like your language preference, country setting, and device type' — и про третье: 'are included to make sure the system is optimized for performance, but they receive lower weight in the recommendation system relative to other data points'.",
+      "source": "TikTok Newsroom — 'How TikTok recommends videos #ForYou' (newsroom.tiktok.com/en-us/how-tiktok-recommends-videos-for-you)",
+      "source_date": "опубликовано 2020-06, страница поддерживается актуальной; проверено 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Единственный официально гарантированный рычаг — сигналы взаимодействия и содержимое видео (текст, звук, хештеги). Язык/страна/устройство — слабый вес, но ненулевой: в спеке скрипта они влияют на первичную аудиторию, а не на потолок охвата."
+    },
+    {
+      "claim": "Число подписчиков и наличие прошлых успешных видео НЕ являются прямыми факторами рекомендаций.",
+      "evidence": "Дословно: 'neither follower count nor whether the account has had previous high-performing videos are direct factors in the recommendation system'.",
+      "source": "TikTok Newsroom — 'How TikTok recommends videos #ForYou'",
+      "source_date": "проверено 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Технически оправдывает сеть из 20 свежих каналов на гео: холодный аккаунт не имеет структурного потолка охвата. Но это не отменяет политику против bulk-аккаунтинга (см. ниже)."
+    },
+    {
+      "claim": "Официальных чисел по размеру первичной тестовой выдачи TikTok не публикует. Вендорские измерения 2026 называют 200-500 первичных зрителей с уклоном в существующих подписчиков, далее волны; плато после 2-3 волн, вирусный прорыв на 4-5 волне.",
+      "evidence": "Socialic: 'Stage 1: 200 to 500 viewers, now primarily your followers'; 'Most videos plateau after 2-3 waves; viral breakout occurs at 4-5 waves'. Hootsuite/Buffer/SocialPilot описывают механику качественно, без чисел: 'shows the video to a subset of your existing followers' и далее расширение при превышении порога.",
+      "source": "Socialic Blog — 'TikTok Algorithm Explained: How the For You Page Actually Works'; Buffer — 'TikTok algorithm'; SocialPilot — 'The 2026 TikTok Algorithm Explained'",
+      "source_date": "Socialic 2026-08-20; SocialPilot/Buffer 2026",
+      "kind": "practitioner_report",
+      "confidence": "low",
+      "actionable": "В скрипте не закладывать 200-500 как факт. Закладывать как калибруемую константу COLD_START_VIEWS_EXPECTED=200..500 для авто-детекта аномалий (если новое видео стабильно <100 просмотров за 24 ч — флаг на проверку аккаунта)."
+    },
+    {
+      "claim": "Сильнейший сигнал по консенсусу индустрии — watch time / completion rate (включая watch time per impression), затем rewatch/loops, затем shares и saves, затем комментарии, и только потом лайки. Лайки в 2026 считаются слабым сигналом.",
+      "evidence": "Hootsuite иерархия: strongest — watch time, completion rate, replays, shares; strong — comments, follows from video, saves; moderate — likes, hashtag engagement; weaker — device type, language, location. Sprout: 'Saves and shares now outweigh simple likes by a significant margin'. Voqusa: 'Watch-time per impression is now weighted more heavily than total view count'.",
+      "source": "Hootsuite Blog — 'How the TikTok algorithm works in 2026'; Sprout Social — 'How the TikTok Algorithm Works in 2026'; Voqusa — 'TikTok Algorithm 2026'",
+      "source_date": "Hootsuite/Sprout 2026; Voqusa 2026-04-21",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Оптимизационная цель скрипта/креатива: максимизировать долю досмотра и re-watch (луп в конце), затем провоцировать share/save (гайд/чеклист = сохраняемый контент). Лайки как KPI не использовать."
+    },
+    {
+      "claim": "Порог completion rate для выхода в широкую выдачу в 2026 называют ~70% (против ~50% в 2024), а вес watch time/completion оценивают в 40-50% всего скоринга. Это НЕ официальные цифры.",
+      "evidence": "PostEverywhere: 'Completion rate for viral push ~70%, up from ~50% in 2024'; 'Algorithmic weight 40-50% — single most important signal'. Socialic независимо повторяет: '2026 breakout threshold: approximately 70%'. Voqusa даёт другой ориентир: APV (average percent viewed) ≥50%. Ни один источник не приводит ссылку на TikTok.",
+      "source": "PostEverywhere — 'How the TikTok Algorithm Works'; Socialic Blog; Voqusa",
+      "source_date": "PostEverywhere 2026-03-23; Socialic 2026-08-20; Voqusa 2026-04-21",
+      "kind": "practitioner_report",
+      "confidence": "low",
+      "actionable": "Конструктивный вывод для авто-залива: длина ролика должна быть подобрана так, чтобы 70% досмотра были физически достижимы. Для игрового контента это 8-20 секунд на хук+результат FPS, а не 60 c."
+    },
+    {
+      "claim": "Формулировка 'qualified view' (просмотр 5+ секунд как условие попадания в расчёт) циркулирует как рабочее определение 2026, но официального подтверждения нет.",
+      "evidence": "Sprout Social: \"'Qualified Views' (5+ seconds) required for algorithm consideration\"; Sprout также описывает '200-view jail' как следствие недостатка qualified views/completion. Официальная документация TikTok такого термина в публичном виде не содержит (проверить не удалось — community guidelines и support рендерятся только JS).",
+      "source": "Sprout Social — 'How the TikTok Algorithm Works in 2026'",
+      "source_date": "2026",
+      "kind": "practitioner_report",
+      "confidence": "low",
+      "actionable": "Первые 3-5 секунд должны содержать готовый результат (например, счётчик FPS до/после), а не интро. Хук проектировать под удержание до 5 с как минимум."
+    },
+    {
+      "claim": "Длина видео: максимальный engagement rate на 15-30 секундах (6.00%), но максимальный охват (медианные просмотры) — на 120-180 секундах (11 136). Короткое видео даёт вовлечённость, длинное — просмотры.",
+      "evidence": "Датасет 6 млн видео, янв-июн 2026: ER 0-15 c = 5.90%, 15-30 c = 6.00%, 30-60 c = 4.20%, 60-90 c = 4.80%, 90-120 c = 5.15%, 120-180 c = 5.50%, >180 c = 5.90%. Медианные просмотры: 1-15 c = 1 274, 15-30 c = 1 000, 30-60 c = 2 200, 60-90 c = 7 200, 90-120 c = 9 620, 120-180 c = 11 136, >180 c = 10 150.",
+      "source": "Socialinsider — '[What Data Says] How Long Should TikTok Videos Be?' (socialinsider.io/blog/how-long-are-tiktok-videos)",
+      "source_date": "публикация 2026-07-10, период данных янв-июн 2026",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Двухтрековая стратегия в скрипте: трек A (холодный трафик/охват) = 60-180 c с высокой плотностью пользы; трек B (вовлечённость и тесты хуков) = 15-30 c. На старте сети каналов лить оба и мерить CTR в bio."
+    },
+    {
+      "claim": "Длинный контент реально забирает время: видео 3-8 минут дают 41% всего времени просмотра в США против 9% в 2022. Sprout отдельно указывает на повышенный охват в диапазоне 60-90 c.",
+      "evidence": "SocialPilot TikTok statistics со ссылкой на Amra & Delma (2025): 'Videos 3-8 minutes long now account for 41% of total time spent on TikTok in the US, up from just 9% in 2022'. Sprout: 'Videos between 60-90 seconds see higher reach due to increased retention and monetization RPM'. Hootsuite: TikTok 'pushing longer content (1 to 3 minutes and beyond), rewarding videos that maintain high completion rates at greater lengths'.",
+      "source": "SocialPilot — 'TikTok Statistics' (цит. Amra & Delma, Statista); Sprout Social; Hootsuite",
+      "source_date": "Amra & Delma 2025; SocialPilot/Sprout/Hootsuite 2026",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Для SaaS-твиков это шанс: длинный формат (60-180 c) = 'до/после бенчмарк + пошаговый твик' держит досмотр лучше, чем нарезка, и монетизируется охватом. Заложить в спеку два пресета длины."
+    },
+    {
+      "claim": "FYP — доминирующий канал раздачи: 7 из 10 просмотров приходят с For You Page. Видео даёт 5x просмотров и 6x взаимодействий против изображений/карусели.",
+      "evidence": "Metricool TikTok Study: '2,314,756 posts from more than 92,000 accounts'; 'The For You Page drives 7 out of every 10 views'; 'Video gets 5x more views and 6x more interactions than images'; '44% of accounts under 100K followers grew between 2025 and 2026'.",
+      "source": "Metricool — TikTok Study (metricool.com/tiktok-study)",
+      "source_date": "исследование 2026",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Скрипту не нужны карусели/фото-посты — только вертикальное видео. Метрика здоровья аккаунта = доля FYP в traffic source (цель 60-80%)."
+    },
+    {
+      "claim": "Поиск внутри TikTok — значимый второй канал: 49% потребителей в США используют TikTok как поисковик (41% в 2024), 65% среди Gen Z. 84% поисков — стадия exploration.",
+      "evidence": "SocialPilot цитирует Adobe Express (опрос 807 потребителей США, янв 2026): '49% of US consumers used TikTok as a search engine in 2026, up from 41% in 2024'; '65% of Gen Z have used TikTok as a search engine'. Hootsuite: '84% of TikTok searches happening in the exploration phase'. SocialPilot algorithm-гайд: '64% of Gen Z users use it as a search engine'.",
+      "source": "SocialPilot — 'TikTok Statistics' (цит. Adobe Express); Hootsuite — 'How the TikTok algorithm works in 2026'; Sprout Social ('41% of Gen Z use social as primary search engine')",
+      "source_date": "Adobe Express янв 2026; остальное 2026",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Половина трафика достижима через TikTok SEO, а не FYP. Каждое видео должно быть оптимизировано под поисковый запрос вида 'how to increase fps fortnite low end pc' в подписи + в экранном тексте + в озвучке."
+    },
+    {
+      "claim": "Поиск TikTok использует те же три семейства сигналов, что и FYP, и индексирует распознанную речь (авто-транскрипт), экранный текст, подпись, название звука. Релевантность транскрипта называют самостоятельным ранжирующим сигналом с середины 2025.",
+      "evidence": "SocialPilot: алгоритм 'examines captions, on-screen text, hashtags, and spoken words'; Sprout: \"'Search Value' — algorithm analyzes spoken words via auto-captions and text overlays to match content to search queries\"; Voqusa: 'Auto-transcript signal integrated into search index and FYP relevance scoring since mid-2025'; Hootsuite TikTok SEO: ключевые места размещения — captions/titles (front-load), on-screen text, spoken audio, sound names.",
+      "source": "SocialPilot; Sprout Social; Voqusa; Hootsuite — 'TikTok SEO'",
+      "source_date": "2026",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Жёсткое требование к пайплайну: (1) ключ в первых 5 словах подписи; (2) TTS/голос обязательно произносит ключ (иначе транскрипт пустой); (3) экранный текст с ключом в первом кадре. Английский язык озвучки и подписи — обязателен для UK/US гео."
+    },
+    {
+      "claim": "Creator Search Insights (официальный инструмент TikTok по поисковым запросам и 'content gap' темам) — официальную страницу подтвердить не удалось: newsroom по угаданным URL отдаёт нерелевантную страницу, support/community-guidelines рендерятся только JS и через fetch недоступны. Данных нет.",
+      "evidence": "Попытки WebFetch по newsroom.tiktok.com/en-us/introducing-creator-search-insights и /new-ways-to-discover-on-tiktok вернули статью про TIFF 2026 (fallback). support.tiktok.com/faq_detail и tiktok.com/community-guidelines/* через curl отдают только заголовок ('Policies & engagement | TikTok', 8-23 символа текста). Hootsuite TikTok SEO гайд Creator Search Insights не упоминает.",
+      "source": "собственные попытки fetch: newsroom.tiktok.com, support.tiktok.com/support/faq_detail, tiktok.com/community-guidelines/en/*",
+      "source_date": "2026-09-12",
+      "kind": "inference",
+      "confidence": "low",
+      "actionable": "Нет данных — не закладывать в спеку как источник. Ключевые слова собирать вручную через поисковую строку приложения (автоподсказки) и через Keyword Insights в TikTok Ads Creative Center, а не через непроверенный инструмент."
+    },
+    {
+      "claim": "Хештеги — слабый сигнал-ярлык, не рычаг охвата. Максимальный reach rate (1.16%) у видео с 1-5 хештегами; #fyp/#foryou охвата не дают.",
+      "evidence": "SocialPilot: 'videos with 1-5 hashtags achieve the highest reach rate of 1.16%'; '#FYP hashtags do NOT boost visibility; relevance matters instead'. Socialic: хештеги — 'lightweight signal' против анализа контента, рекомендация '3-5 relevant ones as topic labels, not discovery hacks'. Buffer и Hootsuite независимо дают тот же диапазон 3-5.",
+      "source": "SocialPilot — 'The 2026 TikTok Algorithm Explained'; Socialic Blog; Buffer; Hootsuite",
+      "source_date": "2026",
+      "actionable": "Константа: 3-5 хештегов, все тематические (#fortnite #fps #pcgaming #lowendpc), ноль общих (#fyp, #viral). Ротация пула хештегов по игре, а не единый список на все видео.",
+      "kind": "industry_data",
+      "confidence": "medium"
+    },
+    {
+      "claim": "Массовый постинг сам по себе не наказывается охватом: по 11+ млн постов частота 11+ раз в неделю даёт САМЫЙ высокий прирост просмотров на пост (+34%). Это прямо противоречит популярному 'quality over quantity'.",
+      "evidence": "Buffer (анализ 11+ млн TikTok-постов): 2-5 раз/нед = +17% просмотров на пост, 6-10 раз/нед = +29%, 11+ раз/нед = +34%. При этом Buffer рекомендует 3-5 раз/нед как 'sweet spot' (ресурсное, а не алгоритмическое ограничение).",
+      "source": "Buffer — 'TikTok algorithm' (buffer.com/resources/tiktok-algorithm)",
+      "source_date": "2026",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Для сети каналов: 1-3 поста в день на канал — в пределах измеренного безопасного диапазона по охвату. Риск не в частоте, а в идентичности контента между каналами (см. unoriginal content)."
+    },
+    {
+      "claim": "Данные по частоте противоречивы: датасет 1.5 млн постов даёт оптимум 2-3 поста в НЕДЕЛЮ, Sprout — 3-4 в неделю, при этом собственная рекомендация TikTok (пересказ, не первоисточник) — 1-4 поста в ДЕНЬ.",
+      "evidence": "SocialPilot: 'Posting 2 to 3 times per week works best' (анализ 1.5 млн постов). Sprout: '3-4 high-quality posts weekly preferred over daily low-effort content'. PostEverywhere приводит таблицу с 'Official TikTok recommendation: 1-4 times daily' и отмечает, что это контрастирует с данными Buffer.",
+      "source": "SocialPilot; Sprout Social; PostEverywhere",
+      "source_date": "2026 (PostEverywhere 2026-03-23)",
+      "kind": "industry_data",
+      "confidence": "low",
+      "actionable": "Разброс 2/нед...4/день означает: жёсткой алгоритмической границы нет. Ставить в спеку конфигурируемый POSTS_PER_DAY (дефолт 2, максимум 4) и A/B-тест по подгруппам каналов, а не догму."
+    },
+    {
+      "claim": "Бенчмарки по размеру аккаунта: мелкие аккаунты имеют САМЫЙ высокий ER (1-5K = 4.40%), но мизерный охват (350 просмотров/пост). Переход к 3-5 тыс. просмотров на пост начинается с 10-50K подписчиков.",
+      "evidence": "Датасет 2 млн видео / 214 507 профилей, янв 2024-дек 2025: ER 1-5K = 4.40%, 5-10K = 4.00%, 10-50K = 3.90%, 50-100K = 3.75%, 100K-1M = 3.95%. Средние просмотры: 350 / 945 / 3 240 / 9 900 / 34 900. Медианная частота постинга по тирам: 8 / 12 / 16 / 18 / 23 поста за период.",
+      "source": "Socialinsider — 'TikTok Benchmarks' (socialinsider.io/blog/tiktok-benchmarks)",
+      "source_date": "публикация 2026-04-22, данные янв 2024-дек 2025",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Модель юнит-экономики сети: 20 каналов x 2 поста/день x ~350 просмотров = ~14 000 просмотров/день на гео на старте. Планировать конверсию от этого числа, а не от вирусных выбросов."
+    },
+    {
+      "claim": "Термина 'shadowban' у TikTok нет. Официальная категория — 'ineligible for the For You feed' / 'not eligible for the For You feed', она применяется к конкретному видео, а при аккаунт-уровневом ограничении — ко всем публикуемым видео до снятия.",
+      "evidence": "HowSociable: 'TikTok has no official shadowban, but it makes borderline content ineligible for the For You feed'; 'There is no official TikTok-published duration, because TikTok does not recognize a formal shadowban'. Reply200: 'A heavy account-level shadowban applies that ineligibility across every video you post' до снятия; подписчики при этом контент видят (connected distribution остаётся, recommendation distribution отключается). Later.com: 'TikTok has not officially used the term shadow ban'.",
+      "source": "HowSociable — 'TikTok Shadowban in 2026: Is It Real and How to Fix It'; Reply200 Blog — 'TikTok Shadowban'; Later.com — 'TikTok shadowban'",
+      "source_date": "Later обновлено 2025-09-19; HowSociable/Reply200 2026",
+      "kind": "official_policy",
+      "confidence": "medium",
+      "actionable": "Детектор в скрипте должен ловить не 'shadowban', а два конкретных факта: (1) пометку 'not eligible for the For You feed' у видео, (2) долю FYP в traffic source ниже порога."
+    },
+    {
+      "claim": "Проверять ограничение надо тремя официальными способами: Settings → Account → Account status (страйки/ограничения, 'good standing'), пометка у конкретного видео в TikTok Studio/аналитике, и разбивка traffic source. Норма для здорового видео — 60-80% просмотров из For You; менее 10% указывает на подавление.",
+      "evidence": "HowSociable: 'Settings → Privacy → Account → Account status (see strikes/restrictions)'; 'Open videos in TikTok Studio analytics for not eligible for the For You feed notices with reasons'. Reply200: 'Analytics review: traffic source breakdown should show 60-80% from For You; under 10% suggests suppression'.",
+      "source": "HowSociable; Reply200 Blog",
+      "source_date": "2026",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Обязательный health-check в скрипте: раз в сутки на каждый аккаунт логировать account status + по каждому видео долю FYP; при FYP<10% на 2+ видео подряд — пауза залива на канал и ручная проверка."
+    },
+    {
+      "claim": "Сторонние 'shadowban checkers' — миф: доступа к системам TikTok у них нет, их вердикты и сроки — угадывание.",
+      "evidence": "HowSociable/Reply200 (дословно): 'Third-party shadowban checkers have no access to TikTok systems and just guess, so ignore their verdicts and any duration they display'.",
+      "source": "HowSociable; Reply200 Blog",
+      "source_date": "2026",
+      "kind": "myth_debunk",
+      "confidence": "high",
+      "actionable": "Не интегрировать в скрипт никакие сторонние checker-API. Только собственные метрики из аналитики аккаунта."
+    },
+    {
+      "claim": "Официальных сроков снятия ограничений не существует. Ходовые цифры (24-48 ч, 2 недели, 30 дней; 7-14 / 14-30 / 30-90 дней) — из блогов, не от TikTok.",
+      "evidence": "HowSociable: 'Figures like 24 to 48 hours, two weeks or 30 days come from third-party blogs, not TikTok'. Reply200 приводит собственные оценки: одно видео 7-14 дней, поведенческие флаги 14-30, страйки 30-90 — с оговоркой 'typical estimates, not guaranteed'. Later: 'according to creators, shadow bans typically last approximately two weeks'.",
+      "source": "HowSociable; Reply200 Blog; Later.com",
+      "source_date": "2025-2026",
+      "kind": "myth_debunk",
+      "confidence": "medium",
+      "actionable": "В спеке: при детекте ограничения канал переводится в режим 'заморозка залива 14 дней', а не удаляется. Не полагаться ни на одну из цифр как на гарантию."
+    },
+    {
+      "claim": "Плато 'около 200 просмотров' в большинстве случаев — не наказание, а провал холодного старта (не набраны qualified views/completion). Это же явление в блогах называют '200-view jail'.",
+      "evidence": "Socialic: shadowban 'disputed as myth — attributed to videos failing initial engagement thresholds, not algorithmic punishment (except for guideline violations)'. Sprout: \"'200-view jail': occurs when videos fail to generate sufficient qualified views or completion rates\".",
+      "source": "Socialic Blog; Sprout Social",
+      "source_date": "Socialic 2026-08-20; Sprout 2026",
+      "kind": "myth_debunk",
+      "confidence": "medium",
+      "actionable": "Не менять аккаунты при 200 просмотрах. Менять хук/первые 3 секунды/длину. Порог замены аккаунта — только подтверждённая пометка ineligible или account status с ограничением."
+    },
+    {
+      "claim": "Контент, который алгоритм не рекомендует (перечень в официальных стандартах и пересказах): нарушения Community Guidelines, спам, дубликаты/репосты, уже просмотренное, помеченное 'not interested', небезопасное/оскорбительное, низкокачественное/размытое видео, контент от пользователей младше 18 лет, видео 'под проверкой'.",
+      "evidence": "SocialPilot перечисляет non-recommended: 'violations of community guidelines, spam, duplicates, already-watched videos, marked not interested, unsafe/offensive material, low-quality/blurry videos, and content from users under 18'. Sprout дублирует: 'Duplicate or already-seen content; Spam, offensive, or unsafe content; Videos under review'. HowSociable по официальным триггерам: 'Spam and platform manipulation (bots, scripts, bulk automation); Fake or bought engagement; Duplicate/reposted content'.",
+      "source": "SocialPilot; Sprout Social; HowSociable (пересказ For You Feed eligibility standards TikTok)",
+      "source_date": "2026",
+      "kind": "official_policy",
+      "confidence": "medium",
+      "actionable": "Критично для сети каналов: ДУБЛИКАТЫ явно в списке нерекомендуемого. Один и тот же рендер нельзя лить на 20 каналов. Требуется вариативность на уровне монтажа, а не только подписи."
+    },
+    {
+      "claim": "Политика TikTok прямо запрещает spam and platform manipulation (боты, скрипты, bulk automation) и fake engagement (покупка лайков/подписчиков/просмотров). Полный официальный текст Community Guidelines через fetch получить не удалось (JS-рендеринг), формулировки — по пересказам.",
+      "evidence": "HowSociable в перечне 'Official triggers' даёт: 'Spam and platform manipulation (bots, scripts, bulk automation)', 'Fake or bought engagement'. Прямой доступ к tiktok.com/community-guidelines/en/integrity-authenticity и /fyf-standards невозможен: curl отдаёт 8-23 символа текста, web.archive.org заблокирован egress-политикой.",
+      "source": "HowSociable (пересказ TikTok Community Guidelines); собственные попытки fetch tiktok.com/community-guidelines/*",
+      "source_date": "2026-09-12",
+      "kind": "official_policy",
+      "confidence": "medium",
+      "actionable": "Модель 'покупные новорег-аккаунты + 20 каналов на гео + скриптовый залив' попадает под эту политику. Это не серая, а прямо запрещённая зона по правилам площадки: последствия — удаление аккаунтов/контента без компенсации. В спеку заложить, что вся сеть считается расходуемым активом (replaceable), а деньги/подписки никогда не зависят от одного канала."
+    },
+    {
+      "claim": "Лимит числа TikTok-аккаунтов на одно устройство / в переключателе аккаунтов — данных нет. Официальную страницу поддержки получить не удалось, вторичные источники (Metricool, PCMag, AndroidPolice, wikiHow) либо не содержат числа, либо недоступны для fetch.",
+      "evidence": "Metricool 'manage multiple TikTok accounts' (2026-06-03) — темы лимитов, правил мульти-аккаунтинга и рисков бана не затрагивает вовсе. pcmag.com, androidpolice.com (404), wikihow.com — fetch недоступен/не найдено. support.tiktok.com не рендерится без JS.",
+      "source": "собственные попытки fetch: metricool.com, pcmag.com, androidpolice.com, wikihow.com, support.tiktok.com",
+      "source_date": "2026-09-12",
+      "kind": "inference",
+      "confidence": "low",
+      "actionable": "Нет данных. Диапазон по опыту практиков (low confidence, НЕ подтверждено): 3-5 аккаунтов в in-app переключателе. Для 20 каналов на гео это значит, что переключатель приложения не является рабочей архитектурой — нужен один аккаунт = одна изолированная сессия/профиль, что и так требуется по антифрод-логике площадки."
+    },
+    {
+      "claim": "Регион аккаунта и IP влияют на первичную аудиторию через 'device and account settings' (язык, страна), но это сигнал НАИМЕНЬШЕГО веса по официальному заявлению. Для новых пользователей начальная лента формируется из выбранных интересов + популярного контента, отфильтрованного по локации и языку.",
+      "evidence": "TikTok Newsroom (официально): страна/язык/устройство 'receive lower weight in the recommendation system relative to other data points'. SocialPilot: 'New users receive initial feed curation based on: selected topic interests, popular/trending content filtered by location and language settings' и далее алгоритм 'relies less on these signals and more on real usage patterns'. Hootsuite относит location/language/device к 'weaker signals'.",
+      "source": "TikTok Newsroom — 'How TikTok recommends videos #ForYou'; SocialPilot; Hootsuite",
+      "source_date": "проверено 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "medium",
+      "actionable": "Для UK-позиционирования: страновая настройка и английский язык дают правильный старт, но не гарантируют гео-таргет. Главный управляемый гео-сигнал — сам контент на английском (речь + экранный текст) и то, кто на него реагирует."
+    },
+    {
+      "claim": "Механика 'region lock' и смены региона аккаунта официально не документирована в доступных источниках — данных нет. Ни одна из проверенных страниц (TikTok support FAQ по account region, wikiHow, блоги) не отдала верифицируемого текста.",
+      "evidence": "support.tiktok.com/en/account-and-privacy/personalized-ads-and-data/account-region и tiktok.com/support/faq_detail?id=7076936872566670594 возвращают 5316 байт HTML без текстового контента (только 'TikTok Support'). wikihow.com недоступен для fetch. Later.com про регион/IP: 'The article does not address how account region or IP affects content visibility'.",
+      "source": "собственные попытки fetch: support.tiktok.com (2 URL), wikihow.com; Later.com",
+      "source_date": "2026-09-12",
+      "kind": "inference",
+      "confidence": "low",
+      "actionable": "Нет данных. Не закладывать в спеку никаких допущений о смене региона. Рабочее решение без обхода антифрода: регистрировать аккаунт сразу под целевое гео (язык интерфейса, часовой пояс постинга, контент на английском) и не менять эти параметры после старта — резкая смена гео-сигналов у существующего аккаунта это поведенческая аномалия."
+    },
+    {
+      "claim": "Официальный TikTok Content Posting API делает полностью автоматический ПУБЛИЧНЫЙ залив невозможным без прохождения аудита: весь контент неаудированного клиента принудительно приватный.",
+      "evidence": "Дословно: 'All content posted by unaudited clients will be restricted to private viewing mode'. Снятие ограничения — только через аудит клиента на соответствие TikTok ToS. Требуется одобренный scope video.publish у приложения И авторизация этого scope целевым пользователем.",
+      "source": "TikTok for Developers — Content Posting API, Get Started (developers.tiktok.com/doc/content-posting-api-get-started)",
+      "source_date": "актуальная документация, проверено 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Ключевое архитектурное решение: официальный API для сети из 20 неаудированных новорег-аккаунтов не работает (всё уйдёт в private). Либо аудит (что несовместимо с purchased-аккаунтами и bulk-схемой), либо автоматизация мобильного/веб-клиента — что нарушает ToS площадки. Это надо явно зафиксировать в спеке как развилку с юридическим риском, а не как техническую деталь."
+    },
+    {
+      "claim": "Жёсткий официальный рейт-лимит: 6 запросов в минуту на один user access_token. Суточная квота постов упоминается, но числом не раскрыта.",
+      "evidence": "Content Posting API reference: 'Each user access_token is limited to 6 requests per minute'. В той же документации указано существование daily post cap без конкретных чисел. upload_url валиден 1 час с момента выдачи, загрузка должна завершиться в этом окне; чанки грузятся строго последовательно.",
+      "source": "TikTok for Developers — Content Posting API Reference, Direct Post (developers.tiktok.com/doc/content-posting-api-reference-direct-post)",
+      "source_date": "проверено 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Константы скрипта: RATE_LIMIT_PER_TOKEN=6/min (ставить 4/min с запасом), UPLOAD_URL_TTL=3600 s, чанки последовательно, ретраи с экспоненциальной задержкой. Суточный cap — нет данных, определять эмпирически по кодам ошибок."
+    },
+    {
+      "claim": "Медиа-лимиты API (официально): видео до 4 ГБ, чанк 5-64 МБ (финальный до 128 МБ), максимум 1000 чанков, форматы MP4 (рекомендован)/WebM/MOV, кодеки H.264 (рекомендован)/H.265/VP8/VP9, 23-60 fps, разрешение 360-4096 px по каждой стороне; изображения WebP/JPEG до 20 МБ, максимум 1080p.",
+      "evidence": "Content Posting API Media Transfer Guide: max file size 4GB; min chunk 5 MB, max 64 MB, final up to 128 MB; max chunk count 1000; 'File chunks must be uploaded sequentially'; FPS 23-60; resolution min 360 px, max 4096 px.",
+      "source": "TikTok for Developers — Content Posting API, Media Transfer Guide (developers.tiktok.com/doc/content-posting-api-media-transfer-guide)",
+      "source_date": "проверено 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Пресет рендера для скрипта: MP4/H.264, 1080x1920, 30 или 60 fps, target размер <100 МБ (один чанк или два), CRF под <64 МБ на чанк. Валидатор перед загрузкой должен отбивать файлы вне этих границ до траты рейт-лимита."
+    },
+    {
+      "claim": "Максимальная длительность поста определяется не глобальной константой, а конкретным аккаунтом: API отдаёт max_video_post_duration_sec в ответе Query Creator Info (наблюдаемое значение 300 c), при общем лимите до 10 минут через API и реальных лимитах аккаунта 3/5/10 минут.",
+      "evidence": "Get Started: 'Query Creator Info response indicates a max_video_post_duration_sec field returning 300 seconds'. Media Transfer Guide: 'Duration: Up to 10 minutes via API (though actual user posting limits vary: 3, 5, or 10 minutes depending on account)'. Также privacy_level в запросе обязан соответствовать опциям, вернувшимся из creator_info.",
+      "source": "TikTok for Developers — Content Posting API (Get Started + Media Transfer Guide)",
+      "source_date": "проверено 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Скрипт обязан перед каждым постом дергать creator_info и брать max_video_post_duration_sec и список privacy_level оттуда, а не из конфига. Хардкод privacy_level = гарантированная ошибка публикации."
+    },
+    {
+      "claim": "Первые 3 секунды — официально подчёркиваемое окно удержания; после прохождения этого порога шансы на FYP существенно растут.",
+      "evidence": "Hootsuite: 'The first three seconds are critical' — со ссылкой на официальное руководство TikTok. Buffer: '3-second rule' — 'you only have three seconds to hook viewers'. PostEverywhere: 'If you keep them past three seconds, your chances of FYP ranking rise significantly'. Voqusa: первые 3-5 секунд весят непропорционально много.",
+      "source": "Hootsuite; Buffer; PostEverywhere; Voqusa",
+      "source_date": "2026",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Шаблон первого кадра в скрипте: результат в цифрах (напр. '87 FPS → 164 FPS, Fortnite, GTX 1650') + игра + без интро/логотипа. Логотип/брендинг — только в конце."
+    },
+    {
+      "claim": "Наличие фонового музыкального трека статистически сильно коррелирует с просмотрами: +98.31% в среднем. Причинность не доказана.",
+      "evidence": "SocialPilot (2026): 'videos with background music added get an average of 98.31% more views'. Методология и размер выборки для этой конкретной метрики в источнике не раскрыты.",
+      "source": "SocialPilot — 'The 2026 TikTok Algorithm Explained'",
+      "source_date": "2026",
+      "kind": "industry_data",
+      "confidence": "low",
+      "actionable": "Обязательно добавлять аудиотрек в рендер. ВАЖНО: коммерческие треки для брендового/продающего контента = риск по авторским правам; для SaaS-аккаунтов использовать только Commercial Music Library / собственный/лицензированный звук."
+    },
+    {
+      "claim": "Возраст аккаунта и частота постинга, по пересказам официальной позиции, не являются факторами алгоритма; при этом 44% аккаунтов до 100K выросли за 2025-2026.",
+      "evidence": "SocialPilot (дословно): 'The Algorithm is not affected by account age, posting frequency, or paid promotion'. Metricool: '44% of accounts under 100K followers grew between 2025 and 2026'. Это согласуется с официальным утверждением TikTok про follower count.",
+      "source": "SocialPilot; Metricool TikTok Study",
+      "source_date": "2026",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Аргумент против фольклора про 'прогрев аккаунта N дней перед первым постом': алгоритмического основания нет. Основание есть только антифрод-поведенческое (регистрация → немедленный скриптовый залив = аномалия), но публичных данных по этому нет."
+    },
+    {
+      "claim": "Безопасное число постов в день официально не установлено: ни один проверенный источник не даёт официального дневного лимита или порога, после которого включаются ограничения.",
+      "evidence": "HowSociable: 'Posting-per-day thresholds: Not mentioned' в перечне официальных триггеров; 'The page does not mention banned hashtags, VPN use, mass posting thresholds, or new account activity as official triggers'. PostEverywhere: 'No hard posting limits mentioned — only frequency optimization guidance'.",
+      "source": "HowSociable; PostEverywhere",
+      "source_date": "2026",
+      "kind": "myth_debunk",
+      "confidence": "medium",
+      "actionable": "Нет данных. Рабочий диапазон (low confidence): 1-3 поста/день на канал, интервал не менее 3-4 часов, рандомизация времени. Обоснование — не алгоритм, а отсутствие подтверждённых лимитов: консервативный дефолт дешевле потери аккаунта."
+    },
+    {
+      "claim": "Миф о том, что сторонние планировщики/третьи-партийные инструменты постинга сами по себе снижают охват — не подтверждён и противоречит существованию официального Content Posting API и веб-загрузчика с планировщиком.",
+      "evidence": "Reply200 относит 'third-party scheduling tools' к причинам подавления охвата уровня severe, не приводя данных. При этом TikTok сам предоставляет Content Posting API со scope video.publish для сторонних клиентов (developers.tiktok.com). Reply200 также относит к причинам 'watermarks from Instagram/YouTube' — эта часть согласуется с политикой про unoriginal/duplicated content.",
+      "source": "Reply200 Blog vs TikTok for Developers — Content Posting API",
+      "source_date": "2026",
+      "kind": "myth_debunk",
+      "confidence": "medium",
+      "actionable": "Планировщик как таковой в спеке безопасен. Реальный риск — не инструмент, а водяные знаки чужих платформ и дубликаты. Валидатор рендера должен отбивать любые watermark-и (TikTok/IG/YouTube) и требовать уникального монтажа на каждый канал."
+    }
+  ],
+  "machine_spec_notes": [
+    "RATE_LIMIT_PER_TOKEN = 6 req/min (official) → в скрипте использовать 4 req/min с запасом, глобальный семафор на токен",
+    "UPLOAD_URL_TTL_SEC = 3600 (official) — загрузку начинать сразу после init, при таймауте переинициализировать сессию",
+    "CHUNK_MIN_BYTES = 5 MB, CHUNK_MAX_BYTES = 64 MB, FINAL_CHUNK_MAX_BYTES = 128 MB, MAX_CHUNKS = 1000, загрузка строго последовательная (official)",
+    "MAX_FILE_BYTES = 4 GB; рабочий таргет рендера 40-90 MB на ролик",
+    "ALLOWED_CONTAINERS = [mp4, mov, webm]; ALLOWED_CODECS = [h264, h265, vp8, vp9]; RENDER_PRESET = mp4/h264 1080x1920",
+    "FPS_MIN = 23, FPS_MAX = 60; RESOLUTION_MIN_PX = 360, RESOLUTION_MAX_PX = 4096 (official) — pre-upload валидатор",
+    "MAX_DURATION_SEC: НЕ хардкодить. Брать из creator_info.max_video_post_duration_sec перед каждым постом (наблюдалось 300); fallback 60",
+    "PRIVACY_LEVEL: НЕ хардкодить. Брать из списка, возвращённого creator_info; при неаудированном клиенте единственный реальный результат — SELF_ONLY (private), т.е. публичный авто-залив через официальный API невозможен без аудита — это блокирующее условие архитектуры",
+    "REQUIRED_SCOPE = video.publish (одобрение приложения + авторизация пользователем)",
+    "LENGTH_PRESET_A_REACH = 60-180 сек (медианные просмотры 7 200-11 136 по датасету 6 млн видео)",
+    "LENGTH_PRESET_B_ENGAGEMENT = 15-30 сек (ER 6.00%, максимум по датасету)",
+    "HOOK_WINDOW_SEC = 3 (результат в цифрах в первом кадре, без интро и логотипа)",
+    "TARGET_COMPLETION_RATE = 0.70 (эвристика вендоров 2026, low confidence) — использовать как цель оптимизации длины, не как факт",
+    "TARGET_REWATCH_RATE = 0.20-0.30 (low confidence) — проектировать луп на последнем кадре",
+    "QUALIFIED_VIEW_SEC = 5 (low confidence) — минимальная планка удержания для хука",
+    "HASHTAGS_COUNT = 3-5, только тематические; BLOCKLIST_HASHTAGS = [fyp, foryou, foryoupage, viral] (охвата не дают)",
+    "SEO_REQUIREMENTS (обязательные поля на каждое видео): keyword в первых 5 словах caption + keyword в экранном тексте первого кадра + keyword в озвучке/TTS (транскрипт индексируется)",
+    "LANGUAGE = en для caption, on-screen text, TTS; страновая настройка аккаунта = целевое гео, часовой пояс постинга = целевое гео, после старта не менять",
+    "AUDIO_REQUIRED = true (корреляция +98.31% просмотров); MUSIC_SOURCE = Commercial Music Library / собственный лицензированный трек (коммерческий аккаунт)",
+    "POSTS_PER_DAY_PER_CHANNEL: конфигурируемо, дефолт 2, максимум 4; MIN_INTERVAL_BETWEEN_POSTS_SEC = 10800-14400 + рандомизация (официального лимита нет — нет данных)",
+    "DUPLICATE_POLICY: один рендер = один канал. Обязательная вариативность на уровне монтажа (порядок кадров, кроп, тайминг, текст, звук), а не только подписи — дубликаты прямо перечислены как нерекомендуемый контент",
+    "WATERMARK_CHECK = reject (любые TikTok/IG/YouTube водяные знаки в кадре)",
+    "HEALTH_CHECK_DAILY на каждый аккаунт: (1) account status — good standing / strikes; (2) по каждому видео пометка 'not eligible for the For You feed'; (3) traffic source: FYP_SHARE_OK = 0.60-0.80, FYP_SHARE_ALERT < 0.10",
+    "CIRCUIT_BREAKER: при подтверждённой пометке ineligible или ограничении в account status — заморозка залива на канал на 14 дней (официальных сроков нет), без удаления аккаунта; при FYP_SHARE < 0.10 на 2 видео подряд — пауза и ручная проверка",
+    "NO_THIRD_PARTY_SHADOWBAN_CHECKERS = true (доступа к системам TikTok у них нет)",
+    "EXPECTED_BASELINE для планирования экономики: новый канал ~350 просмотров/пост (тир 1-5K), ER ~4.4%; 20 каналов x 2 поста/день ≈ 14 000 просмотров/день на гео",
+    "FYP_SHARE_OF_VIEWS = 0.70 (7 из 10 просмотров с For You) — остальное поиск/профиль/подписки, поэтому SEO-поля обязательны",
+    "FORMAT = только вертикальное видео (5x просмотров и 6x взаимодействий против изображений/карусели)",
+    "COLD_START_VIEWS_EXPECTED = 200..500 (low confidence) — только как порог для аномалий, не как факт",
+    "ACCOUNTS_PER_DEVICE_LIMIT = нет данных (практика, low confidence: 3-5 в in-app переключателе) → архитектура: один аккаунт = одна изолированная сессия/профиль, in-app switcher не использовать как основу для 20 каналов",
+    "POLICY_FLAG (зафиксировать в спеке явно): покупные новорег-аккаунты + bulk automation + скриптовый залив = spam and platform manipulation по правилам TikTok; вся сеть каналов проектируется как расходуемый актив, биллинг/выдача подписки не должны зависеть ни от одного канала"
+  ],
+  "open_questions": [
+    "Точный суточный cap постов в Content Posting API: документация упоминает daily post cap, но числа не раскрывает — нужно определить эмпирически по кодам ошибок на тестовом аккаунте",
+    "Официальный лимит числа аккаунтов на устройство/в переключателе: не подтверждён ни одним доступным источником (support.tiktok.com не отдаёт контент без JS)",
+    "Механика account region: определяется ли она SIM/IP/страной регистрации, фиксируется ли навсегда, есть ли официальный способ смены — официальный текст получить не удалось",
+    "Creator Search Insights: существование/URL/состав данных официально не подтверждены в этой сессии — нужна проверка прямо в приложении (TikTok Studio / Creator tools)",
+    "Полный официальный текст For You Feed eligibility standards и Integrity & Authenticity (fake engagement, unoriginal content, bulk account creation): tiktok.com/community-guidelines/* рендерится только JS, web.archive.org заблокирован egress-политикой — нужен браузерный рендер или ручное копирование",
+    "Существует ли формальный аккаунт-уровневый статус ineligible-for-FYF, видимый пользователю отдельно от страйков, и как он отображается в Account status",
+    "Порог completion rate 70% и вес watch time 40-50%: воспроизводится только вендорами без методологии — требуется собственный A/B на подгруппах каналов",
+    "Противоречие данных по частоте (Buffer 11+ постов/нед = +34% просмотров vs SocialPilot 2-3/нед оптимум): нужен собственный замер на сети, так как от этого напрямую зависит объём производства контента",
+    "Влияние IP/прокси на первичную гео-выдачу: официально раскрыт только вес сигнала (низкий), измеримых данных о влиянии IP на состав первых зрителей нет",
+    "Влияет ли публикация через официальный API (vs мобильный клиент) на охват: данных нет ни у одного проверенного источника"
+  ],
+  "risks": [
+    "Блокирующий технический риск: официальный Content Posting API у неаудированного клиента публикует ТОЛЬКО приватно (SELF_ONLY). Полностью легальный авто-залив на 20 покупных аккаунтов через официальный API невозможен; аудит клиента под такую схему пройти нереалистично. Любая альтернатива (автоматизация мобильного/веб-клиента) нарушает ToS TikTok",
+    "Модель 'покупные новорег-аккаунты + 20 каналов на гео + скриптовый постинг' прямо попадает в запрет spam and platform manipulation (боты, скрипты, bulk automation) и fake engagement. Последствие по правилам — удаление аккаунтов и контента без предупреждения и компенсации. Публичной статистики вероятности/скорости бана нет (нет данных)",
+    "Дубликаты контента явно в перечне нерекомендуемого: заливка одного рендера на несколько каналов с высокой вероятностью убивает охват всей сети одновременно, даже без формального бана",
+    "Единая точка отказа: если ссылка/лендинг/bio одинаковы на всех каналах, ограничение на уровне ссылки (спам-домен) выключает весь трафик сразу, а не один канал",
+    "Покупные аккаунты: неизвестна их история (страйки, прошлые ограничения, привязки). Аккаунт с существующим аккаунт-уровневым ineligible-статусом внешне выглядит рабочим, но охвата не получит — деньги за аккаунт потеряны бесшумно",
+    "Резкая смена гео/языковых сигналов у существующего аккаунта (регион, часовой пояс, язык) — поведенческая аномалия; данных о последствиях нет, но это дополнительный неконтролируемый риск против регистрации сразу под целевое гео",
+    "Музыка: использование коммерческих треков на аккаунте, продающем подписку, — риск блокировки звука/видео по авторским правам. Для брендового контента допустима только Commercial Music Library или собственный звук",
+    "Аудитория 13-17 лет: контент от пользователей младше 18 по перечню не рекомендуется, а несовершеннолетние покупатели создают отдельный риск возвратов/чарджбэков на платёжке — это пересекается с риском по Stripe/PayPal для всего SaaS",
+    "Метрики автоматической самодиагностики (account status, traffic source) читаются только из интерфейса аккаунта; их автоматический сбор — снова автоматизация клиента, то есть тот же ToS-риск, что и залив",
+    "Все 'пороги' (70% completion, 200-500 первичных зрителей, qualified view 5 c, волны раздачи) — вендорские модели без методологии. Проектирование пайплайна вокруг них как вокруг фактов даёт ложную уверенность; они должны быть конфигурируемыми параметрами с логированием"
+  ]
+}

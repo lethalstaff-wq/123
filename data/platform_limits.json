@@ -1,92 +1,193 @@
 {
   "_meta": {
-    "purpose": "Лимиты и квоты площадок. Код читает плоские ключи; блок _sources хранит происхождение цифры и уровень доверия.",
-    "rule": "Операционные лимиты (max_posts_per_day) намеренно НИЖЕ технических: технический предел площадки не равен безопасному темпу для нового аккаунта.",
-    "verification_status": "RESEARCH_PENDING — значения уточняются прогоном wr5lxqxv5 (agent automation_apis / tiktok_mechanics / shorts_mechanics / reels_mechanics)"
+    "purpose": "Лимиты, квоты и требования площадок. Код читает плоские ключи; _sources хранит происхождение и уровень доверия.",
+    "rule": "Операционные лимиты намеренно НИЖЕ технических: технический предел площадки не равен безопасному темпу для нового аккаунта.",
+    "status": "Заполнено данными ресерча (агенты tiktok_mechanics / shorts_mechanics / reels_mechanics, сентябрь 2026). Значения с confidence=low помечены в _sources и требуют собственной проверки."
+  },
+
+  "safe_area": {
+    "_why": "UI площадок перекрывает края кадра. Текст в перекрытой зоне не читается, и хук не работает.",
+    "top_pct": 12,
+    "bottom_pct": 20,
+    "side_pct": 6
   },
 
   "tiktok": {
     "max_posts_per_day": 3,
     "warming_posts_per_day": 1,
-    "min_gap_minutes": 150,
-    "jitter_minutes": 30,
+    "min_gap_minutes": 240,
+    "jitter_minutes": 35,
     "recommended_hashtags": 4,
+    "hashtag_blocklist": ["fyp", "foryou", "foryoupage", "viral", "fypage"],
     "caption_max_chars": 2200,
-    "video": { "aspect": "9:16", "width": 1080, "height": 1920, "fps": 30,
-               "min_duration_s": 5, "max_duration_s": 180, "sweet_spot_s": [12, 27] },
+    "hook_window_s": 3,
+    "qualified_view_s": 5,
+    "target_completion_rate": 0.70,
+    "video": {
+      "aspect": "9:16", "width": 1080, "height": 1920,
+      "fps_min": 23, "fps_max": 60, "fps": 30,
+      "min_duration_s": 5, "max_duration_s": 180,
+      "sweet_spot_s": [15, 30],
+      "reach_preset_s": [60, 180],
+      "target_bytes": [40000000, 90000000],
+      "containers": ["mp4", "mov", "webm"],
+      "codecs": ["h264", "h265", "vp8", "vp9"]
+    },
     "api": {
       "name": "Content Posting API v2",
       "init_endpoint": "https://open.tiktokapis.com/v2/post/publish/video/init/",
       "status_endpoint": "https://open.tiktokapis.com/v2/post/publish/status/fetch/",
+      "creator_info_endpoint": "https://open.tiktokapis.com/v2/post/publish/creator_info/query/",
       "requires_oauth_per_account": true,
+      "required_scope": "video.publish",
+      "rate_limit_per_token_per_min": 6,
+      "rate_limit_use_in_code_per_min": 4,
+      "upload_url_ttl_s": 3600,
+      "chunk_min_bytes": 5242880,
+      "chunk_max_bytes": 67108864,
+      "final_chunk_max_bytes": 134217728,
+      "max_chunks": 1000,
+      "max_file_bytes": 4294967296,
+      "sequential_chunks_only": true,
       "unaudited_app_privacy_level": "SELF_ONLY",
-      "note": "До прохождения аудита приложения публичный постинг недоступен — слоты работают в KIT/RELAY."
+      "duration_from_creator_info": true,
+      "note": "До аудита приложения публичной публикации через API НЕТ — только приватные посты. Значит публичный авто-залив по API невозможен, пока приложение не одобрено; такие слоты работают в KIT/RELAY."
     }
   },
 
   "youtube": {
     "max_posts_per_day": 3,
     "warming_posts_per_day": 1,
-    "min_gap_minutes": 180,
-    "jitter_minutes": 30,
+    "min_gap_minutes": 240,
+    "jitter_minutes": 35,
     "recommended_hashtags": 3,
+    "hashtags_hard_limit": 60,
     "title_max_chars": 100,
-    "description_max_chars": 5000,
-    "video": { "aspect": "9:16", "width": 1080, "height": 1920, "fps": 30,
-               "max_duration_s_for_shorts": 180, "sweet_spot_s": [15, 40] },
+    "title_forbidden_chars": ["<", ">"],
+    "description_max_bytes": 5000,
+    "tags_total_max_chars": 500,
+    "ramp_up_by_channel_age_days": { "0-7": 1, "8-30": 2, "31+": 3 },
+    "hard_ceiling_per_channel_per_day": 5,
+    "video": {
+      "aspect": "9:16", "width": 1080, "height": 1920, "fps": 30,
+      "max_duration_s_for_shorts": 180,
+      "claim_safe_max_s": 58,
+      "sweet_spot_s": [12, 25]
+    },
+    "audio_policy": {
+      "prefer": "source_sfx_or_own_audio",
+      "music_tracks_revenue_share": { "0": 1.0, "1": 0.5, "2": 0.33 },
+      "note": "Каждый лицензированный музыкальный трек режет долю выручки Shorts. Для Shorts-слотов музыку не подмешивать."
+    },
+    "editorial_bans": {
+      "no_graphic_violence_first_s": 7,
+      "note": "Критично для DBD / Rust / Tarkov: кровь и расчленение в первых 7 секундах и в превью ломают advertiser-friendly статус.",
+      "made_for_kids": "selfDeclaredMadeForKids=false + мониторить, не переопределил ли YouTube флаг; для Roblox/Minecraft риск высокий, а MFK отключает ссылки и комментарии и убивает воронку"
+    },
+    "strikes": {
+      "warning_expires_days": 90,
+      "strike1_upload_freeze_days": 7,
+      "strike1_use_in_code_days": 8,
+      "strike2_upload_freeze_days": 14,
+      "strike2_use_in_code_days": 15
+    },
     "api": {
       "name": "YouTube Data API v3 videos.insert",
       "upload_endpoint": "https://www.googleapis.com/upload/youtube/v3/videos",
       "quota_scope": "per_google_cloud_project",
-      "units_per_upload": 1600,
-      "daily_quota_units": 10000,
-      "uploads_per_day_from_quota": 6,
-      "note": "Квота на ПРОЕКТ, не на канал. Больше 6 загрузок в сутки = запрос увеличения квоты либо KIT/RELAY."
+      "videos_insert_per_project_per_day": 100,
+      "other_units_per_day": 10000,
+      "quota_reset_tz": "America/Los_Angeles",
+      "unit_costs": { "videos.update": 50, "captions.insert": 400 },
+      "metrics_source": "YouTube Analytics API (engagedViews, averageViewDuration, averageViewPercentage)",
+      "metrics_first_pull_h": 48,
+      "metrics_final_pull_h": 168
+    },
+    "uniqueness_policy": {
+      "_why": "Inauthentic content policy + Developer Policies III.C.3",
+      "title_unique_scope": "whole_network",
+      "description_unique_scope": "whole_network",
+      "video_unique_check": "phash",
+      "script_unique_check": "simhash"
     }
   },
 
   "instagram": {
     "max_posts_per_day": 3,
     "warming_posts_per_day": 1,
-    "min_gap_minutes": 180,
-    "jitter_minutes": 30,
+    "min_gap_minutes": 240,
+    "jitter_minutes": 35,
     "recommended_hashtags": 5,
     "caption_max_chars": 2200,
-    "video": { "aspect": "9:16", "width": 1080, "height": 1920, "fps": 30,
-               "sweet_spot_s": [10, 25] },
+    "caption_keyword_slot_chars": 125,
+    "hook_window_ms": 3000,
+    "display_name_is_seo_slot": true,
+    "burned_captions_required": true,
+    "send_cta_required": true,
+    "video": {
+      "aspect": "9:16", "width": 1080, "height": 1920,
+      "fps_min": 23, "fps_max": 60, "fps": 30,
+      "min_duration_s": 3, "max_duration_s": 900,
+      "sweet_spot_s": [15, 45],
+      "cold_reach_max_s": 90,
+      "never_exceed_s": 180,
+      "containers": ["mp4", "mov"],
+      "codecs": ["h264", "hevc"],
+      "requirements": ["moov atom в начале файла", "без edit lists", "progressive scan", "closed GOP", "4:2:0"]
+    },
+    "audio": { "codec": "aac", "sample_rate_max_hz": 48000, "channels": [1, 2], "bitrate_kbps": 128,
+               "source": "embedded_original_only",
+               "note": "Content Publishing API не умеет прикреплять лицензированную музыку Instagram — трендовое аудио только вручную." },
+    "reject_if": ["watermark_detected", "letterbox_bars_detected", "muted_audio"],
     "api": {
       "name": "Instagram Graph API (Reels)",
       "container_endpoint": "https://graph.facebook.com/v21.0/{ig_user_id}/media",
       "publish_endpoint": "https://graph.facebook.com/v21.0/{ig_user_id}/media_publish",
       "requires_public_video_url": true,
       "requires_professional_account": true,
-      "publishing_limit_per_24h": 50,
-      "insight_metrics": ["views", "likes", "comments", "shares", "saved", "reach"],
-      "note": "Байты файла загрузить нельзя — нужен публичный URL. Отсюда обязательный шаг хостинга рендеров."
+      "publishing_limit_per_24h": 100,
+      "quota_formula": "4800 * impressions_24h",
+      "quota_warning": "У аккаунта с 0 показов за сутки квоты API НЕТ. Новый аккаунт физически не может публиковаться через API — только KIT, пока не наберёт показы.",
+      "insight_metrics": ["views", "likes", "comments", "shares", "saved", "reach"]
     }
   },
 
-  "facebook": {
-    "max_posts_per_day": 3,
-    "warming_posts_per_day": 1,
-    "min_gap_minutes": 180,
-    "jitter_minutes": 30,
-    "recommended_hashtags": 3,
-    "video": { "aspect": "9:16", "width": 1080, "height": 1920, "fps": 30, "sweet_spot_s": [15, 40] }
+  "geo": {
+    "granularity": "country",
+    "_why": "Ни у одной площадки нет органического гео-сигнала мельче страны. Подстрановой таргет (штат/DMA/город/zip) существует только в платных кабинетах.",
+    "city_targeting_for_organic": false,
+    "country_signal_sources": ["sim_mcc", "ip_geo"],
+    "request_precise_gps": false,
+    "paid_geo_level": "country",
+    "anomaly_alerts": {
+      "tiktok_india_share_gt_pct": 2,
+      "_why": "TikTok заблокирован в Индии с 29.06.2020 — индийские просмотры в TikTok-аналитике означают ботов или накрутку, а не гео-перекос."
+    },
+    "account_warmup_views_before_first_post": [70, 200],
+    "_warmup_why": "Профиль интереса формируется примерно за 66 просмотров целевого контента; gaming специализируется быстрее всех протестированных тематик."
   },
 
   "relay": {
-    "_note": "Сторонние планировщики с мульти-аккаунтом. endpoint/цены/лимиты заполняются из ресерча (agent automation_apis).",
+    "_note": "Сторонние планировщики с мульти-аккаунтом. endpoint/цены/лимиты заполняются агентом automation_apis.",
     "metricool": { "schedule_endpoint": null, "multi_account": true, "verified": false },
     "publer": { "schedule_endpoint": null, "multi_account": true, "verified": false },
     "postiz": { "schedule_endpoint": null, "multi_account": true, "self_hosted": true, "verified": false }
   },
 
   "_sources": {
-    "youtube.api.units_per_upload": { "value_claim": "1600 единиц квоты на videos.insert", "confidence": "medium", "source": "RESEARCH_PENDING" },
-    "youtube.api.daily_quota_units": { "value_claim": "10000 единиц по умолчанию на проект", "confidence": "medium", "source": "RESEARCH_PENDING" },
-    "instagram.api.publishing_limit_per_24h": { "value_claim": "50 публикаций за 24 часа", "confidence": "medium", "source": "RESEARCH_PENDING" },
-    "tiktok.api.unaudited_app_privacy_level": { "value_claim": "до аудита только SELF_ONLY", "confidence": "medium", "source": "RESEARCH_PENDING" },
-    "operational_caps": { "value_claim": "2-3 поста в сутки на аккаунт, 1 на прогреве", "confidence": "practitioner_consensus", "source": "RESEARCH_PENDING" }
+    "tiktok.api.rate_limit_per_token_per_min": { "value": 6, "confidence": "high", "source": "TikTok Content Posting API docs" },
+    "tiktok.api.unaudited_app_privacy_level": { "value": "SELF_ONLY", "confidence": "high", "source": "TikTok Content Posting API docs — неаудированный клиент публикует только приватно" },
+    "tiktok.video.sweet_spot_s": { "value": "15-30 c даёт максимальный ER 6.00%", "confidence": "medium", "source": "датасет 6 млн видео, янв-июн 2026" },
+    "tiktok.video.reach_preset_s": { "value": "60-180 c даёт медианные просмотры 7200-11136", "confidence": "medium", "source": "тот же датасет; прямо противоречит интуиции 'короче = лучше'" },
+    "tiktok.target_completion_rate": { "value": 0.70, "confidence": "low", "source": "вендорская оценка 2026, официально не подтверждено" },
+    "youtube.api.videos_insert_per_project_per_day": { "value": 100, "confidence": "high", "source": "Google API docs" },
+    "youtube.audio_policy.music_tracks_revenue_share": { "value": "0 треков = 100%, 1 = 50%, 2 = 33%", "confidence": "high", "source": "YouTube Shorts monetization docs" },
+    "youtube.uniqueness_policy": { "value": "уникальность title/description по всей сети", "confidence": "high", "source": "YouTube Inauthentic content policy (июль 2025) + Developer Policies III.C.3" },
+    "instagram.api.publishing_limit_per_24h": { "value": 100, "confidence": "high", "source": "Meta Content Publishing docs" },
+    "instagram.api.quota_formula": { "value": "4800 * impressions_24h", "confidence": "high", "source": "Meta Content Publishing docs — у аккаунта без показов квоты нет" },
+    "instagram.reject_if": { "value": "водяные знаки, чёрные полосы и mute снижают видимость", "confidence": "high", "source": "Instagram Ranking Explained — официально названные причины снижения видимости" },
+    "geo.granularity": { "value": "country", "confidence": "high", "source": "TikTok Newsroom (country setting, lower weight); Meta system card Instagram Reels Chaining (единственный гео-вход — время зрителей из твоей страны); TikTok Ads Location Targeting (подстрановой таргет только платно)" },
+    "geo.city_targeting_for_organic": { "value": false, "confidence": "medium", "source": "arXiv:2501.17831 — GPS-спуфинг в Манхэттен / Collin County TX / Cobb County GA дал одинаковую структуру выдачи; измеряет потребление, не распределение загрузок" },
+    "geo.account_warmup_views_before_first_post": { "value": "66 видео до формирования интереса (gaming — быстрее всех)", "confidence": "high", "source": "arXiv:2503.20231, Dynamics of Algorithmic Content Amplification on TikTok" }
   }
 }

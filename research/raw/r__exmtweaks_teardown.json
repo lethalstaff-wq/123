@@ -1,0 +1,260 @@
+{
+  "dimension": "exmtweaks_teardown",
+  "summary": "EXM Tweaks is real, findable and fully teardown-able: exmtweaks.com, legal entity EXM TWEAKS s.r.o. (Slovakia), Stripe checkout, Trustpilot 4.6/532 reviews, Discord 171,663 members, 964,656 claimed downloads. CRITICAL CORRECTION TO THE USER'S PLAN: EXM is NOT a subscription. Its own pricing JSON says purchase_type:\"lifetime\" and its Refund Policy states verbatim \"EXM Plus and EXM Premium are one-time purchases, not subscriptions.\" Price ladder is $29.99 (Plus/1 PC) → $49.99 (Premium/1 PC), scaling to $99.99/$169.99 for 4 devices. Delivery is fully automated but NOT via licence key or Discord role — the paid tier is flipped on the user's website account and the same free installer unlocks on re-login (\"There's no waiting on an email or a licence key\"), with HWID lock to 1 PC and free HWID resets via Discord ticket. Second revenue leg is high-margin manual labour: \"EXM Services\" (RAM OC €59.99, CPU OC €49.99, GPU OC €39.99, full bundle €119.99, BIOS €49.99, PC checkup €24.99–39.99) — which contradicts the user's \"no manual work\" constraint but explains their AOV. Traffic engine is Discord + YouTube, NOT TikTok: YouTube @exmtweaks 53K subs / 284 videos / 7.03M lifetime views, Shorts median 20K views (n=48, range 2.3K–65K), long-form per-game/per-patch guides 2.2K–195K views; TikTok @exm.tweaks only 18.1K followers / 230 videos / 434.2K likes (opened Mar 2024); Instagram is absent entirely from their footer. They outsource acquisition via a tolt.io affiliate program at 15/20/25% and a \"free Premium per 2 referrals\" viral loop. Closest true subscription analog is Velocity Tweaks ($5.99/mo, $3.99/mo billed yearly, $70 lifetime, Discord role as a paid feature, 14,641 Discord members) and Hone.gg (monthly/yearly sub, ad-supported free tier, 61,216 Discord, Trustpilot 4.7/1,803, Delaware US entity, claims 2.5M+ gamers). The entire free side of the market is open-source and strong (winutil 62.5K stars, Win11Debloat 57K, Atlas 21.5K, Winhance 13K, optimizerDuck 9.5K in <1 yr), so the paid product has to sell automation + support + trust, not tweaks. Rock-bottom market price for an entry paid tier: $29.99–49.99 one-time or $4–6/month; anything above ~$8/mo has no observed precedent in this niche.",
+  "findings": [
+    {
+      "claim": "EXM Tweaks sells a ONE-TIME lifetime licence, not a subscription. Exact ladder: EXM Plus $29.99 (1 PC) / $54.99 (2) / $74.99 (3) / $99.99 (4); EXM Premium $49.99 (1 PC) / $89.99 (2) / $129.99 (3) / $169.99 (4). Free tier exists (150+ optimizations).",
+      "evidence": "Raw pricing JSON embedded in the page: window.pricingData = {\"plans\":{\"plus\":{\"price_cents\":2999,\"currency_code\":\"USD\",\"tier\":\"solo\",\"max_devices\":1,\"purchase_type\":\"lifetime\" ... \"premium\":{\"price_cents\":4999 ... \"squad\":{\"price_cents\":16999,\"max_devices\":4}}}, \"region\":\"us\"}. Tier labels: Solo=1 seat, Duo=2, Trio=3, Squad=4. Refund Policy §3.1: \"EXM Plus and EXM Premium are one-time purchases, not subscriptions. There is no recurring charge, no billing period, and nothing to cancel.\"",
+      "source": "https://exmtweaks.com/en-us/pricing (embedded pricingData JSON) + https://exmtweaks.com/en-us/refund-policy",
+      "source_date": "fetched 2026-09-12; refund policy \"Last updated: 19 August 2026\"",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "The user's assumption that EXM = paid subscription is WRONG. If he launches a $X/month sub he is priced against a $29.99-49.99 forever purchase. Either (a) copy lifetime pricing and monetise volume + upsells, or (b) go sub at $4-6/mo like Velocity and justify it with continuous per-patch content, not with the tweaks themselves."
+    },
+    {
+      "claim": "An earlier web-search snippet claiming EXM costs \"$8.99/month, discounted to $4.49/month yearly\" is not supported by the live site and should be treated as stale or hallucinated aggregator text.",
+      "evidence": "Search-result summary for query '\"EXM Tweaks\" Windows optimization subscription price' asserted $8.99/mo → $4.49/mo. The live pricing page's own JSON contains zero monthly/recurring fields, only price_cents with purchase_type:\"lifetime\", and the Refund Policy explicitly denies any billing period. Coupon aggregator hotdeals.com also lists \"15% OFF\" promo codes of unverified validity.",
+      "source": "WebSearch snippet vs https://exmtweaks.com/en-us/pricing ; https://www.hotdeals.com/coupons/exm-tweaks-promo-codes",
+      "source_date": "2026-09-12",
+      "kind": "myth_debunk",
+      "confidence": "high",
+      "actionable": "Do not feed coupon-site or search-snippet pricing into the competitor table. Only use the on-page pricingData JSON. Scrape it directly — it is a single inline `window.pricingData` object, trivially parseable, and it is region-aware (`\"region\":\"us\"`), so a UK/EU scrape will return different currency."
+    },
+    {
+      "claim": "Delivery is instant and fully automated but does NOT use a licence key or a Discord role. The purchase flips the tier on the website account; the same free installer unlocks on log-out/log-in. Licence is HWID-bound to ONE PC, with free transfers via a Discord HWID-reset ticket. Windows reinstall on the same hardware costs nothing.",
+      "evidence": "Pricing-page FAQ verbatim: \"How do i recieve premium after purchase? Straight away. There's no waiting on an email or a licence key. Open the EXM app... If it's already installed, log out and log back in. Your tier updates immediately.\" / \"Are the tweaks locked to one PC? Yes, the tweaks are bound to one PC. However, we do offer free system transfers (if you buy a new PC/Swap motherboard), you can get one by opening a HWID reset ticket in our support discord. Any attempt to abuse the system will result in permanent access removal without refund.\"",
+      "source": "https://exmtweaks.com/en-us/pricing (FAQ Purchase section)",
+      "source_date": "fetched 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Architecture to copy for zero-manual-work auto-delivery: Stripe webhook → set entitlement flag on account row → desktop client checks entitlement on login. No key generation, no email delivery, no Discord bot required for the core product. HWID reset is the ONLY manual touchpoint they kept — budget for it or automate it with a self-serve reset quota (e.g. 1 reset / 90 days)."
+    },
+    {
+      "claim": "Seller of record is EXM TWEAKS s.r.o., registered in Slovakia; payments processed by Stripe with location-based currency and tax shown before payment. Trustpilot lists the address as Zamocka 30, 81101 Bratislava, Slovakia.",
+      "evidence": "Refund Policy §2: \"Every purchase on exmtweaks.com is made from EXM TWEAKS s.r.o., registered in Slovakia. We are the seller for all orders, wherever you are in the world... Payments are processed by Stripe. Your currency is determined at checkout based on your location, and any applicable tax is calculated and shown to you before you pay.\" Trustpilot company profile: Bratislava, Slovakia (Zamocka, 30, 81101).",
+      "source": "https://exmtweaks.com/en-us/refund-policy ; https://www.trustpilot.com/review/exmtweaks.com",
+      "source_date": "policy updated 2026-08-19; Trustpilot fetched 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Precedent: an EU s.r.o. (Slovak LLC) is enough to run Stripe for this product category globally. A CIS-based single operator will need an equivalent EU/UK entity for Stripe — this is the single hardest non-software dependency and should be in the spec as a prerequisite, not an afterthought."
+    },
+    {
+      "claim": "Second, much higher-ticket revenue leg: 'EXM Services' — human technician sessions, priced in EUR with anchor/strike pricing. RAM Overclock €59.99 (was €79.99), CPU OC €49.99 (€69.99), GPU OC €39.99 (€49.99), Full Overclock Bundle €119.99 (€149.99), RAM+CPU €99.99 (€109.99), Advanced BIOS Optimization €49.99 (€59.99), Chipset/MSR Tuner €39.99 (€99.99), Full PC Checkup €39.99 (€49.99), Fast PC Checkup €24.99 (€29.99). Promised under 72h delivery.",
+      "evidence": "Services page listings with both current and struck-through prices, plus header claims \"Under 72h Delivery\", \"Our Professional team does everything for you\", \"Before and after Benchmark\", \"Extensive stress testing for stability\". Refund Policy §1.2 distinguishes licences from \"an EXM Services session [which] is a technician's time, reserved in advance, and cannot be un-spent once it has been used.\"",
+      "source": "https://exmtweaks.com/en-us/services ; https://exmtweaks.com/en-us/refund-policy",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "This is the AOV multiplier (€25-120 per order vs $30-50 licence) and it is explicitly MANUAL. It directly conflicts with the user's 'no manual work' constraint. Options: skip it entirely (accept lower AOV), or sell a fully-scripted 'auto-OC profile' product with no human in the loop and price it at €19-29 as an upsell. Do not promise remote-access sessions if there is one operator in a different timezone — EXM already gets 1-star reviews for 48h+ support latency."
+    },
+    {
+      "claim": "Discord is the centre of gravity: EXM Tweaks server has 171,663 members and 18,046 online, created 2023-11-24, with a VANITY_URL (discord.gg/exm) and DISCOVERABLE enabled. Description: \"Unleash Your PCs Full Potential 🚀\".",
+      "evidence": "Discord invite API response for code 'exm': {\"guild\":{\"id\":\"1177410668606009444\",\"name\":\"EXM Tweaks\",\"description\":\"Unleash Your PCs Full Potential 🚀\",\"features\":[...\"DISCOVERABLE\",\"VANITY_URL\",\"NEWS\",\"GUILD_ONBOARDING_HAS_PROMPTS\"...]},\"approximate_member_count\":171663,\"approximate_presence_count\":18046}. Snowflake 1177410668606009444 decodes to 2023-11-24.",
+      "source": "https://discord.com/api/v9/invites/exm?with_counts=true (public, unauthenticated)",
+      "source_date": "fetched 2026-09-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "~34 months from server creation to 171K members ≈ 5.8K net members/month average. Presence ratio 10.5% (18,046/171,663) is healthy-to-high for a 170K server. Use `GET /api/v9/invites/{code}?with_counts=true` as a free, no-auth competitor-tracking metric in the script — poll weekly, store member/presence deltas. Benchmark target for a new project: 1-3K members in month 1 is realistic, not 170K."
+    },
+    {
+      "claim": "Trust stack has three separate, inconsistent numbers — know which is which. Trustpilot: 4.6/5 on 532 reviews (81% 5★, 8% 1★), company replies to 92% of negative reviews. On-site widget: 4.72/5 on 1,297 reviews. Homepage counter: 964,656 downloads. TikTok bio claims \"900,000+ users\". Earlier-cached third-party text claimed \"800,000+\" and \"950,000+\".",
+      "evidence": "Trustpilot page: 532 reviews, TrustScore 4.6, distribution 81/9/1/1/8%. exmtweaks.com/en-us/reviews: \"Overall rating 4.72 out of 5 based on 1297 reviews\" with visible reviews tagged Premium/Free (e.g. \"before buying exm premium i was at 160-170 fps after exm premium i got 200 fps stable (on fortnite with low settings) and ii have a ryzen 7 2700x and a 2070 super 16 gigs ddrr4\" — moha, 3 weeks ago). Homepage/download page: \"964,656 Downloads\". TikTok signature: \"All in one PC Optimization platform with 900,000+ users 🔧\".",
+      "source": "https://www.trustpilot.com/review/exmtweaks.com ; https://exmtweaks.com/en-us/reviews ; https://exmtweaks.com/en-us/download ; https://www.tiktok.com/@exm.tweaks",
+      "source_date": "all fetched 2026-09-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Conversion reality-check: ~965K downloads and a 171K Discord produce only ~1,300 first-party reviews and ~530 Trustpilot reviews. Do not model a paid-conversion rate off download counts. Build the same three-layer trust stack (Trustpilot embed + own review wall with Free/Premium tags + a live download counter) because it is cheap and it is what the market signals on."
+    },
+    {
+      "claim": "Hardest-hitting EXM complaints, by category and date — this is the differentiation map. (a) Irreversible damage: \"broke Microsoft Edge...Need to reinstall Windows\" (Nikolay, BG, 2026-01-03); \"Broke my OS...neither a restore point nor windows repair fixed it\" (Hanai, PK, 2025-07-30); unbootable system after one click (Brian Alvarez, US, 2026-07-06). (b) Anti-cheat breakage: \"Broken EAC from those tweaks. Can't play apex and rust now\" (New, UA, 2026-06-19). (c) Negative performance: FPS 115→85 after buying Premium (Vvss Baller, BG, 2026-08-31); \"my game is freezing every 10 seconds, specially Fortnite\" (xRlly, DE, 2026-02-25). (d) Support latency: \"Support Response Times Nonexistent\", 48h+ despite advertised 16h/day (JE, US, 2026-09-06). (e) Privacy: app allegedly logs \"Windows username, IP address, MAC address\" via Discord webhooks (Hazelle, US, 2026-06-08). (f) Billing: charged again despite lifetime after PC swap (lepreliox c, MX, 2026-05-31).",
+      "evidence": "Trustpilot 1-star filter view, quotes and dates as listed. Corroborating: the revert feature failing and requiring clean Windows install, and the Discord-webhook identifier logging claim, also surfaced in independent search summaries. Scam Detector gives exmtweaks.com a medium-risk trust score of 66.1 while Scamadviser rates it \"very likely legit\".",
+      "source": "https://www.trustpilot.com/review/exmtweaks.com?stars=1 ; https://www.scam-detector.com/validator/exmtweaks-com-review/ ; https://www.scamadviser.com/check-website/exmtweaks.com",
+      "source_date": "reviews dated 2025-07-30 through 2026-09-06; fetched 2026-09-12",
+      "kind": "practitioner_report",
+      "confidence": "high",
+      "actionable": "Five concrete product differentiators fall straight out of this: (1) a genuinely tested one-click FULL revert + automatic System Restore point before every apply, and market it as the headline feature; (2) an explicit anti-cheat safe-mode that never touches EAC/BattlEye/Vanguard-sensitive surfaces, per-game; (3) no telemetry at all, stated in plain language, with no Discord webhooks — EXM is provably vulnerable on this; (4) published support SLA the operator can actually hit solo (e.g. 24h, not 16h/day live); (5) HWID resets self-serve so 'charged again after PC swap' never happens. Also: anti-cheat breakage is a real, dated, first-party-reported risk of this product category — the user must ship a safe-mode or he will get the same reviews."
+    },
+    {
+      "claim": "Acquisition is outsourced via a tolt.io affiliate program with a 4-tier commission ladder, PayPal payouts, plus a separate consumer referral loop that pays in product rather than cash.",
+      "evidence": "Affiliate page: Bronze 15% (default on signup, no free Premium); Silver 20% + 2.5% on Services, unlocked at 15 total premium referrals, includes lifetime Premium, downgrades below 5 conversions/30 days; Gold 25% + 5% on Services at 30 total premium referrals, lifetime Premium, downgrades below 15 conversions/30 days; Diamond custom for \"larger content creators & partners\". \"Payouts and processing managed by tolt.io\". \"You should use the exact email as your paypal adress.\" Dedicated Affiliate Discord. Separate referral page: \"Get premium for free for every 2 refferals\" — the referred friend must purchase Premium.",
+      "source": "https://exmtweaks.com/en-us/affiliate ; https://exmtweaks.com/en-us/referral",
+      "source_date": "fetched 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Copy this almost verbatim — it is how a one-person operation gets hundreds of channels posting without owning them, and it sidesteps the entire new-account/ban-risk problem of running 20 channels per geo himself. Spec numbers: 15% base, step to 20% at 15 sales, 25% at 30 sales, 30-day activity floor to prevent tier squatting, tolt.io or equivalent for tracking/payouts, and a 'free Premium per 2 paid referrals' loop for non-creators. At a $49.99 price point, 25% = $12.50 CPA paid only on conversion — cheaper and far lower-risk than a fleet of new-reg accounts."
+    },
+    {
+      "claim": "EXM's own channel mix is Discord + YouTube first, TikTok weak, Instagram ZERO. YouTube @exmtweaks: 53K subscribers, 284 videos, 7,034,387 lifetime channel views, channel joined 2018-08-31. TikTok @exm.tweaks: 18,100 followers, 230 videos, 434,200 total likes, account created ~2024-03-22. Instagram does not appear anywhere in the site footer (footer socials: Discord, Youtube, Tiktok only).",
+      "evidence": "YouTube channel page data: \"subscriberCountText\":\"53K subscribers\", \"videoCountText\":\"284 videos\", \"joinedDateText\":{\"content\":\"Joined Aug 31, 2018\"}, viewCountText 7,034,387 views, canonicalChannelUrl http://www.youtube.com/@exmtweaks. TikTok profile JSON: \"followerCount\":18100, \"followingCount\":0, \"heartCount\":434200, \"videoCount\":230, signature \"All in one PC Optimization platform with 900,000+ users 🔧\". createTime 1711117287 = 2024-03-22. Site footer Social block lists exactly: Discord, Youtube, Tiktok.",
+      "source": "https://www.youtube.com/@exmtweaks/about ; https://www.tiktok.com/@exm.tweaks ; https://exmtweaks.com/en-us",
+      "source_date": "fetched 2026-09-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Two readings, pick one deliberately. (A) Instagram Reels and TikTok are an open flank — the market leader is barely there (18.1K TikTok followers after 230 videos = ~79 followers/video, weak), so a multi-account Reels/TikTok fleet is genuinely uncontested. (B) Or the leader tested them and they don't convert for a $50 Windows utility, and the money is in YouTube Shorts + long-form + Discord. Cheapest resolution: the script should run a 3-4 week A/B across TikTok / Shorts / Reels with identical creatives and identical link tracking, and kill the losing platform rather than committing 20 accounts per geo per platform up front."
+    },
+    {
+      "claim": "EXM YouTube Shorts performance benchmark, measured: median 20,000 views, mean 21,764, p25 16,000, p75 26,000, min 2,300, max 65,000 (n=48 consecutive Shorts). Long-form videos range 2.2K to 195K views.",
+      "evidence": "Parsed accessibilityText view labels from /@exmtweaks/shorts (48 items). Long-form view tokens from /@exmtweaks/videos: 20K, 17K, 3.8K, 2.2K, 60K, 55K, 13K, 60K, 63K, 63K, 74K, 94K, 52K, 26K, 195K, 121K, 21K, 101K, 73K, 141K, 39K, 28K, 76K, 44K, 85K, 44K, 80K, 50K, 60K, 80K.",
+      "source": "https://www.youtube.com/@exmtweaks/shorts ; https://www.youtube.com/@exmtweaks/videos",
+      "source_date": "fetched 2026-09-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Hard benchmark for the auto-upload script's success threshold: a Short that does <5K views is below the leader's p5 and the creative should be retired; 16-26K is 'on pace'; >50K is a winner worth re-cutting and cross-posting. Note the leader gets these numbers from ONE channel with a warm 53K-sub audience — a cold new-reg account should be expected to do far less per post, which is the whole argument for volume."
+    },
+    {
+      "claim": "EXM's Shorts title formula is mechanical and directly copyable: ALL-CAPS emphasis on 1-3 words + curiosity gap + a shock emoji (😲 🤯 😮), no brand name, no game name. Verified titles with views: \"STOP Using THIS Windows Setting ASAP 😲\" 46K; \"How To FIX Your PC 😲\" 48K; \"THE Easiest Way To DOUBLE Your FPS 🤯\" 35K; \"This ONE Setting Will DOUBLE Your FPS 😲\" 30K; \"Save Your PC's Performance ASAP 😮\" 28K; \"PC Tips That WILL Double YOUR FPS In Seconds 😲\" 24K; \"This Setting Gives You AIMBOT 😲\" 6.9K; \"You NEED To Get THIS App NOW 🤯\" 2.3K.",
+      "evidence": "48 Shorts titles harvested from the channel's Shorts tab. Recurring templates: \"You NEED To {verb} THIS {noun} NOW\", \"STOP Using THIS {noun}\", \"This ONE Setting Will DOUBLE Your FPS\", \"Windows Is HIDING THIS Setting\", \"THIS PC Setting Will SHOCK YOU\", \"How To Fix FPS Drops INSTANTLY\". Notably the two lowest performers in the sample are the most product-promotional (\"You NEED To Get THIS App NOW\" 2.3K) and the most cheat-adjacent (\"This Setting Gives You AIMBOT\" 6.9K).",
+      "source": "https://www.youtube.com/@exmtweaks/shorts",
+      "source_date": "fetched 2026-09-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Encode these as title templates in the script with slot-filling, and encode the two anti-patterns as hard rules: (1) titles that pitch the app underperform tutorial titles by ~8x in this sample — never put the product in the hook; (2) 'aimbot'-style framing underperforms AND raises platform-policy risk on TikTok/YouTube for cheating-adjacent content. Keep all-caps to 1-3 words per title and exactly one emoji at the end."
+    },
+    {
+      "claim": "EXM's long-form is a per-game, per-patch SEO machine — that is where the 195K/141K/121K view videos are. Verified titles: \"The Only Valorant Optimization Guide You Need for 2026\", \"Fortnite Chapter 7 Season 3 Optimization Guide 🔧 (Boost FPS, Lower Delay)\", \"BEST NVIDIA App Settings For GAMING! 🔧(Boost FPS & Zero Delay)\", \"The ONLY Windows Optimization Tool You Will EVER Need (FPS Boost, Lower Input Delay)\", \"How to optimize your Keyboard for ZERO Input Delay\", \"Finally, A Safe Way to Optimize Windows for Gaming\", \"The *NEW* Best Way To Get More FPS... (EXM BIOS Tuner)\", \"How To Get LOWER PROCESSES on Windows! (LOWER INPUT DELAY & MORE FPS)\".",
+      "evidence": "Titles parsed from /@exmtweaks/videos alongside the view tokens above. Note the season-pegged title (\"Fortnite Chapter 7 Season 3\") and the year-pegged title (\"for 2026\") — both are recency-farming patterns, and \"Finally, A Safe Way to Optimize Windows for Gaming\" is a direct answer to the safety objection in their own 1-star reviews.",
+      "source": "https://www.youtube.com/@exmtweaks/videos",
+      "source_date": "fetched 2026-09-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Build a patch-trigger queue into the script: for each target game, watch for a new season/patch/major update and auto-generate a '{Game} {Patch} Optimization Guide (Boost FPS, Lower Delay)' long-form + 3-5 Shorts cut from it within 48h of the patch. Year-pegging ('for 2026') and season-pegging are the two highest-leverage title tokens. Fortnite and Valorant are the two games EXM pegs by name — they match the user's top targets."
+    },
+    {
+      "claim": "Velocity Tweaks is the closest TRUE subscription analog and validates the user's intended model, including Discord-role delivery. Pricing: $5.99/month billed monthly; $3.99/month billed yearly (labelled 'Save 30%', = $47.88/yr); $70.00 lifetime billed once. Premium features include 'Custom Discord Role', priority support, backup, benchmarking, advanced/privacy optimizations. Discord: 14,641 members / 1,212 online, server created 2024-02-11. YouTube @velocitytweaks 4.57K subs. TikTok @velocitytweaks 5 followers / 7 videos.",
+      "evidence": "velocitytweaks.com/premium: tier cards \"Monthly ... $5.99 per month billed monthly\", \"Save 30% / Yearly ... $3.99 per month billed yearly\", \"Lifetime ... $70.00 billed once\"; feature table row \"Custom Discord Role — A unique role on Discord, setting you apart from others\" (Premium only). Discord API for invite dAPHtbJy92: {\"guild\":{\"id\":\"1206353821442510968\",\"name\":\"Velocity Tweaks\"},\"approximate_member_count\":14641,\"approximate_presence_count\":1212}. YouTube: \"4.57K subscribers\". Testimonials on site are Fortnite-native (\"dropped my ping from 20 to 10 in creative fills, and all my builds are placing faster\", \"TS fire delay feels so much lower\").",
+      "source": "https://velocitytweaks.com/premium ; https://velocitytweaks.com/ ; https://discord.com/api/v9/invites/dAPHtbJy92?with_counts=true ; https://www.youtube.com/@velocitytweaks",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "This is the price card to clone: $5.99/mo, $47.88/yr (framed as $3.99/mo, 'Save 30%'), $70 lifetime as the anchor-breaker. Note they sell ALL THREE simultaneously — that solves the lifetime-vs-sub dilemma instead of choosing. Their Fortnite-creative-mode testimonial language is the exact register the 13-24 audience responds to. Their TikTok (5 followers, 7 videos) is dead — another datapoint that this niche has not cracked TikTok."
+    },
+    {
+      "claim": "Hone.gg is the biggest paid player by claims and social proof, runs a subscription with an AD-SUPPORTED free tier, and deliberately hides its price until checkout. Free plan = 10 optimizations (up to 15 via referrals), Balanced Game Mode, ads shown. Premium = unlimited optimizations, Custom & Performance Game Mode, premium presets/Boost-Ups, no ads, priority support; billing toggle offers Monthly and Yearly. Claims 'Trusted by 2.5M+ gamers'. Discord 61,216 members / 10,711 online, server created 2020-09-09. Trustpilot 4.7/5 on 1,803 reviews (85% 5★, 7% 1★). Entity address: 1007 North Orange Street, 4th Floor Suite 25, Wilmington, Delaware 19801, US. Also distributed via an external STORE listing.",
+      "evidence": "hone.gg/premium: \"Start with 10 free optimizations, or choose Premium for unlimited optimizations, Premium-only presets and Boost-Ups, no ads, and priority support\"; Monthly/Yearly toggle present; price replaced by \"See regional price at checkout\" and \"Price could not be loaded on this page. Review the total before confirming your purchase.\" Homepage: \"Trusted by 2.5M+ gamers\", \"Also Available On STORE\", pro-player testimonials from named Fortnite pros at XSET, Elite Esports, Dignitas (Higgs, Eomzo, Marrentm, Khanada, NotroDan) including \"up to 45% FPS increase\". Discord API invite 'hone': approximate_member_count 61216, approximate_presence_count 10711, guild id decodes to 2020-09-09. Trustpilot: 1,803 reviews, TrustScore 4.7, Wilmington DE address. Complaints noted: driver conflicts, system freezing, audio failures after updates, and that \"the free version offers very limited basic features\". No Hone price could be retrieved from any public page — NO DATA on the exact figure.",
+      "source": "https://hone.gg/premium ; https://hone.gg/ ; https://discord.com/api/v9/invites/hone?with_counts=true ; https://www.trustpilot.com/review/hone.gg",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Three copyable mechanics: (1) an ad-supported / quota-limited free tier (10 optimizations) that makes the paywall feel earned rather than arbitrary — stronger than EXM's feature-gated free tier; (2) 'one extra optimization per referral, up to 15' — a viral loop that costs product, not cash; (3) named pro-player endorsements as the trust anchor, which a UK-positioned brand can buy cheaply from mid-tier Fortnite creators. Their exact price is NO DATA (regional, checkout-only) — do not guess it in the table."
+    },
+    {
+      "claim": "The entire free/open-source side of this market is large, active and accelerating, which caps what a paid tweaker can charge. Verified GitHub stars (2026-09-12): ChrisTitusTech/winutil 62,474; Raphire/Win11Debloat 57,041; Atlas-OS/Atlas 21,507 (GPL-3.0, latest Atlas v0.5.0 dated October 21 2025, ~50,000 Discord members per own site); hellzerg/optimizer 18,293 but now ARCHIVED; memstechtips/Winhance 12,973 (created 2025-01-13); itsfatduck/optimizerDuck 9,499 (created 2025-10-31 — 9.5K stars in ~10 months); ravendevteam/talon 1,948. ReviOS/Revision (revi.cc) claims '500K+ Downloads', '100% Open Source', donation-funded.",
+      "evidence": "GitHub API/search results with stargazers_count and created_at per repo as listed. atlasos.net: \"The latest version is Atlas v0.5.0 (October 21 2025)\", \"50,000 members\" referenced on page, install requires AME Wizard + Atlas Playbook. revi.cc: \"500K+ Downloads / 1 Goal Best Experience / 100% Open Source\", nav includes Donate, install via AME Wizard.",
+      "source": "GitHub API (Atlas-OS/Atlas, hellzerg/optimizer, memstechtips/Winhance, ravendevteam/talon, ChrisTitusTech/winutil, Raphire/Win11Debloat, itsfatduck/optimizerDuck) ; https://atlasos.net/ ; https://revi.cc/",
+      "source_date": "fetched 2026-09-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Never sell 'tweaks' as the value — a 62K-star free PowerShell script does the same registry edits. Sell the four things OSS structurally cannot: (1) automated per-game profiles applied without the user reading anything, (2) safe automatic rollback with a real restore point, (3) a human answering in Discord within an SLA, (4) continuous per-patch updates. optimizerDuck going 0→9.5K stars in 10 months is the live proof that a free competitor can appear at any time — so the moat must be service and content cadence, not the tweak list."
+    },
+    {
+      "claim": "Ping/route optimizers (WTFast, ExitLag, NoPing) are the adjacent paid-subscription category that already trained this audience to pay monthly, but their pricing was not retrievable — exitlag.com and noping.com return 403 to automated fetches and wtfast.com's pricing/plans paths 404. WTFast positions as a 'Gamers Private Network (GPN)' with 'AI-Powered network', 1,000+ games supported, real-time analytics, and a 'Try for free' CTA; no prices on any reachable page.",
+      "evidence": "HTTP results: https://www.exitlag.com/en/plans/ → 403; https://www.exitlag.com/ → 403; https://exitlag.com/en/pricing → 403; https://www.noping.com/en/ → 403; https://www.wtfast.com/en/pricing/, /en/plans, /pricing, /en/subscription/ → 404. wtfast.com/en/ homepage content describes the GPN product and a free trial but discloses no pricing tiers.",
+      "source": "https://www.wtfast.com/en/ ; https://www.exitlag.com/ (403) ; https://www.noping.com/en/ (403)",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "low",
+      "actionable": "Mark as NO DATA on price — do not put invented figures for WTFast/ExitLag/NoPing in the competitor table. Practical note for the scraper: these sites bot-block aggressively, so a competitor-price monitor must fall back to headless-browser or manual entry for them. Strategic note: they prove monthly billing is accepted in this audience, and 'lower ping' is a claim the user can bundle (bufferbloat presets, adapter tuning) without running network infrastructure."
+    },
+    {
+      "claim": "Zen Tweaks (zentweaks.com) is a live but very early-stage direct competitor — same positioning, same claims, Stripe Buy Button checkout, instant licence + download delivery, discord.gg/zentweaks, youtube.com/@zentweaks with THREE subscribers and TikTok @zentweaks with 10 followers / 7 videos. Advertises '40% OFF'. Price is not in the page HTML (loaded by Stripe's buy-button.js).",
+      "evidence": "zentweaks.com homepage: \"Optimize Windows for Maximum Performance\", \"40% OFF\", feature nav Dashboard/Tweaks/Peripherals/Debloat/Graphic Tweaks/Bios Tweaks/Game Booster/Advanced, per-game Game Booster with a Valorant example (\"Optimize Valorant\"), how-it-works: \"Purchase Zen Tweaks. Complete the checkout and get instant access to your personal license\" → \"Zen Tweaks 127 MB • 15 seconds ago\" → install → apply → restart. HTML contains https://js.stripe.com/v3/buy-button.js with strategy afterInteractive; no price string in the served HTML. YouTube: \"3 subscribers\". TikTok: followerCount 10, videoCount 7, heartCount 114. Its own /product path failed TLS on fetch — NO DATA on price.",
+      "source": "https://zentweaks.com/ ; https://www.youtube.com/@zentweaks ; https://www.tiktok.com/@zentweaks",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "medium",
+      "actionable": "Useful as the realistic month-0 baseline: this is what a brand-new entrant in this exact niche looks like (3 YT subs, 10 TikTok followers) — it shows the site/product is the easy half and distribution is the hard half. Also note Stripe Buy Button is a zero-backend checkout path; price is then invisible to competitors' scrapers, which the user may want to copy defensively. Its per-game 'Game Booster' with an explicit Valorant entry matches EXM's per-game direction."
+    },
+    {
+      "claim": "Observed market price band, consolidated. One-time/lifetime: $29.99 (EXM Plus 1 PC) → $49.99 (EXM Premium 1 PC) → $70.00 (Velocity lifetime) → $99.99–169.99 (EXM 4-device bundles). Subscription: $3.99/mo billed yearly → $5.99/mo billed monthly (Velocity); Hone monthly/yearly at NO DATA. Human services: €24.99–€119.99 (EXM). Free tier is table stakes — EXM, Hone, Velocity and every OSS tool all have one.",
+      "evidence": "All figures from the primary sources above: exmtweaks.com pricingData JSON and services page; velocitytweaks.com/premium; hone.gg/premium (price withheld). No paid Windows-gaming-optimizer in this sample was found priced above $8/month or above $169.99 one-time.",
+      "source": "https://exmtweaks.com/en-us/pricing ; https://exmtweaks.com/en-us/services ; https://velocitytweaks.com/premium ; https://hone.gg/premium",
+      "source_date": "fetched 2026-09-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Launch price recommendation grounded in observed data: free tier (quota-limited like Hone, not feature-crippled), $4.99-5.99/mo monthly, ~$39-48/yr annual framed as '$3.99/mo — save 30%', and a $59-69 lifetime anchor. Undercut EXM's $49.99 one-time with the annual plan while keeping the lifetime option so you don't lose the 'I hate subscriptions' segment. Do not price above $8/mo — nothing in this market supports it."
+    },
+    {
+      "claim": "Differentiation slots that are measurably OPEN (each tied to a verified competitor gap, not speculation).",
+      "evidence": "(1) Verified rollback — EXM's 1-star reviews include OS breakage where restore points failed (Hanai PK 2025-07-30; Nikolay BG 2026-01-03); no competitor markets a tested revert as a headline. (2) Anti-cheat safe mode — \"Broken EAC from those tweaks. Can't play apex and rust now\" (New UA 2026-06-19); Rust and Apex are both on the user's target list. (3) Zero telemetry — EXM accused of logging Windows username/IP/MAC via Discord webhook (Hazelle US 2026-06-08). (4) Laptop/low-end focus — EXM's download FAQ says it works on laptops but nothing in their positioning targets laptops specifically, and the user's stated ICP is weak PCs/laptops. (5) Instagram Reels — absent from EXM's footer entirely. (6) Honest support SLA — EXM advertised 16h/day and got 48h+ (JE US 2026-09-06). (7) Subscription with continuous per-patch value — EXM sells lifetime and therefore has no structural reason to keep shipping.",
+      "source": "https://www.trustpilot.com/review/exmtweaks.com?stars=1 ; https://exmtweaks.com/en-us/download ; https://exmtweaks.com/en-us ; https://exmtweaks.com/en-us/refund-policy",
+      "source_date": "2025-07-30 → 2026-09-12",
+      "kind": "inference",
+      "confidence": "medium",
+      "actionable": "Pick 3 of these as the landing-page hero bullets: 'One-click full revert, tested' + 'Anti-cheat safe — never touches EAC/BattlEye/Vanguard' + 'Built for laptops and low-end PCs'. These three are simultaneously the leader's weakest reviewed points and the user's ICP. Ship the safe-mode and rollback BEFORE the first paid customer, not after."
+    }
+  ],
+  "key_numbers": [
+    "EXM Plus lifetime: $29.99 / 1 PC, $54.99 / 2, $74.99 / 3, $99.99 / 4 (USD, purchase_type=lifetime)",
+    "EXM Premium lifetime: $49.99 / 1 PC, $89.99 / 2, $129.99 / 3, $169.99 / 4 (USD, purchase_type=lifetime)",
+    "EXM: NOT a subscription — 'one-time purchases, no recurring charge, nothing to cancel' (Refund Policy, updated 2026-08-19)",
+    "EXM Services (manual, EUR): RAM OC 59.99, CPU OC 49.99, GPU OC 39.99, Full OC bundle 119.99, RAM+CPU 99.99, BIOS 49.99, Chipset/MSR 39.99, Full checkup 39.99, Fast checkup 24.99; <72h delivery",
+    "EXM Discord: 171,663 members / 18,046 online; server created 2023-11-24 (~34 months, ~5.8K members/mo avg; 10.5% presence ratio)",
+    "EXM Trustpilot: 4.6/5, 532 reviews, 81% 5-star, 8% 1-star, 92% reply rate to negatives",
+    "EXM on-site reviews: 4.72/5 on 1,297 reviews",
+    "EXM homepage counter: 964,656 downloads; TikTok bio claims '900,000+ users'",
+    "EXM YouTube @exmtweaks: 53K subs, 284 videos, 7,034,387 lifetime views, channel joined 2018-08-31",
+    "EXM YouTube Shorts (n=48): median 20,000 views, mean 21,764, p25 16,000, p75 26,000, min 2,300, max 65,000",
+    "EXM long-form views observed: 2.2K–195K (195K, 141K, 121K, 101K, 94K top end)",
+    "EXM TikTok @exm.tweaks: 18,100 followers, 230 videos, 434,200 likes, account created ~2024-03-22 (~79 followers/video)",
+    "EXM channel mix: Discord + YouTube + TikTok only — Instagram entirely absent from footer",
+    "EXM affiliate: Bronze 15%, Silver 20% (+2.5% services) at 15 referrals, Gold 25% (+5% services) at 30 referrals, Diamond custom; payouts via tolt.io to PayPal; downgrade below 5 / 15 conversions per 30 days",
+    "EXM referral loop: free Premium for every 2 friends who buy Premium",
+    "EXM tiers: Free 150+ optimizations / Plus 500+ / Premium 1,000+; HWID-locked to 1 PC, free transfers via Discord ticket",
+    "EXM entity: EXM TWEAKS s.r.o., Slovakia (Zamocka 30, 81101 Bratislava); payments via Stripe, location-based currency + tax",
+    "Velocity Tweaks: $5.99/mo monthly, $3.99/mo billed yearly (=$47.88/yr, 'Save 30%'), $70.00 lifetime one-time",
+    "Velocity Discord: 14,641 members / 1,212 online, created 2024-02-11; YouTube 4.57K subs; TikTok 5 followers / 7 videos",
+    "Hone.gg: free tier = 10 optimizations (+1 per referral up to 15) with ads; Premium = unlimited, monthly/yearly, price = NO DATA (regional, checkout-only)",
+    "Hone.gg: claims 'Trusted by 2.5M+ gamers'; Discord 61,216 members / 10,711 online, created 2020-09-09; Trustpilot 4.7/5 on 1,803 reviews; Delaware US entity",
+    "Hone.gg TikTok @honegg: 123 followers, 12 videos, 2,371 likes",
+    "Zen Tweaks: Stripe Buy Button, '40% OFF', price NO DATA; YouTube 3 subs; TikTok 10 followers / 7 videos; discord.gg/zentweaks",
+    "Free OSS competition (GitHub stars, 2026-09-12): winutil 62,474 | Win11Debloat 57,041 | Atlas 21,507 | hellzerg/optimizer 18,293 (ARCHIVED) | Winhance 12,973 | optimizerDuck 9,499 (created 2025-10-31) | talon 1,948",
+    "AtlasOS: free, GPL-3.0, v0.5.0 dated 2025-10-21, ~50,000 Discord members claimed on own site",
+    "ReviOS / Revision (revi.cc): free, donation-funded, claims '500K+ Downloads', '100% Open Source'",
+    "Observed market ceiling: nothing paid in this niche above $8/month or above $169.99 one-time",
+    "WTFast / ExitLag / NoPing pricing: NO DATA (403/404 to automated fetch)"
+  ],
+  "machine_spec_notes": [
+    "PRICING CONSTANTS (launch): free tier quota-limited (not feature-crippled) | monthly $5.99 | annual $47.88 displayed as '$3.99/mo — Save 30%' | lifetime $69.00 as anchor. HARD CEILING: never price monthly above $8.00 — zero market precedent.",
+    "DELIVERY ARCHITECTURE (copy EXM, zero manual work): Stripe webhook -> set entitlement flag on account row -> desktop client reads entitlement at login. No licence-key generation, no email delivery, no Discord bot in the critical path. Add self-serve HWID reset with a quota (e.g. 1 per 90 days) so the only manual touchpoint EXM kept is automated away.",
+    "OPTIONAL DELIVERY ADD-ON: auto-assign a 'Premium' Discord role on webhook (Velocity sells 'Custom Discord Role' as a paid feature) — cosmetic, cheap, and a retention lever. Must NOT be the entitlement source of truth.",
+    "COMPETITOR MONITOR (free, no auth, put in cron): GET https://discord.com/api/v9/invites/{code}?with_counts=true returns approximate_member_count + approximate_presence_count. Poll weekly for codes: exm, hone, dAPHtbJy92 (Velocity). Store deltas. Vanity codes atlasos / revios / zentweaks do NOT resolve on this endpoint — skip or fall back to page scrape.",
+    "COMPETITOR PRICE SCRAPER: exmtweaks.com/en-us/pricing embeds a single inline `window.pricingData = {...}` JSON with price_cents, currency_code, max_devices, purchase_type per tier, and a `region` field — parse it directly. Note it is region-aware, so scrape with UK/EU egress to get GBP/EUR figures. exmtweaks.com returns 403 to plain WebFetch; a desktop Chrome User-Agent via curl returns 200. velocitytweaks.com/premium has prices in plain HTML. hone.gg and zentweaks.com hide price behind checkout/Stripe — mark NO DATA, do not infer. exitlag.com / noping.com return 403 to all automated fetches; wtfast pricing paths 404.",
+    "SHORTS SUCCESS THRESHOLDS (benchmarked against EXM's own channel): <5,000 views = retire the creative; 16,000-26,000 = on pace with market leader's p25-p75; >50,000 = winner, re-cut and cross-post. Median target 20,000. Apply a discount factor for cold new-reg accounts — these numbers come from a warm 53K-sub channel.",
+    "TITLE TEMPLATES (verified performers, slot-fill these): 'STOP Using THIS {Windows|PC} {Setting|Feature} ASAP 😲' | 'How To FIX Your {PC|FPS} 😲' | 'THE Easiest Way To DOUBLE Your FPS 🤯' | 'This ONE {Setting|Tweak} Will DOUBLE Your FPS 😲' | 'You NEED To {Change|Know|Fix} THIS {Setting} NOW 😲' | 'Windows Is HIDING THIS Setting 🤯' | 'How To Fix FPS Drops INSTANTLY 🎮'. RULES: 1-3 words in ALL CAPS, exactly one emoji at the end, no brand name, no game name in the hook.",
+    "TITLE ANTI-PATTERNS (hard block in the generator): (1) app/product-promotional hooks — 'You NEED To Get THIS App NOW' did 2.3K vs a 20K median (~8x worse); (2) cheat-adjacent framing — 'This Setting Gives You AIMBOT' did 6.9K AND carries TikTok/YouTube cheating-policy risk. Both must be rejected at generation time.",
+    "LONG-FORM PATCH TRIGGER QUEUE: for each target game, watch for new season/patch/major update; within 48h auto-produce '{Game} {Patch/Season} Optimization Guide 🔧 (Boost FPS, Lower Delay)' long-form + 3-5 Shorts cut from it. Year-pegging ('...You Need for 2026') and season-pegging ('Chapter 7 Season 3') are the two highest-leverage title tokens. Priority games per EXM's own titles: Fortnite, Valorant.",
+    "PLATFORM ALLOCATION — DO NOT commit 20 accounts x 3 platforms x N geos up front. The market leader has 53K YouTube subs vs 18.1K TikTok followers after 230 TikToks, and zero Instagram presence. Run a 3-4 week A/B with identical creatives and per-platform link tracking across TikTok / YouTube Shorts / Instagram Reels, then reallocate. Budget the fleet only for the winner.",
+    "CHEAPER-THAN-FLEET ALTERNATIVE, spec it in parallel: affiliate program at 15% base / 20% at 15 sales / 25% at 30 sales, 30-day activity floor to prevent tier squatting, tolt.io (or equivalent) for tracking + PayPal payouts, plus 'free Premium for every 2 paid referrals' for non-creators. At a $49.99 price point 25% = $12.50 CPA paid only on conversion — no new-reg account risk, no ban exposure.",
+    "PRODUCT REQUIREMENTS THAT ARE NON-NEGOTIABLE BEFORE FIRST SALE (each maps to a dated 1-star complaint against EXM): (1) automatic System Restore point before every apply + a tested one-click full revert; (2) per-game anti-cheat safe mode that never touches EAC / BattlEye / Vanguard-sensitive surfaces — EAC breakage on Apex and Rust is a documented EXM failure and both games are on the target list; (3) zero telemetry, no Discord webhooks carrying username/IP/MAC — EXM is publicly accused of exactly this; (4) support SLA a single operator can actually hit (24h ticket response, not '16h/day live'); (5) self-serve HWID reset so 'charged again after PC swap' cannot happen.",
+    "TRUST STACK TO BUILD (all three, they are cheap): Trustpilot widget + own review wall tagged Free/Premium + live download counter. Reality check for the model: ~965K downloads and 171K Discord members produced only ~1,300 first-party reviews — never derive paid-conversion rate from download counts.",
+    "POSITIONING SLOTS THAT ARE OPEN (hero bullets): 'One-click full revert, tested' / 'Anti-cheat safe — never touches EAC, BattlEye or Vanguard' / 'Built for laptops and low-end PCs'. All three are simultaneously the leader's weakest reviewed points and the user's stated ICP.",
+    "VALUE PROP RULE: never sell 'number of tweaks' — a 62K-star free PowerShell script (winutil) does the same registry edits, and optimizerDuck went 0 to 9.5K stars in 10 months. Sell automation + safe rollback + SLA support + per-patch cadence. The tweak list is not a moat.",
+    "PREREQUISITE, NOT AN AFTERTHOUGHT: EXM runs Stripe through an EU s.r.o. (Slovak LLC) as seller of record for worldwide orders. A CIS-based single operator needs an equivalent EU/UK entity to run Stripe for this category. This is the hardest non-software dependency in the whole plan and gates launch."
+  ],
+  "open_questions": [
+    "Hone.gg Premium's actual price — withheld from every public page ('See regional price at checkout'); needs a real checkout session per region to capture. Currently NO DATA.",
+    "Zen Tweaks' price — behind a Stripe Buy Button, not in served HTML; its /product path failed TLS on fetch. NO DATA.",
+    "WTFast / ExitLag / NoPing subscription prices — all bot-blocked (403/404). Needed to size the adjacent 'pay monthly for lower ping' benchmark. NO DATA.",
+    "EXM's actual paid-conversion rate and MRR/ARR — no public data. 964,656 downloads and 171,663 Discord members are the only volume signals; the split between Free / Plus / Premium is unknown.",
+    "What share of EXM's revenue comes from the manual €25-120 Services leg vs the $30-50 licence leg — unknown, but it likely dominates AOV and is the part the user explicitly cannot replicate solo.",
+    "Whether EXM ever tested Instagram Reels and abandoned it, or never tried — footer lists only Discord/YouTube/TikTok. This determines whether Reels is an open flank or a proven dead end. Only resolvable by the user's own A/B.",
+    "Per-geo performance: all view/follower data gathered is global. No data found on how these channels perform by geo (UK vs US vs Tier-3), which is exactly what the 20-channels-per-geo plan depends on.",
+    "TikTok/YouTube/Instagram enforcement rates against multi-account new-reg fleets posting near-identical PC-optimization content — no reliable public data; the platform-policy risk dimension should cover this, not this teardown.",
+    "EXM's Discord growth curve shape (was 171K linear over 34 months, or a spike?) — only a single point-in-time reading was captured. Start weekly polling now to build the curve.",
+    "Whether EXM's 'EV Certificate' code-signing claim is current, and what an equivalent EV cert costs a one-person CIS operator — they lean on it hard against antivirus false positives, and false-positive flagging is a real distribution blocker for this product category."
+  ],
+  "risks": [
+    "CATEGORY RISK, DOCUMENTED NOT HYPOTHETICAL: anti-cheat breakage. A dated EXM 1-star review states 'Broken EAC from those tweaks. Can't play apex and rust now' (2026-06-19). Rust and Apex are both on the user's target list. Shipping aggressive tweaks without a per-game anti-cheat safe mode will reproduce this, and EAC/BattlEye/Vanguard behaviour changes with every game patch — so this is permanent maintenance load, not a one-time fix.",
+    "CATEGORY RISK: irreversible system damage. Multiple dated EXM reviews report OS breakage where System Restore and Windows repair both failed ('Broke my OS...neither a restore point nor windows repair fixed it', 2025-07-30; 'broke Microsoft Edge...Need to reinstall Windows', 2026-01-03). A one-person operation cannot absorb the support volume this generates. Rollback must be real and tested before the first sale.",
+    "MODEL RISK: the user plans a subscription, but the market leader sells a $29.99-49.99 LIFETIME licence. Every prospect who compares will see a forever purchase vs a recurring charge. Velocity proves $5.99/mo works, but only alongside a lifetime option — selling subscription-only in this niche has no observed precedent.",
+    "COMPETITIVE RISK: the free side is strong and accelerating. winutil 62.5K stars, Win11Debloat 57K, and optimizerDuck went 0 to 9.5K stars in ~10 months (created 2025-10-31). A free clone of the paid feature set can appear at any time, and hellzerg/optimizer (18.3K stars) going archived shows how fast attention moves. Any moat built on the tweak list itself is worthless.",
+    "TRUST/AV RISK: EXM's own download FAQ concedes third-party antivirus false positives are 'especially common with PC optimization software', and they counter it with an EV code-signing certificate plus a clean VirusTotal record. A new unsigned binary from an unknown publisher will be flagged, will kill install conversion, and EV certs require a verifiable legal entity — compounding the entity prerequisite.",
+    "PRIVACY/REPUTATION RISK: EXM is publicly accused (Trustpilot, 2026-06-08) of logging Windows username, IP and MAC address through Discord webhooks. Any telemetry an optimizer collects will be reverse-engineered by this audience and posted. Ship with zero telemetry or expect the same accusation.",
+    "PAYMENT RISK: EXM runs Stripe as an EU s.r.o. with itself as worldwide seller of record. A CIS-based operator without an equivalent entity has no clean Stripe path for a UK-positioned consumer subscription. Also note EXM's refund policy is deliberately generous ('you don't need benchmarks or screenshots to ask') — in a category where results genuinely vary by hardware, refund rate is a real cost line, and high dispute rates threaten the Stripe account itself.",
+    "SUPPORT-CAPACITY RISK: EXM advertises 16h/day support, staffs a team, and still collects 1-star reviews for 48h+ response times (2026-09-06). A single operator in a CIS timezone serving a UK/US audience will be structurally worse. Do not advertise an SLA that cannot be met; under-promise instead.",
+    "CONTENT-POLICY RISK: the highest-CTR framings in this niche edge toward cheating claims — EXM itself published 'This Setting Gives You AIMBOT'. That framing invites cheating-facilitation enforcement on TikTok and YouTube, and it underperformed (6.9K vs 20K median), so there is no upside to taking the risk.",
+    "DATA-QUALITY RISK: a live web-search snippet asserted EXM costs '$8.99/month discounted to $4.49/month' — flatly contradicted by EXM's own pricing JSON and refund policy. Coupon aggregators and search summaries in this niche carry fabricated pricing. The auto-built competitor table must read primary sources only, or it will be wrong on the single most important number.",
+    "GREY-AREA CARRYOVER: the user's roadmap includes game-account sales. Selling accounts breaches Epic/Riot/Valve terms and sits badly with Stripe/PayPal policy. Attaching it to the same legal entity and Stripe account that processes the tweaks subscription risks the payment rail the whole business depends on. Keep entities and payment processors separate if that line is ever pursued.",
+    "MEASUREMENT RISK: all competitor social benchmarks captured here are global point-in-time readings from established, warm accounts. Applying EXM's 20K-view Shorts median as a target for cold new-reg accounts in a specific geo will overstate expected performance, and any ROI model built on it will be optimistic."
+  ]
+}

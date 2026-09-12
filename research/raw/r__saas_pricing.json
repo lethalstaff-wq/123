@@ -1,0 +1,313 @@
+{
+  "dimension": "saas_pricing",
+  "summary": "ГЛАВНЫЙ ФАКТ: референс EXM Tweaks — это НЕ подписка. Проверено прямым парсингом window.pricingData на exmtweaks.com 2026-09-12: все платные планы имеют purchase_type:\"lifetime\", USD-only, без trial, без региональных цен. Сетка: Free $0 + EXM Plus lifetime $29.99/1 device, $54.99/2, $74.99/3, $99.99/4 + EXM Premium lifetime $49.99/$89.99/$129.99/$169.99. Монетизация = freemium + one-time lifetime с seat-тирами по числу ПК. Trustpilot: 532 отзыва, 4.6/5.\n\nРынок подписочных приложений даёт жёсткие ориентиры против \"просто сделаю $9.99/мес\": RevenueCat State of Subscription Apps 2026 — медианы $5.99 неделя / $10 месяц / $34.80 год; Gaming-категория выбирает weekly в 82% случаев, lifetime присутствует в 18% gaming-paywall (максимум по всем категориям), Y1 revenue per payer в Gaming $11.22 (в 3 раза ниже Health&Fitness), но time-to-$1K-MRR 32 дня (быстрее всех). Churn на первом продлении (RevenueCat, 2026-09-01): weekly 42–65%, monthly 39–58%, annual 60–77%. Y1 retention monthly у low-priced планов 22.5% против 12.2% у high-priced — дешёвые планы держатся лучше в процентах, но RLTV per payer 5.4× ниже ($6.67 против $35.89 monthly).\n\nДля аудитории 13–24 с холодного short-form трафика ключевые ограничения не в цене, а в: (а) involuntary churn — Recurly (данные июль 2026) Digital Media & Entertainment: voluntary 2.55% / involuntary 1.59%, т.е. 38% оттока = отвал карт, у подростков с prepaid/виртуалками будет выше; (б) dispute-лимиты — Visa VAMP non-compliant порог 0.5% ratio ПРИ count ≥5 disputes/мес, т.е. у оператора с 150–600 транзакций/мес практический потолок = 4 диспута в месяц, это жёстче любого маркетингового решения; (в) Paddle требует custom pricing для товаров дешевле $10 — сетка ниже $10 фактически заставляет Stripe/Whop.\n\nТехнически \"как Steam\" региональные цены на Stripe невозможны в один клик: Adaptive Pricing (оператор платит 0%, покупатель 2–4% конверсионного сбора, 150+ стран, поддерживает cross-border подписки только для card/Link/Apple Pay/Google Pay) конвертирует ТУ ЖЕ сумму в USD, а не даёт региональную скидку. Скидка по гео = либо currency_options (per-CURRENCY, не per-COUNTRY), либо отдельные Price-объекты + гео-выбор на бэкенде. Важно: в списке поддержки Adaptive Pricing есть UA, KZ, GE, AM, AZ, UZ, KG, TJ, TR — и НЕТ RU и BY.\n\nРекомендация: гибрид 40% MRR / 60% lifetime. Расчёт: при T1 monthly $9.99, blended гео-множителе 0.79 и 14% на fees+refunds net ARPU = $6.79; для $3000 net/мес нужно ~177 активных monthly-подписок + ~45 lifetime-продаж по $59.99 в месяц. Чистый monthly-only путь к $10k net требует 1473 активных подписок и 368–589 новых подписок КАЖДЫЙ месяц только на удержание уровня при churn 25–40%.",
+  "key_numbers": [
+    "EXM Tweaks (exmtweaks.com, спарсено 2026-09-12): Free $0; Plus LIFETIME $29.99 (1 ПК) / $54.99 (2) / $74.99 (3) / $99.99 (4); Premium LIFETIME $49.99 / $89.99 / $129.99 / $169.99. purchase_type=\"lifetime\" у ВСЕХ платных, currency_code=USD только, полей trial/monthly/yearly/discount/referral в pricingData НЕТ",
+    "EXM Tweaks Trustpilot: 532 отзыва, 4.6/5, 81% пятёрок; ответ компании: \"one free tier and two paid plans (Plus and Pro)\"",
+    "RevenueCat 2026 медианные цены: weekly $5.99 global / $6.99 NA / $7.03 Западная Европа / $4.61 IN-SEA",
+    "RevenueCat 2026 монthly: $10.00 global / $9.99 NA / $3.75 IN-SEA (38% от NA)",
+    "RevenueCat 2026 annual: $34.80 global (было $31.60) / $39.99 NA / $39.44 Зап.Европа / $18.32 IN-SEA (46% от NA)",
+    "Годовой план = 3.48× месячного (global) / 4.00× (NA) => скидка 67–71% против 12 месячных платежей",
+    "Churn на ПЕРВОМ продлении (RevenueCat, 2026-09-01): weekly 42–65%, monthly 39–58%, annual 60–77%",
+    "Y1 retention (RevenueCat 2025): monthly медиана 17.0%, low-priced 22.5%, high-priced 12.2%; annual медиана 44.1%, low-priced 53.7%; weekly 3.4%",
+    "~30% годовых подписок отменяются в первый же месяц; 23–50% всех отмен приходится на первый месяц",
+    "RLTV per payer (RevenueCat 2026): monthly high-priced $35.89 vs low-priced $6.67 (5.4×); yearly $62.19 vs $10.69 (5.8×)",
+    "Y1 realized LTV per payer по гео (RevenueCat 2026): NA $32 / Зап.Европа $25 / global $23 / IN-SEA $14",
+    "Gaming-категория (RevenueCat 2026): 82% выбирают weekly; lifetime в 18% gaming-paywall (макс. по категориям); 73.3% трайлов ≤4 дней; Y1 revenue per payer $11.22; D14 RPI $0.08 (минимум); time to $1K MRR 32 дня (максимально быстро)",
+    "Выбор плана пользователями в среднем (RevenueCat 2026): 42% monthly / 34% yearly / 16% weekly => на lifetime и прочее остаётся ~8% юнитов",
+    "Модель монетизации (RevenueCat 2026): 63.5% приложений только подписки, 23.2% подписки+lifetime; Gaming использует все три типа в 9.6% против 2.5% в среднем",
+    "Trial: 17+ дней => 42.5% trial-to-paid, короткие трайлы => 25.5% (RevenueCat 2026); 2025: медиана 45.7% для 17–32 дней",
+    "Hard paywall vs freemium (RevenueCat 2026): D35 download-to-paid 10.7% против 2.1% (≈5×). Кейс перехода на freemium: +75% LTV, −50% конверсии",
+    "Trial-to-paid по гео: NA медиана 34.2%, IN-SEA 15.2%",
+    "Recurly (данные июль 2026, Digital Media & Entertainment): total churn 4.14%, voluntary 2.55%, involuntary 1.59% => 38% оттока это отказ платежа. Кросс-индустриальное среднее 3.60% / 2.34% / 1.25%",
+    "ChartMogul SaaS Benchmarks (2023-05-24), low ARPA B2C <$25/мес: top quartile 2–3% monthly customer churn, customer retention top quartile 64.7%, NRR top quartile ~70% (только 2% превышают 100%)",
+    "Recurly 2026 State of Subscriptions: годовые планы дают на 50–60% больше revenue per user, чем месячные; 1 из 4 новых регистраций = возвращающийся подписчик; free trial повышает готовность подписаться у 65% Gen Z (против 82% у Boomers)",
+    "Stripe UK комиссии: 1.5%+20p UK карты, 2.5%+20p EEA, 3.15%+20p международные, +2% при конвертации валюты, dispute £20, Stripe Billing 0.7% pay-as-you-go",
+    "Реальная нагрузка комиссий: на $9.99 — Stripe UK domestic 4.1%, Stripe intl+конвертация 7.8%, Paddle 10.0%, Gumroad 15.0%. На $59.99 — 1.9% / 5.6% / 5.8% / 10.8%",
+    "Paddle: 5% + $0.50, merchant of record; товары ДЕШЕВЛЕ $10 требуют custom pricing (contact sales)",
+    "Gumroad: 10% + $0.50 (direct), 30% через маркетплейс; merchant of record с 2025-01-01",
+    "Stripe Adaptive Pricing: оператор платит 0%, покупатель платит 2–4% конверсионного сбора; 150+ стран; для cross-border подписок только card, Link, Apple Pay, Google Pay; недоступно для индийских бизнесов и для Elements+PaymentIntents",
+    "Visa VAMP: non-compliant порог = VAMP ratio 0.5% И VAMP count 5; excessive = ratio 1.5% (2.2% CEMEA) и count 1500 (150 CEMEA). Индустриальный стандарт \"чрезмерного\" dispute activity по Stripe = 0.75%",
+    "Mastercard ECM: 100–299 диспутов И 1.5–2.99% => штрафы с 2-го месяца $1000, 4–6 мес $5000, 7–11 мес $25000. HECM: 300+ и 3%",
+    "Практический вывод из VAMP count=5: при 150–600 транзакциях/мес потолок = 4 диспута в месяц; порог по count перестаёт быть связывающим только выше ~1000 транзакций/мес",
+    "Whop affiliate: дефолтная глобальная ставка 30% (настраивается), выбор recurring vs first-payment, 30-дневный hold перед выплатой комиссии",
+    "Референсные реферальные структуры в consumer-подписках (ReferralCandy, примеры): двусторонние 10–20% скидки или $10–20 кредит обеим сторонам; Govee 6% комиссии; Jonas Paul $50 за реферала",
+    "World Bank GNI per capita PPP, ratio vs USA (обновлено 2026-07-13): NLD 0.955, DEU 0.873, GBR 0.718, ITA 0.703, ESP 0.669, CZE 0.647, POL 0.584, ROU 0.554, TUR 0.499, KAZ 0.459, MYS 0.448, ARG 0.357, THA 0.286, MEX 0.280, BRA 0.253, EGY 0.216, UKR 0.210, VNM 0.196, IDN 0.192, ZAF 0.174, PHL 0.162, IND 0.130, BGD 0.120, NGA 0.103, PAK 0.072",
+    "Blended гео-множитель при трафик-миксе 45% T1 / 20% T2 / 20% T3 / 15% T4 и тирах 1.00/0.80/0.60/0.40 = 0.790",
+    "Net ARPU при T1 $9.99, гео-миксе 0.79 и 14% на fees+refunds = $6.79/мес",
+    "Активных monthly-подписок для net MRR: $1k/$3k/$10k = 147/442/1473 при T1 $9.99; 211/632/2106 при $6.99; 98/295/982 при $14.99",
+    "Новых подписок В МЕСЯЦ на удержание уровня (T1 $9.99): churn 20% => 29/88/295; churn 30% => 44/133/442; churn 40% => 59/177/589 для $1k/$3k/$10k net",
+    "LTV monthly-подписчика при net ARPU $6.79: churn 20% => $33.94 (5.0 мес), 30% => $22.62 (3.3 мес), 40% => $16.97 (2.5 мес), 50% => $13.57 (2.0 мес)",
+    "Lifetime-only модель, продаж в месяц для $1k/$3k/$10k net: $29.99 => 50/149/497; $49.99 => 30/89/298; $89.99 => 17/50/165",
+    "Гибрид 40% MRR / 60% lifetime ($9.99/мес + $59.99 lifetime): $3000 net/мес = 177 активных подписок + 45 lifetime-продаж/мес; $10000 net/мес = 589 подписок + 149 продаж/мес"
+  ],
+  "findings": [
+    {
+      "claim": "Референс EXM Tweaks вообще не продаёт подписку — только freemium + LIFETIME one-time лицензии с тирами по числу устройств, USD-only, без trial и без региональных цен",
+      "evidence": "Прямой парсинг window.pricingData с exmtweaks.com (curl с браузерным UA, 200 OK, 197 КБ, 2026-09-12): free {price_dollars:0, purchase_type:\"lifetime\", decision_code:\"free_download\"}; plus {product_id:29, purchase_type:\"lifetime\", tiers: solo $29.99/max_devices:1, duo $54.99/2, trio $74.99/3, squad $99.99/4}; premium {product_id:30, purchase_type:\"lifetime\", tiers: solo $49.99, duo $89.99, trio $129.99, squad $169.99}. currency_code:\"USD\" во всех узлах. Grep по всей странице: ни одного вхождения \"monthly\", \"yearly\", \"quarterly\", \"/mo\", \"trial\", \"discount\", \"refund\", \"affiliate\", \"referral\", \"geo\", \"region\" в данных о ценах",
+      "source": "https://exmtweaks.com/ (window.pricingData, OctoberCMS), fetched 2026-09-12",
+      "source_date": "2026-09-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Не копировать «подписку как у EXM» — её нет. Если цель MRR, это осознанное расхождение с работающим референсом, и его нужно компенсировать: держать lifetime как основной импульсный оффер для холодного short-form трафика, а подписку продавать как второй, более дешёвый вход. Seat-тиры (1/2/3/4 ПК) — готовый механизм апселла с проверенной шкалой: +83% цены за 2-е устройство, +150% за 3-е, +233% за 4-е (Plus)."
+    },
+    {
+      "claim": "EXM Tweaks — живой бизнес с реальным объёмом отзывов, т.е. его lifetime-модель валидирована рынком, а не гипотеза",
+      "evidence": "Trustpilot: 532 отзыва, рейтинг 4.6/5, 81% пятизвёздочных. Ответ компании в отзывах: «there's one free tier and two paid plans (Plus and Pro)». Отзывы содержат утверждения о приросте «80–100+ FPS boost in Fortnite»; в негативных упоминаются конфликты с античитами",
+      "source": "https://www.trustpilot.com/review/exmtweaks.com",
+      "source_date": "fetched 2026-09-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Ставить lifetime-оффер в диапазоне $29.99–$49.99 T1 как основной CTA с коротких видео. Отдельно: конфликты с античитами в отзывах — это источник возвратов и диспутов, поэтому в спеку нужен явный pre-purchase дисклеймер по списку игр с kernel-anticheat (Valorant/Vanguard, Fortnite/EAC, CS2/VAC, Rust/EAC)."
+    },
+    {
+      "claim": "В Gaming-категории lifetime-план — самый распространённый среди всех категорий приложений, а гибридные модели монетизации применяются в 4 раза чаще среднего",
+      "evidence": "«Lifetime plans appear in 18% of Gaming paywalls (highest)»; «Subscriptions-only: 63.5% overall, subscriptions + lifetime combos: 23.2%»; «Gaming (all three monetization types): 9.6% vs 2.5% overall average»",
+      "source": "RevenueCat, State of Subscription Apps 2026 (https://www.revenuecat.com/state-of-subscription-apps-2026/)",
+      "source_date": "2026",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Гибрид (подписка + lifetime + разовые допы) — это норма именно для геймерской аудитории, а не компромисс. В paywall держать 2 плана одновременно (в отчёте: two-plan paywalls самые частые, 41–60% приложений), а lifetime показывать третьим оффером точечно, а не в основной сетке."
+    },
+    {
+      "claim": "Gaming-аудитория массово выбирает недельные планы, но недельные планы имеют худший churn первого продления и худшее Y1-удержание",
+      "evidence": "«Gaming: 82% weekly» среди выбранных планов; общее распределение выбора 42% monthly / 34% yearly / 16% weekly. Churn на первом продлении: weekly 42–65%. Y1 retention weekly медиана 3.4% (2025, было 4.2%). Gaming trials: 73.3% используют ≤4 дней",
+      "source": "RevenueCat State of Subscription Apps 2026; RevenueCat 2025; RevenueCat blog «Curse of the first renewal» (2026-09-01)",
+      "source_date": "2026-09-01",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Недельный план ($3.99–$4.99 T1) имеет смысл только как импульсный вход с short-form трафика, но его нужно закладывать как канал с расчётной 2-месячной жизнью, а не как MRR-фундамент. Риск диспутов у weekly-планов максимальный (частые мелкие списания на карте подростка) — при VAMP count=5 это может убить эквайринг быстрее, чем принесёт выручку."
+    },
+    {
+      "claim": "Churn на первом продлении по длительностям: weekly 42–65%, monthly 39–58%, annual 60–77%; после первого продления отток почти прекращается",
+      "evidence": "Таблица из статьи: Weekly churn 42–65% / retention 35–58%; Monthly churn 39–58% / retention 42–61%; Annual churn 60–77% / retention 23–40%. «Weekly subscribers reaching second renewal: 74–91% will still be paying by their third»; «Reaching first renewal stability point: subsequent churn nearly stops with 3% additional loss over 9 months». High-price annual first renewal 23% против 36% у low-priced. Критические окна активации: weekly первые 5 дней, monthly первые 2 недели, annual первый месяц",
+      "source": "RevenueCat blog, «Curse of the first renewal: how to cure churn for each subscription duration», Daphne Tideman (https://www.revenuecat.com/blog/growth/first-renewal-churn)",
+      "source_date": "2026-09-01",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Вся retention-механика должна быть сконцентрирована в окне до первого продления, а не размазана. Для monthly: автоматический onboarding-поток в первые 14 дней (обязательный «первый замер FPS до/после» внутри утилиты + сохранённый скриншот в Discord), иначе 39–58% уйдут на первом списании. Lifecycle messaging в 90-дневном окне даёт «3x higher» retention по тому же источнику."
+    },
+    {
+      "claim": "Дешёвые планы ($5-15) удерживаются лучше в процентах, но приносят в 5+ раз меньше LTV на плательщика — это прямой аргумент против «сделаем дёшево, наберём массу»",
+      "evidence": "Y1 retention monthly: low-priced 22.5% против high-priced 12.2%; annual: low-priced 53.7% против high-priced 48.3% (RevenueCat 2025). Но RLTV per payer 2026: monthly high-priced $35.89 против low-priced $6.67 (5.4×); yearly $62.19 против $10.69 (5.8×). Realized LTV after 1 year: high-priced $55.21 против $8.08 low-priced (2025)",
+      "source": "RevenueCat State of Subscription Apps 2025 и 2026",
+      "source_date": "2025 / 2026",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "В спеку закладывать net LTV low-priced подписчика $7–15 как базовый сценарий, а не $30+. Это означает: CAC с платного трафика почти наверняка не сойдётся, и вся модель держится на бесплатном органическом short-form трафике. Любая платная закупка трафика должна проверяться против LTV $7–15, а не против мечты."
+    },
+    {
+      "claim": "Региональные цены в стиле Steam на Stripe нельзя включить «галочкой»: Adaptive Pricing конвертирует ту же сумму, а не даёт региональную скидку, и мультивалютность в Stripe работает per-CURRENCY, а не per-COUNTRY",
+      "evidence": "Adaptive Pricing: «Stripe uses machine learning to determine the most relevant presentment currency, then automatically calculates the localized price and handles all currency conversion» — это конвертация, не скидка; presentment_details содержит presentment_amount/presentment_currency, при этом «the Checkout Session and the underlying PaymentIntent objects reflect what your customer paid in your integration currency and amount». Manual currency prices задаются через currency_options[eur][unit_amount] — ключ это валюта, не страна. Stripe рекомендует Adaptive Pricing вместо manual, и «Manually defined multi-currency prices override Adaptive Pricing for those currencies»",
+      "source": "Stripe Docs: /payments/currencies/localize-prices/adaptive-pricing и /payments/checkout/localize-prices/manual-currency-prices",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Спека: гео-тиры реализуются НЕ через currency_options, а через 4 отдельных набора Price-объектов (T1/T2/T3/T4) + серверный выбор тира по стране. Определять страну по стране платёжного метода/BIN на этапе подтверждения, а не только по IP, иначе тир T4 уйдёт всем через VPN. Adaptive Pricing включать поверх — он бесплатен для оператора."
+    },
+    {
+      "claim": "Adaptive Pricing бесплатен для оператора (покупатель платит 2–4%), покрывает 150+ стран, но для cross-border подписок поддерживает только card/Link/Apple Pay/Google Pay — и в списке стран есть UA, KZ, GE, AM, AZ, UZ, KG, TJ, TR, но нет RU и BY",
+      "evidence": "«You pay 0% / Your customers pay 2–4%... The Stripe-provided exchange rate you present to your customers includes a 2–4% conversion fee». «For cross-border subscriptions, Adaptive Pricing supports only card payments, Link, Apple Pay, and Google Pay». Список Europe включает UA; список Asia включает AM, AZ, GE, KZ, KG, TJ, TR, UZ. RU и BY отсутствуют во всех региональных списках. Ограничения: недоступно для Elements+PaymentIntents и для индийских бизнесов; требует, чтобы валюта прайса была одной из settlement-валют",
+      "source": "Stripe Docs, Adaptive Pricing (полная hosted-версия)",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Adaptive Pricing включить сразу — это бесплатный +конверсия в локальной валюте. НО: если в T3/T4 планируется опора на локальные методы (Pix в BR, UPI в IN, BLIK в PL), они не работают для cross-border подписок — значит в этих гео подписка будет конвертить хуже, чем lifetime one-time (для one-time локальные методы доступны). Это ещё один аргумент делать lifetime основным оффером в дешёвых гео, а подписку — в T1/T2."
+    },
+    {
+      "claim": "Реальный наблюдаемый пол региональных цен в подписочных приложениях — примерно 38–46% от Северной Америки, а не 10–20% как в играх на Steam",
+      "evidence": "RevenueCat 2026 медианы: monthly NA $9.99 против IN/SEA $3.75 (38%); annual NA $39.99 против IN/SEA $18.32 (46%); weekly NA $6.99 против IN/SEA $4.61 (66%). Отчёт: «IN/SEA consistently prices at ~45–50% of North America's levels», «North America and Western Europe anchor the high end». Западная Европа практически равна NA: weekly $7.03 vs $6.99, annual $39.44 vs $39.99",
+      "source": "RevenueCat State of Subscription Apps 2026",
+      "source_date": "2026",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Жёсткое правило для спеки: минимальный гео-тир = 0.40 от T1, ниже не опускаться (это рыночная норма для подписок, и это защищает от арбитража через VPN). Западную Европу и UK НЕ дискаунтить — ставить в T1 вместе с US/CA/AU."
+    },
+    {
+      "claim": "Годовой план в подписочных приложениях стоит 3.5–4.0 месячных платежа, то есть скидка 67–71% против 12 месячных — типовые «2 месяца в подарок» здесь сильно ниже рынка",
+      "evidence": "Медианы RevenueCat 2026: global annual $34.80 / monthly $10.00 = 3.48×; NA annual $39.99 / monthly $9.99 = 4.00×. Рассчитанная скидка против 12× месячного: 71% (global) и 67% (NA). Годовая медиана выросла год к году с $31.60 до $34.80",
+      "source": "RevenueCat State of Subscription Apps 2026 (цифры прайсов — источник; коэффициенты 3.48× / 4.00× и скидки 67–71% — мой расчёт)",
+      "source_date": "2026",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Ставить annual = 4.0–5.0× monthly. При monthly $9.99 это annual $44.99–$49.99. Квартальный тир бенчмарков не имеет (нет данных) — по логике интерполяции ставить 2.4–2.7× monthly, т.е. $24.99 при monthly $9.99 (скидка ~17%)."
+    },
+    {
+      "claim": "Hard paywall конвертит примерно в 5 раз лучше freemium по download-to-paid, но freemium в одном кейсе дал +75% LTV при −50% конверсии",
+      "evidence": "«Hard paywall D35 conversion: 10.7% download-to-paid vs freemium at 2.1%»; «Hard paywalls outperform freemium by nearly 5x on conversion»; «a switch from hard paywall to freemium led to a 75% LTV lift and a 50% conversion drop». При этом «after one year, retention for both [hard paywall and freemium] models is nearly identical»",
+      "source": "RevenueCat State of Subscription Apps 2026; RevenueCat blog «Start at the finish line», Ethan Garr (2026-09-08)",
+      "source_date": "2026-09-08",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "EXM использует freemium (есть free_download тир) — и это логично для их lifetime-модели: free-версия работает как доказательство эффекта (пользователь видит прирост FPS), после чего lifetime покупается без trial. Для этого проекта: free tier обязателен (он же — контент для коротких видео «смотрите, бесплатная версия даёт +20 FPS, платная +60»), но платный оффер должен быть hard-gated по конкретным измеримым твикам, а не «чуть больше того же»."
+    },
+    {
+      "claim": "Длинные трайлы конвертят существенно лучше коротких (42.5% против 25.5%), но Gaming-категория массово использует трайлы ≤4 дней",
+      "evidence": "«17+ day trials: 42.5% trial-to-paid conversion vs short trials at 25.5%» (2026); медиана 45.7% для трайлов 17–32 дня (2025). «Gaming trial length: 73.3% use ≤4 days». Доля коротких трайлов (≤4 дней) выросла до 46.5% всех трайлов, +4.4 п.п. год к году. Trial-to-paid по гео: NA 34.2%, IN/SEA 15.2%. Download-to-trial медиана 6.2%, при этом 9.8% у high-priced против 4.3% у low-priced",
+      "source": "RevenueCat State of Subscription Apps 2026 и 2025",
+      "source_date": "2025 / 2026",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Для утилиты, эффект которой виден за 10 минут, длинный trial не нужен и вреден (дарит месяц бесплатной оптимизации, которая уже применена к системе). Лучше: платный trial $1 за 3 дня с картой — он фильтрует, даёт согласие на billing terms (прямая рекомендация Stripe по предотвращению диспутов) и не даёт бесплатно забрать весь продукт. Free trial без карты в этой нише = раздача продукта, т.к. твики остаются применёнными после отмены."
+    },
+    {
+      "claim": "Около 38% оттока в цифровых медиа — не решение пользователя, а отказ платежа; для аудитории 13–24 с prepaid/виртуальными картами эта доля будет выше",
+      "evidence": "Recurly benchmarks (данные обновлены июль 2026), Digital Media & Entertainment: total 4.14%, voluntary 2.55%, involuntary 1.59%. Комментарий источника: «Digital Media and Entertainment has a comparatively lower voluntary rate (2.55%) but a high involuntary rate (1.59%), which typically reflects a payment recovery gap rather than a subscriber intent problem». Кросс-индустриальные средние: 3.60% total / 2.34% voluntary / 1.25% involuntary. ВАЖНО: страница помечает эти цифры как annual churn, что не сходится с практикой (это даёт >99% годового удержания); исторически Recurly публикует эти бенчмарки как МЕСЯЧНЫЕ — трактовать как месячные",
+      "source": "https://www.recurly.com/research/churn-rate-benchmarks/",
+      "source_date": "данные July 2026, fetched 2026-09-12",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "В спеку обязательно: smart retry/dunning (3–4 повтора по расписанию), карта + PayPal + Apple Pay + Google Pay как минимум, email/Discord-DM уведомление об отказе платежа с ссылкой на обновление карты, grace period 3–7 дней с сохранением доступа. Без dunning ~1/3 всего оттока будет техническим. Метка «annual vs monthly» в источнике противоречива — не использовать 4.14% как годовую цифру в расчётах."
+    },
+    {
+      "claim": "Лучший в классе churn для потребительских подписок дешевле $25/мес — 2–3% в месяц, а top-quartile удержание клиентов 64.7%; NRR у low-ARPA почти никогда не превышает 100%",
+      "evidence": "ChartMogul SaaS Benchmarks: «Low ARPA (B2C, <$25/month): top quartile achieves ~2-3% monthly churn»; «Customer Retention Rate Low ARPA: Top quartile = 64.7%»; «Low ARPA (<$25/month): Top quartile = ~70% NRR; only 2% exceed 100%». High ARPA (>$1k/мес) для сравнения: <1% monthly churn, 85.8% retention, 47% достигают negative churn",
+      "source": "ChartMogul SaaS Benchmarks Report (https://chartmogul.com/reports/saas-benchmarks-report/)",
+      "source_date": "2023-05-24",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "2–3%/мес — это потолок мечты для B2C-инструмента с ежедневным использованием (типа трекера привычек). Игровая утилита, которую запускают один раз и забывают, будет ближе к 20–40%/мес. Для расчётов брать 25–35%/мес по monthly-планам; 2–3% использовать только как недостижимый best case, чтобы не строить план на нём. Expansion revenue (negative churn) для low-ARPA практически невозможен — рост только за счёт новых подписчиков."
+    },
+    {
+      "claim": "Годовые планы дают на 50–60% больше выручки на пользователя, и каждая четвёртая новая регистрация — возвращающийся подписчик",
+      "evidence": "«Annual plans deliver 50–60% higher revenue per user compared to monthly subscriptions»; «1 in 4 new sign-ups are now returning subscribers»; «Top merchants achieved a 337% increase in pause usage to reduce cancellations»; «77% of consumers holding their subscription counts steady»; восстановление платежей в 2025: Software >$155 млн, Digital Media ~$100 млн",
+      "source": "Recurly, 2026 State of Subscriptions (https://www.recurly.com/resources/report/state-of-subscriptions/), 76 млн подписчиков",
+      "source_date": "2026",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Добавить в спеку кнопку «пауза подписки» (1–3 месяца) как альтернативу отмене в cancel-flow — это дешёвая механика с зафиксированным эффектом, и она конвертирует часть отмен в отложенные возвраты. Reactivation-поток (письмо/Discord-DM через 30 и 90 дней после отмены с оффером) обязателен, т.к. 25% новых подписок — это возвраты, а не новый трафик."
+    },
+    {
+      "claim": "Free trial повышает готовность подписаться у 65% Gen Z, но у Gen Z это самый низкий показатель среди всех поколений",
+      "evidence": "«65% of Gen Z said the same» про готовность подписаться при наличии free trial, «compared to 82% of Boomers». Также: «67% of Millennials are more likely to subscribe if an exclusive subscription product or service is offered, compared to 53% of Boomers». Остальные Gen Z-метрики (ценовая чувствительность, число подписок, причины оттока) доступны только в закрытом отчёте по форме",
+      "source": "Recurly, «Boomers to Gen Z: A Guide to Subscriber Preferences»",
+      "source_date": "2026 (fetched 2026-09-12)",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Trial для целевой 13–24 аудитории — не такой сильный крючок, как принято считать (миф «без free trial подростки не купят»). Эксклюзивность работает сравнимо: закрытые Discord-каналы, ранний доступ к профилям под новые патчи игр, роль в сервере. Это дешевле, чем месяц бесплатного продукта."
+    },
+    {
+      "claim": "Paddle требует индивидуальное ценообразование для товаров дешевле $10 — это фактически исключает Paddle для сетки с входным тиром $5–9.99",
+      "evidence": "«5% + 50¢ per checkout transaction», merchant of record, в цену включены налоги, fraud/chargeback protection, локализованный checkout. Явное ограничение: «Products under $10: Custom pricing required (contact sales)». Расчётная нагрузка Paddle: на $9.99 = $1.00 (10.0%), на $29.99 = $2.00 (6.7%), на $59.99 = $3.50 (5.8%)",
+      "source": "https://www.paddle.com/pricing",
+      "source_date": "fetched 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Решение по процессингу зависит от сетки: при lifetime $29.99+ Paddle выгоден (6.7% и он же merchant of record — снимает VAT/sales tax с одного оператора из СНГ). При входном тире $5–9.99 Paddle не подходит — нужен Stripe (7.8% на $9.99 с международной картой + конвертация) или Whop. Не смешивать: выбрать один MoR, чтобы не вести налоговую отчётность вручную."
+    },
+    {
+      "claim": "Комиссии съедают 4–15% при low-ticket, и разброс между провайдерами на чеке $9.99 трёхкратный",
+      "evidence": "Stripe UK (официальный прайс): 1.5%+20p UK-карты, 2.5%+20p EEA, 3.15%+20p международные, +2% при конвертации валюты, dispute fee £20, Stripe Billing 0.7% pay-as-you-go (или от £450/мес по контракту). Gumroad: 10%+$0.50 direct, 30% через маркетплейс, merchant of record с 2025-01-01. Расчёт эффективной ставки: на $9.99 — Stripe UK domestic 4.1%, Stripe intl+конвертация 7.8%, Paddle 10.0%, Gumroad 15.0%; на $59.99 — 1.9% / 5.6% / 5.8% / 10.8%",
+      "source": "https://stripe.com/gb/pricing ; https://www.gumroad.com/pricing ; https://www.paddle.com/pricing (эффективные ставки — мой расчёт)",
+      "source_date": "fetched 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Константы для спеки: fee_rate = 0.078 для Stripe при международном трафике (не 0.029 — трафик будет не-UK и с конвертацией), 0.10 для Paddle на чеке $9.99, 0.058 для Paddle на чеке $59.99. Gumroad не использовать при low-ticket. Фиксированная часть (20p/50¢) делает недельный план $3.99 экономически плохим: 50¢ Paddle = 12.5% только фикс."
+    },
+    {
+      "claim": "Порог Visa VAMP по количеству диспутов (5 в месяц) — главное операционное ограничение всей модели, жёстче любого маркетингового решения",
+      "evidence": "VAMP disputes and fraud monitoring: non-compliant threshold = VAMP count 5 И VAMP ratio 0.5%; excessive = count 1500 (150 в CEMEA) и ratio 1.5% (2.2% CEMEA), volume $75k в CEMEA. VAMP count включает и диспуты (TC15), и early fraud warnings (TC40), причём «the same fraudulent transaction might appear in both the TC40 and TC15 reports... will be counted twice». Stripe: «The credit card processing industry standard recognizes dispute activity above 0.75% as excessive, but... a sudden spike or steep upward trend can trigger placement in a monitoring program before dispute activity reaches the 0.75% threshold». Mastercard ECM: 100–299 диспутов и 1.5–2.99% => $1000 со 2-го месяца, $5000 на 4–6-м, $25000 на 7–11-м. Расчёт: при 150–600 транзакциях/мес порог count=5 связывает раньше, чем ratio 0.5%, т.е. практический потолок = 4 диспута/мес; порог по count перестаёт быть узким местом только выше ~1000 транзакций/мес",
+      "source": "Stripe Docs: /disputes/monitoring-programs и /disputes/measuring (пороги — официальные; расчёт практического потолка — мой)",
+      "source_date": "fetched 2026-09-12; Visa VAMP fact sheet 2025",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Константы в спеку как hard limits: MAX_DISPUTES_PER_MONTH = 4, alert при 2. Механика: возврат без вопросов по первому запросу (дешевле $20 dispute fee + счётчика VAMP), кнопка отмены в один клик внутри утилиты, письмо-напоминание за 7 дней до годового и за 2–3 дня до месячного списания (прямые рекомендации Stripe), чекбокс подтверждения billing terms перед оплатой, узнаваемый statement descriptor. Refund НЕ снижает счётчик диспутов у сетей («monitoring programs don't consider refunds»), поэтому возвращать надо ДО диспута, а не после."
+    },
+    {
+      "claim": "Whop даёт готовую реферальную инфраструктуру с дефолтной ставкой 30% и 30-дневным холдом, но подтверждённых данных о его собственной комиссии я не нашёл",
+      "evidence": "«The default global rate is 30%, but you can adjust it to any percentage you prefer»; два типа — global affiliates (любой пользователь) и member affiliates (повышенная ставка для участников сообщества); выбор «Recurring payments (ongoing commissions) or First payment (one-time commission)»; «a 30-day waiting period between when a referred customer makes their purchase and when the affiliate receives their commission». API поддерживает one_time и recurring планы, trials, webhooks payment.succeeded / membership.activated для авто-выдачи, sandbox. По take rate Whop: НЕТ ДАННЫХ — страницы whop.com/pricing, help.whop.com/en/articles/whop-fees, docs.whop.com/sell/fees и /help/fees вернули 404 или SPA-заглушку",
+      "source": "https://docs.whop.com/affiliates ; https://docs.whop.com/developer/api/getting-started",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "medium",
+      "actionable": "Whop закрывает ровно тот стек, который нужен (мембершипы + Discord-роль + webhooks + аффилиаты), и его дефолтные 30% — это готовый ответ на вопрос «какую ставку ставить». Но перед выбором обязательно подтвердить его take rate из первоисточника — это несущая константа юнит-экономики, и её нельзя брать по слухам. Механика member-affiliate (повышенная ставка для своих) прямо подходит под Discord-сообщество."
+    },
+    {
+      "claim": "Типовые реферальные ставки в consumer-подписках — двусторонние 10–20% или фиксированные $10–20 обеим сторонам; данных по доле новых клиентов из рефералов именно в геймерских утилитах нет",
+      "evidence": "Примеры структур: Dua 10% off обеим сторонам; P.volve $15 кредит обеим сторонам; Jimmy Joy €15 обеим; Alohas €20 обеим; Fast Growing Trees 20% обеим; асимметричные — Santevia (друг 10%, реферер 15%), Jonas Paul (друг 50% off первой покупки, реферер $50); процентные — Govee 6% комиссии; CrunchLabs (месячная подписка) $10 store credit + физический коллекционный предмет после 3 рефералов. Источник прямо отмечает: «The article does not provide data on typical percentages of new customers acquired through referrals across digital/subscription categories». Мои попытки получить бенчмарки участия/конверсии рефералов (growsurf, firstpromoter, rewardful) дали 404",
+      "source": "https://www.referralcandy.com/blog/referral-program-examples ; попытки growsurf.com/blog/referral-program-benchmarks, firstpromoter.com/blog/saas-affiliate-commission-rates, rewardful.com/blog/affiliate-commission-rates — 404",
+      "source_date": "fetched 2026-09-12",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Для этой аудитории денежная выплата рефереру плохо работает (подросткам некуда выводить $3) — паттерн CrunchLabs (кредит + статусный предмет после N рефералов) переносится напрямую: 1 бесплатный месяц за каждого оплатившего реферала + эксклюзивная Discord-роль/цвет ника за 3 и за 10 рефералов. Это нулевой кэш-аут и работает на социальный статус. Денежную ставку 20–30% с первого платежа держать отдельно для внешних контент-мейкеров, не для участников сообщества."
+    },
+    {
+      "claim": "Данных о прямом эффекте скидок на churn в потребительских подписках я не получил; доступные данные дают обратную корреляцию цены и удержания при кратно худшем LTV",
+      "evidence": "Попытки получить данные ProfitWell/Paddle о влиянии скидок (paddle.com/recur/all/discounting-hurts-your-business, /resources/saas-discounting-strategy, /blog/how-discounts-impact-churn, /resources/pricing-strategy-discounts) — все 404/410. Косвенные данные: low-priced планы удерживаются лучше (monthly Y1 22.5% против 12.2%), но RLTV per payer в 5.4× ниже. RevenueCat 2026 по офферам: «mixed trial strategies dominate (44–59% by category)», при этом «specific measured ROI data on discount effectiveness is limited». Про win-back прямо: «Win-back campaigns convert poorly — those users never activated». Отдельно из 2025: offer adoption 17.6% App Store против 7.3% Google Play",
+      "source": "RevenueCat State of Subscription Apps 2025/2026; RevenueCat blog «Curse of the first renewal» (2026-09-01); отсутствие источников по ProfitWell — зафиксировано",
+      "source_date": "2026-09-01",
+      "kind": "inference",
+      "confidence": "low",
+      "actionable": "НЕТ ДАННЫХ по эффекту скидок на churn — не подставлять в спеку выдуманный коэффициент. Диапазон для планирования (low confidence): скидочная когорта удерживается на 0.8–1.0× от полноценной, а LTV падает пропорционально скидке, т.е. скидка почти никогда не отбивается удержанием. Практическое правило: скидки давать только за увеличение срока (annual/lifetime), а не за снижение цены того же периода. Win-back со скидкой не приоритизировать — по источнику он плохо конвертит, потому что уходят неактивированные."
+    },
+    {
+      "claim": "Данных по attach rate железа, ковриков и прочих физических апселлов к геймерской софт-подписке нет; попытки получить прайс print-on-demand ковриков тоже не дали цифр",
+      "evidence": "Попытка получить базовые цены Printful на mouse pads (https://www.printful.com/custom/home-living/mouse-pads) вернула только meta-описание без каталога и цен. Никаких индустриальных данных по конверсии «подписчик софта → покупатель коврика/ноутбука/мини-ПК» в доступных источниках не найдено. Единственное релевантное количественное наблюдение: RevenueCat 2026 фиксирует, что Gaming чаще всех использует все три типа монетизации сразу (9.6% против 2.5% в среднем) — т.е. смешивание подписки с разовыми товарами в этой категории распространено, но без цифр по attach rate",
+      "source": "попытка https://www.printful.com/custom/home-living/mouse-pads (нет данных); RevenueCat State of Subscription Apps 2026",
+      "source_date": "fetched 2026-09-12",
+      "kind": "inference",
+      "confidence": "low",
+      "actionable": "НЕТ ДАННЫХ — attach rate физических товаров не закладывать в базовый план выручки. Диапазон для сценарного моделирования (low confidence, мой вывод): 1–4% активных подписчиков в месяц на низкочековый аксессуар ($25–45 коврик) и 0.1–0.5% на ноутбук/мини-ПК. Физика ломает главное свойство модели — «без ручной работы»: склад, доставка, возвраты, споры о повреждениях. Правильный первый шаг — не свой товар, а партнёрские/дропшип-ссылки с комиссией, без своего инвентаря; и только после устойчивых $3–5k/мес с софта. Внутри софтовой сетки апселл уже есть и он бесплатен: seat-тиры по числу ПК (проверенная у EXM шкала +83%/+150%/+233%)."
+    },
+    {
+      "claim": "Юнит-экономика: для $3000 net/мес нужно ~442 активных monthly-подписки ИЛИ ~149 lifetime-продаж по $29.99 ИЛИ гибрид 177 подписок + 45 lifetime-продаж по $59.99",
+      "evidence": "Расчёт на входных данных из источников выше. Blended гео-множитель при трафик-миксе short-form 45% T1 / 20% T2 / 20% T3 / 15% T4 и тирах 1.00/0.80/0.60/0.40 = 0.790. Комиссии 9% (Stripe intl+конвертация на чеке $9.99 = 7.8% + Billing 0.7%), возвраты/чарджбеки 5% (НЕТ ДАННЫХ по нише, оценка). Net ARPU при T1 $9.99 = 9.99 × 0.790 × 0.86 = $6.79. Активных подписок: $1k=147, $3k=442, $10k=1473. При T1 $6.99 net $4.75 => 211/632/2106. При T1 $14.99 net $10.18 => 98/295/982. Новых подписок в месяц ТОЛЬКО на удержание уровня: churn 20% => 29/88/295; 30% => 44/133/442; 40% => 59/177/589. LTV: churn 20% => $33.94 (5.0 мес), 30% => $22.62 (3.3 мес), 40% => $16.97 (2.5 мес). Lifetime-only (fee 9%, возвраты 6%), продаж/мес: $29.99 => 50/149/497; $49.99 => 30/89/298; $89.99 => 17/50/165. Гибрид 40/60 при $9.99 и $59.99: $3k => 177 подписок + 45 продаж; $10k => 589 подписок + 149 продаж",
+      "source": "мой расчёт на данных RevenueCat 2026 (цены, churn), Stripe UK pricing (комиссии), World Bank GNI PPP (гео-тиры)",
+      "source_date": "2026-09-12",
+      "kind": "inference",
+      "confidence": "medium",
+      "actionable": "Ключевой вывод для спеки: monthly-only путь к $10k требует 368–589 НОВЫХ подписок каждый месяц просто чтобы стоять на месте при churn 25–40% — это беговая дорожка, которую сеть из 20 каналов на гео должна кормить непрерывно. Lifetime-путь к тем же $10k требует 165–497 продаж/мес без обязательства их повторять. Поэтому базовая цель — гибрид: lifetime даёт кассу с холодного трафика сразу, подписка накапливает предсказуемый MRR. Все шесть констант (гео-множитель 0.79, fee 0.09, refund 0.05/0.06, churn-сценарии 0.20/0.30/0.40) вынести в конфиг, а не хардкодить."
+    },
+    {
+      "claim": "World Bank GNI per capita PPP даёт объективную, машинно-читаемую основу для гео-тиров, но применять её линейно нельзя — рынок подписок не опускается ниже ~0.40 от T1",
+      "evidence": "World Bank API, индикатор NY.GNP.PCAP.PP.CD, последние доступные значения (lastupdated 2026-07-13), ratio к USA=1.000: NLD 0.955, ARE 0.912 (2024), DEU 0.873, SWE 0.850, SAU 0.831, AUS 0.781, CAN 0.747, GBR 0.718, KOR 0.718, ITA 0.703, ESP 0.669, JPN 0.658, CZE 0.647, POL 0.584, ROU 0.554, TUR 0.499, KAZ 0.459, MYS 0.448, ARG 0.357, THA 0.286, MEX 0.280, BRA 0.253, EGY 0.216, UKR 0.210, VNM 0.196, IDN 0.192, ZAF 0.174, PHL 0.162, IND 0.130, BGD 0.120, NGA 0.103, PAK 0.072 (все 2025, кроме ARE). Steam официально предлагает три метода конвертации — по курсу, по покупательной способности, и multi-variable («local purchasing power, the expected cost of comparable entertainment goods, and exchange rate»), 37 валют и 4 региональные группы, и отдельно выделяет регионы с рекомендованной скидкой в USD: USD_CIS (AM, AZ, BY, GE, KG, MD, TJ, TM, UZ), USD_LATAM, USD_MENA, USD_SASIA. Конкретных процентных таблиц Steam не публикует",
+      "source": "World Bank API (api.worldbank.org/v2, NY.GNP.PCAP.PP.CD, mrnev=1) ; Steamworks docs partner.steamgames.com/doc/store/pricing и /pricing/currencies",
+      "source_date": "World Bank lastupdated 2026-07-13; Steamworks fetched 2026-09-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Готовый алгоритм для спеки: tier = T1 если gni_ratio ≥ 0.65; T2 (0.80× цены) если 0.45–0.65; T3 (0.60×) если 0.25–0.45; T4 (0.40×) если < 0.25. Проверка по этой формуле: GBR/DEU/CAN/AUS/KOR/ITA/ESP/JPN/NLD/SWE/SAU/ARE → T1; POL/ROU/TUR/CZE → T2; KAZ/MYS/ARG/THA/MEX/BRA → T3; EGY/UKR/VNM/IDN/ZAF/PHL/IND/BGD/NGA/PAK → T4. Пол 0.40 не пробивать (соответствует наблюдаемым 38–46% IN/SEA в RevenueCat). Список USD_CIS от Steam — готовый справочник для СНГ-тира. Таблицу зашить как статический JSON, обновлять раз в год из World Bank API."
+    }
+  ],
+  "machine_spec_notes": [
+    "PRICING_GRID_VARIANT_A (Subscription-first, для MRR; требует Stripe или Whop, т.к. Paddle не берёт <$10): free tier $0 (базовые твики, встроенный FPS-бенчмарк до/после); CORE monthly $9.99 T1, quarterly $24.99 (2.5× monthly), annual $44.99 (4.5× monthly, −62% против 12×); PRO monthly $14.99, annual $69.99, 2 устройства; LIFETIME PRO $119 — показывать ТОЛЬКО в трёх точках: (1) в cancel-flow, (2) на 3-м месяце активной подписки, (3) сезонная кампания. Paid trial $1 / 3 дня с обязательной картой. Money-back 7 дней без вопросов. Обоснование: annual-множитель из медиан RevenueCat 2026 (3.48–4.00×); paid trial вместо free — потому что твики остаются применёнными после отмены, а Stripe прямо рекомендует подтверждение billing terms до оплаты как антидиспутную меру",
+    "PRICING_GRID_VARIANT_B (Lifetime-first, зеркало проверенной модели EXM; рекомендуется как стартовая): free tier $0; PLUS lifetime $29.99 (1 ПК) / $54.99 (2) / $74.99 (3) / $99.99 (4); PREMIUM lifetime $49.99 / $89.99 / $129.99 / $169.99 — цифры взяты 1:1 из работающего EXM (532 отзыва, 4.6/5); сверху опциональный recurring слой $4.99/мес «live-тюнинг + профили под новые патчи игр + приоритет в Discord», который и есть источник MRR. Обоснование: максимальная касса с холодного short-form клика без обязательства повторять продажу; Paddle при чеке $29.99+ стоит 6.7% и снимает всю налоговую отчётность с одного оператора",
+    "PRICING_GRID_VARIANT_C (Gaming-native weekly, самый рискованный): weekly $4.99 T1 / monthly $12.99 / annual $59.99 / lifetime $99. Trial 2 дня за $1. Обоснование: Gaming выбирает weekly в 82% случаев (RevenueCat 2026). ПРОТИВОПОКАЗАНИЕ: churn первого продления weekly 42–65%, Y1 retention weekly 3.4%, фиксированная комиссия 20p–50¢ на чеке $4.99 = 4–10% только фикса, и частые мелкие списания на картах подростков — прямой путь к превышению VAMP count=5. Использовать только как A/B на одном гео-сегменте, не как основную сетку",
+    "GEO_TIERS: T1=1.00, T2=0.80, T3=0.60, T4=0.40 от T1-цены. Классификатор по World Bank NY.GNP.PCAP.PP.CD ratio к USA: ≥0.65→T1; 0.45–0.65→T2; 0.25–0.45→T3; <0.25→T4. Готовое распределение: T1 = US CA GB AU NZ DE NL SE NO DK CH IE AT FI BE FR SG JP KR IL AE SA IT ES; T2 = PL CZ RO HU SK SI EE LV LT HR BG PT GR TR TW HK CL UY; T3 = BR MX AR CO PE KZ MY TH RS GE AM UZ; T4 = IN ID PH VN PK BD EG NG KE MA LK NP UA ZA. HARD FLOOR: не опускать ниже 0.40 от T1 (наблюдаемая рыночная норма IN/SEA 38–46% от NA по RevenueCat 2026). Таблицу хранить статическим JSON, обновлять раз в год из api.worldbank.org/v2/country/all/indicator/NY.GNP.PCAP.PP.CD?mrnev=1",
+    "GEO_IMPLEMENTATION: гео-тиры НЕ реализуются через Stripe currency_options (там ключ — валюта, не страна). Нужны 4 отдельных набора Price-объектов + серверный выбор тира. Определять тир по стране платёжного метода/BIN на этапе подтверждения платежа, а не только по IP (иначе T4 уйдёт всем через VPN). Adaptive Pricing включить поверх — он бесплатен для оператора (покупатель платит 2–4% конверсии) и покрывает 150+ стран. ОГРАНИЧЕНИЕ: для cross-border ПОДПИСОК Adaptive Pricing поддерживает только card/Link/Apple Pay/Google Pay — локальные методы (Pix, UPI, BLIK) работают только для one-time, значит в T3/T4 продвигать lifetime, а не подписку. RU и BY отсутствуют в списке поддерживаемых стран Adaptive Pricing",
+    "UNIT_ECON_CONSTANTS (все в конфиг, не хардкодить): GEO_BLEND_MULTIPLIER=0.79 (при миксе трафика 45/20/20/15 по T1/T2/T3/T4); FEE_RATE=0.078 для Stripe при международном трафике с конвертацией (+0.007 Stripe Billing) или 0.10 для Paddle на чеке $9.99 / 0.058 на чеке $59.99; REFUND_RATE=0.05 для подписок и 0.06 для lifetime (НЕТ ДАННЫХ по нише — оценка, вынести в конфиг); CHURN_SCENARIOS=[0.20, 0.30, 0.40] месячных для monthly-планов; FIRST_RENEWAL_CHURN=[0.39, 0.58] для monthly, [0.42, 0.65] для weekly, [0.60, 0.77] для annual (RevenueCat 2026-09-01)",
+    "UNIT_ECON_FORMULAS: net_ARPU = price_T1 × GEO_BLEND × (1 − FEE_RATE − REFUND_RATE); active_subs_needed = target_net_MRR / net_ARPU; new_subs_per_month_to_hold = active_subs_needed × monthly_churn; LTV = net_ARPU / monthly_churn; avg_lifetime_months = 1 / monthly_churn. Контрольные значения при T1=$9.99 (net ARPU $6.79): $1k/$3k/$10k net = 147/442/1473 активных подписок; на удержание при churn 30% = 44/133/442 новых подписок в месяц; LTV $22.62",
+    "DISPUTE_HARD_LIMITS (блокирующие константы, приоритет выше маркетинга): MAX_DISPUTES_PER_MONTH=4 (следствие Visa VAMP non-compliant count=5 при объёме <1000 транзакций/мес), ALERT_AT=2. MAX_DISPUTE_RATIO=0.005 (VAMP non-compliant) с внутренним алертом на 0.0035. Индустриальный «excessive» по Stripe = 0.0075. Mastercard ECM срабатывает при 100+ диспутов и 1.5%, поэтому при малом объёме связывает именно Visa count. Обязательная механика: возврат по первому запросу без вопросов (дешевле £20 dispute fee и не растит счётчик), отмена в один клик внутри утилиты, напоминание за 7 дней до годового и за 2–3 дня до месячного списания, чекбокс согласия с billing terms перед оплатой, узнаваемый statement descriptor. ВАЖНО: refund не уменьшает счётчик диспутов у card networks — возвращать надо ДО диспута",
+    "DUNNING_REQUIRED: involuntary churn = ~38% всего оттока в Digital Media & Entertainment (Recurly, данные July 2026: voluntary 2.55% / involuntary 1.59%), у аудитории 13–24 с prepaid/виртуальными картами будет выше. В спеку: smart retry 3–4 попытки по расписанию, grace period 3–7 дней с сохранением доступа, уведомление об отказе платежа по email И в Discord-DM со ссылкой на обновление карты, обязательные методы — карта + PayPal + Apple Pay + Google Pay",
+    "RETENTION_MECHANICS (сфокусировать в окне до первого продления, там 39–58% оттока у monthly): обязательный onboarding в первые 14 дней для monthly (принудительный бенчмарк FPS до/после внутри утилиты + автосохранение скриншота с результатом в Discord); кнопка «пауза подписки» 1–3 месяца в cancel-flow (Recurly 2026: топ-мерчанты дали +337% использования паузы для снижения отмен); reactivation-поток на 30-й и 90-й день после отмены (1 из 4 новых регистраций — возвращающийся подписчик). Lifecycle-сообщения в 90-дневном окне дают «3x higher» retention по RevenueCat",
+    "REFERRAL_PROGRAM: для участников сообщества — неденежная схема (нулевой кэш-аут, работает на статус у 13–24): 1 бесплатный месяц за каждого оплатившего реферала + эксклюзивная Discord-роль/цвет ника на 3 и 10 рефералов. Для внешних контент-мейкеров — 20–30% с первого платежа (дефолт Whop = 30%, настраивается, hold 30 дней, есть выбор recurring vs first-payment; member-affiliate ставка настраивается отдельно от global). НЕ ставить recurring 30% на план $9.99 — это $3/мес при net ARPU $6.79. Бенчмарков доли новых клиентов из рефералов для этой нише НЕТ",
+    "PROCESSOR_DECISION_RULE: если минимальный чек в сетке ≥ $10 → Paddle (5%+50¢, merchant of record, снимает VAT/sales tax с оператора из СНГ, fraud/chargeback protection включены). Если минимальный чек < $10 → Paddle недоступен (требует custom pricing для товаров <$10) → Stripe (но тогда налоги на операторе) или Whop (take rate НЕ ПОДТВЕРЖДЁН — обязательно уточнить из первоисточника до выбора, это несущая константа). Gumroad не использовать при low-ticket (15.0% на чеке $9.99). Выбрать ОДИН merchant of record, не смешивать",
+    "PAYWALL_STRUCTURE: два плана в основном paywall (самый частый формат — 41–60% приложений по RevenueCat 2026), lifetime как третий точечный оффер. Free tier обязателен — он же доказательство эффекта и материал для коротких видео («бесплатная версия +20 FPS, платная +60»), но платный оффер должен быть hard-gated по конкретным измеримым твикам. Учитывать: hard paywall конвертит в ~5× лучше freemium по D35 (10.7% против 2.1%), но один зафиксированный кейс перехода на freemium дал +75% LTV при −50% конверсии; через год retention у обеих моделей почти одинаков",
+    "SEAT_UPSELL (бесплатный апселл внутри софта, проверенная шкала EXM): цена за 2 устройства = +83% к цене за 1, за 3 = +150%, за 4 = +233% (из $29.99 / $54.99 / $74.99 / $99.99). Реализовать как device-binding в лицензии с апгрейд-путём (в pricingData EXM есть поля device_upgrade_url и device_upgrade_tier — т.е. апгрейд тира устройств у них отдельный оплачиваемый переход)",
+    "DO_NOT_MODEL (нет данных, не закладывать в базовый план выручки): attach rate физических апселлов (коврики, ноутбуки, мини-ПК) — для сценарного моделирования low-confidence диапазон 1–4%/мес на аксессуар $25–45 и 0.1–0.5% на устройства; эффект скидок на churn (коэффициент не подставлять, диапазон удержания скидочной когорты 0.8–1.0× от полной); доля lifetime в структуре продаж — из данных о выборе плана (42% monthly / 34% yearly / 16% weekly) остаётся ~8% на lifetime и прочее, low confidence; доля выручки от lifetime при цене в 3–5× годовой — оценочно 20–35%, low confidence"
+  ],
+  "open_questions": [
+    "ЧЕСТНОЕ ОГРАНИЧЕНИЕ РАБОТЫ: требование о 10–16 поисковых запросах выполнить не удалось — бюджет WebSearch в этой сессии был исчерпан (200/200) ещё до моего первого вызова, все 4 первых запроса вернули отказ. Вместо поиска я сделал ~35 прямых WebFetch/curl-запросов по известным первоисточникам (Stripe Docs, Paddle, Gumroad, RevenueCat, Recurly, ChartMogul, Steamworks, Trustpilot, World Bank API, docs.whop.com) плюс прямой парсинг exmtweaks.com. Следствие: карта конкурентов в нише неполна — я подтвердил цены только одного (EXM). Если нужен полноценный конкурентный срез цен, задачу надо перезапустить с поднятым CLAUDE_CODE_MAX_WEB_SEARCHES_PER_SESSION.",
+    "Take rate Whop не подтверждён из первоисточника (whop.com/pricing отдаёт SPA, help.whop.com/en/articles/whop-fees и docs.whop.com/sell/fees — 404). Это несущая константа юнит-экономики при чеке $9.99. Нужно уточнить до выбора процессора.",
+    "Цены прямых конкурентов кроме EXM не собраны. Домены, которые я проверил и которые оказались нерелевантны/недоступны: exitlag.com (403), noping.com (403), wtfast.com/en/plans (404), bitsum.com/order (404), haste.gg (теперь крипто-игра, не сетевой оптимизатор), outfox.com (редиректит на merkle.se). Нужен срез по 5–10 реальным конкурентам: их сетка, наличие подписки vs lifetime, гео-цены, наличие trial.",
+    "Доля lifetime-покупок в общем объёме продаж там, где lifetime предлагается наряду с подпиской — прямых данных нет. RevenueCat даёт только распространённость оффера (18% gaming-paywall) и распределение выбора подписочных планов (42/34/16), откуда lifetime+прочее ≈ 8% юнитов. Нужна реальная цифра, чтобы правильно взвесить гибридную сетку.",
+    "Эффект скидок на churn для потребительских подписок — все известные мне URL с данными ProfitWell/Paddle на эту тему сейчас 404/410. Нужен живой источник или собственный A/B.",
+    "Refund rate для этой конкретной нише (PC-твики, аудитория 13–24) — нет данных. Я использую оценку 5–6%; реальная цифра критична, т.к. при нарушении античит-совместимости возвраты могут быть в разы выше. Отзывы на Trustpilot упоминают конфликты с античитами.",
+    "Ценовая чувствительность и предпочтения Gen Z по monthly vs annual — полные данные Recurly закрыты формой, доступен только один показатель (65% Gen Z охотнее подписываются при наличие free trial против 82% у Boomers). Стоит скачать полный отчёт.",
+    "Доля целевой аудитории 13–24, у которой физически есть карта/платёжный метод — это определяет, нужны ли gift-card/prepaid-каналы и какой процент трафика вообще способен оплатить. Данных нет, а параметр напрямую делит воронку.",
+    "Правила Discord по продаже внешнего ПО и по возрасту участников (13+) — support.discord.com и discord.com/creators отдали 403/404. Нужно проверить, т.к. авто-выдача роли после оплаты — несущая часть механики.",
+    "Практический трафик-мост: сколько показов коротких видео нужно на одну оплату. Мой расчёт даёт требуемое число заказов в месяц (например, 177 подписок + 45 lifetime-продаж для $3000 net), но конверсия view→click→purchase — это измерение auto-upload, и её надо получить оттуда, а не оценивать здесь."
+  ],
+  "risks": [
+    "ГЛАВНЫЙ РИСК МОДЕЛИ: порог Visa VAMP по количеству — 5 диспутов в месяц при VAMP ratio 0.5%. При объёме 150–600 транзакций/мес практический потолок = 4 диспута в месяц. Аудитория 13–24 платит картами родителей — это классический источник friendly fraud и chargeback'ов «я этого не покупал». Один плохой месяц с 6–8 диспутами ставит под угрозу эквайринг. Это ограничение жёстче любого маркетингового решения и должно быть в коде как блокирующая константа.",
+    "Weekly-планы, которые статистически предпочитает геймерская аудитория (82%), одновременно и максимально дисперсны по диспутам (частые мелкие списания на детской карте), и дают худшее удержание (Y1 retention 3.4%), и максимально страдают от фиксированной части комиссии (20p–50¢ на чеке $4.99). Соблазн скопировать «82% weekly» может убить эквайринг.",
+    "Monthly-only модель — беговая дорожка: для $10k net/мес нужно 368–589 новых подписок КАЖДЫЙ месяц только на удержание уровня при churn 25–40%. Если сеть каналов просядет (баны, изменение алгоритма, выгорание креативов), MRR начнёт падать на 25–40% в месяц без возможности быстро восстановиться. Lifetime-выручка от падения трафика не проседает так же резко (уже полученные деньги не отзываются).",
+    "Гео-тиры без привязки к стране платёжного метода будут арбитражированы через VPN — целевая аудитория технически подкована и находится в Discord, где такие обходы распространяются мгновенно. Итог: значительная часть T1-трафика оплатит по T4 (0.40×), что обрушит blended-множитель с 0.79 до 0.45–0.55 и сломает всю юнит-экономику.",
+    "Adaptive Pricing не поддерживает локальные методы оплаты для cross-border подписок (только card/Link/Apple Pay/Google Pay). В T3/T4 гео, где карта менее распространена, подписка будет конвертить существенно хуже ожидаемого — а именно оттуда придёт основная часть дешёвого short-form трафика.",
+    "Paddle не принимает товары дешевле $10 без индивидуального согласования — если сетка стартует с $5–9.99, единственный MoR-вариант выпадает, и вся налоговая нагрузка (VAT/sales tax по десяткам юрисдикций) ложится на одного оператора из СНГ. Это не риск цены, а риск легальной неработоспособности схемы.",
+    "Копирование lifetime-модели EXM означает отсутствие MRR. При lifetime-only выручка полностью равна потоку новых продаж: любой провал трафика = немедленный провал выручки, оценочная стоимость бизнеса ниже, кассовый поток нестабилен. При этом подписка в этой нише плохо оправдана ценностно: твики применяются один раз и продолжают работать после отмены — пользователь резонно спросит, за что платит второй месяц. Это ядровая проблема упаковки, а не вопрос цены.",
+    "Отзывы на Trustpilot у EXM упоминают конфликты с античитами. Для игр из списка (Valorant/Vanguard, Fortnite/EAC, CS2/VAC, Rust/EAC) любой твик, затрагивающий ядро или память, может привести к бану аккаунта пользователя. Это порождает не просто возвраты, а требования компенсации стоимости аккаунта, публичные скандалы в Discord и репутационный отток — плюс прямой рост диспутов.",
+    "LTV low-priced подписчика по данным рынка $7–15 (RLTV per payer monthly low-priced $6.67, Gaming Y1 revenue per payer $11.22). Любая платная закупка трафика при таком LTV почти наверняка убыточна. Модель жизнеспособна только на бесплатном органическом short-form трафике — и это делает её полностью зависимой от политики площадок по мульти-аккаунтингу.",
+    "Расширение в продажу игровых аккаунтов (упомянуто в контексте) несовместимо с сеткой подписок на том же юрлице и том же платёжном аккаунте: это нарушает правила Epic/Riot/Valve, а по политикам платёжных провайдеров ведёт к повышенному риску блокировки. Смешивание в одном Stripe/Paddle-аккаунте ставит под угрозу легальную часть бизнеса — эти потоки нельзя объединять.",
+    "Цифры Recurly по churn помечены на странице как annual, но при значении 3.60% это даёт нереалистичное 99%+ годовое удержание; исторически Recurly публикует эти бенчмарки как месячные. Если взять их как годовые, модель удержания будет завышена в разы. В расчётах я трактую их как месячные — но это неустранённая неоднозначность источника."
+  ]
+}

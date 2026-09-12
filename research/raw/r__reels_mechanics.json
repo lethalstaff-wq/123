@@ -1,0 +1,314 @@
+{
+  "dimension": "reels_mechanics",
+  "summary": "Instagram Reels 2026: \"sends per reach\" is confirmed by multiple independent 2026 sources as the top-weighted distribution signal (Mosseri's stated trio = watch time, sends per reach, likes per reach) — meaning the creative must be built to be DM-forwarded to a friend, not just watched. Watermarked/reposted content is explicitly deprioritized and Instagram now actively demotes aggregator/repost accounts (replacing reposts with the original creator's version), which is a direct structural threat to a 20-channel faceless network that recycles the same TikTok-sourced clips. Hard data head-to-head (same-methodology studies): at 1-5K followers IG Reels average 580 views vs TikTok 350 (Socialinsider, 35M IG posts / 2M TT videos, 2025 data) — so IG's cold-start floor is actually HIGHER than TikTok's for brand-new accounts — but Metricool's 2026 cross-platform study shows TikTok videos get ~29% more views and 16.47% of TikTok accounts moved up a size tier vs 8.93% on Instagram (1.84x growth velocity). Trend is converging: IG views +27% YoY while TikTok views -31% YoY. Verdict for this product: Instagram is a viable secondary cold-traffic channel, not the primary; it is the BEST channel for the DM sales funnel because the Private Replies API allows 750 comment-to-DM calls/hour per account — a fully automatable \"comment FPS for the link\" funnel with no manual work. Critical technical trap for automation: the Instagram Platform non-messaging rate limit is literally \"4800 x Number of Impressions per 24h\", so a zero-impression newreg account has effectively ZERO API quota and cannot be auto-posted via the official API until it has organic impressions — newregs must be warmed manually/mobile-first before the script can drive them. Also the official Content Publishing API cannot attach Instagram's licensed/trending music library, so API-published Reels are forced to original audio; trending-audio Reels require notification-based scheduling with a manual tap. Business/Creator account is mandatory for any API posting, and account type itself gives no ranking advantage.",
+  "key_numbers": [
+    "IG Reels avg views by follower tier (Socialinsider, Jan-Dec 2025 data, pub 2026-02-20): 1-5K=580; 5-10K=1,000; 10-50K=2,460; 50-100K=6,095; 100K-1M=16,035",
+    "TikTok avg views by follower tier (Socialinsider, pub 2026-04-22, same methodology): 1-5K=350; 5-10K=945; 10-50K=3,240; 50-100K=9,900; 100K-1M=34,900",
+    "Cold-start ratio IG:TikTok at 1-5K followers = 580:350 = 1.66x in Instagram's favor; inverts above ~10K followers (2,460 vs 3,240 = 0.76x)",
+    "IG avg engagement rate 0.48% overall, -24% YoY (Socialinsider 2026); by format: carousels 0.55%, Reels 0.52%, static 0.37%",
+    "TikTok engagement rate by views 4.20% (2025), 3.85% Q2 2026; Metricool cross-platform ER: IG 3.54% vs TikTok 3.67%",
+    "Tier-up rate over 12 months: TikTok 16.47% of accounts vs Instagram 8.93% (Metricool 2026 study); TikTok 2K-10K tier = 27.91%",
+    "TikTok videos get ~29% more views and ~14% higher interactions than IG Reels (Metricool 2026, 24.4M IG posts / 2.3M TT videos)",
+    "YoY direction: IG views +27%, IG interactions +19%; TikTok views -31% (TT content volume +80%) — Metricool 2026",
+    "IG Reel view time more than doubled YoY; Reel engagement +24.76% YoY; Reels posting volume +35% (Metricool Instagram Study 2026, 24,364,803 posts / 375,118 accounts, pub 2026-06-16)",
+    "IG Reels avg comments by tier: 1-5K=3; 5-10K=6; 10-50K=12; 50-100K=22; 100K-1M=60. Avg saves: 1/2/7/22/96",
+    "Brands averaged 8 Reels per month on Instagram in 2025 (+33% YoY) — Socialinsider",
+    "API publishing cap: 100 API-published posts per rolling 24h per Instagram account (Meta Content Publishing docs)",
+    "IG Platform non-messaging rate limit: calls within 24h = 4800 x Number of Impressions (Meta Graph API rate limiting docs)",
+    "Private Replies API (comment-to-DM): 750 calls/hour per IG professional account for comments on posts and Reels; 100 calls/sec for IG Live comments",
+    "Send API: 100 calls/sec/account for text/links/reactions/stickers; 10 calls/sec/account for audio or video messages. Conversations API: 2 calls/sec/account",
+    "DM message payload limit: UTF-8, 1000 bytes or less. Group messaging not supported. Requests-folder threads inactive 30+ days are not returned by API",
+    "Reels API specs: 3s min / 15 min max duration; MOV or MP4, moov atom at front, no edit lists; H264 or HEVC progressive scan, closed GOP, 4:2:0; VBR max 25 Mbps; max 1920 horizontal px; 23-60 FPS; 300 MB max file; audio AAC 48 kHz max, 1-2 ch, 128 kbps; aspect 0.01:1-10:1, 9:16 recommended",
+    "Reels length performance bands: <90s = highest chance of Reels tab + non-follower reach; 90s-3min = loyal-follower only, reduced reach; >3min = not pushed to non-followers (Buffer 2025-01-21, Later 2026-04-21)",
+    "Mosseri-cited optimal band: 30-90 seconds (Buffer, updated 2026-03-24). ~half of videos watched without sound",
+    "Hashtags: 30 max allowed; Instagram official @creators recommendation = 3-5 relevant hashtags; Later 2026 = 3-5 beats 20-30 generic",
+    "Rival IQ 2025-02-25 (150 companies/industry): IG engagement -16% YoY, TikTok -34% YoY"
+  ],
+  "findings": [
+    {
+      "claim": "\"Sends per reach\" is confirmed as a top-tier Reels ranking signal; Mosseri's stated trio is watch time, sends per reach, likes per reach.",
+      "evidence": "Hootsuite: \"According to Adam Mosseri (Head of Instagram), the top signals are: Watch time — how long users view content; Sends per reach — shares to friends signal authentic connection; Likes per reach — engagement velocity matters.\" Sprout Social independently: sends per reach is \"arguably the strongest signal of value.\" Buffer: DM sends are \"the most heavily weighted signal for distribution\" on Reels.",
+      "source": "blog.hootsuite.com/instagram-algorithm/ (2026-07-15); sproutsocial.com/insights/instagram-algorithm/ (2026-01-28); buffer.com/resources/instagram-algorithm/ (updated 2026-03-24)",
+      "source_date": "2026-01-28 / 2026-03-24 / 2026-07-15",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Every Reel must contain an explicit share trigger. For this product: \"send this to the friend who says your PC is trash\", \"tag the mate stuck at 60 FPS\". Script rule: every generated caption template MUST include one send-CTA token. Track sends/reach as the primary KPI per video, not views."
+    },
+    {
+      "claim": "Instagram deprioritizes watermarked and visibly recycled cross-platform content, and now actively demotes aggregator/repost accounts.",
+      "evidence": "Later: \"Videos with borders around the edges\" and \"Content visibly recycled from another app, especially with watermarks\" are deprioritized. Sprout Social: audio+visual matching \"penalizes watermarked content\"; Instagram \"actively penalizes 'aggregator' accounts reposting without significant value, often replacing reposted content with the original creator's version.\" Hootsuite: \"Original content rewarded — algorithm penalizes watermarked/cross-posted content.\"",
+      "source": "later.com/blog/instagram-reels/ (2026-04-21); sproutsocial.com/insights/instagram-algorithm/ (2026-01-28); blog.hootsuite.com/instagram-algorithm/ (2026-07-15)",
+      "source_date": "2026-01-28 to 2026-07-21",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Script MUST render a separate IG master from source assets — never re-upload a TikTok-exported file. Hard constraints: no TikTok watermark, no letterbox borders, no burned-in @handle of another platform, full-bleed 1080x1920. Also vary framing/opening frame per account so 20 channels are not byte-identical (identical duplicates across a network is the exact aggregator pattern being demoted)."
+    },
+    {
+      "claim": "Instagram's official non-messaging API rate limit is impression-derived, so a zero-impression new account has effectively no API quota.",
+      "evidence": "Meta Graph API docs: \"Calls within 24 hours = 4800 * Number of Impressions\" where impressions = how many times content from the professional account enters someone's screen within 24 hours.",
+      "source": "developers.facebook.com/docs/graph-api/overview/rate-limiting",
+      "source_date": "live doc, fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "CRITICAL SCRIPT CONSTANT. Newreg IG accounts cannot be driven by the official Content Publishing API from day zero. Warm-up phase required: post 3-7 Reels via mobile/manual or a mobile-emulating path until impressions accumulate, then hand the account to the API scheduler. Script must read the account's impression count and compute available quota before scheduling; treat quota<N as \"account not yet API-eligible\"."
+    },
+    {
+      "claim": "Official API publishing cap is 100 posts per rolling 24h per account.",
+      "evidence": "Meta: \"Instagram accounts are limited to 100 API-published posts within a 24-hour moving period.\"",
+      "source": "developers.facebook.com/docs/instagram-platform/content-publishing",
+      "source_date": "live doc, fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Not the binding constraint — the impression-based quota and spam-detection risk are. Set script cap far lower: 1-3 Reels/day/account is the realistic safe band for a 20-account network."
+    },
+    {
+      "claim": "The official Content Publishing API cannot attach Instagram's licensed/trending music library; API-published Reels are forced to original/embedded audio.",
+      "evidence": "Later: \"Original audio: Required for auto-publishing through Later on professional accounts. Trending audio: Must be added manually at post time when using notification-based scheduling.\" Meta's content-publishing docs list no music-library parameter and note filters are unsupported.",
+      "source": "later.com/blog/instagram-reels/ (2026-04-21); developers.facebook.com/docs/instagram-platform/content-publishing",
+      "source_date": "2026-04-21",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Architecture decision: fully-automated path = embed audio into the MP4 (license-safe music or original VO/game SFX) and accept no trending-audio boost. If trending audio is wanted, the pipeline needs a manual-tap step — incompatible with \"no manual work\". Recommendation: go original-audio-only on IG, use burned-in captions + strong visual hook to compensate."
+    },
+    {
+      "claim": "Comment-to-DM automation is officially supported at 750 calls/hour per account via the Private Replies API — the highest-leverage automated sales channel on Instagram.",
+      "evidence": "Meta: \"Your app can make 750 calls per hour per Instagram professional account for private replies to comments on Instagram posts and reels\"; \"100 calls per second\" for private replies to IG Live comments. Send API: \"100 calls per second per Instagram professional account for messages that contain text, links, reactions, and stickers.\"",
+      "source": "developers.facebook.com/docs/graph-api/overview/rate-limiting",
+      "source_date": "live doc, fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Build the funnel as: Reel CTA \"comment FPS\" -> Private Reply API auto-DM with checkout link -> Discord invite after payment. 750/hr/account x 20 accounts = 15,000 auto-DMs/hr theoretical ceiling; set script budget to ~100-200/hr/account to stay far from spam heuristics. This is the single feature that makes IG better than TikTok for direct conversion."
+    },
+    {
+      "claim": "Instagram DM automation is bounded by a 24-hour messaging window and a 1000-byte message limit; group DMs are unsupported.",
+      "evidence": "Meta: \"Your app has 24 hours to respond to any message sent from an Instagram user to your app user.\" Human-agent tag extends it. \"Messages must be UTF-8 and be a 1000 bytes or less.\" \"Group messaging is not supported. An Instagram professional account can only converse with one customer per conversation.\" Permissions required: instagram_business_basic, instagram_business_manage_messages.",
+      "source": "developers.facebook.com/docs/instagram-platform/instagram-api-with-instagram-login/messaging-api",
+      "source_date": "live doc, fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Script constants: DM_MAX_BYTES=1000 (UTF-8, so emoji cost 4 bytes each — budget for it); REPLY_WINDOW_H=24; no broadcast/group blasts. Keep the auto-DM to one short line + one link. Pre-validate every DM template's byte length at build time."
+    },
+    {
+      "claim": "A Business or Creator (professional) account is mandatory for any API publishing or DM automation, but account type gives zero ranking advantage.",
+      "evidence": "Meta: \"Requires an Instagram Business or Creator Account\" for messaging and content management APIs. Instagram API with Instagram Login works without a Facebook Page; Instagram API with Facebook Login requires a linked Facebook Page but adds hashtag search. Sprout Social: \"Instagram confirms account type receives no preferential algorithmic treatment — performance depends entirely on content quality and engagement.\"",
+      "source": "developers.facebook.com/docs/instagram-platform; sproutsocial.com/insights/instagram-algorithm/ (2026-01-28)",
+      "source_date": "2026-01-28 / live doc",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Convert all 20 accounts to professional (Creator or Business) — required for automation, costs nothing in reach. Use Instagram API with Instagram Login to avoid needing 20 Facebook Pages. The \"business accounts get less reach\" claim is a myth."
+    },
+    {
+      "claim": "MYTH DEBUNKED: switching to a professional/business account does not suppress reach.",
+      "evidence": "Sprout Social (2026-01-28) explicitly: account type \"receives no preferential algorithmic treatment.\" No 2025-2026 source in this research supports a personal-account reach advantage.",
+      "source": "sproutsocial.com/insights/instagram-algorithm/",
+      "source_date": "2026-01-28",
+      "kind": "myth_debunk",
+      "confidence": "medium",
+      "actionable": "Remove any hesitation about professional conversion from the playbook. Script can assume all managed accounts are professional."
+    },
+    {
+      "claim": "For brand-new small accounts, Instagram Reels deliver MORE average views than TikTok — the opposite of common belief.",
+      "evidence": "Socialinsider same-methodology studies: IG Reels avg views at 1-5K followers = 580 (35M posts, 447,613 accounts, Jan-Dec 2025, pub 2026-02-20); TikTok avg views at 1-5K = 350 (2M videos, 214,507 profiles, pub 2026-04-22). TikTok's smallest accounts declined 23% YoY in views. The advantage inverts at 10-50K (IG 2,460 vs TT 3,240) and widens sharply at 100K-1M (IG 16,035 vs TT 34,900).",
+      "source": "socialinsider.io/social-media-benchmarks/instagram; socialinsider.io/blog/tiktok-benchmarks/",
+      "source_date": "2026-02-20 / 2026-04-22",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Do NOT deprioritize Instagram at network launch. For the first 60-90 days (all accounts under 5K) IG's expected per-video yield is ~1.7x TikTok's. Script should weight posting cadence roughly equally across TT/IG in phase 1, then shift budget to TikTok as accounts cross ~10K. Caveat: these are brand/business profile samples, not faceless entertainment pages — treat as directional."
+    },
+    {
+      "claim": "TikTok still wins on growth velocity and ceiling: 16.47% of TikTok accounts moved up a follower tier in 12 months vs 8.93% on Instagram.",
+      "evidence": "Metricool 2026 study (IG: 24.4M posts / 375,118 accounts; TikTok: 2.3M posts / 92,000+ accounts, Jan-Feb 2025 to 2026): \"16.47% of TikTok accounts moved up a size tier over the year, compared with 8.93% on Instagram\"; TikTok 2K-10K tier grew at 27.91%. TikTok videos get ~29% more views and ~14% higher interactions. But IG views +27% YoY while TikTok views -31% YoY (TT content volume +80%).",
+      "source": "metricool.com/instagram-vs-tiktok/",
+      "source_date": "2026 study (Instagram Study pub 2026-06-16)",
+      "confidence": "high",
+      "kind": "industry_data",
+      "actionable": "Channel weighting constant: TIKTOK_GROWTH_MULTIPLIER = 1.84 (16.47/8.93). But the gap is closing — IG is the improving platform and TikTok the declining one on a per-video basis. Re-evaluate weighting quarterly from your own data, not from these studies."
+    },
+    {
+      "claim": "Instagram engagement is falling platform-wide: overall ER 0.48%, down 24% YoY.",
+      "evidence": "Socialinsider: \"Average Instagram engagement rate: 0.48% (down 24% year-over-year)\"; Reels 0.52%, carousels 0.55%, static 0.37%; Q2 2026 ER 0.48%. Rival IQ (2025-02-25): IG engagement -16% YoY, TikTok -34% YoY. Reels \"show stable performance but no longer guarantee incremental gains.\"",
+      "source": "socialinsider.io/social-media-benchmarks/instagram (2026-02-20); rivaliq.com/blog/social-media-industry-benchmark-report/ (2025-02-25)",
+      "source_date": "2026-02-20",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Model conservatively: assume 0.4-0.5% ER on IG. Volume, not per-post quality-luck, is the lever — hence the 20-account network logic. Do not build revenue projections on 2023-era Reels reach numbers."
+    },
+    {
+      "claim": "Reels over 3 minutes are not recommended to non-followers; the cold-reach band is under 90 seconds.",
+      "evidence": "Later: \"Reels over 3 minutes are not recommended to new audiences by the algorithm — meaning shorter Reels typically get better distribution to people who don't already follow you.\" Buffer: \"Under 90 seconds: Highest chance of landing on the reels tab and reaching new audiences\"; 90s-3min = loyal followers with reduced reach; >3min needs self-promotion. Mosseri via Buffer: recommended 30-90s; \"no one 'perfect' length — the goal is to keep people watching.\" API hard max = 15 min; in-app 20 min.",
+      "source": "later.com/blog/instagram-reels/ (2026-04-21); buffer.com/resources/instagram-reels-length/ (2025-01-21); buffer.com/resources/instagram-algorithm/ (2026-03-24)",
+      "source_date": "2025-01-21 to 2026-04-21",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Script constants: IG_REEL_LEN_MIN=7s, IG_REEL_TARGET=15-45s for hook-driven FPS proof clips, IG_REEL_HARD_MAX=90s for anything intended for cold reach. Never publish >180s to Instagram. Note Later also reports Reels up to 3 min are now Explore-eligible in 2026 — so 90-180s is acceptable for tutorial/config content aimed at existing followers."
+    },
+    {
+      "claim": "Roughly half of Instagram videos are watched without sound, and retention past the 3-second mark is a ranking input.",
+      "evidence": "Buffer citing Mosseri: \"roughly half of videos are watched without sound, requiring strong visual hooks.\" Sprout Social lists \"retention/watch time (viewing past 3-second mark)\" as a Reels signal. Hootsuite: \"strong hook in first 3 seconds essential.\"",
+      "source": "buffer.com/resources/instagram-algorithm/ (2026-03-24); sproutsocial.com/insights/instagram-algorithm/ (2026-01-28); blog.hootsuite.com/instagram-algorithm/ (2026-07-15)",
+      "source_date": "2026-01-28 to 2026-07-15",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Mandatory in the render pipeline: burned-in captions on every IG Reel (also serves SEO — audio/on-screen text is indexed), and a numeric visual hook in frame 1-3 (e.g. FPS counter jumping 71 -> 164 with both numbers on screen). Sound-off comprehension must be 100%."
+    },
+    {
+      "claim": "Instagram search indexes username, display name, bio, captions, alt text, hashtags, and on-screen text plus audio in Reels.",
+      "evidence": "Later: \"Username and display name, Bio, Captions, Alt text, Hashtags, On-screen text and audio — indexed in Reels for search matching\"; \"Text in your captions, bio, and alt text all factor in.\" Adding subtitles \"provide[s] additional indexable text.\" Hootsuite: \"Keywords in captions/bios enhance indexing. Alt text recommended... social SEO ranks supreme.\"",
+      "source": "later.com/blog/instagram-seo/ (updated 2026-05-01); blog.hootsuite.com/instagram-algorithm/ (2026-07-15)",
+      "source_date": "2026-05-01 / 2026-07-15",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Script must populate a keyword schema per account: display-name field carries the searchable keyword (e.g. \"FPS Boost | Fortnite Optimization\"), not just a brand name. Caption template: game name + \"FPS boost\" + \"low end PC\" in the first 125 chars. Burn the same keywords into on-screen text. Set alt_text via API (field added 2025-03-24) with game + optimization keywords."
+    },
+    {
+      "claim": "Hashtags are a minor signal: 30 max allowed, Instagram officially recommends 3-5, and 2026 guidance says fewer relevant beats many generic.",
+      "evidence": "Buffer: \"Maximum hashtags allowed: 30 per post\"; Instagram's official @creators account recommends \"adding three to five relevant hashtags\"; \"hashtags on Instagram aren't a miracle pill.\" Later 2026: \"using 5 or 10 hashtags is better than zero\" but advises \"3-5 highly relevant hashtags rather than stacking 20-30 generic ones.\"",
+      "source": "buffer.com/resources/instagram-hashtags/ (2024-12-03); later.com/blog/instagram-algorithm/ (2026-04-21)",
+      "source_date": "2024-12-03 / 2026-04-21",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Constant: IG_HASHTAGS_PER_POST = 3-5, drawn from a per-game niche pool (#fortnitefps, #valorantsettings, #lowendpc). Do not copy the TikTok 15-hashtag pattern across. Rotate the pool per account to avoid 20 channels emitting identical tag sets."
+    },
+    {
+      "claim": "Trial Reels let a Reel be tested on non-followers first — a native A/B mechanism for a faceless network.",
+      "evidence": "Later: \"Trial Reels feature enables testing content with non-followers first. Instagram shows Trial Reels to non-followers initially, measuring engagement before distributing to existing followers.\"",
+      "source": "later.com/blog/instagram-algorithm/ (2026-04-21)",
+      "source_date": "2026-04-21",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Use Trial Reels as the creative-testing tier: publish new hook variants as trials on 2-3 sacrificial accounts, promote only winners to the full 20-channel rotation. No data found on whether Trial Reels are settable via the Content Publishing API — verify before designing the script around it."
+    },
+    {
+      "claim": "Meta's Spam policy explicitly prohibits high-frequency automated posting and account creation — the precise pattern of a 20-account-per-geo network.",
+      "evidence": "Meta Spam policy prohibits: \"Posting, sharing, engaging with content or creating accounts, Groups, Pages, Events or other assets, either manually or automatically, at very high frequencies.\" Also prohibits engagement bait: \"selling, buying, or exchanging for engagement, such as likes, shares, views, follows, clicks\" and \"Requiring or claiming that users are required to engage with content before they are able to view or interact with promised content.\" Cloaking prohibited: presenting \"different off-platform content... to our integrity systems versus what is shown to users.\"",
+      "source": "transparency.meta.com/policies/community-standards/spam/",
+      "source_date": "live policy, fetched 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Two direct compliance hits on common growth tactics: (1) \"comment FPS to get the link\" is arguably engagement-gating — reframe the CTA so the value is not gated behind engagement (offer the link openly in bio AND via DM, so commenting is optional not required). (2) Never buy views/followers — explicitly a policy violation, not a grey area. Script must pace posting to look human: randomized intervals, not cron-exact."
+    },
+    {
+      "claim": "Meta's Inauthentic Behavior policy targets networks of accounts using \"adversarial methods to evade detection or appear authentic\" — network-level enforcement removes whole clusters.",
+      "evidence": "Meta: prohibits \"The creation, use, or claimed use of Inauthentic Meta Assets (Accounts, Pages, Groups, etc.)\" to deceive about identity or origin; prohibits \"Coordinated Inauthentic Behavior\" involving false identities with \"adversarial methods to evade detection or appear authentic\"; prohibits creating fake accounts to \"Evade enforcement under the Community Standards.\" Enforcement \"removes the inauthentic assets involved in these deceptive networks.\"",
+      "source": "transparency.meta.com/policies/community-standards/inauthentic-behavior/",
+      "source_date": "live policy, fetched 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Risk is correlated, not independent: Meta bans clusters, so 20 linked accounts can die together. Mitigation within policy: each account must be a genuinely distinct brand (own name, own bio, own visual identity, own niche game) rather than 20 clones of one page — clone networks are what the policy describes. Do not share payment instruments, recovery emails, or device fingerprints across accounts. Assume a non-trivial annual probability of losing the whole IG cluster; never let Instagram be the only traffic source. No guidance on evading detection is given or implied here — the only durable path is genuine differentiation."
+    },
+    {
+      "claim": "Instagram-native monetization is irrelevant to this business model; the product monetizes off-platform via subscription.",
+      "evidence": "creators.instagram.com/earn-money lists: Subscriptions, Gifts, Badges, Bonuses (\"rewards for performance of reels, carousels, and single image posts\"), Partnership Ads, Creator Marketplace. The page does NOT state eligibility thresholds or country availability.",
+      "source": "creators.instagram.com/earn-money",
+      "source_date": "live page, fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "low",
+      "actionable": "Deprioritize entirely. No data found on UK availability, follower thresholds, or whether Reels Bonuses are open vs invite-only in 2026 — and an operator in the CIS running UK-targeted accounts would likely fail payout/residency checks anyway. Revenue = subscription only; IG is pure traffic."
+    },
+    {
+      "claim": "Instagram formats other than Reels out-perform Reels on views for larger accounts — carousels are the sleeper format.",
+      "evidence": "Socialinsider (pub 2026-02-20): at 100K-1M followers, carousels average 35,370 views vs Reels 16,035 and static 22,900. Carousel ER 0.55% > Reels 0.52%. Metricool 2026: \"Carousels generate 9x more saves than single image posts\"; carousel volume +24% YoY.",
+      "source": "socialinsider.io/social-media-benchmarks/instagram (2026-02-20); metricool.com/instagram-study/ (2026-06-16)",
+      "source_date": "2026-02-20 / 2026-06-16",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Add a carousel lane to the IG script (not TikTok): auto-generate 5-8 slide \"settings carousels\" (Valorant config, Fortnite launch options, Windows tweak checklist) from the same content DB as the Reels. High save rate = exactly the format for config/guide content, and saves feed the ranking model. Carousels are API-publishable (up to 10 items)."
+    },
+    {
+      "claim": "Instagram unified all formats under \"Views\" as the primary metric in 2025-2026, changing what the script should optimize and log.",
+      "evidence": "Sprout Social: \"Views as Primary Metric: Instagram unified measurement across all formats (Reels, Stories, Photos, Carousels) using Views as the primary currency.\"",
+      "source": "sproutsocial.com/insights/instagram-algorithm/",
+      "source_date": "2026-01-28",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Analytics schema: log views as the cross-format denominator, then compute sends/views, likes/views, saves/views, profile-visits/views, link-clicks/views. sends_per_view is the north-star metric for the IG lane. No source found defining the exact view-count threshold (e.g. 3s vs impression) — mark as unresolved."
+    },
+    {
+      "claim": "No reliable 2025-2026 data exists on the follower vs non-follower split of Instagram Reels reach.",
+      "evidence": "Buffer's reach article's only breakdowns are from a June 2022 study and a 2023 analysis of 876 businesses; it \"does not provide specific data on reach distribution between followers and non-followers.\" Socialinsider's 2026 benchmark explicitly lacks \"non-follower reach percentages\" and \"reach rate figures.\" Metricool's public page omits reach entirely.",
+      "source": "buffer.com/resources/instagram-reach/; socialinsider.io/blog/instagram-reels-benchmarks/ (2026-02-20); metricool.com/instagram-study/ (2026-06-16)",
+      "source_date": "2026",
+      "kind": "inference",
+      "confidence": "low",
+      "actionable": "NO DATA. Do not hard-code a non-follower share. Instead have the script read per-Reel Insights (follower vs non-follower breakdown is available in IG Insights) and learn the account's own ratio. For planning only, use a wide low-confidence band of 50-90% non-follower reach for sub-5K faceless pages, and replace it with measured data after ~30 posts."
+    },
+    {
+      "claim": "No data found on Instagram's per-device/per-login account limit or ManyChat's 2026 limits and pricing.",
+      "evidence": "help.instagram.com pages render client-side and returned no content via fetch (multiple attempts). manychat.com/pricing returned HTTP 403; manychat.com/blog/instagram-automation-rules/ and later.com/blog/instagram-dm-automation/ returned 404.",
+      "source": "help.instagram.com (unfetchable); manychat.com/pricing (403)",
+      "source_date": "2026-09-12",
+      "kind": "inference",
+      "confidence": "low",
+      "actionable": "NO DATA — verify manually before building. Two open items: (1) the in-app account-switcher limit (widely reported as 5, unverified here) determines how many accounts can be managed per mobile profile; (2) ManyChat's per-plan contact caps and price. Since the Private Replies API gives 750 calls/hr/account natively, consider skipping ManyChat and building the comment-to-DM flow directly on Meta's API — cheaper, no third-party contact caps, and one fewer vendor whose ToS can change."
+    },
+    {
+      "claim": "Instagram's own \"Your Algorithm\" user-controlled topic feature means content must match declared viewer interests to be recommended.",
+      "evidence": "Hootsuite: \"Your Algorithm feature — users control Reels topics; content must match chosen interests.\"",
+      "source": "blog.hootsuite.com/instagram-algorithm/",
+      "source_date": "2026-07-15",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Strong argument for one game per account rather than a generic \"PC optimization\" page: topical purity makes the account classifiable into a topic users can opt into (Fortnite, Valorant, CS2). Script: enforce single-game channel assignment across the 20-account network — e.g. 4 Fortnite, 4 Valorant, 3 CS2, 3 Rust, 2 DBD, 4 rotating (Apex/Warzone/Marvel Rivals/Tarkov)."
+    }
+  ],
+  "machine_spec_notes": [
+    "IG_PUBLISH_API_CAP_PER_24H = 100 (hard, per account, rolling window) — Meta Content Publishing docs",
+    "IG_API_QUOTA_FORMULA = 4800 * impressions_24h — MUST be evaluated per account before scheduling; if impressions_24h == 0 the account has no usable API quota. Add account state ACCOUNT_STATE_WARMUP vs ACCOUNT_STATE_API_READY",
+    "IG_SAFE_POSTS_PER_DAY_PER_ACCOUNT = 1..3 (policy-risk-derived, not API-derived); randomize post times, never cron-exact",
+    "IG_REEL_DURATION_MIN_S = 3 (API hard floor), IG_REEL_DURATION_MAX_S = 900 (API hard max, 15 min)",
+    "IG_REEL_TARGET_DURATION_S = 15..45; IG_REEL_COLD_REACH_MAX_S = 90; IG_REEL_NEVER_EXCEED_S = 180 (>180s not recommended to non-followers)",
+    "IG_REEL_CONTAINER = mp4|mov, moov atom at file front, no edit lists; VIDEO_CODEC = h264|hevc, progressive scan, closed GOP, 4:2:0 chroma; FPS_RANGE = 23..60; MAX_HORIZONTAL_PX = 1920; TARGET_RESOLUTION = 1080x1920; ASPECT = 9:16 (API accepts 0.01:1..10:1); VIDEO_BITRATE = VBR max 25 Mbps; MAX_FILE_SIZE_MB = 300",
+    "IG_AUDIO_CODEC = aac, SAMPLE_RATE_MAX_HZ = 48000, CHANNELS = 1|2, AUDIO_BITRATE_KBPS = 128",
+    "IG_AUDIO_SOURCE = embedded_original_only — the Content Publishing API cannot attach Instagram's licensed music library. Flag TRENDING_AUDIO_REQUIRES_MANUAL_TAP = true",
+    "IG_WATERMARK_POLICY: assets published to IG must be rendered from source, never a TikTok export. Reject any asset where watermark_detected == true or letterbox_bars_detected == true. Per-account render variation (crop/first-frame/text position) to avoid byte-identical duplicates across the network",
+    "IG_HASHTAGS_PER_POST = 3..5 (max allowed 30; Instagram official recommendation 3-5). Per-account hashtag pool, rotated, never shared verbatim across accounts",
+    "IG_CAPTION_KEYWORD_SLOT: first 125 chars must contain {game} + \"FPS\" + one of {\"boost\",\"optimization\",\"low end PC\",\"settings\"} — Instagram search indexes captions",
+    "IG_DISPLAY_NAME_TEMPLATE = \"{keyword} | {game} FPS\" — the name field is search-indexed and is an SEO slot, not a branding slot",
+    "IG_ALT_TEXT = required on carousel/image publishes (alt_text API field available since 2025-03-24); populate with game + optimization keywords",
+    "IG_BURNED_CAPTIONS = mandatory (≈50% of videos watched without sound; on-screen text is search-indexed)",
+    "IG_HOOK_WINDOW_MS = 3000 — retention past 3s is a ranking input; numeric FPS before/after must be legible in frame 1",
+    "IG_SEND_CTA_REQUIRED = true — every caption template must contain one DM-share prompt token; sends_per_reach is the top-weighted signal",
+    "IG_PRIMARY_KPI = sends_per_view; SECONDARY = likes_per_view, saves_per_view, avg_watch_time, link_clicks_per_view",
+    "DM_PRIVATE_REPLIES_LIMIT = 750 calls/hour/account (comments on posts and reels); DM_PRIVATE_REPLIES_LIVE = 100 calls/sec; SCRIPT_SAFE_DM_RATE = 100..200/hour/account",
+    "DM_SEND_API_TEXT_LIMIT = 100 calls/sec/account; DM_SEND_API_MEDIA_LIMIT = 10 calls/sec/account; CONVERSATIONS_API_LIMIT = 2 calls/sec/account",
+    "DM_MAX_BYTES = 1000 (UTF-8 — validate byte length, not char length; emoji = up to 4 bytes each); DM_REPLY_WINDOW_HOURS = 24; DM_GROUP_SUPPORTED = false; DM_REQUESTS_FOLDER_TTL_DAYS = 30",
+    "REQUIRED_ACCOUNT_TYPE = instagram_business | instagram_creator (mandatory for publish + DM APIs); ACCOUNT_TYPE_REACH_PENALTY = false",
+    "API_CHOICE = instagram_api_with_instagram_login (no Facebook Page needed per account); note hashtag_search is only available via instagram_api_with_facebook_login",
+    "REQUIRED_PERMISSIONS_PUBLISH = instagram_basic, instagram_content_publish, pages_read_engagement (FB-Login flavor); REQUIRED_PERMISSIONS_DM = instagram_business_basic, instagram_business_manage_messages",
+    "CHANNEL_TOPIC_PURITY = one_game_per_account (required for \"Your Algorithm\" topic classification)",
+    "IG_FORMAT_MIX = {reels: 0.75, carousels: 0.25} — carousels out-view Reels at scale (35,370 vs 16,035 at 100K-1M) and generate 9x saves; carousel max 10 items via API; images must be JPEG (only supported format); filters unsupported via API",
+    "EXPECTED_YIELD_MODEL (seed values, replace with measured): views_per_reel by tier {1-5K: 580, 5-10K: 1000, 10-50K: 2460, 50-100K: 6095, 100K-1M: 16035}; engagement_rate = 0.0048..0.0052",
+    "CHANNEL_WEIGHT_PHASE1 (all accounts <5K) = {tiktok: 0.4, instagram: 0.4, youtube_shorts: 0.2}; CHANNEL_WEIGHT_PHASE2 (>10K) = shift toward TikTok (tier-up multiplier 1.84x)",
+    "NON_FOLLOWER_REACH_SHARE = UNKNOWN — do not hard-code; read per-Reel Insights follower/non-follower breakdown and learn per account",
+    "NO_PURCHASED_ENGAGEMENT = true (buying views/followers/likes is an explicit Meta Spam policy violation)",
+    "ENGAGEMENT_GATING_GUARD: link must also be openly available (bio) — do not make the DM link conditional on commenting (Meta Spam policy prohibits requiring engagement before delivering promised content)",
+    "ACCOUNT_ISOLATION: unique recovery email, unique payment instrument, unique bio/name/visual identity per account (Meta enforces at network level and removes clusters)",
+    "CLUSTER_RISK_ASSUMPTION: treat Instagram account survival as correlated, not independent — require ≥1 non-Meta traffic source at all times"
+  ],
+  "open_questions": [
+    "Exact Instagram in-app account-switcher limit (commonly cited as 5 accounts per login) — help.instagram.com is not fetchable; verify manually in-app before designing the device/profile topology",
+    "Whether Trial Reels can be created via the Content Publishing API or only in-app — determines whether the creative A/B tier can be automated",
+    "Instagram's precise 2026 definition of a counted \"View\" (impression vs 3-second threshold) across unified metrics — affects every ratio the script logs",
+    "Quantified impact of trending audio vs original audio on Reels reach in 2026 — no source with numbers found; matters because the API forces original audio",
+    "Follower vs non-follower split of Reels reach for faceless/theme pages under 5K followers — no 2025-2026 data exists in any fetched source",
+    "ManyChat 2026 pricing, per-plan contact caps, and number of Instagram accounts per workspace (manychat.com returned 403) — needed to decide ManyChat vs direct Meta API for comment-to-DM",
+    "Instagram monetization country availability and eligibility thresholds for UK-targeted accounts operated from the CIS, and whether Reels Bonuses are open or invite-only in 2026",
+    "Details of the July-2025-era unoriginal-content enforcement (threshold number of reposts, duration of recommendation ineligibility, whether appeals exist) — the specific announcement page 404s; only secondary descriptions were obtainable",
+    "Whether the 4800 x impressions quota is enforced on the Instagram-Login API flavor identically to the Facebook-Login flavor",
+    "Whether a rendered-from-source clip that is visually similar to a TikTok-published version of the same content is treated as unoriginal by the audio+visual matching system"
+  ],
+  "risks": [
+    "Network-level enforcement: Meta's Inauthentic Behavior policy explicitly targets clusters and removes \"the inauthentic assets involved in these deceptive networks\" — 20 similar accounts per geo can be actioned together, so IG account survival is correlated, not independent. A single enforcement wave can zero the entire Instagram lane.",
+    "Meta's Spam policy directly names the operating pattern: \"Posting, sharing, engaging with content or creating accounts... either manually or automatically, at very high frequencies.\" An automated 20-account posting network is squarely within the described conduct regardless of content quality.",
+    "\"Comment X to get the link\" is arguably prohibited engagement-gating: Meta forbids \"Requiring or claiming that users are required to engage with content before they are able to view or interact with promised content.\" The highest-converting DM funnel design is also the one closest to the policy line.",
+    "API cold-start deadlock: the 4800 x impressions quota means newreg accounts cannot be auto-posted via the official API at all. Any plan assuming day-one full automation on fresh Instagram accounts will fail, and workarounds via unofficial/mobile-emulating automation carry higher ban risk and violate Meta's platform terms.",
+    "Watermark/unoriginality demotion: reusing TikTok renders on Instagram triggers explicit deprioritization, and Instagram reportedly replaces reposted content with the original creator's version — so the cheapest content pipeline (one render, three platforms) is the one Instagram penalizes most.",
+    "Buying newreg accounts is itself within the Inauthentic Behavior prohibition (\"creation, use, or claimed use of Inauthentic Meta Assets\"), and purchased accounts frequently carry prior enforcement history that propagates to any linked assets.",
+    "Trending-audio dependency is incompatible with full automation on Instagram; if the creative strategy relies on trending sounds, the \"no manual work\" requirement breaks or the script must use unsanctioned automation.",
+    "Instagram engagement is structurally declining (-24% YoY to 0.48%) while content volume rises; per-video yield forecasts based on 2023-2024 numbers will overstate revenue by a large factor.",
+    "Audience age skew (13-24) intersects Instagram's teen-account restrictions: teen accounts have limited DM reachability from unconnected accounts, which can silently throttle the DM sales funnel for the youngest segment. No hard data obtained on the current restriction scope — verify.",
+    "Payment/checkout link risk is separate from platform risk: a DM-delivered checkout link for a Windows-modifying utility can be flagged by Meta's cloaking and low-quality-destination rules if the landing page differs from what the Reel promises.",
+    "Selling game accounts (mentioned as a possible expansion) would violate Epic/Riot/Valve terms and PayPal/Stripe policies, and promoting it on Instagram would add an account-integrity violation on top of the payment-processor risk — it would put the whole 20-account IG network and the payment rail at risk simultaneously.",
+    "Single-point dependency: if the Instagram lane is built on the Meta Graph API with one app, a single app-level policy action disables publishing and DM automation across all 20 accounts at once."
+  ]
+}

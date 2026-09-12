@@ -1,0 +1,383 @@
+{
+  "dimension": "shorts_mechanics",
+  "summary": "YouTube Shorts в 2025-2026 работает как \"двухступенчатый тест\": публичный счётчик views с 31.03.2025 считает ЛЮБОЙ старт/реплей без минимального времени просмотра, а реальным сигналом дистрибуции и единственной валютой монетизации/YPP остаются engaged views + метрика \"Stayed to watch\" (viewed vs swiped away). С 24.08.2026 та же логика \"view с первого кадра\" распространена на long-form и live, поэтому публичные числа больше не годятся как KPI — скрипт должен логировать engaged views и APV/AVD через API, а не views. Подписчики почти не определяют охват (охват у каналов <2K подписчиков растёт, у >1M падает), частота постинга не является ranking-сигналом, хэштеги дают <1% дискавери. Главный юридический риск для сети из ~20 каналов на ГЕО — политика Inauthentic content (переименована из Repetitious 15.07.2025): дословно \"Channels where content feels interchangeable from video to video are not allowed to monetize\", плюс политика Fake engagement, прямо запрещающая автоматизацию действий, и API Developer Policies III.I.2 (\"must not automate ... uploads ... without the user's prior specific and express consent\") и III.C.3 (\"must not generate the same default titles for all users\"). Жёсткие машинные константы: videos.insert = 100 вызовов/сутки на один GCP-проект (плюс 10 000 юнитов на прочие эндпоинты и 100 search.list), title 100 символов, description 5000 байт, tags 500 символов суммарно, >60 хэштегов = все хэштеги игнорируются, Shorts ≤ 180 с, страйки = 7 дней / 14 дней запрета загрузок, 3 страйка за 90 дней = удаление канала. Официального дневного лимита загрузок YouTube не публикует (только \"up to 15 videos at a time\" и \"try again in 24 hours\"); практики сообщают 10-20/сутки для новых каналов и 50-100 для прокачанных — это неподтверждённые цифры. Гео-таргетинг органических Shorts официально НЕ управляем: нет документированного параметра \"показывать в UK\"; язык контента/метаданных, страна канала и язык аудиодорожки — единственные косвенные рычаги, официальных подтверждений их веса нет (нет данных).",
+  "summary_note_unused": "n/a",
+  "key_numbers": [
+    "Shorts view (public) с 31.03.2025 = любой старт или реплей, 0 секунд минимума",
+    "С 24.08.2026 view считается с первого кадра для long-form, live, подкастов и Shorts (эффективная дата)",
+    "YPP путь A: 1 000 подписчиков + 4 000 часов просмотра за 12 мес (Shorts Feed НЕ засчитывается в 4 000 ч)",
+    "YPP путь B: 1 000 подписчиков + 10 000 000 qualified Shorts views за 90 дней",
+    "Расширенный YPP (fan funding): 500 подписчиков + 3 публичные загрузки за 90 дней + 3 000 000 Shorts views за 90 дней",
+    "Доля креатора в Shorts-пуле: 45% от аллоцированной выручки",
+    "Music split: 0 треков = 100% в Creator Pool; 1 трек = 50%; 2 трека = 33%",
+    "Shorts RPM (практика): $0.01-0.07 / 1000 views обычно; $0.15-0.25 в дорогих нишах; long-form $2-10",
+    "Shorts max длительность: 180 секунд (с 15.10.2024), 9:16, 1080x1920",
+    "Title: 100 символов макс, запрещены < и >",
+    "Description: 5000 байт макс",
+    "Tags: 500 символов суммарно на всё поле",
+    "Хэштеги: >60 = ВСЕ хэштеги игнорируются; над заголовком показываются до 3",
+    "API квота по умолчанию на проект/сутки: 100 videos.insert + 100 search.list + 10 000 units на остальные эндпоинты",
+    "Загрузка через UI: до 15 видео за раз; при 'Upload limit reached' — повтор через 24 часа",
+    "Страйки: 1-й = 7 дней без загрузок, 2-й = 14 дней, 3 страйка за 90 дней = удаление канала; страйк живёт 90 дней",
+    "Warning истекает через 90 дней после policy training",
+    "Бенчмарки практиков 2026: >70% viewed = вирусная зона, ~50% = средне, <30% = смерть; swipe-away <25% в первые 3 с для Shorts <30 с",
+    "Средняя длительность просмотра Short ~16 секунд (2026)",
+    "После 31.03.2025 суммарные views выросли на 20-30%; like-to-view и comment-to-view упали",
+    "Одна сторонняя модель (Agentio, 35 800 long-form видео): публичные views выше engaged views примерно на 30%",
+    "Каналы <2K подписчиков: +168% просмотров; каналы >1M: -74% (2026)",
+    "4-5 Shorts в месяц дают ~+47% просмотров long-form против каналов без Shorts",
+    "Хэштеги дают <1% дискавери; рекомендуется 1-5",
+    "Retention-данные появляются в Studio через 1-2 дня; Key moments требует >=60 с и >=100 просмотров",
+    "Auto-dubbing: 35+ исходных языков; английский дублируется в 23 языка; видео >120 мин неприемлемы",
+    "Advertiser-friendly: графическая игровая жестокость в превью или в первые 7 секунд = no ads; сильный мат в title/thumbnail = no ads",
+    "Shorts длиннее 60 секунд с активной Content ID претензией блокируются глобально (сторонний источник, требует проверки)"
+  ],
+  "findings": [
+    {
+      "claim": "Публичный счётчик views у Shorts с 31 марта 2025 считает любой старт или реплей без минимального времени просмотра; старая метрика сохранена как 'Engaged views'",
+      "evidence": "Официальная формулировка: \"Views will count the number of times a Short starts to play or replay, with no minimum watch time requirement\" и \"We will keep the existing Shorts view metric, now called 'Engaged views', in YouTube Analytics so you can see how many viewers chose to continue watching your video.\" Там же: \"This change will not directly impact the YouTube Partner Program (YPP) eligibility and Shorts ad revenue sharing. They will both be based on 'Engaged Shorts views.'\"",
+      "source": "YouTube Help — Shorts / views (support.google.com/youtube/answer/10059070)",
+      "source_date": "2025-03-31 (дата вступления изменения)",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "В скрипте KPI-порогов НИКОГДА не использовать publicViews. Тянуть из YouTube Analytics API метрики engagedViews, averageViewDuration, averageViewPercentage и 'stayed to watch'. Логировать оба числа и считать ratio engaged/public как индикатор качества хука."
+    },
+    {
+      "claim": "С 24 августа 2026 YouTube унифицировал подсчёт views: с первого кадра, без минимума времени, для long-form, live, подкастов и Shorts. Монетизация и YPP по-прежнему на engaged views / engaged watch hours",
+      "evidence": "\"Starting August 24, 2026, YouTube will count views the moment a video starts playing, from the very first frame, with no minimum watch time required\" и \"Earnings and YouTube Partner Program eligibility are unaffected. Those still rely on engaged views, engaged watch hours, and qualified metrics, which require genuine audience attention.\"",
+      "source": "F9XR Articles — 'YouTube Changes How It Counts Views (long-form, live)' (f9xr.github.io/articles/2026/08/18/...); подтверждается reap.video/blog/youtube-views-vs-engaged-views",
+      "source_date": "2026-08-18 и 2026-08-24",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Не сравнивать исторические и новые публичные цифры между собой в дашборде: ввести в БД поле metric_regime ('pre_2025_03_31' / 'pre_2026_08_24' / 'current') и нормализовать отчёты по engaged views."
+    },
+    {
+      "claim": "Определения метрик: Public view = старт с первого кадра; Engaged view = зритель продолжил смотреть или тапнул; Qualified view = engaged view, удовлетворяющий правилам YPP. Engaged views видны только в Advanced Mode Studio и через API, публично не показываются",
+      "evidence": "Таблица источника: Public Views — Studio/публично/API: да; Engaged Views — Studio только Advanced Mode, публично нет, API да; Qualified Views — Advanced Mode, API (в YPP-контексте). \"No universal threshold in seconds converts autoplay to engaged views; YouTube states viewers must 'continue for some amount of time' without specifying exact duration.\"",
+      "source": "reap.video/blog/youtube-views-vs-engaged-views",
+      "source_date": "2026-08-24",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Скрипт должен опрашивать YouTube Analytics API (Advanced-метрики) по каждому каналу раз в 24-48 ч, а не парсить публичный счётчик. Точного порога секунд для engaged view не существует — не зашивать константу типа '3 секунды'."
+    },
+    {
+      "claim": "Метрика 'Stayed to watch' = процент зрителей, которые не свайпнули; при зацикливании Shorts APV может превышать 100%, а views быть заметно больше engaged views",
+      "evidence": "\"'Stayed to Watch' separately reports the percentage who remained past initial seconds, providing context about meaningful engagement\"; \"Loops increase Views: Looping Shorts can show higher Views than Engaged Views and average percentage viewed exceeding 100%\"; \"Views count playback events; Unique Viewers estimates different individuals\"",
+      "source": "Creator Essentials — Shorts views glossary (creatoressentials.com/glossary/shorts-views/)",
+      "source_date": "отражает изменения от 2025-03-31; точная дата публикации не указана",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Валидатор качества креатива в скрипте: APV>100% = хороший loop (сохранять шаблон монтажа в 'winners'); stayed_to_watch < 50% = автоматически помечать креатив как failed hook и не реплицировать его на другие каналы."
+    },
+    {
+      "claim": "Подтверждённые Shorts-сигналы ранжирования: viewed vs swiped away (первый тест), длительность/процент досмотра, satisfaction (лайки/дизлайки/опросы), история просмотров и интересы зрителя, аудио (трендовые/сэмплированные треки), конкуренция и сезонность. Число подписчиков охват не задаёт, частота постинга не является ranking-фактором, кросспостинг в TikTok/IG не даёт преимущества внутри YouTube",
+      "evidence": "Перечень сигналов с пометкой 'YouTube explicitly identifies these factors'; \"Your subscriber count doesn't set your reach\"; посты в TikTok/Instagram \"provides no algorithmic advantage within YouTube\". Средняя длительность просмотра ~16 секунд, окно постинга 2-6 p.m., оптимум 2-4 поста в неделю на пост-перформанс.",
+      "source": "Metricool — YouTube Shorts Algorithm (metricool.com/youtube-shorts-algorithm/)",
+      "source_date": "2026-08-05",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Оптимизировать скрипт под hook-rate, а не под объём: первые 1-2 секунды = движущийся текст-обещание ('+40 FPS on GTX 1650'), длина клипа 12-25 с. Не тратить бюджет на кросспостинг-'бонус' — его нет; один и тот же мастер-клип для TikTok/IG/Shorts переупаковывать, а не копировать 1:1."
+    },
+    {
+      "claim": "Бенчмарки удержания (данные практиков, не официальные): >70% viewed = вирусная зона, ~50/50 = средний уровень, <30% = видео мертво; целевой swipe-away <25% в первые 3 секунды для Shorts короче 30 с. Short с 1 000 просмотров и 80% досмотра продвигается дальше, чем с 100 000 просмотров и 20%",
+      "evidence": "\"70%+ viewed is viral territory; 50/50 is average; below 30% viewed and the Short dies\"; \"Swipe-away rate target: below 25% in first three seconds for sub-30-second Shorts\"; \"A Short with 1,000 views and 80% completion gets pushed further than a Short with 100,000 views and 20% completion.\" Также: рост суммарных views на 20-30% сразу после 31.03.2025 и падение like-to-view/comment-to-view.",
+      "source": "Gyre — 'YouTube Shorts view count update: impact & strategy' (gyre.pro/blog/youtube-shorts-view-count-update-impact-strategy-what-to-do-next)",
+      "source_date": "2026-06-16",
+      "confidence": "low",
+      "kind": "practitioner_report",
+      "actionable": "Зашить в скрипт пороги авто-отбора: STAYED_TO_WATCH_MIN=0.70 (промоут шаблона), 0.50-0.70 (нейтрально), <0.30 (архивировать шаблон). Это эвристика практиков — держать как настраиваемые параметры в конфиге, не как истину."
+    },
+    {
+      "claim": "Официальная политика Inauthentic content (переименована из Repetitious content 15 июля 2025) прямо запрещает монетизацию каналов с взаимозаменяемым от видео к видео контентом",
+      "evidence": "Дословно с официальной страницы: \"What's important is that the substance of each video should be materially varied and deliver creative, educational, or other value\" и \"Channels where content feels interchangeable from video to video are not allowed to monetize.\" Reused content policy отдельно: \"Repurpose content that's already on YouTube or another online source without adding significant original commentary, substantive modifications, or educational or entertainment value\" — запрещено; \"We allow reused content if viewers can tell that there's a meaningful difference between the original video and your video.\"",
+      "source": "YouTube Help — YouTube channel monetization policies (support.google.com/youtube/answer/1311392)",
+      "source_date": "обновление 2025-07-15",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Для сети из 20 каналов на ГЕО это главный ограничитель: скрипт обязан гарантировать materially varied substance — разный геймплей-клип, разный сценарный хук, разный голос/озвучка, разный порядок шагов твика. Запрет на один и тот же mp4 с разными title. Ввести перцептивный хеш (pHash) видео и SimHash текста сценария с порогом уникальности между всеми каналами сети."
+    },
+    {
+      "claim": "YouTube уточнил границы политики: под удар попадают каналы с 'narrative stories with only superficial differences' и 'slideshows that all have the same narration'; AI-контент сам по себе монетизируем; reused content монетизируем при значимой добавленной ценности. YouTube называет это 'minor update' существующих правил YPP",
+      "evidence": "\"Channels that upload narrative stories with only superficial differences between them [and] channels that upload slideshows that all have the same narration\"; \"YouTube welcomes creators using AI tools to enhance storytelling, and channels that use AI in their content remain eligible for monetization\"; \"All of [this type of content] can continue to be monetized if you've added significant original commentary, modifications, or educational or entertainment value.\" Комментарий Rene Ritchie (YouTube Creator Liaison): основное изменение — переименование 'repetitious' в 'inauthentic'.",
+      "source": "Social Media Today — 'YouTube Clarifies Changes to Monetization Rules Around Inauthentic Content' (socialmediatoday.com/news/.../752892/)",
+      "source_date": "2025-07 (публикация), политика с 2025-07-15",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "TTS-голос сам по себе не запрещён, но одинаковая наррация на всех видео — прямое попадание в формулировку. Скрипт: пул из >=8 разных TTS-голосов/скоростей + уникальный текст на каждый ролик; НЕ использовать один шаблон слайдшоу."
+    },
+    {
+      "claim": "Конкретные архетипы, теряющие монетизацию: шаблонная наррация, слайдшоу с идентичным голосом, bulk-продукция с идентичной структурой, чтение чужих текстов, песни, изменённые только по скорости/питчу. Выявление — автоматические системы + ручной ревью, есть апелляция. Количественных данных о числе пострадавших каналов нет",
+      "evidence": "Перечислены: \"Videos with only slight variations between them\"; слайдшоу/скроллящийся текст без наррации и смысла; чтение неоригинальных материалов; треки, изменённые только speed/pitch. \"YouTube uses both automated systems and manual review\"; \"No statistics provided\" о количестве затронутых каналов.",
+      "source": "SubSub — 'YouTube Inauthentic Content Policy: Who Loses Monetization' (subsub.io/blog/youtube-inauthentic-content-policy-2025)",
+      "source_date": "2025-07-16",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Запрет в спеке: не делать ролики формата 'скроллящийся текст с твиками поверх статичного геймплея' на всех 20 каналах. Минимум — реальная запись экрана с разными сценами/разной картой/разным оружием + оверлей FPS-счётчика."
+    },
+    {
+      "claim": "Политика Fake engagement прямо запрещает автоматизацию действий и накрутку любых метрик, а также sub4sub и контент, существующий только ради стимулирования вовлечения",
+      "evidence": "\"anything that artificially increases the number of views, likes, comments, or other metrics either by using automatic systems or serving up videos to unsuspecting viewers\"; \"Offering to subscribe to another creator's channel only if they subscribe to your channel\" — запрещено; \"Content that solely exists to incentivize viewers for engagement (views, likes, comments, etc) is prohibited\"; запрещены ссылки на сервисы накрутки. Последствия: warning → страйки → удаление; при серьёзном злоупотреблении — немедленное удаление.",
+      "source": "YouTube Help — Fake engagement policy (support.google.com/youtube/answer/3399767)",
+      "source_date": "актуальная версия на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Жёсткое правило в спеке: ни один модуль скрипта не покупает и не генерирует views/subs/likes/comments, не делает cross-sub между своими 20 каналами, не постит массовые комментарии с других каналов сети. Взаимная подписка между собственными каналами = прямое попадание под sub4sub-формулировку."
+    },
+    {
+      "claim": "Система страйков: warning (истекает через 90 дней при прохождении policy training), 1-й страйк = 7 дней запрета загрузок, 2-й страйк в том же 90-дневном окне = 14 дней, 3 страйка за 90 дней = возможное удаление канала. Удаление контента страйк не снимает",
+      "evidence": "\"1-week (7-day) restriction\" на первый страйк; \"2-week (14-day) restriction\" на второй; \"3 strikes in the same 90-day period may result in your channel being permanently removed from YouTube\"; \"Strikes do not expire until 90 days from the time it was issued\"; \"Deleting your content doesn't remove a strike\"; единичное тяжёлое нарушение может привести к немедленному удалению без warning.",
+      "source": "YouTube Help — Community Guidelines strike basics (support.google.com/youtube/answer/2802032)",
+      "source_date": "актуальная версия на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Стейт-машина канала в скрипте: states = ACTIVE / WARNED / STRIKE1(freeze 7d) / STRIKE2(freeze 14d) / QUARANTINE / DEAD. При STRIKE1 — стоп загрузок на канал 8 дней, при STRIKE2 — 15 дней и исключение канала из ротации на 90 дней, при 2 страйках — не заливать вообще (риск потери с 3-м)."
+    },
+    {
+      "claim": "YouTube не публикует дневной лимит загрузок. Официально известно только: лимит существует и действует суммарно по desktop/mobile/API, до 15 видео за один сеанс загрузки, при ошибке 'Upload limit reached' — повтор через 24 часа, лимиты варьируются по стране/истории канала",
+      "evidence": "\"There's a limit to how many videos a channel can upload each day across desktop, mobile, and YouTube API\"; \"You can upload up to 15 videos at a time\"; \"If you get an error saying 'Upload limit reached' when trying to upload a video, try again in 24 hours\"; \"Limits may vary by country/region or channel history\". Верификация аккаунта влияет на скорость обработки (\"For optimal processing time, verify your YouTube account\"), а не на количество.",
+      "source": "YouTube Help — Upload videos / upload limits (support.google.com/youtube/answer/57407)",
+      "source_date": "актуальная версия на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Скрипт обязан обрабатывать ошибку лимита как first-class case: детект 'Upload limit reached' → пометить канал cooldown_until = now + 24h, перенести очередь на следующий канал. Не зашивать фиксированную цифру лимита — она недокументирована и per-channel."
+    },
+    {
+      "claim": "Практические (неподтверждённые) дневные потолки загрузок: ~10-20 видео/сутки для новых каналов и ~50-100 для устоявшихся; безопасная рекомендация 1-3 Shorts в день, абсолютный потолок ~10; 100 Shorts в день провоцирует спам-детект",
+      "evidence": "\"Creators commonly report caps somewhere around 10 to 20 uploads a day on newer channels and 50 to 100 on established ones... these are not published figures and YouTube adjusts them per channel\"; \"you shouldn't post more than 10 videos a day\"; загрузка 100 Shorts в день может \"trigger YouTube's spam detection algorithms, potentially resulting in reduced visibility for your videos or even account penalties\"; ограничения срабатывают при \"account age, verification status, policy issues, copyright problems, spam-like activity, or unusual upload volume\".",
+      "source": "SocialRails — YouTube Upload Limits Complete Guide (socialrails.com/blog/youtube-upload-limits-complete-guide, публ. 2025-12-23, апд. 2026-07-20); SendShort — How many YouTube Shorts a day (sendshort.ai/guides/how-many-youtube-shorts-day/, 2024-11-01); reShorts (reshorts.ai/blog/..., публ. 2025-03-14, апд. 2026-07-25)",
+      "source_date": "2024-11 … 2026-07",
+      "kind": "practitioner_report",
+      "confidence": "low",
+      "actionable": "Константы ramp-up в спеке (настраиваемые): канал возраст 0-7 дней = 1 Short/сутки; 8-30 дней = 2/сутки; 30+ дней и без страйков = 3/сутки; hard ceiling = 5/сутки/канал. Минимальный интервал между загрузками на один канал 4-6 часов, рандомизация ±40 минут."
+    },
+    {
+      "claim": "Квота YouTube Data API v3 по умолчанию: 100 вызовов videos.insert, 100 вызовов search.list и 10 000 юнитов в сутки на прочие эндпоинты — на один Google Cloud проект. Сброс в полночь по Pacific Time. Повышение квоты только после аудита на соответствие ToS",
+      "evidence": "\"Projects that enable the YouTube Data API have a default quota allocation of 100 search.list calls, 100 videos.insert calls, and 10,000 units per day combined for all other endpoints\"; \"If you would like to request additional quota beyond the default allocation, you must first complete an audit to show that your project is in compliance\"; \"We conduct periodic audits\"; \"All API requests, including invalid requests, incur a quota cost of at least one point.\" Стоимости: videos.update 50, thumbnails.set 50, captions.insert 400, commentThreads.insert 50, playlistItems.insert 50.",
+      "source": "Google Developers — YouTube Data API v3: Getting Started + Determine Quota Cost + Quota and Compliance Audits (developers.google.com/youtube/v3/getting-started, /determine_quota_cost, /guides/quota_and_compliance_audits)",
+      "source_date": "актуальная версия на 2026-09",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "ЖЁСТКАЯ КОНСТАНТА: API_VIDEOS_INSERT_PER_PROJECT_PER_DAY = 100. При 20 каналах × 3 Shorts = 60 загрузок/сутки — один проект справляется, но с учётом videos.update (50 юнитов), thumbnails.set (50) и captions.insert (400 !) бюджет 10 000 юнитов кончится на ~20 captions.insert. Вывод: субтитры вшивать в видео (burn-in), а не через captions.insert. Счётчик квоты в скрипте с reset в 00:00 America/Los_Angeles."
+    },
+    {
+      "claim": "API Developer Policies прямо запрещают автоматизацию загрузок без явного согласия пользователя и генерацию одинаковых заголовков для всех загрузок; требуют один API-проект на один API-клиент и запрещают агрегацию данных по каналам разных владельцев",
+      "evidence": "III.I.2: \"you must not automate or trigger views, uploads, comments, likes, dislikes, or other actions without the user's prior specific and express consent\". III.C.3: API-клиенты, подставляющие значения в текстовые поля, \"must incorporate relevant keywords into those values ... must not generate the same default titles for all users\". III.D.1.c: \"you must create exactly one (1) [API Project] for that [API Client]\". III.E.2: \"Do not aggregate [API Data] except that you may only aggregate [API Data] relating to YouTube channels that are under the same content owner\".",
+      "source": "Google Developers — YouTube API Services Developer Policies (developers.google.com/youtube/terms/developer-policies)",
+      "source_date": "актуальная версия на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Формально автозалив со своих каналов под своим OAuth-согласием = согласие владельца есть; но III.C.3 делает обязательным уникальный заголовок на каждую загрузку. Спека: title генерируется из пула шаблонов × пул игр × пул числовых обещаний, с проверкой на дубликаты по всей сети (уникальность 100%). Обход квоты через N проектов на один и тот же клиент нарушает III.D.1.c — это фактор риска отзыва доступа, а не 'лайфхак'."
+    },
+    {
+      "claim": "Официального лимита на число YouTube-каналов на один Google-аккаунт в документации нет. Есть только: несколько Brand Accounts на аккаунт разрешено, на один Brand Account — один канал, у Brand Account один primary owner; и что один телефон верифицирует 'ограниченное число' аккаунтов без указания числа",
+      "evidence": "YouTube Help: варианты — личный канал и канал на Brand Account; \"If the Brand Account already has a channel, you can't create a new one\"; численных лимитов нет. Google Accounts Help: \"You can find all of your Brand Accounts, and switch between them\"; \"An account must have one primary owner\"; численных лимитов нет; с 04.08.2021 Brand Accounts привязываются только к YouTube ('limited to YouTube'). Третья сторона: \"One phone number can verify a limited number of accounts\" — точный cap не указан.",
+      "source": "YouTube Help — Create a new channel (support.google.com/youtube/answer/1646861); Google Accounts Help — Brand Accounts (support.google.com/accounts/answer/7001996); SocialRails (socialrails.com/blog/youtube-upload-limits-complete-guide)",
+      "source_date": "актуальные версии на 2026-09",
+      "kind": "official_policy",
+      "confidence": "medium",
+      "actionable": "НЕТ ДАННЫХ по числовому лимиту каналов на аккаунт — в спеке не зашивать константу вроде 'max 100 каналов'. Проектировать схему как 1 канал = 1 запись с собственным OAuth refresh token и собственным набором прокси/устройства-отпечатка, чтобы архитектура не зависела от недокументированного лимита."
+    },
+    {
+      "claim": "Пороги YPP: 1 000 подписчиков + 4 000 часов просмотра за 12 мес ЛИБО 1 000 подписчиков + 10 000 000 qualified Shorts views за 90 дней. Часы из Shorts Feed НЕ идут в 4 000 часов. Считаются только публичные видео",
+      "evidence": "\"Get 1,000 subscribers with 10 million qualified Shorts views in the last 90 days\"; \"Watch hours from Shorts views in the Shorts Feed do not count toward the 4,000 watch-hour threshold\"; \"Only public videos generate qualified metrics; private, unlisted, and deleted content are excluded\"; нужен AdSense и соответствие Community Guidelines.",
+      "source": "YouTube Help — YouTube Partner Program overview & eligibility (support.google.com/youtube/answer/72851)",
+      "source_date": "актуальная версия на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Для SaaS-модели монетизация Shorts экономически нерелевантна: 10M engaged views/90d на канал недостижимо в сети новорегов. Спека: НЕ ставить YPP как цель; целевая метрика = клики в bio/описание → триал подписки. Не удалять и не скрывать старые видео, если когда-нибудь понадобится YPP (unlisted/deleted не считаются)."
+    },
+    {
+      "claim": "Расширенный YPP (fan funding/Shorts-порог для не-рекламных возможностей): 500 подписчиков + 3 публичные загрузки за 90 дней + 3 000 000 Shorts views за 90 дней",
+      "evidence": "\"Expanded YPP: 500 subscribers + 3 uploads in 90 days + 3 million Shorts views (90 days)\" с ссылкой на YouTube Help; \"Full Ad Revenue: 1,000 subscribers + 10 million valid Shorts views (90 days)\"; \"Creators keep 45% of their allocated Shorts revenue\".",
+      "source": "Teleprompter.com — YouTube Shorts Statistics 2026 (teleprompter.com/blog/youtube-shorts-statistics)",
+      "source_date": "2026-05-25",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Промежуточная веха, достижимая для 1-2 лучших каналов сети (500 подписчиков + 3M Shorts views/90д): открывает мембершипы/Super Thanks как второй канал выручки. Но это не приоритет — треть миллиона просмотров в день на канал нереальна на старте."
+    },
+    {
+      "claim": "Shorts revenue sharing: вся рекламная выручка Shorts Feed пулится и делится по доле engaged views; креатор получает 45% от аллоцированного, независимо от использования музыки. Пул уменьшается за счёт лицензирования музыки: 0 треков = 100% в пул, 1 трек = 50%, 2 трека = 33%. Искусственные просмотры не считаются",
+      "evidence": "\"revenue is distributed to monetizing creators based on their share of total engaged views from monetizing creators' Shorts in each country\"; \"Creators retain 45% of their allocated revenue, regardless of music usage\"; не считаются \"Artificial or fake views of Shorts, such as from automated click or scroll bots\", non-original content и reuploads, а также контент, нарушающий advertiser-friendly guidelines; \"each monetizing creator will be allocated 100% of the total number of engaged views on their Shorts, regardless of whether any music is used\".",
+      "source": "YouTube Help — Shorts monetization / revenue sharing (support.google.com/youtube/answer/12504220)",
+      "source_date": "актуальная версия на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Важная деталь для гео-стратегии: пул считается 'in each country' — просмотры из UK/US стоят иначе, чем из низко-RPM стран. Для скрипта: делать Shorts БЕЗ лицензированных треков (0 треков = 100% в пул) и использовать YouTube Audio Library или собственный звук."
+    },
+    {
+      "claim": "Практические RPM Shorts: $0.01-0.07 за 1000 просмотров у типичных креаторов, $0.15-0.25 в дорогих нишах; long-form $2-10 за 1000, то есть в 50-100 раз выше",
+      "evidence": "\"Shorts RPM: $0.01–$0.07 per 1,000 views for typical creators; High-value niches (finance, B2B): $0.15–$0.25 RPM; Long-form RPM: $2–$10 per 1,000 views (50–100x higher)\"",
+      "source": "Gyre (gyre.pro/blog/youtube-shorts-view-count-update-impact-strategy-what-to-do-next)",
+      "source_date": "2026-06-16",
+      "kind": "practitioner_report",
+      "confidence": "low",
+      "actionable": "Экономика подтверждает: Shorts = только трафик-канал, выручка = подписка. В юнит-экономике скрипта считать revenue_per_1000_views как (CR_в_триал × CR_в_оплату × LTV), а не RPM."
+    },
+    {
+      "claim": "Маленькие каналы получают больше органики, чем крупные: у каналов <2K подписчиков рост просмотров +168%, у каналов >1M — падение 74%; просмотры на один Short более чем удвоились год к году",
+      "evidence": "\"Smaller channels (<2K subscribers) saw 168% view growth, while channels exceeding 1M subscribers dropped 74%. The algorithm prioritizes engagement quality over account size\"; \"Views per Short: More than doubled year-over-year\"",
+      "source": "Metricool — YouTube Shorts Algorithm (metricool.com/youtube-shorts-algorithm/)",
+      "source_date": "2026-08-05",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Аргумент в пользу стратегии 'много новых каналов вместо одного большого': новореги не находятся в невыгодном положении по охвату. Но это ортогонально политике Inauthentic content — сеть каналов допустима только при реально различном контенте."
+    },
+    {
+      "claim": "Связка Shorts → long-form: каналы, публикующие 4-5 Shorts в месяц, получают примерно на 47% больше просмотров long-form, чем каналы без Shorts; при больших объёмах эффект уменьшается. Оптимум по перформансу на пост — 2-4 Shorts в неделю, при большем объёме суммарные месячные просмотры выше",
+      "evidence": "\"Channels posting 4-5 Shorts monthly see approximately 47% higher long-form views compared to no-Shorts channels. Higher volumes diminish this benefit\"; \"Optimal frequency: 2-4 posts weekly yields best per-post performance, though higher volumes accumulate more monthly views\"; \"posting frequency isn't a ranking factor\"",
+      "source": "Metricool — YouTube Shorts Algorithm (metricool.com/youtube-shorts-algorithm/)",
+      "source_date": "2026-08-05",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Архитектура воронки: на каждом канале держать 3-8 long-form (5-12 мин) 'полных гайдов по оптимизации под конкретную игру' — это точка конверсии в подписку, Shorts гонят на них трафик. Спека: раз в неделю на канал автозалив одного long-form, скомпонованного из тех же ассетов, что Shorts."
+    },
+    {
+      "claim": "Хэштеги дают менее 1% дискавери, но улучшают engagement rate; рекомендация 1-5 релевантных. Жёсткий лимит: более 60 хэштегов — все хэштеги игнорируются, контент может быть удалён из загрузок/поиска; над заголовком показываются до 3 самых 'engaging'; нерелевантные/вводящие в заблуждение хэштеги = удаление видео",
+      "evidence": "Официально: \"If a video or playlist has more than 60 hashtags, we'll ignore each hashtag on that content\"; \"Out of all the hashtags you add to the video's description, up to three hashtags that are considered most engaging will appear by your video title\"; \"Don't add hashtags that are not directly related to the video or playlist. Misleading or unrelated hashtags may result in the removal of your video or playlist.\" Индустриальные данные: \"Hashtags drove under 1% of discovery but improved engagement rates. Recommendation: use 1-5 contextually relevant tags.\"",
+      "source": "YouTube Help — Using hashtags (support.google.com/youtube/answer/6390658); Metricool (metricool.com/youtube-shorts-algorithm/)",
+      "source_date": "официальная страница — актуальна на 2026-09; Metricool 2026-08-05",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Константы: HASHTAGS_MIN=2, HASHTAGS_MAX=5, HASHTAGS_HARD_LIMIT=60. Запрет на #shorts-спам-простыни. Хэштеги строго по игре/теме (#fortnite #fps #pcoptimization), никаких '#valorant' на видео про Rust — это основание для удаления."
+    },
+    {
+      "claim": "Лимиты метаданных (API-документация): title до 100 символов, запрещены символы < и >; description до 5000 байт (не символов), те же запрещённые символы; tags — суммарно 500 символов на всё поле, кавычки и запятые считаются",
+      "evidence": "\"snippet.title: maximum length of 100 characters and may contain all valid UTF-8 characters except < and >\"; \"snippet.description: maximum length of 5000 bytes\"; \"snippet.tags[]: maximum length of 500 characters for the entire property value, with commas and quotation marks counting toward this limit\". Официальная help-страница подтверждает: \"The description allows a maximum of 5000 characters.\" recordingDetails.location deprecated с 01.06.2017.",
+      "source": "Google Developers — Videos resource (developers.google.com/youtube/v3/docs/videos); YouTube Help — Video descriptions (support.google.com/youtube/answer/12948449)",
+      "source_date": "актуальные версии на 2026-09",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Валидаторы в скрипте: len(title)<=100 и отсутствие <>; len(description.encode('utf-8'))<=5000 (байты, а не символы — критично для эмодзи); len(','.join(tags))<=500. Гео-таргетинг через recordingDetails.location невозможен — поле deprecated."
+    },
+    {
+      "claim": "Гео-таргетинг органических Shorts официально не управляем: в официальной документации по рекомендациям названы только поведенческие сигналы (история просмотров, лайки/дизлайки, подписки, опросы удовлетворённости, репутация канала), про страну и язык как управляемые рычаги ничего не сказано",
+      "evidence": "Официально: \"Understanding a user's viewing behavior, likes, dislikes, subscriptions, and feedback, including from satisfaction surveys, helps us do this most effectively\"; система учитывает репутацию и качество канала с привлечением внешних оценщиков. При прямом запросе страница не раскрывает, как локация и язык влияют на рекомендации. Metricool (2026-08-05) также: \"The article doesn't address geo or language-specific targeting mechanisms.\"",
+      "source": "YouTube — How YouTube Works: Recommendations (youtube.com/howyoutubeworks/product-features/recommendations/); Metricool",
+      "source_date": "актуально на 2026-09",
+      "kind": "official_policy",
+      "confidence": "medium",
+      "actionable": "НЕТ ДАННЫХ об официальном механизме таргетинга Shorts на UK/US. Косвенные рычаги (низкая уверенность): язык речи и текста в видео = английский; snippet.defaultLanguage и snippet.defaultAudioLanguage = 'en' / 'en-GB'; страна канала в настройках = целевое ГЕО; сленг/цены/референсы под ГЕО; время постинга в часовом поясе ГЕО. Скрипт должен ставить эти поля и логировать 'Viewer geography' из Analytics API как ЕДИНСТВЕННЫЙ фактический тест гипотезы, а не полагаться на 'настройку'."
+    },
+    {
+      "claim": "Auto-dubbing включён по умолчанию для подходящих креаторов, поддерживает 35+ исходных языков, английский дублируется в 23 языка; видео длиннее 120 минут, без достаточной речи, с копирайтным материалом или с неопознанным языком неприемлемы. Применимость к Shorts в документации не описана",
+      "evidence": "\"This feature is enabled by default for eligible creators\"; \"videos exceeding 120 minutes, lacking sufficient speech content, containing copyrighted material, or having undetectable source languages are ineligible\"; управление в YouTube Studio: Settings > Content > Automatic dubbing, опция \"Publish manually\"; \"The provided documentation contains no information regarding YouTube Shorts compatibility with auto-dubbing\"; дат раскатки нет, \"we are gradually expanding support for new languages\".",
+      "source": "YouTube Help — Automatic dubbing (support.google.com/youtube/answer/15569972)",
+      "source_date": "актуальная версия на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Для мультиГЕО-сети: НЕ рассчитывать на авто-дубляж Shorts (нет данных о поддержке). Правильный путь — отдельный канал на ГЕО с озвучкой/текстом на языке ГЕО. Важно: 'containing copyrighted material' делает видео неприемлемым — ещё один аргумент против лицензированной музыки. Скрипт должен корректно задавать исходный язык, иначе дубляж/каптионы ломаются."
+    },
+    {
+      "claim": "Автоматические субтитры доступны только на языке видео по умолчанию; есть авто-перевод, загрузка .srt, авто-синхронизация транскрипта и ручной ввод. Про поддержку субтитров в Shorts и лимиты языков в документе не сказано",
+      "evidence": "\"Automatic captions will be in the video's default language only\"; методы: upload a file, auto-sync, type manually, auto-translate; \"Transcripts are not recommended for videos that are over an hour long or have poor audio quality\"; \"Subtitles and captions allow you to share your videos with a larger audience, including deaf or hard-of-hearing viewers and viewers who speak another language\"; про Shorts и лимиты языков — нет данных.",
+      "source": "YouTube Help — Add subtitles & captions (support.google.com/youtube/answer/2734796)",
+      "source_date": "актуальная версия на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Из-за цены captions.insert (400 юнитов из 10 000/сутки) и отсутствия гарантий по Shorts: вшивать субтитры в кадр (burn-in, крупный шрифт, safe-area 12% сверху и 20% снизу под UI Shorts). Это одновременно повышает retention (звук часто выключен) и не жрёт квоту."
+    },
+    {
+      "claim": "Content ID: при совпадении действие определяет правообладатель — блокировка, монетизация в его пользу или трекинг. Отдельный сторонний источник утверждает, что Shorts длиннее 1 минуты с активной претензией блокируются глобально; официального подтверждения найти не удалось",
+      "evidence": "Официально: Content ID \"Blocks a video from being viewed\", \"Monetizes the video by running ads against it\", \"Tracks the video's viewership statistics\"; Shorts-специфики на официальной странице нет. Сторонний источник: \"Content ID caveat: Shorts over 1 minute with active claims are blocked globally\".",
+      "source": "YouTube Help — How Content ID works (support.google.com/youtube/answer/2797370); SocialRails (socialrails.com/blog/youtube-upload-limits-complete-guide)",
+      "source_date": "официальная — на 2026-09; SocialRails публ. 2025-12-23, апд. 2026-07-20",
+      "kind": "official_policy",
+      "confidence": "medium",
+      "actionable": "Правило для геймплей-контента: ВЫКЛЮЧАТЬ игровую музыку в записи (в Fortnite/Valorant/CS2 есть отдельные ползунки Music/SFX) — оставлять только SFX и голос. Держать SHORTS_TARGET_DURATION <= 58 секунд для клипов, где есть риск претензии, чтобы не попасть под возможную глобальную блокировку >60 с. Проверять claim-статус через API после загрузки и авто-перезаливать чистую версию."
+    },
+    {
+      "claim": "Advertiser-friendly guidelines применяются к Shorts так же, как к видео. Для геймплея: графическая игровая жестокость в превью ИЛИ в первые 7 секунд = no ad earnings; сильный мат (f*ck) в заголовке или превью = no ad earnings; жестокость вне первых 7 секунд и нереалистичная 'игровая' жестокость монетизируются полностью",
+      "evidence": "Full ads: \"Graphic scenes (such as a gory attack on a person) outside the first 7 seconds of the video\", \"Violence that is unrealistic, playful, and generally acceptable for all ages\". Limited: \"Graphic game violence in the thumbnail of the video\". No ads: \"Graphic game violence in the thumbnail or in the first seven seconds of the video\", gameplay с sexual violence / hate-motivated violence / graphic torture / жестокостью к несовершеннолетним; \"stronger profanity (like f*ck) used in thumbnails or titles\" = no ad earnings. \"The guidelines apply equally to videos and Shorts.\"",
+      "source": "YouTube Help — Advertiser-friendly content guidelines (support.google.com/youtube/answer/6162278)",
+      "source_date": "актуальная версия на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Константы монтажа: первые 7 секунд — БЕЗ кровавых килов (DBD/Rust особенно), только FPS-оверлей и бенчмарк-цифры. Блэклист слов в генераторе заголовков (сильный мат). Кадр превью — без крови/расчленёнки."
+    },
+    {
+      "claim": "Политика внешних ссылок: ссылки на контент, нарушающий Community Guidelines, запрещены в любой форме — кликабельные, текстовые в видео/на картинке, обфусцированные ('dot com') и даже произнесённые вслух. Affiliate-контент сам по себе не нарушает ToS, но выделенные под него аккаунты могут попасть под спам-политику",
+      "evidence": "\"Links that send users to content that violates our Community Guidelines are not allowed on YouTube\"; запрещены ссылки на adult, malware, phishing, несанкционированный доступ к платному контенту (игры, музыка, стриминг), regulated goods и т.д.; \"Links are covered in any form: clickable URLs, text URLs in videos/images, obfuscated URLs (like 'dot com'), or verbal directions\"; \"Affiliate content doesn't violate YouTube's Terms of Use\"; \"If YouTube cannot verify a link's safety, it may be removed preemptively\".",
+      "source": "YouTube Help — External links policy (support.google.com/youtube/answer/9054257)",
+      "source_date": "актуальная версия на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Ссылка на лендинг подписки сама по себе легальна. Критично: 'unauthorized access to paid content (games, music, streaming services)' — если в будущем на лендинге появятся игровые аккаунты, ссылка на него станет нарушением политики ссылок YouTube и основанием для удаления видео/страйка. Спека: держать домен подписки отдельно от любых будущих account-shop-доменов; один чистый домен на лендинг; HTTPS, без редирект-цепочек (иначе 'cannot verify a link's safety')."
+    },
+    {
+      "claim": "Spam-политика отдельно запрещает контент, созданный исключительно для перегона на внешние сайты (особенно на запрещённый материал), и высокочастотные однотипные комментарии для нагона трафика",
+      "evidence": "\"Content created solely to drive users off of YouTube to external sites, especially those hosting prohibited material like malware, adult content, or illegal goods/services\"; \"Using high-volume, repetitive, or deceptive comments, live chats, or other messages to drive traffic to or engagement with content\" — пример: идентичные 'check out my channel' на сотнях видео.",
+      "source": "YouTube Help — Spam, deceptive practices & scams policy (support.google.com/youtube/answer/2801973)",
+      "source_date": "актуальная версия на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Правило: НИКАКИХ авто-комментариев с каналов сети под чужими видео и никаких идентичных pinned-комментариев, размноженных ботом по сети. Pinned-комментарий разрешён, но текст должен быть уникальным на канал и относиться к конкретному ролику. Видео обязано нести самостоятельную ценность (реальный твик), а не быть чистым перегоном."
+    },
+    {
+      "claim": "Настройка 'Made for kids' (COPPA) отключает часть функций; неверная установка для игрового контента убивает комментарии, карточки и персонализированную рекламу. Апелляция предусмотрена",
+      "evidence": "Страница целиком посвящена audience designation (made for kids / not made for kids) для соответствия COPPA: как назначать на канал или отдельное видео, ограничения функций для детского контента, процесс апелляции.",
+      "source": "YouTube Help — Set your video's audience (support.google.com/youtube/answer/9527654)",
+      "source_date": "актуальная версия на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Для Roblox/Minecraft-роликов риск авто-классификации как MFK высок, а это отключает комментарии и ссылки — то есть убивает всю воронку. Спека: selfDeclaredMadeForKids=false (честно — контент про оптимизацию ПК для взрослой аудитории), в кадре/тексте не использовать детский визуальный код; мониторить фактический флаг видео через videos.list и алертить, если YouTube переопределил его."
+    },
+    {
+      "claim": "Retention-данные в Studio появляются не сразу: через 1-2 дня после публикации; функция Key moments требует длительности >=60 секунд и >=100 просмотров",
+      "evidence": "\"Retention data appears in YouTube Studio: 1–2 days after posting\"; \"Key moments highlights require: >=60 seconds duration and >=100 views minimum\"; статья прямо отказывается давать единый бенчмарк: \"Most articles try to give you a single benchmark number. That's rarely helpful\" — вместо этого сравнение с собственными видео похожей длины и со всеми видео YouTube той же длины.",
+      "source": "Shortimize — YouTube Shorts Retention Rate (shortimize.com/blog/youtube-shorts-retention-rate)",
+      "source_date": "2026-01-20",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Константы оркестратора: METRICS_FIRST_PULL_DELAY_H = 48, METRICS_FINAL_PULL_DELAY_H = 168 (7 дней). Не принимать решение 'убить/масштабировать креатив' раньше 48 часов. Сравнивать APV только внутри одинаковых бакетов длины (0-20 с / 21-40 с / 41-60 с / 60-180 с)."
+    }
+  ],
+  "machine_spec_notes": [
+    "КОНСТАНТА API_VIDEOS_INSERT_PER_PROJECT_PER_DAY = 100 (официально); API_SEARCH_LIST_PER_PROJECT_PER_DAY = 100; API_OTHER_UNITS_PER_DAY = 10000; сброс квоты в 00:00 America/Los_Angeles. Стоимости: videos.update=50, thumbnails.set=50, playlistItems.insert=50, commentThreads.insert=50, captions.insert=400",
+    "КОНСТАНТА SHORTS_MAX_DURATION_SEC = 180; SHORTS_CLAIM_SAFE_MAX_SEC = 58 (страховка от возможной глобальной блокировки claimed Shorts >60 с); SHORTS_TARGET_DURATION_SEC = 12..25 (эвристика hook/retention)",
+    "КОНСТАНТЫ МЕТАДАННЫХ: TITLE_MAX_CHARS=100 и запрет символов '<' '>'; DESCRIPTION_MAX_BYTES=5000 (байты UTF-8, не символы); TAGS_TOTAL_MAX_CHARS=500 (включая запятые и кавычки); HASHTAGS_HARD_LIMIT=60 (при превышении игнорируются ВСЕ), HASHTAGS_TARGET=2..5, HASHTAGS_SHOWN_ABOVE_TITLE=3",
+    "ПРАВИЛО УНИКАЛЬНОСТИ (Inauthentic content + Developer Policies III.C.3): title уникален 100% по всей сети каналов; description уникален; сценарий/озвучка уникальны (SimHash текста < порога); видеодорожка уникальна (pHash/видео-фингерпринт кадров, разные клипы, разные карты/оружие/сцены); пул >=8 TTS-голосов. Запрет: один mp4 на несколько каналов, один шаблон слайдшоу на всю сеть",
+    "ПРАВИЛО ЧАСТОТЫ (эвристика, настраиваемая): ramp-up по возрасту канала — 0-7 дн: 1 Short/сутки; 8-30 дн: 2/сутки; 30+ дн без страйков: 3/сутки; HARD_CEILING_PER_CHANNEL_PER_DAY=5; MIN_GAP_BETWEEN_UPLOADS_H=4 с рандомизацией ±40 мин; UPLOADS_PER_SESSION_MAX=15 (официальное ограничение UI)",
+    "ОБРАБОТКА ЛИМИТА: детект ошибки 'Upload limit reached' → channel.cooldown_until = now + 24h + jitter, переключение на следующий канал в очереди. Не зашивать недокументированную цифру дневного лимита",
+    "СТЕЙТ-МАШИНА СТРАЙКОВ (официальные числа): WARNING (истекает через 90 дн после policy training) → STRIKE1 = freeze загрузок 7 дней (в скрипте 8 дней) → STRIKE2 = freeze 14 дней (в скрипте 15) + вывод канала из ротации на 90 дней → при 2 активных страйках канал в QUARANTINE (не заливать вообще, риск удаления на 3-м). Страйк живёт 90 дней с момента выдачи; удаление видео страйк не снимает",
+    "ЗАПРЕТЫ (Fake engagement policy, официально): не покупать views/subs/likes/comments; не делать взаимную подписку между собственными каналами сети (попадает под формулировку sub4sub); не постить массовые однотипные комментарии с каналов сети; не ссылаться на сервисы накрутки",
+    "МЕТРИКИ РЕШЕНИЙ: источник истины = YouTube Analytics API (Advanced) — engagedViews, averageViewDuration, averageViewPercentage, 'stayed to watch'; publicViews только для отчётности. Пороги (эвристика, в конфиг): STAYED_TO_WATCH_PROMOTE>=0.70, NEUTRAL 0.50-0.70, KILL<0.30; SWIPE_AWAY_3S_MAX=0.25 для Shorts <30 с",
+    "ТАЙМИНГ СБОРА МЕТРИК: METRICS_FIRST_PULL_DELAY_H=48 (retention появляется через 1-2 дня), METRICS_FINAL_PULL_DELAY_H=168. Сравнение APV только внутри бакетов длины 0-20 / 21-40 / 41-60 / 61-180 с",
+    "ГЕО-ПОЛЯ (косвенные, официального таргетинга нет): snippet.defaultLanguage и snippet.defaultAudioLanguage = 'en' или 'en-GB'; страна канала = целевое ГЕО; язык речи и экранного текста = язык ГЕО; расписание постинга в часовом поясе ГЕО (эвристическое окно 14:00-18:00 локального). recordingDetails.location НЕ использовать — deprecated с 01.06.2017. Фактическая проверка гипотезы — только отчёт Viewer geography из Analytics API",
+    "АУДИО: игровую музыку в записи выключать (оставлять SFX+голос); использовать YouTube Audio Library или собственный звук. 0 музыкальных треков = 100% Shorts-выручки в Creator Pool; 1 трек = 50%, 2 трека = 33%. Плюс 'containing copyrighted material' делает видео неприемлемым для auto-dubbing",
+    "СУБТИТРЫ: burn-in в кадр (не captions.insert — 400 юнитов из 10 000/сутки). Safe area: не занимать верхние ~12% и нижние ~20% кадра (UI Shorts). Формат 1080x1920, 9:16",
+    "МОНТАЖНЫЕ ЗАПРЕТЫ (advertiser-friendly, официально): в первые 7 секунд и в превью — никакой графической игровой жестокости/крови (критично для DBD, Rust, Tarkov); блэклист сильного мата в title и thumbnail; запрет gameplay с sexual violence / hate-motivated violence / graphic torture",
+    "AUDIENCE: status.selfDeclaredMadeForKids = false; мониторить через videos.list, не переопределил ли YouTube флаг (для Roblox/Minecraft-роликов риск MFK высок — MFK отключает комментарии и ссылки и убивает воронку); алерт при переопределении",
+    "ССЫЛКИ: 1 ссылка в описании на первой строке + 1 уникальный pinned-комментарий на канал/ролик (не размноженный шаблон). Домен подписки держать отдельно от любых будущих account-shop-доменов — ссылки на 'unauthorized access to paid content (games, music, streaming)' запрещены политикой External links. Прямой HTTPS-URL без редирект-цепочек (иначе YouTube может удалить ссылку как непроверяемую)",
+    "ВОРОНКА: на каждом канале 3-8 long-form гайдов по 5-12 мин (точка конверсии), Shorts гонят на них трафик; 4-5 Shorts/месяц дают ~+47% просмотров long-form (industry data). Автозалив 1 long-form на канал в неделю из тех же ассетов",
+    "НЕ ЦЕЛЬ: YPP-монетизация (1 000 подписчиков + 10 000 000 engaged Shorts views за 90 дней недостижимо для новорегов; Shorts RPM $0.01-0.07). Целевая метрика скрипта — CTR в описание/bio и конверсия в триал, не RPM. Промежуточная веха для лучших каналов: 500 подписчиков + 3 публичные загрузки за 90 дней + 3 000 000 Shorts views за 90 дней",
+    "АРХИТЕКТУРА АККАУНТОВ: 1 канал = 1 запись с собственным OAuth refresh token; официального лимита каналов на Google-аккаунт в документации НЕТ — не зашивать константу. Developer Policies III.D.1.c требует ровно один API-проект на один API-клиент: масштабирование квоты через множество проектов для одного и того же клиента — нарушение политики и риск отзыва доступа, а не безопасное решение",
+    "НЕ ХРАНИТЬ и не сравнивать публичные view-счётчики разных эпох: поле metric_regime ('pre_2025_03_31' / '2025_03_31..2026_08_23' / 'post_2026_08_24') в таблице видео"
+  ],
+  "risks": [
+    "Сеть из ~20 однотипных каналов на ГЕО прямо подпадает под официальную формулировку Inauthentic content: 'Channels where content feels interchangeable from video to video are not allowed to monetize'. Для трафик-модели без YPP это не мгновенная смерть, но повышает вероятность ограничения охвата и попадания в спам-фильтры. Вероятность демонетизации при шаблонном контенте — высокая; вероятность удаления канала — средняя",
+    "Политика Fake engagement дословно запрещает 'automate or trigger ... actions'; API Developer Policies III.I.2 запрещает автоматизацию загрузок без явного согласия пользователя. Автозалив со своих каналов под своим OAuth формально согласие имеет, но любая автоматизация комментариев/лайков/подписок между каналами сети — прямое нарушение с риском страйка и удаления",
+    "Взаимные подписки между своими каналами для 'разгона' подпадают под официальный запрет sub4sub. Риск: warning → страйк → удаление",
+    "Content ID на игровой музыке: при активной претензии Short может быть заблокирован (по одному стороннему источнику — глобально для Shorts >60 с). Риск потери всего залитого объёма по конкретному шаблону монтажа. Официального Shorts-специфичного описания найти не удалось",
+    "Квота videos.insert = 100/сутки на проект — узкое место при масштабировании за ~30 каналов × 3 загрузки. Легальный путь — аудит на повышение квоты (проверяется соответствие ToS, а бизнес-модель 'массовый залив на сеть новорег-каналов' с высокой вероятностью аудит не пройдёт). Периодические аудиты также предусмотрены",
+    "Неправильно определённый флаг Made for kids на Roblox/Minecraft-контенте отключает комментарии и ссылки — воронка обрывается без уведомления о нарушении",
+    "Первые 7 секунд с кровью/килами и сильный мат в заголовке/превью = 'no ad earnings' по официальным advertiser-friendly guidelines; для DBD/Rust/Tarkov-клипов это системный риск, влияющий и на рекомендательный охват",
+    "Планируемая продажа игровых аккаунтов создаёт вторичный риск именно для YouTube-канала: официальная External links policy запрещает ссылки на сайты с 'unauthorized access to paid content (games, music, streaming services)'. Ссылка на такой домен из описания = основание для удаления видео и страйка, вплоть до потери всей сети каналов",
+    "Публичные view-числа с 31.03.2025 (Shorts) и с 24.08.2026 (все форматы) инфлированы — принятие решений по ним приведёт к масштабированию провальных креативов. Одна сторонняя модель оценивает разрыв в ~30%",
+    "Все retention-бенчмарки (70%/50%/30%, swipe-away <25%) — данные практиков, а не YouTube. Зашивать их как жёсткие константы опасно; только как настраиваемые параметры",
+    "Официальный дневной лимит загрузок не опубликован и меняется per-channel по истории аккаунта и стране. Любая фиксированная цифра в скрипте приведёт либо к недоиспользованию, либо к упору в лимит и подозрительной активности",
+    "Новорег-аккаунты + прокси + массовый залив: связка не описана ни в одной официальной политике как разрешённая или запрещённая по отдельности, но 'unusual upload volume' и 'spam-like activity' названы практиками как триггеры ограничения загрузок. Конкретных порогов нет — нет данных"
+  ],
+  "open_questions": [
+    "Бюджет WebSearch в этой сессии был исчерпан после 2 запросов (200/200 на сессию); остальные ~28 источников собраны прямым WebFetch по известным URL. Не удалось отработать запланированные запросы про гео-таргетинг Shorts, лимит каналов на Google-аккаунт и Content ID на Shorts через поиск — эти три темы остались частично закрытыми",
+    "Точный числовой лимит YouTube-каналов на один Google-аккаунт: официального значения в документации нет (нет данных). Практики называют цифры порядка сотни через Brand Accounts — не подтверждено",
+    "Официальный дневной лимит загрузок на канал: не публикуется. Диапазон практиков 10-20/сутки (новые) и 50-100 (устоявшиеся) — low confidence, не подтверждено YouTube",
+    "Применяется ли auto-dubbing к Shorts: в официальной документации ответа нет (нет данных). Требует проверки эмпирически на 1-2 тестовых каналах",
+    "Точный порог секунд, при котором view становится engaged view: YouTube формулирует как 'continue for some amount of time' без числа. Официального значения не существует",
+    "Официальное подтверждение правила 'Shorts >60 с с активной Content ID претензией блокируются глобально' найти не удалось — только сторонний источник (SocialRails). Требует проверки на официальной странице про копирайт в Shorts",
+    "Существует ли какой-либо управляемый механизм гео-таргетинга органических Shorts (аналог targeting в Ads): в официальной документации по рекомендациям не описан. Вес настроек 'страна канала' и defaultAudioLanguage не документирован — нет данных",
+    "Проходит ли аудит квоты YouTube Data API проект, автоматизирующий залив на собственную сеть каналов: критериев прохождения YouTube не публикует. Нет данных",
+    "Кликабельность ссылок в описании Shorts на мобильных клиентах в 2026: официального документа с явным ответом не найдено. Нет данных — требует эмпирического теста",
+    "Реальная конверсия Shorts-трафика в платную подписку для геймерской ниши: релевантных индустриальных данных не найдено. Нет данных",
+    "Насколько активно YouTube применяет Inauthentic content к каналам БЕЗ YPP (то есть к чисто трафиковым): политика сформулирована как монетизационная; влияние на органический охват не документировано — inference"
+  ]
+}

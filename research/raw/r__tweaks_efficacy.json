@@ -1,0 +1,304 @@
+{
+  "dimension": "tweaks_efficacy",
+  "summary": "Реальная эффективность \"твиков\" распадается на три группы. (1) ЧЕСТНО РАБОТАЕТ И ИЗМЕРЕНО: NVIDIA Reflex/Reflex 2 (проверено LDAT-замерами TFTCentral: −5 ms на 60 Hz, −1..2 ms на 240-360 Hz; вендорские данные NVIDIA: Fortnite 56→38 ms на GTX 1660 Super 1080p/60 Hz = −33%; Reflex 2 Frame Warp в THE FINALS 56→27→14 ms на RTX 5070), Game Mode + разгрузка фона (замер MakeUseOf 07.2026 на i7-13700H/RTX 4060 Laptop: средний FPS +0.4..1.6%, но 1% low CS2 142.3→154.6 = +8.6%, Forza Horizon 5 с открытыми Edge+Discord 48.2→71.5 = +48%), XMP/EXPO и апскейлеры (DLSS/FSR) в CPU-bound сценах, CPU undervolt+boost override (igor'sLAB 11.2024, 9800X3D: +12.5% @720p, +8.4% @1080p, +6.3% @1440p, при СНИЖЕНИИ потребления), отключение VBS/Memory Integrity (Microsoft официально признаёт бОльший удар по производительности на CPU без MBEC/GMET, т.е. Intel до Kaby Lake и AMD до Zen 2). (2) ШУМ ±0-3%: HAGS (Microsoft: \"users shouldn't notice any major differences in-game\"), ReBAR на NVIDIA в среднем, план питания, большинство \"debloat\"-скриптов. (3) ЧИСТЫЙ СНЕЙК-ОЙЛ: чистка реестра (Malwarebytes: \"digital snake oil\", Microsoft официально не поддерживает registry cleaners), RAM-бустеры, дефрагментация SSD, \"сетевые твики для снижения пинга\" (пинг = физика маршрута, реестром не меняется). ОТДЕЛЬНО критично: DLSS 5 (neural rendering) — НЕ ускоритель: Digital Foundry через XDA 11.09.2026, NBA 2K27 4K на RTX 5090: 128.4 → 62.7 FPS = −51.2%. Обещать \"x2 FPS\" нельзя. Главный риск проекта — технически грамотная аудитория (r/nvidia, r/pcmasterrace, Blur Busters) разносит проекты за завышенные цифры; защита от возвратов = протокол измерения до/после (CapFrameX/PresentMon/FrameView, 3 прогона одной сцены) в оффере, а не громкие цифры. ВАЖНО: в этой сессии бюджет WebSearch был исчерпан (200/200) внешними вызовами, а techspot/techpowerup/blurbusters/neogaf/web.archive отдали 403 — часть пунктов (ReBAR по играм, XMP-проценты, стоимость оверлеев в FPS, эффект отката драйвера, per-game настройки Fortnite/Valorant/CS2/Rust/DBD) НЕ подтверждена первичным замером и помечена low/medium confidence. Их надо доверифицировать перед публикацией цифр.",
+  "findings": [
+    {
+      "claim": "NVIDIA Reflex даёт наибольший выигрыш на слабом GPU при низком FPS и почти ничего не даёт на сильном GPU с высоким герцовкой. Независимые LDAT-замеры: RTX 3080 + Fortnite, 60 Hz ~33 ms off → ~28 ms on (−5 ms); 120 Hz ~18 → ~16 ms (−2 ms); 240 Hz ~13 → ~12 ms (−1 ms); 360 Hz ~12 → ~11 ms (−1 ms). 50 измерений на каждую настройку.",
+      "evidence": "TFTCentral собственные замеры LDAT на Asus ROG Swift PG259QNR + RTX 3080, Fortnite, усреднение 50 замеров на настройку (PC+Display latency).",
+      "source": "TFTCentral, \"NVIDIA Reflex - Measuring and Improving System Latency, Reflex Analyzer and NVIDIA LDAT\", https://tftcentral.co.uk/articles/nvidia_reflex",
+      "source_date": "2021-06-07, обновление 2021-10-28",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Честная формулировка для оффера: \"Reflex снижает системную латентность на 5-20 ms, если ты GPU-bound на 60-120 FPS; на 240 Hz+ выигрыш 1-2 ms\". Запрещено обещать фиксированное число ms без указания FPS/герцовки."
+    },
+    {
+      "claim": "Вендорские (NVIDIA) замеры Reflex: Fortnite, GTX 1660 Super, 1080p, 60 Hz: 56 ms → 38 ms (−18 ms, −32%). RTX 3080 + 144 Hz: 1080p 23→21 ms (−2 ms), 1440p 30→23 ms (−7 ms), 4K 49→31 ms (−18 ms). Официально: \"up to a 33% improvement in PC responsiveness\"; поддержка от GTX 900 и выше.",
+      "evidence": "Данные NVIDIA, приведённые в статье TFTCentral и в анонсе Reflex на сайте NVIDIA.",
+      "source": "NVIDIA GeForce News, \"Introducing NVIDIA Reflex: Optimize and Measure Latency in Competitive Games\", https://www.nvidia.com/en-us/geforce/news/reflex-low-latency-platform/ + TFTCentral (см. выше)",
+      "source_date": "2020-09-01",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Использовать как верхнюю границу: \"до −18 ms / −33% латентности на старых картах вроде GTX 1660 Super в 1080p\". Это ровно наш клиент (слабый ПК) — самый сильный честный аргумент оффера."
+    },
+    {
+      "claim": "Reflex 2 / Frame Warp: THE FINALS на RTX 5070, 4K, max settings: 56 ms базово → 27 ms с Reflex Low Latency (−52%) → 14 ms с Frame Warp (ещё −50%), итого −75%. VALORANT на RTX 5090: \"under 3 ms\". Оригинальный Reflex (2020) заявлен как −50% в среднем.",
+      "evidence": "Официальный анонс NVIDIA, вендорские замеры (не независимые).",
+      "source": "NVIDIA GeForce News, \"NVIDIA Reflex 2 With Frame Warp\", https://www.nvidia.com/en-us/geforce/news/reflex-2-even-lower-latency-gameplay-with-frame-warp/",
+      "source_date": "2025-01-06",
+      "kind": "official_policy",
+      "confidence": "medium",
+      "actionable": "Цифры −75% можно цитировать ТОЛЬКО как \"по данным NVIDIA, до −75% в поддерживаемых играх на RTX 50\". Нельзя выдавать за результат наших твиков: Frame Warp — фича игры/драйвера, не наш продукт."
+    },
+    {
+      "claim": "Windows Game Mode почти не меняет средний FPS (+0.4% … +1.6%), но заметно улучшает 1% low, особенно при фоновой нагрузке. Замеры (avg / 1% low, Game Mode OFF → ON): Cyberpunk 2077 1080p Ultra+DLSS 82.4/61.7 → 82.9/62.1; CS2 1080p competitive 245.1/142.3 → 246.8/154.6 (1% low +8.6%); Shadow of the Tomb Raider 1080p 114.7/82.1 → 115.2/83.0; Forza Horizon 5 1080p Extreme с открытыми Edge+Discord 94.6/48.2 → 96.1/71.5 (1% low +48.3%).",
+      "evidence": "Тест за месяц на i7-13700H + RTX 4060 Laptop 8 GB + 16 GB DDR5-5200 dual-channel, Windows 11 Pro 25H2, инструмент CapFrameX.",
+      "source": "MakeUseOf, Afam Onyimadu, \"I tested Windows Game Mode on and off for a month — here's what the benchmarks actually showed\", https://www.makeuseof.com/i-tested-windows-game-mode-for-month-what-benchmarks-actually-showed/",
+      "source_date": "2026-07-12",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Это ЛУЧШИЙ честный оффер под нашего клиента (ноутбук, Discord+браузер открыты): продавать \"плавность и 1% low\", а не средний FPS. Разрешённая формулировка: \"1% low +8-48% при открытых Discord/браузере (замер на RTX 4060 Laptop)\". Запрещено: \"Game Mode = +20 FPS\"."
+    },
+    {
+      "claim": "HAGS (Hardware-Accelerated GPU Scheduling) — эффект в пределах шума. Microsoft прямо заявляет, что пользователи не должны замечать серьёзной разницы в играх. Диапазон по обзорным источникам: −2% … +3% среднего FPS, иногда небольшое улучшение frame pacing/латентности.",
+      "evidence": "Цитата Microsoft: \"users shouldn't notice any major differences in-game. However, you may notice some positive changes when checking your CPU's temperature and load\". Независимого измеренного набора данных 2025-2026 с числами найти не удалось; все найденные источники с цифрами (−2%..+3%, +0.3%, +1% avg / +2% 1% low) — SEO/AI-сайты без опубликованной методики.",
+      "source": "Microsoft (цитата) через MakeUseOf, Razvan Mihaila, \"Windows 10 GPU Hardware Scheduling: Is It Worth Turning On?\", https://www.makeuseof.com/windows-10-gpu-hardware-scheduling-worth-turning-on/ ; цифровые диапазоны — irendering.net, thepcbottleneckcalculator.com, tier1settings.com (низкое доверие)",
+      "source_date": "дата статьи MakeUseOf не указана в материале; SEO-источники датированы 2025-2026",
+      "kind": "official_policy",
+      "confidence": "low",
+      "actionable": "HAGS включать в скрипт как опцию с A/B-замером, но в оффере НЕ обещать FPS. Разрешено: \"проверим, помогает ли HAGS на твоей конфигурации — эффект от −2% до +3%, решает замер\"."
+    },
+    {
+      "claim": "Отключение VBS / Memory Integrity (HVCI) — единственный крупный легитимный Windows-рычаг: Microsoft официально признаёт, что на CPU без Mode-Based Execution Control (Intel до Kaby Lake) и без Guest Mode Execute Trap (AMD до Zen 2) используется эмуляция Restricted User Mode, которая \"will have a bigger impact on performance\".",
+      "evidence": "Официальная документация Microsoft Learn, раздел заметок к Memory integrity. Конкретных процентов Microsoft не публикует.",
+      "source": "Microsoft Learn, \"Enable memory integrity\", https://learn.microsoft.com/en-us/windows/security/hardware-security/enable-virtualization-based-protection-of-code-integrity",
+      "source_date": "ms.date 2026-08-14, updated 2026-08-20",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Честно: \"на старых CPU (Intel < Kaby Lake, AMD < Zen 2) отключение Memory Integrity даёт наибольший из Windows-эффектов — по признанию Microsoft\". ОБЯЗАТЕЛЬНО дисклеймер: это снижение защиты ядра; не трогать Secure Boot/TPM (иначе Valorant/Vanguard перестанет запускаться). Процент не называть — у Microsoft его нет."
+    },
+    {
+      "claim": "Чистка реестра — снейк-ойл. \"Потенциальные улучшения производительности от этих программ в лучшем случае ничтожны и незаметны, в худшем — могут повредить компьютер настолько, что потребуется переустановка ОС\". Microsoft: \"Microsoft does not support the use of registry cleaners\". Воспринимаемый эффект назван \"компьютерной версией эффекта плацебо\".",
+      "evidence": "Статья Malwarebytes Labs; количественных бенчмарков нет ни у кого — только утверждение о незаметности эффекта.",
+      "source": "Malwarebytes Labs, \"Registry Cleaners: Digital Snake Oil\", https://www.malwarebytes.com/blog/news/2015/06/digital-snake-oil",
+      "source_date": "2015-06-23",
+      "kind": "myth_debunk",
+      "confidence": "high",
+      "actionable": "ЗАПРЕТИТЬ в продукте и в видео: \"чистка реестра\", \"registry cleaner\", \"registry optimizer\". Наоборот, использовать как маркетинговый дифференциатор: \"мы не чистим реестр — это плацебо, вот почему\". Это же лучший контент-хук против конкурентов."
+    },
+    {
+      "claim": "DLSS 5 (3D-guided neural rendering, дебют в NBA 2K27) — НЕ бустер FPS, а тяжёлая фича качества картинки: RTX 5090, 4K: 128.4 FPS без DLSS 5 → 62.7 FPS с DLSS 5 = −51.2%, плюс существенный рост энергопотребления.",
+      "evidence": "Бенчмарк Digital Foundry, пересказанный XDA. На момент статьи NBA 2K27 — единственная игра с официальной поддержкой DLSS 5.",
+      "source": "XDA Developers, Abhinav Raj, \"Nvidia's RTX 5090 loses half its power to DLSS 5\", https://www.xda-developers.com/nvidias-rtx-5090-loses-half-its-power-to-dlss-5-and-their-usual-trick-wont-save-it/ (данные Digital Foundry)",
+      "source_date": "2026-09-11",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "КРИТИЧНО для скрипта: в 2026 нельзя писать \"включи DLSS 5 = больше FPS\". Правильный месседж: \"DLSS Super Resolution (Quality/Balanced/Performance) = больше FPS; DLSS 5 neural rendering и Frame Gen — про картинку/сглаженность, не про реальный отклик\"."
+    },
+    {
+      "claim": "DLSS 4 Multi Frame Generation: вендорские заявления — до 8x FPS относительно brute-force рендера, до 1.7x при переходе с FG на MFG на RTX 50; новая AI-модель FG на 40% быстрее и на 30% меньше VRAM; Warhammer 40k: Darktide 4K max с FG: +10% FPS и −400 MB VRAM; \"PC latency halved\" в Cyberpunk 2077; 4K 240 FPS full ray tracing на RTX 5090.",
+      "evidence": "Официальный анонс NVIDIA, вендорские замеры.",
+      "source": "NVIDIA GeForce News, \"DLSS 4 Multi Frame Generation & AI Innovations\", https://www.nvidia.com/en-us/geforce/news/dlss4-multi-frame-generation-ai-innovations/",
+      "source_date": "2025-01-06",
+      "kind": "official_policy",
+      "confidence": "medium",
+      "actionable": "Frame Generation/MFG требует RTX 40/50 — у нашей ЦА (слабые ПК, GTX 1650/1060, RTX 3050, ноутбучные iGPU) её НЕТ. В таргетинге по слабому железу запрещено использовать цифры \"8x\" и \"1.7x\": это мгновенный триггер разноса в комментариях."
+    },
+    {
+      "claim": "CPU undervolt (Curve Optimizer) + умеренный boost override даёт измеримый прирост при CPU-bound нагрузке и при этом снижает потребление: Ryzen 7 9800X3D + RTX 4090 + DDR5-6000 CL30, stock → OC(+200 MHz)+UV: +12.5% @720p, +8.4% @1080p, +6.3% @1440p; P1 low (1% low) @1080p +11-12%; отдельные игры почти +20%. Разогнанная версия с Curve Optimizer оказалась экономичнее стоковой по ваттам.",
+      "evidence": "igor'sLAB, собственный тестстенд: MSI MAG X870E Carbon WiFi, RTX 4090, 2x16 GB T-Force DDR5-6000 CL30, кастомная СЖО; Blender full load 81 °C.",
+      "source": "igor'sLAB, \"AMD Ryzen 7 9800X3D in a Gaming Review: Benchmarks, Overclocking, Undervolting\", https://www.igorslab.de/en/amd-ryzen-7-9800x3d-in-gaming-test-overclocked-undervolted-and-found-to-be-good/",
+      "source_date": "2024-11-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "ОБЯЗАТЕЛЬНАЯ оговорка: замер сделан с RTX 4090 на 720p/1080p, т.е. в искусственно CPU-bound сценарии. На слабом GPU (наша ЦА) тот же undervolt даст ~0-3% FPS, но реальные −5..−15 °C и меньше throttling на ноутбуке. Честный оффер для ноутбуков: \"ниже температуры и меньше троттлинга\", а не \"+8% FPS\"."
+    },
+    {
+      "claim": "Resizable BAR / SAM: эффект сильно title-dependent и может быть отрицательным. Заявленные по играм значения: Assassin's Creed Valhalla +19%, Hitman 2 +18%, Borderlands 3 +14%, Godfall +13%, A Plague Tale: Requiem +27%; Forza Horizon 4 +11% @1080p / +9% @1440p / +6% @4K; Horizon Zero Dawn всего +3-5%; Cyberpunk 2077 на RX 6900 XT — ReBAR УХУДШАЛ 1% и 0.1% low на 1080p/1440p; Doom: The Dark Ages на RTX 5090 — разницы практически нет.",
+      "evidence": "Значения получены из выдачи поиска, ссылающейся на TechPowerUp (тест 22 игры, 3 разрешения, RTX 3090/3080/3070/3060 Ti), SFF.Network (RX 6900 XT), BabelTechReviews. Первичные страницы TechPowerUp и TechSpot в этой сессии отдали HTTP 403, web.archive.org недоступен — числа НЕ подтверждены чтением первоисточника.",
+      "source": "TechPowerUp, \"NVIDIA PCI-Express Resizable BAR Performance Test\" https://www.techpowerup.com/review/nvidia-pci-express-resizable-bar-performance-test/27.html ; SFF.Network https://smallformfactor.net/articles/amd-radeon-6900xt-resizable-bar-benchmarks/ ; TechSpot https://www.techspot.com/review/2234-nvidia-resizable-bar/",
+      "source_date": "тесты 2021, упоминания 2025",
+      "kind": "industry_data",
+      "confidence": "low",
+      "actionable": "Распространённое утверждение \"ReBAR = +10% в среднем\" НЕ подтверждено и почти наверняка завышено для NVIDIA (там среднее близко к единицам процентов при выбросах в отдельных играх). В оффере: \"проверим ReBAR и оставим включённым только там, где он реально помогает — в части игр он снижает 1% low\". ДОВЕРИФИЦИРОВАТЬ перед публикацией любых процентов."
+    },
+    {
+      "claim": "XMP/EXPO: реальный прирост есть, но в разы меньше вирусных обещаний. Найденные конкретные значения: Cyberpunk 2077 Phantom Liberty — 7800X3D +4%, 7700X +9% при более быстрой DDR5. Существует профильный тест Hardware Unboxed/TechSpot \"Cheap vs Premium DDR5: Stock vs EXPO/XMP\" по 13 играм.",
+      "evidence": "Цифры из выдачи поиска со ссылкой на TechSpot/Hardware Unboxed; первичные страницы TechSpot (review/2866) и зеркала NeoGAF/IconEra в этой сессии вернули 403 / bot-check, поэтому полный набор чисел не прочитан.",
+      "source": "TechSpot / Hardware Unboxed, \"Cheap vs. Premium DDR5: Stock vs. EXPO/XMP Memory\", https://www.techspot.com/review/2866-ddr5-ram-stock-vs-xmp-expo/",
+      "source_date": "обзор ~2024-2025, упоминания 2025",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Рабочий честный диапазон для оффера: JEDEC→XMP/EXPO ≈ +4..+10% среднего FPS в CPU-bound играх, больше по 1% low, ~0% когда узкое место — GPU. ЗАПРЕЩЁННЫЕ формулировки (встречаются у конкурентов): \"+15-30% от XMP на AMD\", \"+20-30 FPS от XMP\"."
+    },
+    {
+      "claim": "МИФ, активно распространяемый в коротких видео: \"включение XMP даёт +20-30 FPS\". Это ровно тот контент-формат, в котором мы будем конкурировать, и ровно та цифра, за которую разносят в комментариях.",
+      "evidence": "TikTok-видео: \"I've seen folks say that with intel XMP enabled for example, they see an increase of around 20-30 fps in some games\" — без методики и железа.",
+      "source": "TikTok @gg.sheed, https://www.tiktok.com/@gg.sheed/video/7431595702699969835",
+      "source_date": "видео датируется по ID ~конец 2024",
+      "kind": "myth_debunk",
+      "confidence": "medium",
+      "actionable": "Контент-стратегия: делать \"myth-busting\" видео против таких заявлений — это одновременно и хук, и репутационная броня. В нашем скрипте — жёсткий блок-лист фраз с \"+NN FPS\" без указания железа и разрешения."
+    },
+    {
+      "claim": "AMD выпустила EXPO 1.2 с режимом \"Ultra-Low-Latency\"; профильный разбор igor'sLAB озаглавлен \"No-brainer, questionable communication and a missed opportunity\", т.е. вывод скорее сдержанно-негативный.",
+      "evidence": "Заголовок и дата статьи получены из site-search igor'sLAB; тело статьи в этой сессии не загрузилось (пустой ответ дважды).",
+      "source": "igor'sLAB, \"No-brainer, questionable communication and a missed opportunity – Benchmark preview of AMD EXPO 1.2 and 'Ultra-Low-Latency' mode\", https://www.igorslab.de/en/no-brainer-questionable-communication-and-a-missed-opportunity-benchmark-preview-of-amd-expo-1-2-and-ultra-low-latency-mode/",
+      "source_date": "2026-06-24",
+      "kind": "industry_data",
+      "confidence": "low",
+      "actionable": "Нет данных по цифрам. Не использовать EXPO 1.2 / Ultra-Low-Latency как аргумент оффера до прочтения статьи. Пометить как TODO-верификацию."
+    },
+    {
+      "claim": "Изменения уровня всего стека (ОС/драйвер), а не реестровые твики, дают двузначные проценты — и в обе стороны. Cyberpunk 2077 1440p UW: RX 9070 XT 101 FPS (Windows) vs 131 FPS (Linux) = +30% в пользу Linux; но RTX 5080 116 FPS (Windows) vs 89 FPS (Linux) = −23%. По 17 играм AMD-карта на Linux достигала 98% от Windows на 1080p и 95% на 1440p UW.",
+      "evidence": "Сводка бенчмарков 17 игр, Radeon 9070 XT и RTX 5080.",
+      "source": "Notebookcheck, Anmol Dubey, \"Linux gaming in 2025 shows big gains...\", https://www.notebookcheck.net/Linux-gaming-in-2025-shows-big-gains-as-Radeon-9070-XT-hits-196-FPS-in-Cyberpunk-2077-while-RTX-5080-delivers-163-FPS.1092156.0.html",
+      "source_date": "2025-08-21",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Использовать как внутренний калибр ожиданий: если смена ОС целиком даёт ±5-30%, то набор твиков внутри одной Windows физически не может давать \"+50 FPS\". Ставит верхнюю границу на любые обещания продукта."
+    },
+    {
+      "claim": "Сетевые твики (TCP/IP реестр, 'network optimizer', отключение Nagle, RSS/RSC, MTU) не могут снизить ping/RTT: RTT определяется физическим маршрутом, числом хопов и загрузкой каналов провайдера, а не параметрами стека на клиенте. Ощутимый эффект возможен только на bufferbloat/jitter при локальной перегрузке апстрима.",
+      "evidence": "Технический вывод (inference) из принципа работы RTT; ИЗМЕРЕННОГО источника в этой сессии получить не удалось — бюджет WebSearch исчерпан, blurbusters.com отдал 403.",
+      "source": "нет данных (первоисточник не загружен); механизм — общеизвестная сетевая теория",
+      "kind": "inference",
+      "confidence": "medium",
+      "actionable": "ЖЁСТКИЙ ЗАПРЕТ в оффере и в видео: \"снизим твой ping на N ms\", \"fix your ping\", \"lower ping tweaks\". Допустимо только: \"уменьшим jitter/packet loss за счёт QoS и отключения фонового трафика\" — и то без чисел. Обещание пинга = прямой путь к возвратам и чарджбэкам."
+    },
+    {
+      "claim": "Дефрагментация SSD/NVMe не даёт FPS и вредна для ресурса: Windows сама применяет TRIM/retrim по расписанию через Optimize Drives, а не classic defrag. FPS зависит от GPU/CPU/RAM, а не от фрагментации файлов; накопитель влияет на время загрузки и streaming-стуттер в открытых мирах, но не на средний FPS.",
+      "evidence": "Механизм задокументирован Microsoft (Optimize Drives выполняет retrim на SSD). Конкретную страницу Microsoft в этой сессии открыть не удалось (404 по пробным URL).",
+      "source": "нет данных (страница Microsoft не загружена); механизм — платформенная документация Windows Optimize Drives",
+      "kind": "inference",
+      "confidence": "medium",
+      "actionable": "ЗАПРЕТИТЬ: \"defrag for FPS\", \"дефраг SSD = плавнее игра\". Разрешено: \"проверим health/temp накопителя и отключим лишний фоновый I/O\" без обещания FPS."
+    },
+    {
+      "claim": "Оверлеи (Discord, NVIDIA App/GeForce Experience, Steam, Xbox Game Bar, RTSS/MSI AB) имеют измеримую, но обычно небольшую стоимость в FPS; отдельные версии оверлеев вызывали регрессии в несколько процентов и более, после чего исправлялись патчем. Точных подтверждённых цифр в этой сессии получить не удалось.",
+      "evidence": "Нет данных: первичные материалы (TechSpot/Tom's Hardware о регрессии оверлея NVIDIA App начала 2025) в этой сессии недоступны (403/404), WebSearch-бюджет исчерпан. Не публиковать конкретные проценты без верификации.",
+      "source": "нет данных",
+      "kind": "inference",
+      "confidence": "low",
+      "actionable": "В продукте: делать A/B-замер с оверлеями и без, и показывать клиенту ЕГО цифру. В оффере: \"отключим лишние оверлеи и измерим разницу на твоём ПК\" — без процентов. Диапазон ожидания (low confidence): 0-5% среднего FPS, больше на слабых CPU."
+    },
+    {
+      "claim": "Debloat-скрипты и массовое отключение служб Windows: измеренного прироста FPS в 2025-2026 подтвердить не удалось; риск поломки Windows Update, Defender, установщика игр и античитов высок.",
+      "evidence": "Нет данных: поиск по этой теме не был выполнен (бюджет WebSearch 200/200 исчерпан), site-search по XDA/MakeUseOf релевантных тестов не вернул.",
+      "source": "нет данных",
+      "kind": "inference",
+      "confidence": "low",
+      "actionable": "Диапазон ожидания (low confidence): 0-3% среднего FPS на современном железе; до 5-10% по 1% low на очень слабых 2-4-ядерных CPU за счёт освобождения потоков. В оффере НЕ обещать FPS от debloat; продавать как \"меньше фоновых процессов = меньше микрофризов\". Не отключать: Windows Update, Defender (если нет замены), Audio, Xbox-сервисы, необходимые для игр Game Pass."
+    },
+    {
+      "claim": "План питания (Balanced / High Performance / Ultimate Performance) — измеренных данных 2025-2026 подтвердить не удалось. На десктопе эффект обычно в пределах шума, на ноутбуке решает не план питания, а профиль производителя/лимиты мощности (TGP, Dynamic Boost) и температурный троттлинг.",
+      "evidence": "Нет данных: поиск по теме выполнить не удалось (бюджет WebSearch исчерпан).",
+      "source": "нет данных",
+      "kind": "inference",
+      "confidence": "low",
+      "actionable": "Для ноутбучной ЦА реальный рычаг — не Windows power plan, а вендорский режим производительности (Armoury Crate / MyASUS / Lenovo Vantage / MSI Center) + чистка от пыли + термопрокладки/паста. Это честный и заметный эффект, но его нельзя продать как \"твик реестра\". В оффере: \"настроим лимиты мощности и охлаждение\" без числа FPS."
+    },
+    {
+      "claim": "Откат/обновление драйвера GPU: измеренных данных о выигрыше от конкретных версий в этой сессии нет. Механизм реален (регрессии в отдельных ветках драйверов), но величина эффекта — от 0 до единиц процентов на игру, и всегда title-specific.",
+      "evidence": "Нет данных: подтверждённых бенчмарков версий драйверов 2025-2026 в этой сессии не получено.",
+      "source": "нет данных",
+      "kind": "inference",
+      "confidence": "low",
+      "actionable": "В продукте: держать таблицу \"игра → рекомендованная ветка драйвера\", обновляемую вручную, и делать откат только по факту замера. В оффере: \"подберём версию драйвера под твои игры\" — без процентов."
+    },
+    {
+      "claim": "Per-game настройки (Fortnite Performance Mode, Valorant, CS2 launch options, Rust, Dead by Daylight): официальных или независимых замеров с числами в этой сессии получить не удалось. Официальная страница Epic о Performance Mode отдала 403, NVIDIA guides по слагам — 404.",
+      "evidence": "Нет данных: fortnite.com 403, nvidia.com/geforce/guides/... 404, WebSearch-бюджет исчерпан.",
+      "source": "нет данных",
+      "kind": "inference",
+      "confidence": "low",
+      "actionable": "Это САМАЯ конвертящая часть контента (\"Fortnite Performance Mode = +X FPS на GTX 1650\") — и именно её нужно замерять САМИМ на 3-4 референсных конфигурациях, а не брать из интернета. Свои замеры = и контент, и защита от возвратов, и юридически чистые цифры (\"измерено на нашем стенде\")."
+    },
+    {
+      "claim": "Ключевой технический аргумент против громких обещаний: время кадра — арифметика, а не магия. 60 FPS = 16.7 ms на кадр, 120 FPS = 8.3 ms, 240 FPS = 4.2 ms. Переход 60→144 Hz монитора снижает вклад scanout/frame time сильнее, чем любой набор реестровых твиков; а Reflex на 240 Hz экономит 1 ms при том, что один кадр там уже 4.2 ms.",
+      "evidence": "Арифметика; согласуется с LDAT-замерами TFTCentral (падение выигрыша Reflex с 5 ms на 60 Hz до 1 ms на 360 Hz).",
+      "source": "расчёт + TFTCentral (см. выше)",
+      "kind": "inference",
+      "confidence": "high",
+      "actionable": "Контент-каркас: \"почему на 240 Hz твики почти ничего не дают, а на 60 Hz дают много\". Это одновременно объясняет, почему наш продукт полезен именно слабым ПК, и страхует от претензий владельцев топового железа."
+    },
+    {
+      "claim": "Reflex/Low Latency Mode работают ТОЛЬКО когда система GPU-bound. Если игра ограничена CPU или FPS закапан ниже потолка GPU, выигрыш стремится к нулю. NVIDIA Ultra Low Latency Mode (драйверный) заявлен как эффективный \"когда игра без капа и вы GPU-bound на 60-100 FPS\"; где есть Reflex (игровая интеграция) — он лучше драйверного режима.",
+      "evidence": "Согласуется с LDAT-данными TFTCentral (выигрыш падает с ростом FPS/Hz) и с формулировками обзорных источников; вендорская логика описана NVIDIA (Reflex выравнивает работу движка, устраняя GPU render queue).",
+      "source": "NVIDIA GeForce News (Reflex, 2020-09-01) + TFTCentral (2021) + обзорные источники по Low Latency Mode (nvidiareview.com, Blur Busters forums — 403 в этой сессии)",
+      "source_date": "2020-2021, подтверждений 2025-2026 не загружено",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Продуктовое правило: перед включением Reflex/LLM скрипт должен определить bottleneck (GPU util >95% = GPU-bound). Обещание латентности выдавать ТОЛЬКО для GPU-bound профилей. В CPU-bound случае честный ответ: \"Reflex тебе не поможет, поможет снижение настроек, влияющих на CPU, и XMP\"."
+    },
+    {
+      "claim": "Сторонние 'оптимизаторы'/'FPS boosters' (класс: RAM cleaners, game boosters, one-click optimizers) — снейк-ойл того же семейства, что registry cleaners: агрессивный маркетинг, завышенные отчёты об 'ошибках', bundled-установки, предустановленные чекбоксы. Эффект заявлен как незаметный.",
+      "evidence": "Malwarebytes Labs описывает механику обмана (progress bars, inflated error reports) как \"компьютерный эффект плацебо\"; Microsoft не поддерживает такой класс ПО. Также: \"реклама memory cleaners — на грани мошенничества, подталкивает пользователя к ненужному и потенциально опасному продукту\" (BleepingComputer forums).",
+      "source": "Malwarebytes Labs https://www.malwarebytes.com/blog/news/2015/06/digital-snake-oil (2015-06-23); BleepingComputer \"Are memory cleaners really snake oil?\" https://www.bleepingcomputer.com/forums/t/650232/are-memory-cleaners-really-snake-oil/",
+      "source_date": "2015-06-23 / форум без точной даты",
+      "kind": "myth_debunk",
+      "confidence": "high",
+      "actionable": "Репутационный риск №1: наш продукт по форме (платная подписка на 'твики') внешне НЕОТЛИЧИМ от этого класса. Обязательная дифференциация в оффере: (а) публичный список того, что мы НЕ делаем; (б) встроенный бенчмарк до/после; (в) открытая методика; (г) отсутствие 'one-click boost' без замера."
+    },
+    {
+      "claim": "Технически грамотная аудитория — реальная угроза проекту, а не гипотетическая: сообщества Blur Busters, r/nvidia, r/pcmasterrace, Gamers Nexus/Hardware Unboxed аудитория активно разбирают заявления о FPS и латентности и требуют методику (инструмент замера, сцену, число прогонов, 1% low, а не средний FPS).",
+      "evidence": "Наблюдаемая норма в источниках: TFTCentral публикует \"50 измерений на настройку\"; MakeUseOf публикует железо + CapFrameX + avg/1% low; igor'sLAB публикует полный стенд. Обзоры без методики (SEO-сайты вроде sagetweaks.com, tier1settings.com, bottleneckcalculator.us.com) выдают числа без стенда — именно их и разносят.",
+      "source": "методологические разделы: https://tftcentral.co.uk/articles/nvidia_reflex , https://www.makeuseof.com/i-tested-windows-game-mode-for-month-what-benchmarks-actually-showed/ , https://www.igorslab.de/en/amd-ryzen-7-9800x3d-in-gaming-test-overclocked-undervolted-and-found-to-be-good/",
+      "source_date": "2021 / 2026-07-12 / 2024-11-12",
+      "kind": "practitioner_report",
+      "confidence": "high",
+      "actionable": "Правило для ВСЕХ видео и лендинга: любая цифра сопровождается железом + разрешением + игрой + инструментом + метрикой (avg или 1% low). Цифра без этих 5 полей — запрещена на уровне скрипта (валидатор перед заливом)."
+    },
+    {
+      "claim": "Antic-heat/безопасность: Valorant (Riot Vanguard) на Windows 11 требует TPM 2.0 и Secure Boot; Vanguard блокирует ряд драйверов и утилит уровня ядра. Любой твик, отключающий Secure Boot или подгружающий kernel-драйвер, ломает доступ к игре или ведёт к бану/блокировке запуска.",
+      "evidence": "Требование TPM 2.0 + Secure Boot для Valorant на Win11 — публичная политика Riot; в этой сессии страницу Riot загрузить не удалось (WebSearch-бюджет исчерпан). Помечено как policy без загруженного первоисточника.",
+      "source": "нет данных (страница Riot не загружена); политика широко известна и стабильна с 2021",
+      "kind": "official_policy",
+      "confidence": "medium",
+      "actionable": "ЖЁСТКИЕ продуктовые ограничения: (1) НИКОГДА не отключать Secure Boot/TPM — целевая игра №2 (Valorant) перестанет запускаться; (2) не поставлять kernel-драйвер; (3) не трогать timer resolution/интеррапты способами, похожими на читерский софт; (4) в оффере явно: 'не влияет на античит, не модифицирует игровые файлы'. Нарушение = баны у клиентов = массовые возвраты и чарджбэки."
+    },
+    {
+      "claim": "Апскейлеры (DLSS Super Resolution / FSR / XeSS) — самый большой честный прирост FPS для слабого железа, потому что они снижают внутреннее разрешение рендера. Порядок величины задаётся математикой: Quality = 67% линейного разрешения (≈45% пикселей), Balanced ≈ 58% (≈34% пикселей), Performance = 50% (25% пикселей), Ultra Performance = 33% (≈11% пикселей).",
+      "evidence": "Коэффициенты масштабирования — документированные пресеты DLSS/FSR. Фактический прирост FPS всегда меньше обратного отношения пикселей из-за фиксированной CPU-нагрузки и стоимости самого апскейла.",
+      "source": "пресеты DLSS/FSR (официальная документация вендоров); подтверждённых независимых процентов в этой сессии не загружено (techpowerup 403)",
+      "kind": "platform_docs",
+      "confidence": "medium",
+      "actionable": "Честный оффер: 'апскейлинг в правильном пресете — обычно самый крупный прирост FPS на слабом GPU, но он масштабируется от пикселей, а не от магии; если ты CPU-bound, он почти не поможет'. ДОВЕРИФИЦИРОВАТЬ конкретные проценты своими замерами на 3-4 референсных ПК."
+    }
+  ],
+  "key_numbers": [
+    "Reflex, независимый LDAT-замер (TFTCentral, RTX 3080, Fortnite): 60 Hz 33→28 ms (−5 ms); 120 Hz 18→16 ms; 240 Hz 13→12 ms; 360 Hz 12→11 ms",
+    "Reflex, данные NVIDIA: GTX 1660 Super 1080p 60 Hz Fortnite 56→38 ms (−18 ms, −32%); RTX 3080 144 Hz: 1080p 23→21, 1440p 30→23, 4K 49→31 ms",
+    "Reflex официально: 'up to 33% improvement in PC responsiveness'; поддержка GTX 900+",
+    "Reflex 2 Frame Warp (NVIDIA, RTX 5070, THE FINALS 4K max): 56 → 27 → 14 ms = −75%; Valorant на RTX 5090 'under 3 ms'",
+    "Game Mode (i7-13700H + RTX 4060 Laptop, Win11 25H2, CapFrameX): средний FPS +0.4…+1.6%",
+    "Game Mode, 1% low: CS2 142.3 → 154.6 FPS (+8.6%); Forza Horizon 5 с Edge+Discord 48.2 → 71.5 FPS (+48.3%); Cyberpunk 61.7 → 62.1 (+0.6%)",
+    "HAGS: ожидаемо −2%…+3% avg FPS, Microsoft — 'no major differences in-game' (low confidence)",
+    "CPU OC+UV (9800X3D + RTX 4090, Curve Optimizer + 200 MHz): +12.5% @720p, +8.4% @1080p, +6.3% @1440p; 1% low +11-12% @1080p; потребление НЕ выросло",
+    "DLSS 5 neural rendering, NBA 2K27, RTX 5090, 4K: 128.4 → 62.7 FPS = −51.2% (Digital Foundry через XDA, 11.09.2026)",
+    "DLSS 4 MFG (вендор): до 8x vs brute force, до 1.7x FG→MFG на RTX 50, Darktide 4K +10% FPS и −400 MB VRAM, FG-модель на 40% быстрее и −30% VRAM",
+    "XMP/EXPO (medium confidence): Cyberpunk 2077 PL — 7800X3D +4%, 7700X +9%; рабочий диапазон +4…+10% avg, больше по 1% low, ~0% при GPU-bound",
+    "ReBAR (low confidence, первоисточники 403): AC Valhalla +19%, Hitman 2 +18%, Borderlands 3 +14%, Godfall +13%, A Plague Tale Requiem +27%, Forza Horizon 4 +11/+9/+6% (1080p/1440p/4K), Horizon Zero Dawn +3-5%, Cyberpunk на 6900 XT — УХУДШЕНИЕ 1%/0.1% low, Doom The Dark Ages RTX 5090 ≈ 0",
+    "Пресеты апскейла (доля линейного разрешения / доля пикселей): Quality 67%/45%, Balanced 58%/34%, Performance 50%/25%, Ultra Performance 33%/11%",
+    "Frame time: 60 FPS = 16.7 ms, 120 FPS = 8.3 ms, 240 FPS = 4.2 ms",
+    "OS/стек целиком (Linux vs Windows, 17 игр): AMD 9070 XT достигает 98% Windows @1080p и 95% @1440p UW; Cyberpunk 1440p UW 101 → 131 FPS (+30%), но RTX 5080 116 → 89 FPS (−23%)",
+    "Registry cleaners: прирост 'at best minuscule and unperceivable' (Malwarebytes); Microsoft официально не поддерживает"
+  ],
+  "machine_spec_notes": [
+    "CONST CLAIM_VALIDATOR_REQUIRED_FIELDS = [hardware_cpu, hardware_gpu, resolution, game, measurement_tool, metric(avg|1%low)] — любой видеоскрипт/подпись/оверлей с числом FPS или ms без всех 6 полей блокируется до залива.",
+    "BLOCKLIST_REGEX (отклонять титры/описания/подписи): '(\\\\+|плюс\\\\s*)\\\\d{2,}\\\\s*(FPS|фпс)' без hardware-контекста; 'x2 FPS|double your FPS|2x FPS|удвой(те)? FPS'; '(lower|reduce|fix)\\\\s+(your\\\\s+)?ping'; 'снизим? пинг|меньше пинг'; 'registry clean|чистка реестра|registry optimi[sz]'; 'defrag(ment)?\\\\s+(ssd|nvme)|дефраг(ментация)? SSD'; 'RAM (booster|cleaner)|очистка ОЗУ для игр'; 'zero input lag|no input lag|0 ms (input )?lag|нулевой инпут лаг'; 'undetectable|bypass|обход античита'; 'guaranteed \\\\+\\\\d+%|гарантирован(о|ный) \\\\+\\\\d+%'; 'works on any PC|подойдёт любому ПК'; 'disable (all|90%) (windows )?services'; 'DLSS 5 (for|=) more FPS'",
+    "ALLOWLIST_CLAIM_TEMPLATES (разрешённые шаблоны с подстановкой измеренных значений): T1 '1% low +{X}% с открытыми Discord/браузером ({cpu}+{gpu}, {game}, {res}, CapFrameX)' — X из диапазона 5..50; T2 'системная латентность −{Y} ms при {fps} FPS на {gpu} (замер LDAT/Reflex Analyzer)' — Y из 1..20; T3 'XMP/EXPO: +{Z}% avg FPS в CPU-bound ({cpu})' — Z из 3..10; T4 'температуры −{T} °C и меньше троттлинга после undervolt ({cpu|gpu})'; T5 'подбор пресета апскейла: +{W}% FPS на {gpu} в {game}' — W только из собственного замера.",
+    "NUMERIC_CAPS (жёсткие потолки, выше — блок): max_claimed_avg_fps_gain_pct = 15; max_claimed_1pct_low_gain_pct = 50 (только с указанием фоновой нагрузки); max_claimed_latency_reduction_ms = 20; max_claimed_latency_reduction_pct = 35; ping_reduction_claims = FORBIDDEN (0).",
+    "PRODUCT_HARD_CONSTRAINTS (в утилиту и в скрипт): NEVER disable Secure Boot; NEVER disable TPM; NEVER ship kernel-mode driver; NEVER modify game files/DLL; NEVER touch Riot Vanguard / EAC / BattlEye / FACEIT AC processes; NEVER disable Windows Update or Defender без явного согласия и предупреждения.",
+    "TWEAK_TIER_TABLE (использовать как приоритет в утилите и как структуру контента): TIER_A (измеримо, продавать) = Reflex/Low Latency Mode при GPU-bound, апскейлер+пресет, XMP/EXPO, ReBAR (с A/B), VBS/Memory Integrity off на CPU без MBEC/GMET, undervolt+power limits, вендорский performance-профиль на ноутбуке, per-game settings из собственного замера; TIER_B (шум ±0-3%, только с A/B, без обещаний) = Game Mode, HAGS, план питания, отключение оверлеев, точечное отключение служб, откат драйвера; TIER_C (ЗАПРЕЩЕНО) = чистка реестра, RAM-бустеры, дефраг SSD, сетевые твики 'для пинга', сторонние one-click оптимизаторы, timer-resolution/interrupt-хаки.",
+    "BOTTLENECK_GATE: перед выдачей любого обещания по латентности утилита должна определить GPU util; если <95% (CPU-bound) — Reflex/LLM-обещания подавляются, выдаётся альтернативный сценарий (настройки с CPU-влиянием, XMP).",
+    "HARDWARE_TIER_GATE для таргетинга видео: не показывать креативы с цифрами DLSS 4 MFG / '8x' / '1.7x' аудитории со слабым железом (нет RTX 40/50) — это триггер разноса в комментариях; для GTX 10/16 и RTX 30 использовать Reflex-цифры GTX 1660 Super (56→38 ms).",
+    "REFUND_SHIELD (обязательный элемент оффера и онбординга): встроенный протокол замера before/after — CapFrameX или PresentMon/FrameView, одна и та же сцена, 3 прогона, отчёт с avg + 1% low + системной латентностью, автосохранение JSON. Это и доказательство результата, и основание для отказа в возврате.",
+    "ANTI-COMPETITOR CONTENT SLOTS (готовые myth-busting темы с источниками): (1) 'чистка реестра не даёт FPS' — Malwarebytes 2015-06-23 + позиция Microsoft; (2) 'XMP не даёт +20-30 FPS' — против TikTok-мифа; (3) 'дефраг SSD не даёт FPS'; (4) 'реестровые твики не снижают пинг'; (5) 'DLSS 5 не бустер: 128.4→62.7 FPS на RTX 5090' — Digital Foundry/XDA 2026-09-11; (6) 'почему на 240 Hz твики дают 1 ms, а на 60 Hz — 5 ms' — TFTCentral.",
+    "DISCLAIMER_STRING (вставлять в описание каждого видео и на лендинг): 'Results vary by hardware, game and settings. Figures are measured on the systems stated. No anti-cheat interaction, no game file modification, no Secure Boot/TPM changes.'",
+    "TODO_VERIFY перед публикацией цифр (сейчас low confidence, первоисточники недоступны): ReBAR per-game, XMP/EXPO проценты (TechSpot review/2866), стоимость оверлеев в FPS, эффект debloat/служб, эффект плана питания, откат драйвера, Fortnite Performance Mode / Valorant / CS2 / Rust / DBD per-game настройки, EXPO 1.2 Ultra-Low-Latency (igor'sLAB 2026-06-24)."
+  ],
+  "open_questions": [
+    "НЕ ПОДТВЕРЖДЕНО первоисточником: реальные средние проценты ReBAR на NVIDIA (TechPowerUp 22-game test) — страница отдала 403, web.archive недоступен. Популярное 'ReBAR = +10% в среднем' скорее всего завышено.",
+    "НЕТ ДАННЫХ: измеренный эффект отключения служб / debloat-скриптов на FPS и 1% low в 2025-2026 (диапазон-предположение 0-3% avg, 5-10% по 1% low на 2-4-ядерных CPU — low confidence).",
+    "НЕТ ДАННЫХ: измеренный эффект плана питания Windows (Balanced/High/Ultimate) в играх на десктопе и ноутбуке.",
+    "НЕТ ДАННЫХ: точная стоимость в FPS оверлеев Discord / NVIDIA App / Steam / Xbox Game Bar / RTSS в 2025-2026 (предположение 0-5%, low confidence).",
+    "НЕТ ДАННЫХ: измеренный эффект GPU undervolt/OC на FPS отдельно от CPU (есть только CPU-данные igor'sLAB для 9800X3D).",
+    "НЕТ ДАННЫХ: per-game замеры Fortnite Performance Mode, Valorant, CS2 launch options, Rust, Dead by Daylight — официальные страницы Epic и NVIDIA guides недоступны (403/404). Это надо мерить самим.",
+    "НЕТ ДАННЫХ: конкретные проценты DLSS/FSR/XeSS по пресетам на слабых GPU (GTX 1650, RTX 3050, ноутбучные) из независимых источников.",
+    "НЕТ ДАННЫХ: измеренная величина выигрыша от отключения VBS/HVCI в процентах FPS (Microsoft факт влияния признаёт, числа не публикует).",
+    "НЕ ПРОВЕРЕНО в этой сессии: актуальные требования Riot Vanguard (TPM 2.0 + Secure Boot на Win11) и списки блокируемых Vanguard/EAC драйверов — критично для дизайна утилиты, нужна прямая проверка страниц Riot и Epic/EAC.",
+    "НЕ ПРОЧИТАНО: igor'sLAB о AMD EXPO 1.2 / Ultra-Low-Latency (2026-06-24) — тело статьи не загрузилось; заголовок намекает на слабый результат.",
+    "ОТКРЫТО: даёт ли Reflex/Low Latency Mode измеримый выигрыш на iGPU и в Roblox/Minecraft (игры без интеграции Reflex) — вероятно нет, нужна проверка.",
+    "ОПЕРАЦИОННОЕ: бюджет WebSearch этой сессии исчерпан (200/200), а techspot.com, techpowerup.com, blurbusters.com, digitalcitizen.life, neogaf.com, ecosia, duckduckgo, mojeek, searx и web.archive.org отдали 403/captcha/недоступны. Для доверификации нужен либо поднятый лимит поиска, либо доступ к этим доменам."
+  ],
+  "risks": [
+    "РЕПУТАЦИОННЫЙ (высокая вероятность): продукт по форме идентичен классу 'PC optimizer / registry cleaner', который Malwarebytes и Microsoft публично называют снейк-ойлом. Без публичной методики и встроенного бенчмарка проект будет по умолчанию восприниматься как скам в r/pcmasterrace, r/nvidia, r/Fortnite и на Blur Busters.",
+    "ВОЗВРАТЫ/ЧАРДЖБЭКИ (высокая): обещание конкретного '+NN FPS' или '−N ms ping' не выполняется у клиента с другим bottleneck (CPU-bound, тепловой троттлинг ноутбука, VRAM). Каждый такой случай — запрос возврата; при доле диспутов >1% по Stripe/PayPal аккаунт уходит в мониторинг/блок.",
+    "АНТИЧИТ (средняя-высокая, катастрофический impact): твик, отключающий Secure Boot/TPM, ломает запуск Valorant (Vanguard); kernel-драйвер или манипуляции таймерами/прерываниями похожи на читерский софт и могут привести к блокировке запуска или банам в Valorant/Fortnite/CS2/Tarkov. Массовые баны клиентов = волна чарджбэков + публичный скандал.",
+    "ПОЛОМКА СИСТЕМЫ (средняя): агрессивный debloat / отключение служб ломает Windows Update, Defender, установку игр, Game Pass. Ответственность фактически на нас, при подписке — повод для возврата. Отключение Memory Integrity реально снижает защиту ядра — если у клиента после этого зловред, это наша проблема в публичном поле.",
+    "УСТАРЕВАНИЕ ЦИФР (высокая): DLSS 5 (2026) ведёт себя противоположно интуиции (−51% FPS на RTX 5090). Любые цифры в шаблонах видео устаревают за месяцы; автозалив с зашитыми процентами будет публиковать устаревшие/ложные утверждения — нужен централизованный, версионируемый claims-файл, а не хардкод в креативах.",
+    "НЕВЕРИФИЦИРОВАННЫЕ ИСТОЧНИКИ (высокая): значительная часть выдачи по этим темам в 2025-2026 — SEO/AI-сайты (sagetweaks.com, tier1settings.com, switchbladegaming.com, bottleneckcalculator.us.com, mypcbottleneck.com, thepcbottleneckcalculator.com) с числами без стенда и методики. Если скрипт будет скрейпить их для контента, он размножит фальшивые цифры и утопит проект.",
+    "ЮРИДИЧЕСКИЙ/РЕКЛАМНЫЙ (средняя, UK-позиционирование): конкретные численные обещания производительности без подтверждения = misleading advertising по нормам ASA/CAP Code в UK; плюс требования к правам на отказ от подписки. Обещания должны быть либо измеримыми на нашем стенде с раскрытой методикой, либо отсутствовать.",
+    "ПЛАТЁЖНЫЙ (высокая для смежных планов): продажа игровых аккаунтов нарушает ToS Epic/Riot/Valve и политики Stripe/PayPal — привязка такого направления к тому же мерчант-аккаунту, что и подписка на твики, ставит под удар основной денежный поток."
+  ]
+}
