@@ -503,6 +503,47 @@ def s_audit() -> str:
                '<th>Что это значит</th></tr></thead><tbody>' + "".join(bad)
                + '</tbody></table></div>') if bad else ""
 
+    hyg = R.d("source_hygiene.json")
+    bad_rows = "".join(
+        f'<tr><td class="rowlab">{e(x["source"])}<br>'
+        f'<span class="chip chip--stop">{e(x["status"])}</span></td>'
+        f'<td class="small"><s>{e(x["claim"])}</s><br>{e(x["why"])}</td>'
+        f'<td class="small">{e(x.get("use_instead", "—"))}</td></tr>'
+        for x in hyg.get("do_not_cite", []))
+    low_rows = "".join(
+        f'<tr><td class="rowlab">{e(x["source"])}</td>'
+        f'<td class="small" colspan="2">{e(x["why"])}</td></tr>'
+        for x in hyg.get("downgrade_to_low_confidence", []))
+    tri = "".join(f'<p><b>{e(x["claim"])}</b> — {e(x["why"])}</p>'
+                  for x in hyg.get("false_triangulation", []))
+    hygiene = ('<h3>Источники, на которых нельзя строить</h3>'
+               '<p>Аудиторы искали выдумки, а нашли кое-что хуже: мисатрибуцию. Ссылка '
+               'живая, домен настоящий, а числа в нём другие или их там нет вовсе — '
+               'проверкой «ссылка открывается» такое не ловится.</p>'
+               '<div class="tablewrap"><table><thead><tr><th>Источник</th>'
+               '<th>Что с ним не так</th><th>Чем заменить</th></tr></thead><tbody>'
+               + bad_rows + low_rows + '</tbody></table></div>'
+               + (f'<div class="callout"><h4>Ложная триангуляция</h4>{tri}'
+                  f'<p class="small">Три схемы, сославшиеся на один датасет, — это один '
+                  f'источник, а не три подтверждения. Вес считать соответственно.</p>'
+                  f'</div>' if tri else "")) if bad_rows else ""
+
+    cross = R.d("audit_stats.json").get("_crosscheck", {})
+    crosscheck = ""
+    if cross.get("confirmed"):
+        n = sum(cross.get(k, 0) for k in
+                ("confirmed", "partial", "corrected", "refuted", "gap"))
+        crosscheck = (f'<div class="callout"><h4>Проверку проверили ещё раз</h4>'
+                      f'<p>Западный блок по случайности достался ДВУМ аудиторам, не '
+                      f'знавшим друг о друге. Второй проход ({n} проверок) подтвердил '
+                      f'{cross.get("confirmed", 0)} чисел и нашёл то, чего не увидел '
+                      f'первый: подменённую волну опроса Piper Sandler, выдуманную '
+                      f'атрибуцию «Nominet» и завышенный втрое порог чарджбеков. Его '
+                      f'проверки не сложены с общим счётом — это были бы те же '
+                      f'утверждения дважды.</p>'
+                      f'<p class="small">Полностью: <span class="code">'
+                      f'docs/08-audit-geo_west__alt.md</span></p></div>')
+
     return sec("04", "audit", "Правки аудита",
                "Пять сводных аудиторов перепроверили выводы страновых агентов заново — не "
                "пересказом, а прямыми обращениями к первоисточникам. Здесь только то, что "
@@ -528,7 +569,7 @@ def s_audit() -> str:
                  '(доля игроков), UK 19% (доля денег), Швеция 12.5% (доля трат), Испания 28% '
                  '(доля населения). Сопоставимы только US 45% / FR ~40% / DE 34% и отдельно '
                  'UK 19% / SE 12.5%.</p></div>'
-               + table + methods)
+               + crosscheck + table + methods + hygiene)
 
 
 def s_factors() -> str:

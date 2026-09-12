@@ -2,7 +2,7 @@
   "geo_africa_cis_latam": {
     "confirmed": 19,
     "partial": 1,
-    "corrected": 0,
+    "corrected": 2,
     "refuted": 0,
     "gap": 0,
     "size": 41563
@@ -10,7 +10,7 @@
   "geo_mena_asia": {
     "confirmed": 17,
     "partial": 0,
-    "corrected": 3,
+    "corrected": 5,
     "refuted": 0,
     "gap": 0,
     "size": 15120
@@ -23,11 +23,19 @@
     "gap": 1,
     "size": 22963
   },
+  "geo_west__alt": {
+    "confirmed": 14,
+    "partial": 0,
+    "corrected": 2,
+    "refuted": 1,
+    "gap": 0,
+    "size": 27268
+  },
   "platform": {
     "confirmed": 18,
     "partial": 0,
     "corrected": 0,
-    "refuted": 1,
+    "refuted": 2,
     "gap": 0,
     "size": 42709
   },
@@ -42,8 +50,15 @@
   "_total": {
     "confirmed": 96,
     "partial": 7,
-    "corrected": 9,
-    "refuted": 4,
+    "corrected": 13,
+    "refuted": 5,
     "gap": 1
+  },
+  "_crosscheck": {
+    "confirmed": 14,
+    "partial": 0,
+    "corrected": 2,
+    "refuted": 1,
+    "gap": 0
   }
 }

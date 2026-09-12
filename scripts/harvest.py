@@ -3,10 +3,15 @@
 
 Имя файла включает идентификатор прогона для сводных агентов: у каждого воркфлоу
 свой агент с меткой "audit", и без разведения они перетирали друг друга.
+
+Читаются ТОЛЬКО прогоны ресерча из RUN_TAG. В той же директории живут журналы
+любых других воркфлоу сессии — аудитов готовности, разовых проверок, — и без
+этого фильтра их агенты сыпались в research/raw как исследовательские отчёты.
 """
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -25,6 +30,11 @@ RUN_TAG = {
 }
 
 
+def _safe(label: str) -> str:
+    """Метка агента -> безопасное имя файла."""
+    return re.sub(r"[^0-9A-Za-zА-Яа-я_.-]+", "_", label).strip("_")[:80] or "unnamed"
+
+
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     before = {p.name for p in OUT.glob("*.json")}
@@ -33,7 +43,9 @@ def main() -> int:
 
     for journal in sorted(WF.glob("*/journal.jsonl")):
         run = journal.parent.name
-        tag = RUN_TAG.get(run, run[:12])
+        if run not in RUN_TAG:                       # чужой воркфлоу, не ресерч
+            continue
+        tag = RUN_TAG[run]
         labels, done = {}, set()
         for line in journal.read_text(encoding="utf-8").splitlines():
             try:
@@ -49,7 +61,10 @@ def main() -> int:
                 if label.startswith("audit"):
                     name = f"audit__{tag}.json"
                 else:
-                    name = label.replace(":", "__") + ".json"
+                    # метку пишет автор воркфлоу, и в ней может оказаться что
+                    # угодно, включая слэш: без чистки имя файла превращается
+                    # в несуществующий путь и весь заход падает на полпути
+                    name = _safe(label.replace(":", "__")) + ".json"
                 # Одну и ту же страну могли посчитать два агента из разных прогонов.
                 # Перезаписывать нельзя: расхождение вердиктов — это сигнал о том,
                 # насколько вывод устойчив, и он должен дойти до отчёта.

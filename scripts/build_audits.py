@@ -23,25 +23,32 @@ TITLES = {
     "geo_west": "Аудит: западный блок (US/UK/CA/EU/ANZ/TR)",
     "geo_mena_asia": "Аудит: Ближний Восток и Азия",
     "geo_africa_cis_latam": "Аудит: Африка, СНГ и Латинская Америка",
+    "geo_west__alt": "Аудит западного блока — второй независимый проход",
 }
 
-HEADS = ("ПОДТВЕРЖДЕНО", "ОПРОВЕРГНУТО", "УСТАРЕЛО", "ЧАСТИЧНО ЛОЖНО", "ЛОЖНО", "ПРОБЕЛ")
-# Вердикт живёт либо в жирной ячейке таблицы, либо в поле JSON. Хвост важен:
-# "ПОДТВЕРЖДЕНО ЧАСТИЧНО" — не то же самое, что "ПОДТВЕРЖДЕНО".
-VERDICT = re.compile(r"\*\*(" + "|".join(HEADS) + r")([^*]*)\*\*"
-                     r"|\"verdict\"\s*:\s*\"(" + "|".join(HEADS) + r")([^\"]*)\"")
+# Аудиторы пишут вердикт по-разному: жирной ячейкой в таблице, полем JSON,
+# капсом или с одной заглавной. Регистр и хвост важны: "ПОДТВЕРЖДЕНО
+# ЧАСТИЧНО" — не то же самое, что "ПОДТВЕРЖДЕНО".
+HEADS = ("НЕ ПОДТВЕРЖДАЕТСЯ", "ПОДТВЕРЖДЕНО", "ПОДТВЕРЖДЁН", "ОПРОВЕРГНУТО",
+         "УСТАРЕЛО", "НЕВЕРНО", "МИСАТРИБУЦИЯ", "ЧАСТИЧНО ЛОЖНО", "ЛОЖНО", "ПРОБЕЛ")
+_ALT = "|".join(HEADS)
+VERDICT = re.compile(r"\*\*(" + _ALT + r")([^*]*)\*\*"
+                     r"|\"verdict\"\s*:\s*\"(" + _ALT + r")([^\"]*)\"",
+                     re.IGNORECASE)
 
 
 def classify(text: str) -> dict[str, int]:
     out = {"confirmed": 0, "partial": 0, "corrected": 0, "refuted": 0, "gap": 0}
     for bold, bold_tail, field, field_tail in VERDICT.findall(text):
         head, tail = (bold, bold_tail) if bold else (field, field_tail)
-        tail = tail.upper()
-        if head == "ПОДТВЕРЖДЕНО":
+        head, tail = head.upper(), tail.upper()
+        if head.startswith("НЕ ПОДТВЕРЖДАЕТСЯ"):
+            out["refuted"] += 1
+        elif head.startswith(("ПОДТВЕРЖДЕНО", "ПОДТВЕРЖДЁН")):
             out["partial" if "ЧАСТИЧНО" in tail else "confirmed"] += 1
-        elif head == "УСТАРЕЛО":
+        elif head in ("УСТАРЕЛО", "НЕВЕРНО", "МИСАТРИБУЦИЯ"):
             out["corrected"] += 1
-        elif head == "ПРОБЕЛ":
+        elif head.startswith("ПРОБЕЛ"):
             out["gap"] += 1
         else:
             out["refuted"] += 1
@@ -110,12 +117,20 @@ def main() -> int:
         (DOCS / f"08-audit-{tag}.md").write_text(doc, encoding="utf-8")
         stats[tag] = {**classify(body), "size": len(body)}
 
-    total = {k: sum(v[k] for v in stats.values())
-             for k in ("confirmed", "partial", "corrected", "refuted", "gap")}
+    # Западный блок случайно проверили ДВА аудитора, не знавших друг о друге.
+    # Складывать их проверки в общий счёт нельзя — это был бы двойной счёт
+    # одних и тех же утверждений. Второй проход идёт отдельной строкой как
+    # мера воспроизводимости самой проверки.
+    keys = ("confirmed", "partial", "corrected", "refuted", "gap")
+    total = {k: sum(v[k] for tag, v in stats.items() if not tag.endswith("__alt"))
+             for k in keys}
     stats["_total"] = total
+    stats["_crosscheck"] = {k: sum(v[k] for tag, v in stats.items()
+                                   if tag.endswith("__alt")) for k in keys}
     (DATA / "audit_stats.json").write_text(
         json.dumps(stats, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"аудитов: {len(stats) - 1}; " + ", ".join(f"{k}={v}" for k, v in total.items()))
+    print(f"аудитов: {len(stats) - 2}; " + ", ".join(f"{k}={v}" for k, v in total.items())
+          + f"; перепроверка: {stats['_crosscheck']}")
     return 0
 
 
