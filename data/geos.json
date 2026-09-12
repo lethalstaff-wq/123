@@ -3,7 +3,7 @@
     "purpose": "Гео-профили: язык, игры, сленг, цена, точка приёма, таймзона.",
     "source": "собрано scripts/build_geos.py из отчётов страновых агентов",
     "priority": "1 = стартовое гео, 2 = второй эшелон, 3 = третий, 9 = не брать (planner игнорирует > 3)",
-    "countries": 24,
+    "countries": 25,
     "overrides_applied": [
       "ae",
       "af_fr",
@@ -1102,6 +1102,63 @@
       ],
       "needs_local_ip": false,
       "notes": "РАЗДВОЕННОЕ ГЕО: лучший в мире охват — худшая в мире монетизация под ИМЕННО этот оффер.\n\nЗА: TikTok 180 млн взрослых 18+ (DataReportal Digital 2026: Indonesia, данные за окт 2025) — САМАЯ БОЛЬШАЯ рекламная аудитория TikTok в мире, больше США. Интернет 230 млн / 80.5%, соцсети 180 млн (+26% г/г — сам"
+    },
+    {
+      "code": "in",
+      "name": "Индия (India)",
+      "priority": 3,
+      "payment_blocked": false,
+      "verdict_reason": "Брать, но только как дешёвый объёмный гео с отдельным дешёвым SKU и полной изоляцией от UK-ядра. ЗА: 1.03 млрд интернет-пользователей (70.0%), YouTube ad reach 500 млн, Instagram 481 млн, Facebook 403 млн (DataReportal Digital 2026: India, 05.11.2025); ~591 млн геймеров, 66% из не-метро (Lumikai / The Hindu, 12.11.2024); самый дешёвый холодный охват в мире. ПРОТИВ: после запрета real-money gaming (Online Gaming Act 2025, в силе с ~01.10.2025; финальные правила MeitY 22.04.2026) рынок игр упал с ~$6 млрд до ~$1.0-1.5 млрд (Fortune India, май 2026; Outlook Respawn 23.03.2026). Грубый ARPU = $1.5",
+      "content_language": "hi",
+      "voiceover_language": "en",
+      "subtitle_language": "en",
+      "english_works": "Выборочно. Английский — язык всего геймерского дискурса Индии; среди целевых 13-24 в городах и tier-2 владение заметно выше среднего по стране. Чистый английский зайдёт на технических каналах (1% low, frametime, CS2/Valorant) и даёт бонус: такие ролики подхватывают UK/US/PH-зрители, что частично оку",
+      "timezone": "Asia/Kolkata",
+      "top_games": [
+        "BGMI",
+        "Free Fire",
+        "Valorant",
+        "GTA V",
+        "Minecraft",
+        "CS2",
+        "Roblox",
+        "Delta Force",
+        "Fortnite",
+        "Warzone"
+      ],
+      "slang": [
+        "bhai",
+        "OP",
+        "noob",
+        "hakla raha hai",
+        "jhol hai",
+        "chapri",
+        "jugaad",
+        "paisa vasool",
+        "sasta",
+        "purana laptop",
+        "faltu",
+        "mast",
+        "ekdum smooth",
+        "ghatiya",
+        "clutch maara"
+      ],
+      "price_tier": "low",
+      "price_points_usd": [
+        1.7
+      ],
+      "entry_point": "site",
+      "cta_language": "hi",
+      "payment_methods": [
+        "UPI — ОБЯЗАТЕЛЕН, без него гео не запускать. 19.47 млрд транзакций в июле 2025, 628 млн в день (Economic Times, 01.08.2025); ₹300 лакх крор за календарный 2025 (Deccan Chronicle, 01.01.2026). Steam подключил UPI в июле 2025 (EastMojo, 19.07.2025) — целевая аудитория уже привыкла платить им за игры",
+        "UPI AutoPay (e-mandate) — для подписки; объём удвоился за год, NPCI запустил портал управления мандатами (Economic Times, 25.12.2025). Лимит рекуррентного списания через UPI у Stripe — ₹15 000, разового — ₹100 000 (docs.stripe.com/payments/upi, фетч 09.2026)",
+        "RuPay-карты — массовые, но плохо работают для международных мерчантов",
+        "Кошельки Paytm / PhonePe / Google Pay — де-факто работают поверх UPI",
+        "НЕ полагаться на: международные Visa/Mastercard рекуррентные списания с индийских карт — системно отваливаются из-за RBI-режима e-mandate (документированные массовые сбои с 2021-2022 у Google, Apple и подписочных сервисов; India Today / Business Standard / Livemint, апрель-октябрь 2026 — обновлённые пороги: до ₹15 000 без OTP по токенизированным картам, выше — step-up аутентификация)",
+        "PayPal — низкое проникновение у индийских геймеров 13-24, не ставить основным"
+      ],
+      "needs_local_ip": false,
+      "notes": "Брать, но только как дешёвый объёмный гео с отдельным дешёвым SKU и полной изоляцией от UK-ядра. ЗА: 1.03 млрд интернет-пользователей (70.0%), YouTube ad reach 500 млн, Instagram 481 млн, Facebook 403 млн (DataReportal Digital 2026: India, 05.11.2025); ~591 млн геймеров, 66% из не-метро (Lumikai / T"
     },
     {
       "code": "iq",
