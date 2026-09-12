@@ -752,7 +752,22 @@ def s_gaps() -> str:
                "(прокси-инфраструктура, API автопостинга, покупные аккаунты, железная линейка, кейсы) "
                "не завершены. Отчёт пересобирается из данных, поэтому по мере готовности эти разделы "
                "дополняются без переписывания.")
-    honest = ('<div class="callout"><h4>Где данных нет и это признано</h4>'
+    audit = R.d("audit_stats.json")
+    conf = sum(v.get("confirmed", 0) for k, v in audit.items() if not k.startswith("_"))
+    refu = sum(v.get("refuted", 0) for k, v in audit.items() if not k.startswith("_"))
+    verified = ""
+    if conf:
+        verified = (f'<div class="callout callout--ok"><h4>Независимая проверка</h4>'
+                    f'<p>Отдельный агент заново проверил самые нагруженные утверждения — не пересказом '
+                    f'исследователей, а прямыми обращениями к первоисточникам: документация разработчика, '
+                    f'официальные справки и политики площадок. Результат: <b>{conf} подтверждено дословно, '
+                    f'{refu} опровергнуто</b>.</p>'
+                    f'<p class="small">Проверялись именно те числа, на которых держится архитектура: квоты '
+                    f'YouTube Data API, лимит публикаций Instagram и формула его квоты, ограничение '
+                    f'неаудированного клиента TikTok приватным режимом, сроки страйков, определение '
+                    f'просмотра Shorts.</p></div>')
+
+    honest = (verified + '<div class="callout"><h4>Где данных нет и это признано</h4>'
               '<p>Практический опыт операторов сетей — сколько каналов из двадцати взлетает, реальный '
               'burn rate аккаунтов, предел одного оператора — подтвердить не удалось: поисковые '
               'бюджеты агентов упирались в лимиты, а альтернативные поисковики отдавали капчу. Эти '
@@ -777,12 +792,17 @@ def build() -> str:
            ("gaps", "Пробелы")]
     nav_html = "".join(f'<a href="#{sid}">{i:02d} {e(label)}</a>'
                        for i, (sid, label) in enumerate(nav, start=1))
+    audit = R.d("audit_stats.json")
+    confirmed = sum(v.get("confirmed", 0) for k, v in audit.items() if not k.startswith("_"))
+    refuted = sum(v.get("refuted", 0) for k, v in audit.items() if not k.startswith("_"))
     meta = [
         (st["countries"], "стран разобрано"),
         (st["topics"], "тематических блоков"),
         (st["findings"], "находок с источниками"),
         (st["sources"], "уникальных источников"),
     ]
+    if confirmed:
+        meta.append((f"{confirmed}/{confirmed + refuted}", "проверок сошлось"))
     meta_html = "".join(
         f'<div class="meta__cell"><div class="meta__num">{n}</div>'
         f'<div class="meta__lab">{e(lab)}</div></div>' for n, lab in meta)
