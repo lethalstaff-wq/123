@@ -209,9 +209,23 @@ def load_overrides() -> dict[str, dict]:
             if not k.startswith("_")}
 
 
+def load_alts() -> dict[str, dict]:
+    """Вторые независимые расчёты тех же стран (два агента считали параллельно)."""
+    out = {}
+    for f in glob.glob(str(RAW / "geo__*__alt.json")):
+        code = Path(f).stem.replace("geo__", "").replace("__alt", "")
+        try:
+            out[code] = json.loads(Path(f).read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            pass
+    return out
+
+
 def load_reports() -> dict[str, dict]:
     out = {}
     for f in sorted(glob.glob(str(RAW / "geo__*.json"))):
+        if f.endswith("__alt.json"):
+            continue
         code = Path(f).stem.replace("geo__", "")
         try:
             out[code] = json.loads(Path(f).read_text(encoding="utf-8"))
@@ -222,7 +236,9 @@ def load_reports() -> dict[str, dict]:
 
 def build_geos(reports: dict[str, dict]) -> dict:
     overrides = load_overrides()
+    alts = load_alts()
     geos = []
+    conflicts = []
     for code, r in sorted(reports.items(), key=lambda kv: (
             VERDICT_TO_PRIORITY.get(kv[1].get("verdict", ""), 9), kv[0])):
         lang = r.get("language") or {}
@@ -232,9 +248,18 @@ def build_geos(reports: dict[str, dict]) -> dict:
         games = [_clean_game(g.get("game")) for g in (r.get("top_games") or []) if g.get("game")]
         games = [g for g in games if g]
         slang = _clean_slang(lang.get("slang_terms") or [])
+        # если страну считали дважды, берём более осторожный вердикт и помечаем расхождение
+        alt = alts.get(code)
+        alt_verdict = (alt or {}).get("verdict")
+        own_verdict = r.get("verdict", "")
+        verdict_conflict = bool(alt_verdict and alt_verdict != own_verdict)
+        if verdict_conflict:
+            conflicts.append({"code": code, "verdicts": sorted({own_verdict, alt_verdict})})
+
         codes = {str(c).lower() for c in (r.get("country_codes") or [])} | {code}
         payment_blocked = bool(codes & BLOCKED_BUYERS)
-        priority = VERDICT_TO_PRIORITY.get(r.get("verdict", ""), 9)
+        priority = max(VERDICT_TO_PRIORITY.get(own_verdict, 9),
+                       VERDICT_TO_PRIORITY.get(alt_verdict, 0) if alt_verdict else 0)
         if payment_blocked:
             priority = max(priority, 3)
         geos.append({
@@ -242,6 +267,8 @@ def build_geos(reports: dict[str, dict]) -> dict:
             "name": r.get("country") or code,
             "priority": priority,
             "payment_blocked": payment_blocked,
+            "verdict_conflict": verdict_conflict,
+            "verdicts_seen": sorted({own_verdict, alt_verdict}) if verdict_conflict else [own_verdict],
             "verdict_reason": (r.get("verdict_reason") or "")[:600],
             "content_language": content_lang,
             "voiceover_language": _lang_code(lang.get("voiceover_recommendation"), code),
@@ -269,6 +296,10 @@ def build_geos(reports: dict[str, dict]) -> dict:
             "priority": "1 = стартовое гео, 2 = второй эшелон, 3 = третий, 9 = не брать (planner игнорирует > 3)",
             "countries": len(geos),
             "overrides_applied": sorted(set(overrides) & {g["code"] for g in geos}),
+            "double_checked": sorted(alts),
+            "verdict_conflicts": conflicts,
+            "_conflict_note": ("Эти страны посчитали два независимых агента, и вердикты разошлись. "
+                               "Взят более осторожный; оба показаны в отчёте."),
             "needs_local_ip_note": "Гранулярность органической гео-выдачи = страна; город IP влияния не имеет. Поле означает только необходимость страново-корректного IP, не города.",
         },
         "geos": geos,

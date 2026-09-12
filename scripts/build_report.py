@@ -430,6 +430,8 @@ def s_geo() -> str:
             flags.append('<span class="chip chip--stop">платёж заблокирован</span>')
         if x["needs_split"]:
             flags.append('<span class="chip chip--warn">разделить кластер</span>')
+        if x.get("conflict"):
+            flags.append('<span class="chip chip--warn">вердикты разошлись</span>')
         body.append(
             f'<tr><td class="rowlab">{e(x["name"])}<br><span class="code">{e(x["code"])}</span>'
             f'{" " + " ".join(flags) if flags else ""}</td>'
@@ -788,7 +790,26 @@ def s_gaps() -> str:
                     f'неаудированного клиента TikTok приватным режимом, сроки страйков, определение '
                     f'просмотра Shorts.</p></div>')
 
-    honest = (verified + '<div class="callout"><h4>Где данных нет и это признано</h4>'
+    meta_geo = R.d("geos.json").get("_meta", {})
+    dbl = meta_geo.get("double_checked") or []
+    confl = meta_geo.get("verdict_conflicts") or []
+    repl = ""
+    if dbl:
+        rows = "".join(
+            f'<tr><td class="rowlab">{e(R.NAMES_RU.get(c["code"], c["code"]))}</td>'
+            f'<td class="num">{e(" против ".join(c["verdicts"]))}</td></tr>' for c in confl)
+        repl = (f'<div class="callout"><h4>Случайная проверка на воспроизводимость</h4>'
+                f'<p>Из-за параллельного запуска {len(dbl)} стран посчитали ДВА независимых агента, '
+                f'не знавших друг о друге. По {len(dbl) - len(confl)} вердикты совпали. '
+                f'По {len(confl)} разошлись:</p>'
+                f'<div class="tablewrap"><table><thead><tr><th>Страна</th><th>Вердикты</th></tr></thead>'
+                f'<tbody>{rows}</tbody></table></div>'
+                f'<p class="small">В таких случаях взят более осторожный вердикт, а страна помечена '
+                f'в гео-матрице. Это не ошибка данных: это честная мера того, насколько устойчив вывод '
+                f'по конкретной стране. Там, где два независимых прохода дали разное, решение стоит '
+                f'принимать по своим цифрам, а не по отчёту.</p></div>')
+
+    honest = (verified + repl + '<div class="callout"><h4>Где данных нет и это признано</h4>'
               '<p>Практический опыт операторов сетей — сколько каналов из двадцати взлетает, реальный '
               'burn rate аккаунтов, предел одного оператора — подтвердить не удалось: поисковые '
               'бюджеты агентов упирались в лимиты, а альтернативные поисковики отдавали капчу. Эти '

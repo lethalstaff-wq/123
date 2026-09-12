@@ -49,9 +49,19 @@ def main() -> int:
                     name = f"audit__{tag}.json"
                 else:
                     name = label.replace(":", "__") + ".json"
-                (OUT / name).write_text(
-                    json.dumps(ev["result"], ensure_ascii=False, indent=2), encoding="utf-8")
-                saved[name] = label
+                # Одну и ту же страну могли посчитать два агента из разных прогонов.
+                # Перезаписывать нельзя: расхождение вердиктов — это сигнал о том,
+                # насколько вывод устойчив, и он должен дойти до отчёта.
+                target = OUT / name
+                payload = json.dumps(ev["result"], ensure_ascii=False, indent=2)
+                if target.exists() and target.read_text(encoding="utf-8") != payload:
+                    alt = OUT / name.replace(".json", "__alt.json")
+                    if not alt.exists() or alt.read_text(encoding="utf-8") != payload:
+                        alt.write_text(payload, encoding="utf-8")
+                        saved[alt.name] = label + " (второй расчёт)"
+                else:
+                    target.write_text(payload, encoding="utf-8")
+                    saved[name] = label
         inflight += [f"{tag}:{v}" for k, v in labels.items() if k not in done]
 
     after = {p.name for p in OUT.glob("*.json")}

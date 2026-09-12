@@ -137,6 +137,8 @@ def geo_rows() -> list[dict]:
             "entry": g.get("entry_point", "?"),
             "blocked": bool(g.get("payment_blocked")),
             "needs_split": bool(g.get("needs_split")),
+            "conflict": bool(g.get("verdict_conflict")),
+            "verdicts_seen": g.get("verdicts_seen") or [],
             "slang": (g.get("slang") or [])[:6],
             "verdict": (report.get("verdict_reason") or g.get("verdict_reason") or "")[:260],
             "payments": (g.get("payment_methods") or [])[:4],

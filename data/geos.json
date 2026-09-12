@@ -9,6 +9,41 @@
       "af_fr",
       "iq"
     ],
+    "double_checked": [
+      "de",
+      "es",
+      "fr",
+      "in",
+      "it",
+      "jp",
+      "kr",
+      "pl",
+      "th_my"
+    ],
+    "verdict_conflicts": [
+      {
+        "code": "de",
+        "verdicts": [
+          "priority_1",
+          "priority_2"
+        ]
+      },
+      {
+        "code": "pl",
+        "verdicts": [
+          "priority_1",
+          "priority_2"
+        ]
+      },
+      {
+        "code": "jp",
+        "verdicts": [
+          "priority_2",
+          "priority_3"
+        ]
+      }
+    ],
+    "_conflict_note": "Эти страны посчитали два независимых агента, и вердикты разошлись. Взят более осторожный; оба показаны в отчёте.",
     "needs_local_ip_note": "Гранулярность органической гео-выдачи = страна; город IP влияния не имеет. Поле означает только необходимость страново-корректного IP, не города."
   },
   "geos": [
@@ -17,6 +52,10 @@
       "name": "Бразилия (Brazil)",
       "priority": 1,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_1"
+      ],
       "verdict_reason": "PRIORITY_1 ПО ОХВАТУ, УСЛОВНО ПО ДЕНЬГАМ. Цифры за: TikTok 18+ ad reach = 131 млн чел. = 80.3% взрослого населения (DataReportal Digital 2026: Brazil, опубл. 08.11.2025, данные окт. 2025) — это 2-е место в мире после Индонезии/США по абсолютному reach TikTok; Instagram 147 млн (69.0%), YouTube 150 млн (70.4%). Интернет-юзеров 185 млн (86.9%). TikTok в Бразилии на 4-м месте среди ВСЕХ сайтов страны, ВЫШЕ Instagram (#7) — Similarweb Top Websites Brazil, август 2026 (дата среза 01.09.2026). Это значит органика в TikTok здесь дешевле и объёмнее, чем в любой стране Европы. Ядро оффера бьёт точно: S",
       "content_language": "pt",
       "voiceover_language": "en",
@@ -79,6 +118,10 @@
       "name": "Канада (Canada) — двухъязычный кластер: English Canada (ON/BC/AB/Prairies/Atlantic) + Québec francophone",
       "priority": 1,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_1"
+      ],
       "verdict_reason": "Priority 1, но как ДОПОЛНЕНИЕ к US/UK, а не как отдельная воронка. Цифры за: (1) интернет-проникновение 95.1%, 38.2 млн интернет-юзеров, 33.0 млн соцсетевых идентичностей = 82.1% населения (DataReportal, Digital 2026: Canada, опубл. 05.11.2025, данные окт-2025); (2) TikTok 18+ = 16.6 млн взрослых = 50.6% взрослого населения, рост +4.44 млн (+36.4%) за год — самый быстрый рост среди всех платформ, аудитория 54% мужчин (единственная крупная платформа с мужским перекосом в Канаде); Instagram 21.0 млн (+10.8%), YouTube 33.0 млн (82.1% reach) — там же; (3) ~20 млн канадцев играют, 61% населения (ES",
       "content_language": "en",
       "voiceover_language": "en",
@@ -140,6 +183,10 @@
       "name": "Саудовская Аравия (KSA)",
       "priority": 1,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_1"
+      ],
       "verdict_reason": "БРАТЬ, но только с арабоязычным контентом и ВЫСОКИМ ценником. Цифры за: (1) ARPU игрока $308/чел/год против $102.4 среднего по MENA — в 3 раза выше (Antom/ResearchAndMarkets, 2025); (2) 38.6 млн пользователей TikTok 18+ при населении 34.7 млн, интернет-проникновение 99.0% (DataReportal Digital 2026: Saudi Arabia, данные окт 2025, опубл. 08.11.2025); (3) ГЛАВНОЕ ДОКАЗАТЕЛЬСТВО — локальный конкурент trk.sa уже продаёт ровно этот продукт по подписке: 59 SAR/7 дней, 99 SAR/14 дней, 149 SAR/30 дней, 199 SAR/90 дней, 279 SAR, 399 SAR lifetime (~$16/$26/$40/$53/$74/$106). То есть месяц твиков в KSA с",
       "content_language": "ar",
       "voiceover_language": "pl",
@@ -202,6 +249,10 @@
       "name": "Türkiye / Turkey (UTC+3, без перехода на летнее время с 2016)",
       "priority": 1,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_1"
+      ],
       "verdict_reason": "БЕРЁМ, но ТОЛЬКО с локализованной ценой в лирах и БЕЗ Discord как точки входа. За: 87.6M населения, 77.3M интернет-юзеров (88.3%), TikTok 18+ = 40.2M (61.6% взрослых, мужчины 60.9% — лучший гендерный скос из всех гео), Instagram 58.5M, YouTube 57.5M (DataReportal Digital 2025: Turkey, янв 2025). TurkStat ICT 2025 (авг 2025): интернет 90.9%, WhatsApp 88.6%, YouTube 72.9%, Instagram 68.1%. Геймеров ~50 млн, рынок >$1 млрд (Türkiye Oyun Sektörü Raporu 2025 / Gaming in Türkiye, публикация май 2026). Оффер попадает в боль идеально: слабая лира -> старое железо + живая культура интернет-кафе (25-60 ",
       "content_language": "tr",
       "voiceover_language": "tr",
@@ -265,6 +316,10 @@
       "name": "Великобритания + Ирландия (UK & IE кластер)",
       "priority": 1,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_1"
+      ],
       "verdict_reason": "Брать обязательно, это домашнее гео проекта. Цифры: UK — 68.1 млн интернет-юзеров (97.8% пенетрации), 55.5 млн соцсетевых аккаунтов (79.7%), TikTok 18+ = 26.8 млн, Instagram 35.5 млн, YouTube ad reach 55.5 млн (DataReportal Digital 2026, данные на окт. 2025). IE добавляет 5.26 млн интернет-юзеров, TikTok 18+ = 2.59 млн (62.6% взрослых — одна из самых высоких пенетраций TikTok в Европе), Instagram 2.60 млн. Суммарно кластер: ~73.4 млн интернет-юзеров, ~29.4 млн TikTok 18+, ~38.1 млн Instagram, ~59.8 млн YouTube. Игровой рынок UK = £8.76 млрд за 2025, +7.4% г/г, из них цифровой PC-софт £1.15 млр",
       "content_language": "en",
       "voiceover_language": "en",
@@ -325,6 +380,10 @@
       "name": "США (United States of America)",
       "priority": 1,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_1"
+      ],
       "verdict_reason": "Берём безусловно, но как «дорогое ядро», а не как лёгкое гео. Цифры за: 348 млн населения, 324 млн интернет-юзеров (93.1%), 254 млн соцсетевых идентичностей (73.0%) — DataReportal Digital 2026 USA, данные на октябрь 2025. Ad-reach: YouTube 254 млн, Instagram 182 млн, TikTok 153 млн (18+; сам TikTok заявляет 200M+ US users, Deadline, янв 2026). Геймеров: 212.3 млн играют ≥1 час/нед, 67% населения 5-90 лет (ESA 2026 Essential Facts, 2026). Потребительские траты на игры $60.7 млрд в 2025 (ESA). Платёжеспособность: подростковый дискреционный бюджет $2,213/год (Piper Sandler, 46-я волна, 9,193 подр",
       "content_language": "en",
       "voiceover_language": "pl",
@@ -387,6 +446,10 @@
       "name": "South Africa (ЮАР)",
       "priority": 1,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_1"
+      ],
       "verdict_reason": "Брать. 4 причины с цифрами. (1) ОХВАТ: TikTok 18+ = 29.1 млн = 64.8% всех взрослых - один из самых высоких показателей проникновения TikTok в мире; YouTube 26.9 млн (41.4% населения); интернет 51.7 млн / 79.6% (DataReportal Digital 2026 South Africa, отчёт 8 Nov 2025, данные Oct 2025). (2) НОЛЬ ЗАТРАТ НА ЛОКАЛИЗАЦИЮ: английский - официальный язык и язык интернета, тот же контент, что для UK-позиционирования, работает без перевода, без озвучки, без субтитров на другом языке. Это уникально для развивающегося гео - CPM-затрат на локализацию нет, а переливы алгоритма идут в UK/US/AU/NZ, то есть \"м",
       "content_language": "en",
       "voiceover_language": "en",
@@ -450,6 +513,10 @@
       "name": "United Arab Emirates (ОАЭ)",
       "priority": 2,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_2"
+      ],
       "verdict_reason": "БРАТЬ, но как ВЫСОКО-ARPU ДОБАВКУ к англоязычному ядру, а не как отдельное \"20-канальное\" гео. Цифры за: ARPU геймера в ОАЭ $84.60/год - самый высокий в MENA-3 (Niko Partners, MENA-3 report 2025; KSA $54.89, Egypt $3.39); интернет-пенетрация 99.0% (11.1 млн из 11.2 млн; DataReportal Digital 2025 UAE, 25.02.2025); медианная скорость мобайл 441.89 Mbps, фикс 300.65 Mbps (там же) - т.е. оплата картой/Apple Pay не проблема, контент грузится; 77% населения = геймеры (~8 млн; Juego Studio, со ссылкой на UAE gaming market data 2025-2026), 9 из 10 взрослых играют (Dubai GameExpo Summit data via Pocket",
       "content_language": "en",
       "voiceover_language": "pl",
@@ -508,6 +575,10 @@
       "name": "Австралия + Новая Зеландия (кластер ANZ / OCE)",
       "priority": 2,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_2"
+      ],
       "verdict_reason": "ANZ — богатое, англоязычное, платёжеспособное гео с удобным «пустым» окном в UTC, НО маленькое и юридически самое опасное для оффера «+FPS».\n\nЦИФРЫ ЗА:\n• Совокупно 32.3M населения (AU 27.0M + NZ 5.26M), интернет-проникновение 97.1% / 96.2% (DataReportal Digital 2026, данные окт.2025).\n• YouTube reach 21.0M (AU) + 4.24M (NZ) = 25.2M; Instagram 15.2M + 2.65M = 17.85M; TikTok 18+ 10.9M + 2.04M = 12.94M.\n• 82% австралийцев называют себя геймерами, ПК используют 58% игроков (IGEA «Australia Plays», 2025/2026). В NZ играет 73% населения (IGEA NZ Plays).\n• Ядро оффера подтверждено глобально: в июне 2",
       "content_language": "en",
       "voiceover_language": "en",
@@ -570,6 +641,10 @@
       "name": "Кластер CEE-5: Румыния, Чехия, Венгрия, Болгария, Словакия",
       "priority": 2,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_2"
+      ],
       "verdict_reason": "ПОЛУ-ЖЕМЧУЖИНА, но не так, как ожидается. Тезис «дешёвый охват + европейская платёжеспособность» подтверждается только для Румынии и Болгарии; Чехия/Словакия дают деньги, но НЕ дают дешёвого TikTok-охвата.\n\nЦИФРЫ (DataReportal Digital 2025, январь 2025):\n- Совокупно: население 51.59 млн, интернет 47.90 млн (92.9%), соцсети-идентичности 36.38 млн.\n- TikTok 18+ рекламный охват: RO 8.51 млн (55.4% взрослых) | HU 3.17 млн (39.7%) | BG 2.28 млн (41.1%) | CZ 2.01 млн (23.1%) | SK 1.07 млн (24.0%). ИТОГО 17.04 млн 18+.\n- Instagram: CZ 3.70 млн (34.6% населения) | RO 5.45 млн (28.7%) | HU 2.60 млн (26",
       "content_language": "en",
       "voiceover_language": "en",
@@ -616,6 +691,11 @@
       "name": "Германия / Австрия / Швейцария (DACH, немецкоязычный кластер)",
       "priority": 2,
       "payment_blocked": false,
+      "verdict_conflict": true,
+      "verdicts_seen": [
+        "priority_1",
+        "priority_2"
+      ],
       "verdict_reason": "БРАТЬ, но ВТОРОЙ волной после US/UK, и только с Merchant-of-Record платёжкой + сайтом с Impressum. Цифры ЗА: DACH = 102,5 млн населения (DE 84,4 + AT 9,11 + CH 8,98), 96,5 млн интернет-юзеров (DE 78,9 / AT 8,69 / CH 8,89 — DataReportal Digital 2025 DE 25.02.2025, Digital 2026 AT/CH 08.11.2025). Германия — крупнейший games-рынок ЕС: 9,4 млрд EUR в 2025, +4% г/г (game Verband, Jahresreport 2025). 41,2 млн играющих в DE, из них 14,0 млн на ПК (game/YouGov, релиз 06.05.2026). Один язык покрывает 3 страны с топ-3 платёжеспособностью Европы. Соцбаза: TikTok 21,8 млн (18+) DE + 2,49 AT + 2,46 CH = 26",
       "content_language": "de",
       "voiceover_language": "de",
@@ -677,6 +757,10 @@
       "name": "Испания (Spain) — отдельно от LATAM",
       "priority": 2,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_2"
+      ],
       "verdict_reason": "Качественное, но УЗКОЕ гео. ЗА: 46,1 млн интернет-юзеров (96,4%), YouTube 39,0 млн (81,4% населения), TikTok 18+ 20,9 млн (52,0% взрослых), Instagram 26,4 млн (55,0%) — DataReportal Digital 2026: Spain, 05.11.2025 (данные окт-2025). Геймеров 22,8 млн (+3,17% г/г), 54% населения 6-75 лет — AEVI Anuario 2025 (опубл. 20.07.2026). ЕС, евро, Bizum (31,5 млн юзеров, 120 тыс. онлайн-магазинов), низкий карточный фрод. ПРОТИВ: ядро оффера — ПК-гейминг — слабейшая платформа Испании. ПК 6,9 млн игроков против 18 млн мобильных и 11,3 млн консольных. Медианный возраст страны 45,9. Расчёт адресуемого ядра: ",
       "content_language": "es",
       "voiceover_language": "es",
@@ -735,6 +819,10 @@
       "name": "Франция (France, République française)",
       "priority": 2,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_2"
+      ],
       "verdict_reason": "НЕ priority_1 и НЕ skip. ЗА (цифры): 63,4 млн интернет-пользователей (95,2% населения 66,7 млн), 51,5 млн соцсетевых идентичностей, YouTube ad reach 51,5 млн (77,2%), TikTok 18+ 23,4 млн (43,9% взрослых), Instagram 28,2 млн (42,2%) — DataReportal Digital 2026 France, публикация 05.11.2025, данные окт-2025. Геймеров 40,2 млн (рекорд) — SELL/Médiamétrie «Les Français et le jeu vidéo» 2025 (поле 19.06-13.07.2025, n=4001, 10-80 лет). Gen Z 16-30: 10,9 млн игроков, ПК у 47% = ~5,1 млн — это ядро оффера, пул большой в абсолюте. Рынок ПК-гейминга 1,512 млрд € (26% от 5,856 млрд €) — SELL Bilan Marché",
       "content_language": "fr",
       "voiceover_language": "fr",
@@ -794,6 +882,10 @@
       "name": "Кувейт + Катар + Бахрейн + Оман (кластер «малый Залив»)",
       "priority": 2,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_2"
+      ],
       "verdict_reason": "ЦИФРЫ ЗА: суммарно 15.09 млн населения, 14.74 млн интернет-юзеров (KW 99.0%, QA 99.0%, BH 99.0%, OM 95.3% - DataReportal Digital 2025, данные янв 2025). Соцсети: TikTok 18+ 9.60 млн (KW 3.99 + QA 2.59 + BH 1.19 + OM 1.83), YouTube ad reach 9.97 млн, Instagram 8.04 млн, Snapchat 6.84 млн. Платёжеспособность максимальная в регионе: GCC ARPU по играм $66.34/год против мирового ~$20-25 (Niko Partners + Saudi Esports Federation, опрос дек 2023, n=1225). 61.9% геймеров GCC играют на ПК (мультиответ, тот же опрос). Английский работает без адаптации - огромная экспат-доля.\n\nЦИФРЫ ПРОТИВ (почему не pri",
       "content_language": "en",
       "voiceover_language": "pl",
@@ -853,6 +945,10 @@
       "name": "Италия (Italy)",
       "priority": 2,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_2"
+      ],
       "verdict_reason": "БРАТЬ, но вторым эшелоном после UK/US/DE — как «дешёвый объём», а не как источник высокого ARPU.\n\nЗА (цифры):\n- Аудитория огромная и дешёвая: YouTube ad reach 41,2 млн (69,7% населения), Instagram 29,9 млн (50,5%), TikTok 18+ 22,0 млн (43,5% взрослых), Facebook 28,5 млн. Интернет-проникновение 89,9% (53,1 млн). [DataReportal Digital 2026 Italy, опубл. 05.11.2025, данные окт-2025]\n- TikTok в Италии быстро растёт: 19,8 млн 18+ (Digital 2025 Italy, 25.02.2025) → 22,0 млн 18+ (Digital 2026, 05.11.2025) = +11% за ~8 месяцев. Органика ещё не выжжена.\n- Конкуренция в нише «твики/FPS» на ИТАЛЬЯНСКОМ я",
       "content_language": "it",
       "voiceover_language": "it",
@@ -914,6 +1010,10 @@
       "name": "Казахстан + Узбекистан (кластер Центральная Азия, оба UTC+5)",
       "priority": 2,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_2"
+      ],
       "verdict_reason": "РАЗДЕЛЬНО: Казахстан = priority_2 (верхняя граница), Узбекистан = priority_3. Общая оценка кластера = priority_2 — как дешёвая фабрика охвата и полигон для тестов креативов, НЕ как основной источник выручки.\n\nЗА (цифры):\n- Охват дешёвый и огромный. KZ: 19,5 млн интернет-юзеров (93,4% населения), TikTok ad reach 16,9 млн 18+ (= 86,5% всех интернет-юзеров), Instagram 13,1 млн (62,7% населения). UZ: 33,1 млн интернет-юзеров (89,0%), Instagram 14,1 млн, причём +4,15 млн (+41,7%) за год — это самый быстрорастущий Instagram-рынок региона. Источник: DataReportal Digital 2026 KZ/UZ, данные на октябрь ",
       "content_language": "ru",
       "voiceover_language": "ru",
@@ -974,6 +1074,10 @@
       "name": "Магриб-кластер: Марокко (MA) + Алжир (DZ) + Тунис (TN). Все три — UTC+1 круглый год (Марокко переходит на UTC+0 только на Рамадан). Суммарно: население ~97.9 млн, интернет ~82.2 млн, TikTok 18+ ~43.0 млн, YouTube ~49.7 млн, Facebook ~55.7 млн, Instagram ~30.6 млн.",
       "priority": 2,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_2"
+      ],
       "verdict_reason": "priority_2 — но НЕ как основное гео дохода, а как гео дешёвого объёма + французский мост в ЕС. Цифры за/против.\n\nЗА (охват и демография — одни из лучших в мире по цене за просмотр):\n- TikTok 18+: Алжир 21.1 млн = 68.9% взрослых (одна из самых высоких проникновений в мире), Марокко 16.7 млн (+19% г/г), Тунис 5.18 млн = 58.6% взрослых. Итого ~43.0 млн (DataReportal Digital 2025, 03.03.2025; Digital 2026 Morocco, 08.11.2025).\n- Мужской скос TikTok идеален под продукт: DZ 62.2% муж., MA 59.7% муж., TN 58.2% муж. (DataReportal 2025). В UK/US TikTok почти 50/50 — здесь аудитория «по умолчанию» ближе",
       "content_language": "ar",
       "voiceover_language": "fr",
@@ -1031,6 +1135,10 @@
       "name": "Мексика + испаноязычная LATAM (MX, AR, CL, CO, PE)",
       "priority": 2,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_2"
+      ],
       "verdict_reason": "ГЕО ДЛЯ ОБЪЁМА, НЕ ДЛЯ MRR. За: крупнейший дешёвый органический охват на планете — TikTok 18+ MX 85.4M, CO 32.0M, PE 24.4M (99.3% взрослых!), AR 24.4M, CL 92.2% взрослых; YouTube MX 83.6M; суммарно по кластеру ~185M+ TikTok 18+ и ~238M интернет-пользователей (DataReportal Digital 2025, публикация 03.03.2025, данные янв-2025). Ядро оффера совпадает с реальностью железа: Steam Hardware Survey (август 2026) — 1920x1080 у 50.52%, 8 GB VRAM у 25.74%, 16 GB RAM у 41.20%, топ-GPU RTX 3060 3.76% / RTX 4060 Laptop 3.63% / RTX 3050 3.04%; в LATAM парк ещё слабее. Конкуренции на испанском в нише платных ",
       "content_language": "es",
       "voiceover_language": "es",
@@ -1091,6 +1199,10 @@
       "name": "Нидерланды + Бельгия (кластер NL/BE, без Люксембурга)",
       "priority": 2,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_2"
+      ],
       "verdict_reason": "ДЕНЬГИ ЕСТЬ, ОБЪЁМА НЕТ. NL 18,3 млн чел, интернет 18,1 млн (99,0%), соцсети 14,8 млн (80,9%); BE 11,7 млн, интернет 11,3 млн (96,4%), соцсети 8,98 млн (76,4%) [DataReportal Digital 2025 NL 25.02.2025 / BE 03.03.2025]. Геймеров: NL 9,9 млн (64% населения 6-75), рынок 1,1 млрд EUR; BE 6,3 млн (63%), 646 млн EUR [Video Games Europe/EGDF, All About Games 2025 Key Facts, данные 2025]. Итого 16,2 млн игроков, 1,75 млрд EUR. ПРОБЛЕМА 1 - узкое ядро: отдельного PC/mobile сплита для NL/BE не публикуется, EU16-агрегат из того же отчёта 82% смартфон, 47% консоль, 34% ПК. 34% от 16,2 млн = ~5,5 млн ПК-иг",
       "content_language": "en",
       "voiceover_language": "en",
@@ -1150,6 +1262,10 @@
       "name": "Нордический кластер: Швеция + Норвегия + Дания + Финляндия (SE/NO/DK/FI)",
       "priority": 2,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_2"
+      ],
       "verdict_reason": "ВЫВОД: брать, но НЕ как отдельное гео с 20 каналами на страну, а как ОДИН англоязычный кластер на 20 каналов на все 4 страны, паразитирующий на UK/US-контенте. Обоснование цифрами.\n\nПЛЮСЫ (почему не skip):\n1) Платёжеспособность топ-мировая. Spotify Premium Individual в Швеции = 129 SEK/мес (spotify.com/se, проверено 12.09.2026). Значит подписка $12-15/мес не воспринимается как «дорого» — это ровно один Spotify.\n2) Проникновение интернета 98-99%: SE 10.5M (98.3%), NO 5.55M (99.0%), DK 5.93M (99.0%), FI 5.52M (98.2%) — DataReportal Digital 2025, январь 2025. Технических потерь трафика нет.\n3) Ан",
       "content_language": "en",
       "voiceover_language": "en",
@@ -1210,6 +1326,10 @@
       "name": "Филиппины (Republic of the Philippines), UTC+8, без перехода на летнее время",
       "priority": 2,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_2"
+      ],
       "verdict_reason": "БРАТЬ, но как гео ДЕШЁВОГО ОБЪЁМА и ТЕСТА КРЕАТИВОВ, не как гео прямой выручки. ЗА: TikTok 64.0M взрослых = 81.8% всех 18+ (DataReportal Digital 2026 PH, отчёт 05.11.2025, данные окт.2025) — одно из высших проникновений в мире; Facebook 95.8M; YouTube 59.6M/50.9%; интернет 98.0M/83.8%; соцсети 95.8M/81.9%. Английский — второй официальный язык, тот же ролик работает и на PH, и на UK/US/AU фиды, себестоимость контента делится на несколько гео. Ядро оффера есть: по отчётам 2023 ~95% интернет-пользователей играют, 50% из них на ноуте/десктопе (Wikipedia: Video gaming in the Philippines); roblox.co",
       "content_language": "en",
       "voiceover_language": "en",
@@ -1272,6 +1392,11 @@
       "name": "Польша (Poland)",
       "priority": 2,
       "payment_blocked": false,
+      "verdict_conflict": true,
+      "verdicts_seen": [
+        "priority_1",
+        "priority_2"
+      ],
       "verdict_reason": "ПОЧЕМУ НЕ priority_1 и не skip — по цифрам.\n\nЗА (реальные плюсы):\n1. ПК-гейминг подтверждён: в топ-5 игровых сайтов Польши 2 из 5 — Steam (steampowered.com #4, steamcommunity.com #5), #1 twitch.tv, #2 roblox.com (Similarweb, Top Websites Poland / Games, данные за август 2026, обновлено 01.09.2026). Польский язык = 1.69% всех систем в Steam Hardware Survey (август 2026) — это топ-10 страна Steam при 0.47% населения мира.\n2. Киберспортивная культура: 364 польских про-игрока в Counter-Strike — 7-е место в мире после US(714)/BR(661)/RU(584)/SE(484)/DK(481) (Esports Charts, CS, 2026). CS — фактичес",
       "content_language": "pl",
       "voiceover_language": "pl",
@@ -1333,6 +1458,10 @@
       "name": "Таиланд + Малайзия (кластер SEA-2)",
       "priority": 2,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_2"
+      ],
       "verdict_reason": "Кластер разделяется: МАЛАЙЗИЯ = priority_2, ТАИЛАНД = priority_3. Оценка кластеру дана по Малайзии.\n\nЗА. (1) Охват огромный: TikTok TH 56.6 млн (79.1% населения), MY 30.7 млн 18+; YouTube TH 47.2 млн, MY 23.6 млн; Facebook TH 51.5 млн, MY 23.0 млн (DataReportal Digital 2026 TH/MY, опубл. 08.11.2025, данные окт-2025). (2) Малайзия англоязычна де-факто - ваш UK-английский оффер, Discord и готовые креативы работают БЕЗ локализации, плюс перелив в SG/PH. Это главный аргумент. (3) Платёжеспособность MY нормальная: ВВП по ППС на душу $46,986 против TH $27,441 (IMF, 2026, Wikipedia list of countries ",
       "content_language": "en",
       "voiceover_language": "en",
@@ -1381,6 +1510,10 @@
       "name": "Франкофонная Африка (Сенегал, Кот-д'Ивуар, Камерун) + Гана",
       "priority": 3,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_3"
+      ],
       "verdict_reason": "Кластер НЕ подходит как монетизационное гео под платную подписку на Windows-твики. Решающая цифра — владение компьютером в домохозяйстве (DHS Program, HC_HEFF_H_CMP): Гана 16% (DHS 2022), Сенегал 15% (DHS 2023), Камерун 6% (MIS 2022), Кот-д'Ивуар 2% (DHS 2021). Для сравнения ЮАР 22% (2016), Кения 11% (2022). По городам: Большая Аккра 29%, Дакар 29%, Яунде 18%, Дуала 13%, Абиджан 5%. Расчёт ёмкости (мой, не из источника): домохозяйств с любым компьютером в кластере ~2.4 млн (Гана ~1.56M, Камерун ~0.38M, Сенегал ~0.36M, КдИ ~0.13M). Из них игровой Windows-ПК под CS2/Fortnite/Valorant — оценочно ",
       "content_language": "fr",
       "voiceover_language": "fr",
@@ -1441,6 +1574,10 @@
       "name": "Egypt (جمهورية مصر العربية) — Cairo/Giza/Alexandria core, Egyptian Arabic (Masri) dialect cluster",
       "priority": 3,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_3"
+      ],
       "verdict_reason": "РАЗДЕЛЯЙ РОЛИ: Египет = priority_1 по ОХВАТУ и priority_3 по ДЕНЬГАМ. Итоговая оценка priority_3, потому что оператор один и ему нужна выручка, а не просмотры. Цифры: (1) Аудитория гигантская и дешёвая — TikTok 18+ ad reach 48.8 млн = 65.5% взрослых, YouTube 49.3 млн, Facebook 51.6 млн, Instagram всего 21.7 млн, интернет 98.2 млн / 82.7% (DataReportal Digital 2026: Egypt, публ. 08.11.2025, данные окт. 2025). Медианный возраст 24.5 года, 13-24 лет ~21.8% населения (DataReportal Digital 2025: Egypt, 03.03.2025) — это ровно ядро оффера. (2) Платёжеспособность убивает LTV: GDP/чел $4,252.64 за 202",
       "content_language": "ar",
       "voiceover_language": "ar",
@@ -1502,6 +1639,10 @@
       "name": "Индонезия (Republic of Indonesia)",
       "priority": 3,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_3"
+      ],
       "verdict_reason": "РАЗДВОЕННОЕ ГЕО: лучший в мире охват — худшая в мире монетизация под ИМЕННО этот оффер.\n\nЗА: TikTok 180 млн взрослых 18+ (DataReportal Digital 2026: Indonesia, данные за окт 2025) — САМАЯ БОЛЬШАЯ рекламная аудитория TikTok в мире, больше США. Интернет 230 млн / 80.5%, соцсети 180 млн (+26% г/г — самый быстрый рост среди крупных рынков). CPM TikTok <$2, SEA-кластер $0.5-2 против $10-25 в UK/US (Stackmatix/Unpromptd 2026). 1 млн просмотров здесь стоит в 5-15 раз дешевле, чем в UK.\n\nПРОТИВ (решающее):\n1) Оффер = Windows-твики для ПК. Гейминг в Индонезии мобильный: PC $270 млн выручки против mobil",
       "content_language": "id",
       "voiceover_language": "id",
@@ -1565,6 +1706,10 @@
       "name": "Индия (India)",
       "priority": 3,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_3"
+      ],
       "verdict_reason": "Брать, но только как дешёвый объёмный гео с отдельным дешёвым SKU и полной изоляцией от UK-ядра. ЗА: 1.03 млрд интернет-пользователей (70.0%), YouTube ad reach 500 млн, Instagram 481 млн, Facebook 403 млн (DataReportal Digital 2026: India, 05.11.2025); ~591 млн геймеров, 66% из не-метро (Lumikai / The Hindu, 12.11.2024); самый дешёвый холодный охват в мире. ПРОТИВ: после запрета real-money gaming (Online Gaming Act 2025, в силе с ~01.10.2025; финальные правила MeitY 22.04.2026) рынок игр упал с ~$6 млрд до ~$1.0-1.5 млрд (Fortune India, май 2026; Outlook Respawn 23.03.2026). Грубый ARPU = $1.5",
       "content_language": "hi",
       "voiceover_language": "en",
@@ -1622,6 +1767,10 @@
       "name": "Iraq (Republic of Iraq) — AST/UTC+3, no DST. Primary metros: Baghdad, Basra, Erbil, Mosul, Najaf, Sulaymaniyah",
       "priority": 3,
       "payment_blocked": true,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_3"
+      ],
       "verdict_reason": "САМЫЙ ДЕШЁВЫЙ ОХВАТ В МИРЕ + ПОЧТИ НУЛЕВАЯ ПЛАТЁЖНАЯ СПОСОБНОСТЬ. Брать — но как view-движок, а не как рынок выручки. Цифры за: TikTok ad reach 40.1 млн = 147.6% взрослых 18+ (DataReportal Digital 2026 Iraq, отчёт 08.11.2025, данные окт-2025) — это подтверждает гипотезу «одно из самых высоких проникновений TikTok в мире»: показатель >100% взрослого населения, годом ранее было 34.3M/128.3% (Digital 2025 Iraq, 03.03.2025), т.е. +17% YoY. Соцсети 40.1 млн = 84.9% населения. Интернет 39.6 млн = 83.8%. Медианный возраст 20.8 лет, 36.58% населения младше 15 (World Bank, 2024) — идеальное совпадение ",
       "content_language": "ar",
       "voiceover_language": "ar",
@@ -1685,6 +1834,11 @@
       "name": "Япония (Japan / 日本)",
       "priority": 3,
       "payment_blocked": false,
+      "verdict_conflict": true,
+      "verdicts_seen": [
+        "priority_2",
+        "priority_3"
+      ],
       "verdict_reason": "ЧЕСТНО: Япония - дорогое, узкое и трудное гео для соло-оператора из СНГ без японского языка. Не skip (деньги реальные), но и близко не priority_1.\n\nЦИФРЫ ЗА:\n- Платёжеспособность высокая. Доля мошенничества по картам в Японии 0.064% (Q1 2025, Japan Credit Association) - один из самых низких показателей в мире. Чарджбеки практически не проблема.\n- Средний чек по игровому железу: ¥230,000-350,000 за игровой ПК (2025, обзор рынка BTO). Люди платят за производительность.\n- Discord в Японии реально живёт: ~8 млн MAU / ~4 млн DAU (доклад на CEDEC 2025). Выдача роли после оплаты работает технически.\n",
       "content_language": "ja",
       "voiceover_language": "ja",
@@ -1744,6 +1898,10 @@
       "name": "Кения / Танзания / Уганда (кластер Восточная Африка, EAT = UTC+3, без перехода на летнее время)",
       "priority": 3,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_3"
+      ],
       "verdict_reason": "PRIORITY_3 — берите, но как ДЕШЁВУЮ ФАБРИКУ ПРОСМОТРОВ И ТЕСТОВ, а не как источник выручки. И только Кению, 8 каналов, не 20. Танзания и Уганда — фактически skip для монетизации.\n\nПОЧЕМУ НЕ ВЫШЕ (цифры, а не мнения):\n1. Ядро оффера — «слабый ПК» — здесь почти отсутствует физически. В Кении компьютером владеют 8.8% домохозяйств, компьютером пользовались 11.6% людей 3+ (ICT Analytical Report на базе Kenya Housing Survey 2023/24, KNBS+CA, публикация 08.2025). Найроби 28.9%, село 7.3%. В Уганде и Танзании доступ к компьютеру дома <10% (Afrobarometer).\n2. Гейминг здесь мобильный, а не ПК: 90.2% афр",
       "content_language": "en",
       "voiceover_language": "en",
@@ -1801,6 +1959,10 @@
       "name": "Южная Корея (Republic of Korea)",
       "priority": 3,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_3"
+      ],
       "verdict_reason": "ЗАПУСКАТЬ ТОЛЬКО КАК УЗКИЙ ТЕСТ, НЕ 20 КАНАЛОВ. Четыре структурные проблемы, каждая с цифрами.\n\n(1) TikTok в Корее слабый — а это основной движок модели. DataReportal Digital 2025 South Korea (3 мар 2025): TikTok 18+ = 7,18 млн = 15,9% взрослых. Для сравнения в той же стране Instagram 23,6 млн (45,7% населения) и YouTube 43,4 млн (84,0%). То есть TikTok в Корее в 3,3 раза меньше Instagram и в 6 раз меньше YouTube. Ни в одном другом развитом гео такого провала TikTok нет. Авто-залив 20 TikTok-каналов на Корею упирается в потолок аудитории.\n\n(2) PC방 убивает сам оффер. Ядро продукта — «у тебя сла",
       "content_language": "ko",
       "voiceover_language": "ko",
@@ -1860,6 +2022,10 @@
       "name": "Нигерия (Federal Republic of Nigeria), WAT = UTC+1, без перехода на летнее время",
       "priority": 3,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_3"
+      ],
       "verdict_reason": "priority_3 — брать ТОЛЬКО как изолированную дешёвую фабрику просмотров (YouTube Shorts AdSense + тест креативов + продажа железа/аксессуаров через партнёра), НЕ как гео для подписочной выручки. Цифры, на которых стоит решение: (1) ПК-гейминга под целевые тайтлы почти нет: 46,5 млн геймеров и 300 млн USD выручки в 2024 (Carry1st/Newzoo, публикация 2025) = ARPU ~6,45 USD/ГОД на геймера; ~90% выручки и ~90% игроков мобильные (Carry1st/Newzoo 2025, PocketGamer.biz 2025). (2) Конкретика по тайтлам (Vanguard, 09.2025): Free Fire 425 000 WAU (мобайл), Roblox 98 000 WAU, eFootball 10-20 тыс MAU; Fortn",
       "content_language": "en",
       "voiceover_language": "en",
@@ -1915,6 +2081,10 @@
       "name": "Россия (Russian Federation)",
       "priority": 3,
       "payment_blocked": true,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_3"
+      ],
       "verdict_reason": "Огромный объём аудитории при почти нулевой юнит-экономике для ТЕКУЩЕГО стека (англ. лендинг + Discord-выдача + Stripe/PayPal). ЗА: интернет 136 млн / 94,4% (DataReportal Digital 2026, данные на конец 2025); соцсети 106 млн / 73,7% (окт 2025); геймеров 106-110 млн, до 81% населения, 8 из 10 россиян 14+ играют (РВИ+НАФИ, опрос 4600 чел, окт 2025, публикация фев 2026); ПК/ноутбук - 4 из 10 геймеров (~42-44 млн ПК-игроков), шутеры 37% жанр №1 на ПК; оператор сам из СНГ - нулевой языковой и культурный барьер. ПРОТИВ (все проверено на сентябрь 2026): 1) Discord заблокирован Роскомнадзором с октября ",
       "content_language": "ru",
       "voiceover_language": "ru",
@@ -1974,6 +2144,10 @@
       "name": "Украина + Беларусь (кластер UA/BY)",
       "priority": 3,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_3"
+      ],
       "verdict_reason": "Разделяй: Украина = priority_2 как ТРАФИК-гео и лаборатория креативов, Беларусь = skip по деньгам. Сводно по кластеру = priority_3. Цифры ЗА (трафик): UA 35.3 млн интернет-юзеров (89.6% населения 39.3 млн), TikTok ad reach 18+ = 19.0 млн (58.4% взрослых), YouTube reach 23.0 млн (58.5%), Instagram 12.6 млн (32.0%) — DataReportal Digital 2026: Ukraine, отчёт 08.11.2025 (данные окт. 2025). BY 8.47 млн интернет-юзеров (94.3% от 8.98 млн), TikTok ad reach 18+ = 7.64 млн (105.6% взрослых — мультиаккаунты), Instagram 3.90 млн (43.4%) — DataReportal Digital 2026: Belarus, 08.11.2025. Итого ~26.6 млн в",
       "content_language": "ru",
       "voiceover_language": "ru",
@@ -2032,6 +2206,10 @@
       "name": "Вьетнам (Vietnam / Việt Nam)",
       "priority": 3,
       "payment_blocked": false,
+      "verdict_conflict": false,
+      "verdicts_seen": [
+        "priority_3"
+      ],
       "verdict_reason": "РАЗДЕЛЯЙ ДВА ВЕРДИКТА. По ОХВАТУ Вьетнам — priority_1: 85,6 млн интернет-юзеров (84,2% нас.), 79,0 млн соцсетевых аккаунтов, TikTok ad reach 18+ = 76,1 млн, Facebook 79,0 млн, YouTube 62,1 млн (DataReportal, Digital 2026 Vietnam, опубл. 08.11.2025); ~54 млн геймеров (Gamota via PocketGamer.biz, 12.03.2026) / 58,5 млн (Digital in Asia, Vietnam Gaming & Esports 2026, март 2026); 28,2 млн участников киберспорта, 94% осведомлённость, 59% регулярно смотрят киберспорт — ВЫСШИЙ показатель в ЮВА при среднем по региону 32% (Digital in Asia, март 2026). Контент \"слабый ПК → FPS\" тут абсолютно нативен: P",
       "content_language": "vi",
       "voiceover_language": "vi",
