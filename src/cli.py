@@ -109,6 +109,9 @@ def cmd_init_grid(args) -> int:
                     posts_per_day=int(tmpl.get("posts_per_day", 2)),
                     publish_mode=PublishMode(tmpl.get("publish_mode", "kit")),
                     attribution_token=token,
+                    # 50/50 по чётности номера слота: половина сетки живёт в прайме,
+                    # половина в окнах низкой конкуренции — это и есть эксперимент
+                    arm="A" if i % 2 == 1 else "B",
                 ))
                 created += 1
     print(f"слотов записано: {created}")

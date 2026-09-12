@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS slots (
     slot_id TEXT PRIMARY KEY, geo TEXT, platform TEXT, theme TEXT,
     target_game TEXT, handle TEXT, bio TEXT, persona TEXT,
     posts_per_day INTEGER, publish_mode TEXT, attribution_token TEXT,
-    content_formats TEXT, active INTEGER DEFAULT 1
+    content_formats TEXT, arm TEXT DEFAULT 'A', active INTEGER DEFAULT 1
 );
 CREATE TABLE IF NOT EXISTS accounts (
     account_id TEXT PRIMARY KEY, slot_id TEXT, platform TEXT, username TEXT,
@@ -93,17 +93,18 @@ class Store:
         with self.tx() as c:
             c.execute(
                 """INSERT INTO slots (slot_id, geo, platform, theme, target_game, handle, bio,
-                       persona, posts_per_day, publish_mode, attribution_token, content_formats, active)
-                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
+                       persona, posts_per_day, publish_mode, attribution_token, content_formats, arm, active)
+                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
                    ON CONFLICT(slot_id) DO UPDATE SET
                        geo=excluded.geo, platform=excluded.platform, theme=excluded.theme,
                        target_game=excluded.target_game, handle=excluded.handle, bio=excluded.bio,
                        persona=excluded.persona, posts_per_day=excluded.posts_per_day,
                        publish_mode=excluded.publish_mode, attribution_token=excluded.attribution_token,
-                       content_formats=excluded.content_formats, active=excluded.active""",
+                       content_formats=excluded.content_formats, arm=excluded.arm,
+                       active=excluded.active""",
                 (s.slot_id, s.geo, s.platform.value, s.theme, s.target_game, s.handle, s.bio,
                  s.persona, s.posts_per_day, s.publish_mode.value, s.attribution_token,
-                 json.dumps(s.content_formats, ensure_ascii=False), int(s.active)),
+                 json.dumps(s.content_formats, ensure_ascii=False), s.arm, int(s.active)),
             )
 
     def slots(self, geo: str | None = None, platform: Platform | None = None,
@@ -127,7 +128,8 @@ class Store:
                 handle=r["handle"], bio=r["bio"], persona=r["persona"] or "faceless",
                 posts_per_day=r["posts_per_day"] or 1,
                 publish_mode=PublishMode(r["publish_mode"] or "kit"),
-                attribution_token=r["attribution_token"], active=bool(r["active"]),
+                attribution_token=r["attribution_token"], arm=r["arm"] or "A",
+                active=bool(r["active"]),
             )
             for r in rows
         ]

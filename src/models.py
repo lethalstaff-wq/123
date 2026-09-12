@@ -81,6 +81,7 @@ class ChannelSlot:
     posts_per_day: int = 2
     publish_mode: PublishMode = PublishMode.KIT
     attribution_token: str | None = None   # уникальная метка ссылки/инвайта/промокода
+    arm: str = "A"                         # плечо эксперимента по таймингу: A = прайм, B = низкая конкуренция
     active: bool = True
 
 

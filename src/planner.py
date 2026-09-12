@@ -26,14 +26,38 @@ def _seed_for(slot_id: str, day: str, index: int) -> int:
     return int(h[:12], 16)
 
 
-def _windows_for(platform: Platform, geo_code: str) -> list[str]:
-    """Окна постинга в ЛОКАЛЬНОМ времени гео: ["18:30", "21:00"]."""
+def _windows_for(platform: Platform, geo_code: str, arm: str = "A") -> list[str]:
+    """Окна постинга в ЛОКАЛЬНОМ времени гео для плеча эксперимента.
+
+    Арм A — прайм-тайм, арм B — окна низкой конкуренции. Смысл в том, что сетка
+    каналов служит измерительным инструментом: источники по лучшему времени
+    противоречат друг другу сильнее, чем величина самого эффекта, поэтому
+    расписание проверяется на своих данных, а не берётся из чужой таблицы.
+    """
     sch = schedule()
-    by_geo = sch.get("by_geo", {}).get(geo_code, {})
-    windows = by_geo.get(platform.value)
-    if windows:
-        return windows
-    return sch.get("defaults", {}).get(platform.value, ["18:00"])
+    slots_local = sch.get("slots_local", {})
+    arms = sch.get("experiment_arms", {})
+    key = "arm_A_prime" if arm.upper() == "A" else "arm_B_low_competition"
+    slot_ids = arms.get(key) or []
+    windows = [slots_local[s]["time"] for s in slot_ids if s in slots_local]
+
+    override = (sch.get("by_geo", {}).get(geo_code) or {}).get(platform.value)
+    if override:
+        windows = override
+    if not windows:
+        windows = sch.get("defaults", {}).get(platform.value, ["20:00"])
+    return windows
+
+
+def _blackout_bounds(sch: dict) -> tuple[int, int] | None:
+    """Границы мёртвой зоны в минутах от полуночи локального времени."""
+    bl = sch.get("blackout_local") or {}
+    if not bl:
+        return None
+    def mins(t: str) -> int:
+        h, m = (int(x) for x in t.split(":"))
+        return h * 60 + m
+    return mins(bl.get("from", "02:00")), mins(bl.get("to", "04:59"))
 
 
 def _to_utc(day: str, local_hhmm: str, tz_name: str) -> str:
@@ -43,14 +67,28 @@ def _to_utc(day: str, local_hhmm: str, tz_name: str) -> str:
     return local_dt.astimezone(timezone.utc).isoformat(timespec="seconds")
 
 
-def _jitter(iso_utc: str, seed: int, max_minutes: int) -> str:
-    """Разброс времени: одинаковые минуты на 20 аккаунтах — самый заметный машинный признак."""
-    if max_minutes <= 0:
-        return iso_utc
-    rng = random.Random(seed)
-    delta = rng.randint(-max_minutes, max_minutes)
-    dt = datetime.fromisoformat(iso_utc) + timedelta(minutes=delta)
-    return dt.isoformat(timespec="seconds")
+def _schedule_time(day: str, local_hhmm: str, tz_name: str, seed: int,
+                   max_jitter_minutes: int) -> str:
+    """Итоговое время публикации в UTC: окно + джиттер, с выводом из мёртвой зоны.
+
+    Джиттер обязателен: двадцать аккаунтов, публикующих в одну минуту, — самый
+    заметный машинный признак. Но джиттер может утащить пост в мёртвую зону
+    (02:00-04:59 местного), поэтому проверяется ИТОГОВОЕ время, а не окно.
+    """
+    tz = ZoneInfo(tz_name)
+    hh, mm = (int(x) for x in local_hhmm.split(":"))
+    local_dt = datetime.fromisoformat(day).replace(hour=hh, minute=mm, tzinfo=tz)
+    if max_jitter_minutes > 0:
+        rng = random.Random(seed)
+        local_dt += timedelta(minutes=rng.randint(-max_jitter_minutes, max_jitter_minutes))
+
+    bounds = _blackout_bounds(schedule())
+    if bounds:
+        start, end = bounds
+        minute_of_day = local_dt.hour * 60 + local_dt.minute
+        if start <= minute_of_day <= end:
+            local_dt += timedelta(minutes=end - minute_of_day + 1)
+    return local_dt.astimezone(timezone.utc).isoformat(timespec="seconds")
 
 
 def pick_format(slot: ChannelSlot, seed: int) -> dict:
@@ -228,7 +266,7 @@ def plan_days(store: Store, assets: list[Asset], days: int = 7,
             cap = min(slot.posts_per_day, hard_cap)
             if acct and acct.state == "warming":
                 cap = min(cap, warming_cap)
-            windows = _windows_for(slot.platform, slot.geo)
+            windows = _windows_for(slot.platform, slot.geo, slot.arm)
             for i in range(cap):
                 seed = _seed_for(slot.slot_id, day, i)
                 fmt = pick_format(slot, seed)
@@ -238,11 +276,8 @@ def plan_days(store: Store, assets: list[Asset], days: int = 7,
                 seen_for_slot.add(hook)
                 caption, title, tags = build_caption(slot, hook, fmt, seed)
                 window = windows[i % len(windows)]
-                sched = _jitter(
-                    _to_utc(day, window, geo["timezone"]),
-                    seed,
-                    int(plat_limit.get("jitter_minutes", 25)),
-                )
+                sched = _schedule_time(day, window, geo["timezone"], seed,
+                                       int(plat_limit.get("jitter_minutes", 25)))
                 plan = VideoPlan(
                     plan_id=f"{slot.slot_id}-{day}-{i}",
                     slot_id=slot.slot_id,

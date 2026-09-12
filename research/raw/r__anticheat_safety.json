@@ -1,0 +1,389 @@
+{
+  "dimension": "anticheat_safety",
+  "summary": "ГЛАВНЫЙ ВЫВОД: ни один из пяти мейджорных античитов (EAC, Vanguard, VAC, BattlEye, RICOCHET, +EA Javelin) НЕ БАНИТ за твики Windows, реестр, службы, конфиги и оверлеи. Все вендоры официально заявляют, что бан выдаётся только за читы/тамперинг игры. Реальный риск проекта — НЕ баны, а ЖЁСТКАЯ БЛОКИРОВКА ЗАПУСКА ИГРЫ: в 2025-2026 античиты массово перешли на требование аппаратных security-фич, которые классические \"FPS-твикеры\" как раз отключают. Конкретно: Valorant/Vanguard на Win11 требует TPM 2.0 + UEFI Secure Boot (офиц. мин. спеки, 16.09.2025), а при VAN: RESTRICTION дополнительно IOMMU и HVCI/VBS Memory Integrity (Core Isolation) + VAN 9002 требует, чтобы ВСЕ Windows Exploit Protection мitigations (DEP/CFG/ASLR/SEHOP/heap integrity) стояли на \"Use default\"; Fortnite с 19.02.2026 требует Secure Boot + TPM + IOMMU для ВСЕХ турниров; Call of Duty требует TPM 2.0 + Secure Boot с аттестацией через Microsoft Azure Attestation, обязательно для Black Ops 7; EA Javelin (Battlefield 6, FC) требует Secure Boot и имеет ПУБЛИЧНЫЙ denylist драйверов (~30 позиций: WinRing0, HWiNFO, CPU-Z, Core Temp, Process Explorer, Razer Synapse, MSI ntiolib/winio, reWASD, Daemon Tools, Voicemod). Второй критический вывод: ПРОДУКТ НЕ ДОЛЖЕН СОДЕРЖАТЬ СВОЙ KERNEL-ДРАЙВЕР И НЕ ДОЛЖЕН ТЯНУТЬ СТОРОННИЕ ИНСТРУМЕНТЫ С ДРАЙВЕРАМИ — с Windows 11 2022 Update Microsoft-блоклист уязвимых драйверов включён по умолчанию и принудительно применяется при HVCI, а EAC/BattlEye/Javelin отдельно блокируют такие драйверы. Третий: твики, ломающие measured boot / bootlog / PCR (bcdedit-хаки, кастомные загрузчики, test-signing, отключение driver signature enforcement, kernel debugging, Driver Verifier), дают жёсткие ошибки EAC/BattlEye. Безопасный периметр продукта — 100% user-mode: планы электропитания, настройки драйвера GPU, внутриигровые настройки и конфиги через легальные средства игры, отключение фонового софта, обновление драйверов (Valve прямо называет это НЕ причиной бана).",
+  "findings": [
+    {
+      "claim": "VAC банит ТОЛЬКО за чит-софт/модификацию файлов игры; изменения системного железа и обновление драйверов официально НЕ вызывают VAC-бан",
+      "evidence": "«Any third-party modifications to a game designed to give one player an advantage over another is classified as a cheat or hack and will trigger a VAC ban. This includes modifications to a game's core executable files and dynamic link libraries.» + «The following will not trigger a VAC ban: System hardware configurations. Updated system drivers, such as video card drivers.» + «You will not be banned by the VAC system unless you log in to a VAC-secure server with a cheat installed on your computer.»",
+      "source": "Valve, Steam Support — Valve Anti-Cheat (VAC) System FAQ, https://help.steampowered.com/en/faqs/view/571A-97DA-70E9-FF74",
+      "source_date": "актуально на 2026-09 (v4 контента FAQ)",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "БЕЛЫЙ СПИСОК: твики железа/реестра/драйверов для CS2 безопасны по официальной политике. В дисклеймер можно цитировать этот пункт дословно. НО: любая правка файлов игры (csgo .dll, .exe, vpk) = мгновенный перманентный бан."
+    },
+    {
+      "claim": "VAC-бан перманентный, не апеллируемый и распространяется на ВСЕ аккаунты, привязанные к одному номеру телефона",
+      "evidence": "«VAC bans are permanent, non-negotiable, and cannot be removed by Steam Support.» / «VAC bans are applied to all accounts sharing a phone number at the time of the infraction.» / «VAC bans cannot be appealed.»",
+      "source": "Valve, Steam Support — VAC FAQ + «I've been VAC banned», https://help.steampowered.com/en/faqs/view/647C-5CC1-7EA9-3C29",
+      "source_date": "актуально на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Дисклеймер обязан содержать: мы не продаём чит-функции; при самостоятельной установке читов рядом с нашим продуктом бан необратим и затронет все аккаунты на том же номере."
+    },
+    {
+      "claim": "Valve дважды за 8 месяцев признавала ложные VAC-баны в CS2 и откатывала их — false positives существуют, но снимаются автоматически",
+      "evidence": "08.12.2025: «Fixed a case that caused a small number of users to receive an erroneous VAC ban. The bans will be removed.» 22.01.2026: «Fixed an issue that led to a small number of users to erroneously receive a VAC ban. Those bans have been reversed.»",
+      "source": "Valve, Counter-Strike 2 Update notes через Steam News API (appid 730)",
+      "source_date": "2025-12-08 и 2026-01-22",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "В дисклеймере: ложные баны бывают по вине самих вендоров и снимаются ими; мы не можем влиять на решения античитов и не даём гарантий разбана. Не обещать «0% ban rate»."
+    },
+    {
+      "claim": "CS2 с 19.08.2024 по умолчанию ИГНОРИРУЕТ мульти-командные бинды и ДЕТЕКТИТ hardware-assisted counter-strafing с киком из матча",
+      "evidence": "«Certain types of movement/shooting input automation such as hardware-assisted counter strafing will now be detected on Valve official servers, resulting in a kick from the match. Input binds that include more than one of the following commands will now be ignored by default. Support can be re-enabled using the cheat-protected convar cl_allow_multi_input_binds 1» (список: sprint, reload, attack, attack2, turnleft…, jump, duck…)",
+      "source": "Valve, CS2 Release Notes 8/19/2024",
+      "source_date": "2024-08-19",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "ЗАПРЕТИТЬ в продукте: null-bind / null-cancel / W+S-cancel скрипты, любые мульти-командные бинды в autoexec, аппаратные SOCD-ремапперы. Это кик и репутационный урон, даже без бана."
+    },
+    {
+      "claim": "Valve закрыла обход через exec_async на cheat-protected серверах — трюки с асинхронным exec конфигов больше не работают",
+      "evidence": "«Fixed an issue that would allow exec_async to continue executing in cheat protected servers resulting in random user input dropout.»",
+      "source": "Valve, CS2 Update notes",
+      "source_date": "2025-09-10",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Конфиги CS2 в продукте — только легальные cvar'ы без exec_async-хаков; не строить фичи на обходе cheat-protected convars."
+    },
+    {
+      "claim": "BattlEye официально банит только за реальные читы; блокировка файлов и неподдерживаемые оверлеи НЕ несут риска бана, макро-тулзы дают кик, а не бан",
+      "evidence": "«Generally we only ever ban for the use of actual cheats/hacks or components of such hacks which are designed to intentionally bypass BE's protection.» / про «[INFO] Blocked loading of file: …»: «No ban risk.» / «Non-cheat overlays and visual enhancement tools like Reshade or SweetFX are generally supported» / «BattlEye may kick (not ban) you at some point for using a specific program (such as macro tools).»",
+      "source": "BattlEye, официальный FAQ, https://www.battleye.com/support/faq/",
+      "source_date": "актуально на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Для Rust/PUBG/Tarkov/DayZ можно честно писать: BattlEye не банит за твики и оверлеи. Но макросы/ремапперы = кик — исключить из продукта."
+    },
+    {
+      "claim": "BattlEye блокирует софт, использующий kernel-драйверы с известными уязвимостями (прямо назван SpeedFan и класс hardware monitoring)",
+      "evidence": "«BE blocks software using kernel drivers which contain known security issues. Use the latest version of such software or contact the vendor about the incompatibility.» Также: MSI Dragon Center / MSI SDK → «completely uninstall»; Cucusoft Net Guard → «incompatible with BE».",
+      "source": "BattlEye, официальный FAQ",
+      "source_date": "актуально на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "НЕ включать в продукт и НЕ рекомендовать в гайдах: SpeedFan, MSI Dragon Center/Center Pro, старые версии мониторинговых утилит. Рекомендовать только актуальные версии."
+    },
+    {
+      "claim": "BattlEye даёт жёсткие ошибки запуска при test-signing mode, включённом kernel debugging, Driver Verifier и «модифицированном ядре» (cracked Windows)",
+      "evidence": "Ошибки: «Failed to initialize BattlEye Service: Kernel Debugging enabled», «Windows Test-Signing Mode not supported», «Windows Kernel modification detected» → «You're using cracked Windows or previously installed hack software… or perform a full Windows reinstall with a legitimate copy», BSOD → «Disable Driver Verifier». Плюс: Hardware-enforced Stack Protection (Core Isolation) блокирует загрузку BE-драйвера на Win11 → BE просит временно выключить именно её.",
+      "source": "BattlEye, официальный FAQ",
+      "source_date": "актуально на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "КАТЕГОРИЧЕСКИЙ ЗАПРЕТ в продукте: bcdedit testsigning on, bcdedit debug on, nointegritychecks, отключение driver signature enforcement, Driver Verifier, любые пиратские/модифицированные сборки Windows. Внимание на противоречие: BE просит выключить Hardware-enforced Stack Protection, а Vanguard требует HVCI — нельзя делать глобальный тумблер."
+    },
+    {
+      "claim": "BattlEye: NVIDIA (Ultra-)Low Latency Mode вызывает завершение легитимных приложений при активном BE — официально рекомендуется выключить",
+      "evidence": "«When starting my game with BattlEye enabled, random legitimate applications on my system are being terminated. This is caused by NVIDIA's (Ultra-)Low Latency Mode. Disable it in NVIDIA Control Panel → Manage 3D settings → Global Settings → Low Latency Mode → Off.»",
+      "source": "BattlEye, официальный FAQ",
+      "source_date": "актуально на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "В профилях для BattlEye-игр (Rust, PUBG, Tarkov, DayZ) НЕ ставить Low Latency Mode = Ultra глобально. Это типовой пункт всех FPS-гайдов и он конфликтует с BE. Ставить per-game или Off; для NVIDIA лучше Reflex в самой игре."
+    },
+    {
+      "claim": "BattlEye блокирует ReShade/SweetFX конкретно в PUBG и Fortnite по требованию разработчиков игр",
+      "evidence": "«Reshade and SweetFX are generally supported unless desired otherwise by the game developers (the latter two are currently blocked in PUBG, Fortnite and Islands of Nyne).»",
+      "source": "BattlEye, официальный FAQ",
+      "source_date": "актуально на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "НЕ продавать/не рекомендовать ReShade-пресеты для PUBG и Fortnite. Для остальных игр — только с пометкой «на усмотрение разработчика игры»."
+    },
+    {
+      "claim": "Easy Anti-Cheat официально БЛОКИРУЕТ (не банит) оверлеи, мониторинг производительности и automation-софт; блокировка временная и снимается закрытием игры",
+      "evidence": "«EAC blocks software that interacts with games in ways that look identical to cheating techniques. On rare occasions, this could include legitimate software whose behavior relies on special access to the game process or system — such as overlays, hardware monitoring and performance tools, or automation software. … The blocking is not permanent — it only prevents interaction while the game is running.» Рекомендации EAC: закрыть софт перед запуском, обновить, включить «game mode», запускать игру первой, добавить исключения.",
+      "source": "Epic / Easy Anti-Cheat, официальный Player Support FAQ, https://easy.ac/en-us/support/articles",
+      "source_date": "актуально на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "КЛЮЧЕВАЯ ФОРМУЛИРОВКА ДЛЯ ДИСКЛЕЙМЕРА (можно цитировать): EAC блокирует, а не банит оверлеи/мониторинг. Продукт должен уметь ВЫКЛЮЧАТЬ свои оверлеи/мониторинг перед запуском EAC-игры автоматически (Fortnite, Rust, DBD, Apex)."
+    },
+    {
+      "claim": "EAC отдельно блокирует софт с уязвимыми kernel-драйверами — чаще всего hardware monitoring и RGB-утилиты",
+      "evidence": "«EAC may block software that has known vulnerabilities which can be abused for cheating. This most often affects hardware monitoring or control software (such as RGB lighting tools) that use outdated kernel drivers to access system resources.»",
+      "source": "Epic / Easy Anti-Cheat, официальный FAQ",
+      "source_date": "актуально на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Продукт НЕ ДОЛЖЕН содержать/устанавливать ни одного kernel-драйвера и не должен зависеть от WinRing0/inpout/ntiolib-подобных драйверов для чтения температур/частот. Если нужен мониторинг — только Windows API/WMI/PDH, user-mode."
+    },
+    {
+      "claim": "EAC модифицированные файлы игры детектит как «Unknown file version» и требует верификации файлов; моддинг-тулзы блокируются",
+      "evidence": "«The EAC service detected that a game file has been modified and does not match the expected state. Typically, the issue is caused by the file having been modified by either the player or software on their system.» / «Many modding tools modify game files or inject code into the running game process. Because these same methods can also be used to create cheat software, anti-cheat systems may block them in multiplayer environments.»",
+      "source": "Epic / Easy Anti-Cheat, официальный FAQ",
+      "source_date": "актуально на 2026-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "ЗАПРЕТ: продукт не трогает ни один файл внутри каталога игры (кроме официально пользовательских ini/cfg в Documents/AppData). Никаких d3d9.dll/dxgi.dll-прокси, никакого DLL-инжекта, никаких «оптимизированных» pak/vpk."
+    },
+    {
+      "claim": "EAC поддерживает «Additional Security Requirements» — Secure Boot, TPM и IOMMU — включаемые разработчиком игры выборочно: для всей игры, для отдельных режимов или для «высокорисковых» аккаунтов",
+      "evidence": "«Games using EAC may impose additional security requirements on players which are controlled by the developer. These requirements might apply to specific game types only (like competitive), specific accounts only (like those considered high risk), or might apply to all players.» IOMMU описан как защита от DMA-читов; «In your system settings, IOMMU may also be called Intel VT-d or AMD-Vi.»",
+      "source": "Epic / Easy Anti-Cheat, официальный FAQ",
+      "source_date": "актуально на 2026-09",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Жёсткая константа: продукт НИКОГДА не отключает Secure Boot, TPM, VT-d/AMD-Vi/IOMMU. Наоборот — пре-флайт проверка должна их ВКЛЮЧАТЬ/предупреждать. Требования могут включиться в любой момент по решению разработчика игры."
+    },
+    {
+      "claim": "EAC кикает при поломке measured boot: отсутствии bootlog, несовпадении TPM PCR или отсутствии Secure Boot-события в bootlog",
+      "evidence": "«Boot validation failed: Measured bootlog not found — Windows has not generated (or it has been removed post-boot) the measured bootlog that we require to validate the state of your machine.» / «Boot validation failed: PCR mismatch — the events in your bootlog are not the same as were measured and extended into the TPM during boot. Something likely removed, modified, or deleted events in the bootlog OR extended the TPM PCR without adding the event.» / «Unable to verify Secure Boot. Event missing from measured bootlog.»",
+      "source": "Epic / Easy Anti-Cheat, официальный FAQ (раздел Kicks Troubleshooting)",
+      "source_date": "актуально на 2026-09",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "АБСОЛЮТНЫЙ ЗАПРЕТ: никаких правок BCD/bootmgr, кастомных загрузчиков, удаления/очистки measured boot log, tbs-хаков, отключения Measured Boot. Не трогать HKLM\\...\\WinEvt каналы Microsoft-Windows-Kernel-Boot и связанные ETW-провайдеры."
+    },
+    {
+      "claim": "Валорант/Vanguard: на Windows 11 TPM 2.0 и UEFI Secure Boot ОБЯЗАТЕЛЬНЫ для всех игроков; VM и cloud gaming не поддерживаются",
+      "evidence": "«OS: Windows 10 (Build 190415+) 64-bit / Windows 11 64-bit … On Windows 11 we also require TPM 2.0 and UEFI Secure Boot.» / «VALORANT does not support cloud gaming or virtual machines.»",
+      "source": "Riot Games, VALORANT Support — Minimum & Recommended PC Specs (арх. web.archive.org), support-valorant.riotgames.com/hc/en-us/articles/360044136134",
+      "source_date": "обновлено 2025-09-16",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Хард-правило: для Valorant продукт не отключает TPM/Secure Boot и не предлагает запуск в VM/Sandbox/Hyper-V. Пре-флайт: msinfo32 → BIOS Mode=UEFI, Secure Boot State=On; tpm.msc → 2.0 ready."
+    },
+    {
+      "claim": "Vanguard VAN: RESTRICTION — официальный чек-лист из 5 пунктов, включая IOMMU и HVCI/VBS Memory Integrity (Core Isolation); Riot ограничивает ПК, которые считает «too cheat-capable»",
+      "evidence": "«If we find PCs that are too cheat-capable (e.g., because of outdated Windows or specific configurations that are conducive to allow cheating), Vanguard will restrict that PC's access to Riot games.» Чек-лист: 1) Enable TPM 2.0, 2) Switch to UEFI, 3) Enable Secure Boot, 4) Enable IOMMU (+DMA Protection, DMAr Support), 5) Enable HVCI/VBS Memory Integrity (Core Isolation).",
+      "source": "Riot Games, VALORANT Support — Vanguard Restrictions (арх.), support-valorant.riotgames.com/hc/en-us/articles/22291331362067",
+      "source_date": "обновлено 2025-09-08",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "САМЫЙ ОПАСНЫЙ ПУНКТ ДЛЯ FPS-ТВИКЕРА: отключение Core Isolation / Memory Integrity / VBS — стандартная «оптимизация» ради +2-5% FPS — может привести к VAN: RESTRICTION у части клиентов. Для Valorant/LoL-профиля: НЕ отключать VBS/HVCI, НЕ отключать IOMMU/VT-d. Сделать это hard-блоком в коде, а не опцией."
+    },
+    {
+      "claim": "Vanguard VAN 9002 требует, чтобы ВСЕ Windows Exploit Protection mitigations стояли на «Use default» и не было per-program override для Riot-процессов",
+      "evidence": "«If you see Error Code VAN9002 … it's likely because you have Windows Exploit Protection disabled.» Список обязательных: Control flow guard (CFG), Data Execution Prevention (DEP), Force randomization for image (Mandatory ASLR), Randomized memory allocation (Bottom-up ASLR), High-entropy ASLR, Validate exception chains (SEHOP), Validate heap integrity — «Make sure all of the above settings are set to Use default». Плюс: удалить из Program settings все записи с Riot Games / Riot Vanguard / VALORANT.",
+      "source": "Riot Games, VALORANT Support — How to Enable Exploit Protection and Prevent Error Code VAN9002 (арх.), articles/4406555340179",
+      "source_date": "2021-09-15, актуально (ошибка VAN 9002 присутствует в таблице кодов от 2025-10-18)",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "КАТЕГОРИЧЕСКИЙ ЗАПРЕТ: Set-ProcessMitigation -System -Disable DEP,CFG,ASLR,SEHOP; любые твики HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Kernel\\MitigationOptions; bcdedit /set nx AlwaysOff. Это сломает Valorant и LoL наглухо. Если продукт УЖЕ это делает где-то — добавить кнопку восстановления «Use default»."
+    },
+    {
+      "claim": "Полная таблица кодов Vanguard: 9001=TPM 2.0 off, 9002=Exploit Protection off, 9003=Secure Boot, 9004/9006=устаревшая Windows, 9005=нужны TPM 2.0+UEFI для VBS, 9101=untrusted machine, 138=запуск в VM, 152=HWID-бан, 61=бан за скрипты/читы",
+      "evidence": "Официальная таблица: «VAN 138 Connection Error (Running the game/Riot Vanguard from virtual machine) → Install the game and Riot Vanguard on a regular instance of Windows instead of a virtual one»; «VAN 152 HWID Ban — This is a hardware ban»; «VAN 61 Scripting or other Cheating Ban»; «VAN 9101 Untrusted machine → Update your drivers, unplug unnecessary devices (controllers/USB/etc.) and remove any third-party software that the system might detect as cheats, even if it's related to other games.»",
+      "source": "Riot Games, VALORANT Support — Vanguard Error Codes (арх.), articles/45690787593875",
+      "source_date": "обновлено 2025-10-18",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Зашить таблицу в саппорт-бота/FAQ продукта: код → причина → это блок или бан. VAN 9101 прямо говорит «убрать сторонний софт, даже от других игр» — значит наш лаунчер должен иметь режим «полностью выгрузиться перед Valorant»."
+    },
+    {
+      "claim": "Vanguard блокирует сторонние storage-драйверы без поддержки DMA Remapping — с конкретными именами файлов",
+      "evidence": "«Vanguard uses DMA Remapping to isolate PCIe devices and prevent DMA-based cheats. If a driver does not support DMAr, Vanguard cannot guarantee system integrity and will block the game until the proper driver is installed.» Неподдерживаемые: secnvme.sys (NVMe), solidnvm.sys (NVMe), asstahci64.sys (SATA AHCI). Требуется Microsoft «NVM Express Controller» / «Standard SATA AHCI Controller», Provider = Microsoft Corporation.",
+      "source": "Riot Games, VALORANT Support — VAN: Incompatible OEM Driver (арх.), articles/47638826320147",
+      "source_date": "2025-12-27",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "ЗАПРЕТ: не устанавливать/не рекомендовать сторонние NVMe/SATA-драйверы «для скорости диска» (Samsung NVMe driver, Intel RST, ASUS AHCI). Наоборот — пре-флайт-проверка должна детектить secnvme.sys/solidnvm.sys/asstahci64.sys и предупреждать."
+    },
+    {
+      "claim": "Нюанс-ловушка: на Windows 10 БЕЗ UEFI+TPM 2.0 Riot официально рекомендует ОТКЛЮЧИТЬ VBS (bcdedit /set hypervisorlaunchtype off + Memory Integrity off), тогда как на Win11 отключать нельзя",
+      "evidence": "«If UEFI and TPM 2.0 are not supported on your machine, you can disable VBS to keep playing VALORANT. … bcdedit /set hypervisorlaunchtype off … If it says that it's still Running, you need to also disable Core isolation (HVCI): Toggle Memory integrity off.»",
+      "source": "Riot Games, VALORANT Support — Addressing VBS settings on Windows 10 | VAN9005 (арх.), articles/16941220890899",
+      "source_date": "обновлено 2025-03-04",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "КОНСТАНТА ЛОГИКИ ПРОДУКТА: решение по VBS/HVCI НЕЛЬЗЯ делать глобальным тумблером. Правило: if (Win11) OR (Win10 && UEFI && TPM2.0) → VBS/HVCI НЕ ТРОГАТЬ; else (Win10 legacy/no TPM) → отключение VBS допустимо и даже рекомендовано самим Riot. Это отдельная ветка в спеке."
+    },
+    {
+      "claim": "Vanguard ломается от compatibility mode на exe игры — Riot официально требует его отключить",
+      "evidence": "Ошибка «You are on an unsupported Operating System» → «Disable compatibility mode: right-click on your game's .exe file → Properties → Compatibility → Disable Run this program in compatibility mode for…»",
+      "source": "Riot Games, VALORANT Support — How to Fix Error «You are on an unsupported Operating System» (арх.), articles/45689917831315",
+      "source_date": "обновлено 2025-10-17",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "ЗАПРЕТ: не писать в HKCU/HKLM\\...\\AppCompatFlags\\Layers для exe античит-игр (популярные твики: DISABLEDXMAXIMIZEDWINDOWEDMODE, ~HIGHDPIAWARE, WIN8RTM, «disable fullscreen optimizations» через Layers). Только через UI игры/Windows Graphics Settings."
+    },
+    {
+      "claim": "Любая попытка выгрузить/остановить/«взаимодействовать нештатно» с Vanguard блокирует игру; Vanguard — on-boot сервис",
+      "evidence": "«To ensure the integrity of players' games, Riot Vanguard must be active during League of Legends gameplay and any time the League Client is open. Attempting to uninstall, exit, or interact with Riot Vanguard in an unsanctioned way will prevent you from playing the game.» / «Riot Vanguard is an on-boot application… you will have to restart your computer.» / «unexpected interactions with either the Vanguard client or the Vanguard driver on your device may impact your ability to play.»",
+      "source": "Riot Games — Riot Vanguard FAQ (League of Legends), articles/24169857932435 (2024-05-03) + What is Vanguard?, articles/360046160933 (2024-01-05)",
+      "source_date": "2024-01-05 / 2024-05-03",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "ЗАПРЕТ в «debloat/services» модуле: никогда не останавливать/не отключать/не удалять службы vgc, vgk, EasyAntiCheat, BEService, EAAntiCheat, Ricochet. Держать хардкод-whitelist имён служб/драйверов античитов, которые скрипт не имеет права трогать ни в каком режиме."
+    },
+    {
+      "claim": "Vanguard/vgk.sys падает в BSOD на нестабильных Intel 13/14 gen — Riot официально требует отключить оверклок и снять повышенные power limits",
+      "evidence": "«Disable Overclocking — Turn off any settings that promote overclocking, including AI or automatic overclocking.» Конкретно: SVID behavior → Auto; Long duration power limit / Processor Base Power → 125W; 13900/14900: Short duration power limit → 253W; enhanced turbo / ASUS MultiCore Enhancement / Performance Enhancement 3.0 → disabled; P-core multiplier 55x → 54/53x; thermal velocity boost → off.",
+      "source": "Riot Games, VALORANT Support — vgk.sys Error Troubleshooting (13th and 14th Generation Intel CPUs) (арх.), articles/30677093498515",
+      "source_date": "обновлено 2025-07-16",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "ЗАПРЕТ: продукт не должен поднимать PL1/PL2, включать MCE/Enhanced Turbo, крутить множители. Любой «CPU boost» модуль = BSOD-риск и вал возвратов. Максимум — информационная проверка «у вас 13/14 gen + MCE включён → предупреждение»."
+    },
+    {
+      "claim": "Fortnite: с 19.02.2026 Secure Boot + TPM + IOMMU обязательны для ВСЕХ турниров (ранее — только для турниров с Account Level 350+, с 27.02.2025)",
+      "evidence": "«On February 19, we're expanding Fortnite's Anti-Cheat system requirements for PC players to all tournaments, requiring three security features to be enabled: Secure Boot, TPM, and IOMMU. IOMMU is a security feature that helps the operating system control how hardware devices access system memory… If your PC is Windows 11-compatible (~95% of Fortnite players on PC), you likely already meet these requirements.» Предыдущая веха: «For tournaments like FNCS events that require an Account Level of 350 or higher… Windows PC players will need to enable two Windows security features starting today: TPM and Secure Boot.»",
+      "source": "Epic Games — «New Fortnite Anti-Cheat PC Requirements and Latest Legal Action», fortnite.com/news (2026-02-10) + «Fortnite Anti-Cheat Update - February 27, 2025», fortnite.com/news",
+      "source_date": "2026-02-10 и 2025-02-27",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Fortnite-профиль продукта: Secure Boot/TPM/IOMMU — never touch, и пре-флайт-чек с инструкцией включить. Ключевая цифра для маркетинга и для риск-модели: ~95% PC-игроков Fortnite уже Win11-совместимы. Тренд однозначный: требования расширяются с турниров на всё."
+    },
+    {
+      "claim": "Epic: баны в Fortnite только по техническим доказательствам, не по подозрению; 1-й случай читинга = 1 год matchmaking-бана (с апреля 2025), 2-й = пожизненно; «hardware, offering competitive advantage» (Cronus) = cheating ban",
+      "evidence": "«We ban accounts for cheating based on technical evidence — we do not ban accounts based on suspicion. Anyone found cheating will be banned, there are no exceptions.» / «Starting in April, we'll be moving to a one-year matchmaking ban for first-time cheating offenses… A second offense will result in a lifetime ban.» / «Cronus hardware and any other device that offers a competitive advantage are restricted and will result in a cheating ban.» / судебное: «$175,000 judgment» против турнирного читера.",
+      "source": "Epic Games — Fortnite Anti-Cheat Update (2025-02-27) и New Fortnite Anti-Cheat PC Requirements (2026-02-10)",
+      "source_date": "2025-02-27 / 2026-02-10",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "ЗАПРЕТ: никаких Cronus/XIM/аппаратных ремапперов и recoil-скриптов в ассортименте (в т.ч. в апселле «коврики/девайсы»). Для дисклеймера сильная цитата: баны только по техническим доказательствам — твики не являются доказательством читинга."
+    },
+    {
+      "claim": "Call of Duty: TPM 2.0 + Secure Boot добавлены в Season 05 (август 2025), обязательны для Black Ops 7 (бета и релиз); требуется Windows 10 22H2+; проверка идёт через Microsoft Azure Attestation",
+      "evidence": "«Both security features were added to Call of Duty with the launch of Season 05, in August 2025. Neither TPM 2.0 nor Secure Boot are required to play currently available Call of Duty titles; however, both will be required to play Call of Duty: Black Ops 7 for the Beta and at launch.» / «While TPM 2.0 requires Windows 10 version 20H2 or later, Call of Duty requires Windows 10 version 22H2 or later.» / отдельная страница: «Report Your TPM 2.0 and Secure Boot Failed Attestation Status… which may prevent your PC from passing Microsoft Azure Attestation… Call of Duty Secure Attestation Wizard».",
+      "source": "Activision Support — «Trusted Platform Module (TPM) 2.0 and Secure Boot for Call of Duty» (ред. 11/06/25) + «Call of Duty TPM Incompatibility Reports» (арх. 2026-08-29)",
+      "source_date": "2025-11-06 / 2026-08-29",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "CoD/Warzone-профиль: TPM+Secure Boot обязательны. Дополнительный риск: аттестация через Azure может провалиться из-за прошивки/OS — продукт НЕ должен добавлять причин провала (не трогать TPM-ключи, не чистить TPM, не менять PCR/bootlog). Мин. ОС: Win10 22H2."
+    },
+    {
+      "claim": "RICOCHET (CoD) — kernel-драйвер, который мониторит приложения, пытающиеся взаимодействовать с игрой; работает только во время игры",
+      "evidence": "«The PC kernel-level driver monitors and reports applications that attempt to interact with protected Call of Duty titles, allowing the RICOCHET Anti-Cheat team to determine if a machine is utilizing unauthorized processes to manipulate the game.» / «RICOCHET Anti-Cheat's kernel-level driver will only operate when you play a game using RICOCHET Anti-Cheat on PC. The driver shuts down when you exit the game.»",
+      "source": "Activision Support — RICOCHET Anti-Cheat Overview (арх. 2025-09-15)",
+      "source_date": "актуально на 2025-09",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Продукт не должен иметь процессов, читающих/пишущих память CoD или ставящих хуки. Overlay/мониторинг — выгружать перед CoD. Официального denylist софта Activision не публикует — нет данных, считать серой зоной."
+    },
+    {
+      "claim": "EA Javelin публикует РЕАЛЬНЫЙ denylist драйверов — прямой ориентир, какой класс «оптимизаторов/мониторинга» ломает игры",
+      "evidence": "Ошибки: «EA Javelin Anticheat has detected incompatible software. Please update or disable [software.name]» / «…detected an incompatible driver… on our denylist for security reasons». Публичный список (не исчерпывающий): Core Temp (alsysio64.sys), CPU-Z (cpuz141_x64.sys), HWiNFO (hwinfo64a.sys), Process Explorer (procexp152.sys), EVGA Precision XOC и LED Sync (winring0x64.sys), MSI Command Center/Super Charger/Gaming App (ntiolib_x64.sys), MSI Creator Center (winio64.sys), GIGABYTE Aorus Engine (atillk64.sys), OC Guru II / Xtreme Engine (gpcidrv64.sys), RGB Fusion (glckio2.sys), ASRock RGBLED/A-Tuning (asrdrv101.sys), Razer Synapse (rzpnk.sys), Samsung Magician (magdrvamd64.sys), Intel iqvw64e.sys, Dell dbutil_2_3.sys, IObit Advanced SystemCare (monitor_win10_x64.sys), Trident Z Lighting Control (eneio64.sys), Huawei PCManager, Voicemod, Kaspersky klhk.sys, MalwareFox zam64.sys.",
+      "source": "EA Help — «How to install and troubleshoot EA Javelin anticheat on PC», help.ea.com/en/help/pc/ea-anticheat/",
+      "source_date": "обновлено ~2025-08 (арх. 2025), страница помечена «Updated 2 weeks ago»",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "ЖЁСТКИЙ DENYLIST ДЛЯ ПРОДУКТА (не устанавливать, не бандлить, не рекомендовать в гайдах, детектить и предупреждать): CPU-Z, Core Temp, HWiNFO, Process Explorer, EVGA Precision, MSI Afterburner-adjacent MSI-утилиты, GIGABYTE/ASRock RGB и OC-тулзы, IObit Advanced SystemCare, Razer Synapse, Samsung Magician, Voicemod. Обратить внимание: IObit Advanced SystemCare — прямой конкурент-«оптимизатор» и он в denylist. Заменить мониторинг на user-mode (Task Manager/PresentMon/внутриигровой оверлей игры)."
+    },
+    {
+      "claim": "EA Javelin запрещает reWASD и Daemon Tools одновременно с игрой и публикует список ОДОБРЕННЫХ ремапперов",
+      "evidence": "«DiscSoftLTD (Daemon Tools) is software that's not permitted to run at the same time as a Javelin-protected game.» / «reWASD is software that's not permitted to run at the same time as a Javelin-protected game.» Одобренные альтернативы: KeyMapper, Microsoft PowerToys Keyboard Manager, Steam Input features within the Steam client, Kanata, KMonad. Также: «EA Javelin anticheat will shut down the game and our services if you use cheat tools, debuggers, or other conflicting software.»",
+      "source": "EA Help — EA Javelin anticheat troubleshooting, help.ea.com/en/help/pc/ea-anticheat/",
+      "source_date": "обновлено ~2025-2026",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Если продукт делает ремаппинг/бинды — использовать ТОЛЬКО одобренные пути: PowerToys Keyboard Manager, Steam Input, Kanata/KMonad. ЗАПРЕТ: reWASD, AutoHotkey-подобные глобальные хуки, Daemon Tools. Также: никаких debugger-компонентов в продукте."
+    },
+    {
+      "claim": "EA: Secure Boot требуется для части игр EA и обеспечивает работу EA Javelin; требуется Windows 10 20H1 (10.0.19041)+",
+      "evidence": "«Some EA games require Secure Boot, a Windows 10 and Windows 11 security feature… Secure Boot allows games supported by EA Javelin Anticheat to detect and remove bad actors.» / «EA Javelin anticheat requires the Windows 10 20H1 update (version number 10.0.19041) or newer.» Отдельная ошибка: «The application encountered an unrecoverable error… can happen when expired or unsigned drivers are loading while trying to launch the game… enable Secure Boot.»",
+      "source": "EA Help — «How to use Secure Boot on your PC», help.ea.com/en/help/pc/secure-boot/ (арх. 2025-07-24) + EA Javelin troubleshooting",
+      "source_date": "2025-07-24",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Battlefield 6 / FC / Apex-профили: Secure Boot не отключать; unsigned/expired драйверы — прямая причина отказа запуска. Ещё один аргумент против собственного драйвера в продукте."
+    },
+    {
+      "claim": "Microsoft vulnerable driver blocklist включён ПО УМОЛЧАНИЮ с Windows 11 2022 Update и принудительно применяется при HVCI / Smart App Control / S mode; обновляется квартально",
+      "evidence": "«Since the Windows 11 2022 update, the vulnerable driver blocklist is enabled by default for all devices… the vulnerable driver blocklist is also enforced when either memory integrity, also known as hypervisor-protected code integrity (HVCI), Smart App Control, or S mode is active… HVCI is on by-default for most new Windows 11 devices. The blocklist is updated quarterly.» Предупреждение MS: «Blocking drivers can cause devices or software to malfunction, and in rare cases, lead to blue screen.»",
+      "source": "Microsoft Learn — «Microsoft recommended driver block rules»",
+      "source_date": "ms.date 2026-05-01, updated 2026-05-04",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Механизм подтверждён: даже без античита Windows сама заблокирует уязвимый драйвер. Значит продукт с драйвером/зависимостью от WinRing0-класса нежизнеспособен на Win11 по умолчанию. Архитектурная константа: 100% user-mode, без драйвера, без bundled sys-файлов."
+    },
+    {
+      "claim": "Практика debloat-дистрибутивов подтверждает: отключение Defender ломает FIFA/EAFC, отключение UAC и TPM/Secure Boot ломает Roblox; AtlasOS пришлось добавить поддержку Core isolation и Defender",
+      "evidence": "«Both FIFA and EAFC require Windows Defender to be enabled and running.» / Roblox not launching → «Enable TPM and Secure Boot… Enable UAC: set it to either Level 1, 2 or 3. If UAC was disabled (set to Level 0), reinstall Roblox after enabling it.» / список изменений безопасности в новых версиях: «Windows Update support, Windows Defender support, User Account Control enabled by default, Core isolation support». Маркетинговое заявление сайта: «we support all functionality and all anti-cheats».",
+      "source": "AtlasOS официальная документация, docs.atlasos.net/faq/general-faq/{fifa-and-eafc-not-launching, roblox-not-launching, atlas-and-security}; atlasos.net FAQ",
+      "source_date": "актуально на 2026-09 (сайт © 2025)",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "КОНСТАНТЫ: не отключать Windows Defender (EA-игры), не отключать UAC (Roblox + одноразовый UAC-промпт Vanguard), не отключать Core Isolation. Заявление «поддерживаем все античиты» от debloat-проектов считать МИФОМ — их же FAQ перечисляет сломанные игры."
+    },
+    {
+      "claim": "Riot требует одноразовый UAC-промпт для Vanguard — отключение UAC ломает обновление Vanguard",
+      "evidence": "«We have recently put out an update that requires VALORANT to issue a one-time User Account Control prompt to complete…»",
+      "source": "Riot Games, VALORANT Support — «Vanguard Update Requiring User Account Control» (арх.), articles/14852058327827",
+      "source_date": "2023-03-16",
+      "kind": "official_policy",
+      "confidence": "medium",
+      "actionable": "ЗАПРЕТ: EnableLUA=0, ConsentPromptBehaviorAdmin=0 и прочие UAC-килы. Это классический пункт «debloat»-скриптов."
+    },
+    {
+      "claim": "Riot: политика по сторонним приложениям — претензии только к софту, дающему измеримое игровое преимущество; наказания от временных до перманентных, вплоть до снятия ранговых награ",
+      "evidence": "«We only take issue with applications that impede the competitive nature of our games… This includes applications that provide a measurable player advantage, such as: Exposing information that's intentionally obfuscated; Taking actions on your behalf (botting or scripting); Drawing conclusions for you during gameplay; Altering your field of intelligence (zoomhacks or global ult alerts).» / «Account suspensions for the use of malicious third party applications such as scripting or botting can vary in length… includes permanent suspension for consistent, blatant use. If these applications were used to climb in Ranked, we may also remove the account's ranked rewards.» / Отдельно: «Queuing with cheaters will get those players banned for 180 days.»",
+      "source": "Riot Games — «Third Party Applications», support-leagueoflegends.riotgames.com/hc/en-us/articles/38353478786067 (2025-09-22) + «Addressing Cheating in VALORANT», articles/10729504652691 (2024-05-07)",
+      "source_date": "2025-09-22 / 2024-05-07",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Твики производительности не попадают ни в один из 4 перечисленных Riot критериев — это ключевой юридический/маркетинговый аргумент. Но продукт НЕ должен содержать: оверлеи с инфой о противниках, трекеры в реальном времени, авто-действия, изменение FOV/зума."
+    },
+    {
+      "claim": "EAC ограничивает число одновременных инстансов игры (обычно 1-3) и хранит cheat-detection данные до 30 дней; HWID используется против ban evasion",
+      "evidence": "«The EAC service limits the active count of game client instances to a developer-specified value. This value is not directly visible to the player, but is often between 1-3.» / «We only collect limited technical data while the game is running to identify cheats and hardware identifiers to prevent ban evasion. Data used for cheat detections is generally deleted within 30 days.»",
+      "source": "Epic / Easy Anti-Cheat, официальный Player Support FAQ",
+      "source_date": "актуально на 2026-09",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Не строить фичи вокруг multi-instance/мультиаккаунтинга. HWID-бан реален (в т.ч. Riot VAN 152) — значит «смена HWID» НИКОГДА не должна быть фичей продукта (иначе продукт классифицируется как ban-evasion tool → блокировка платёжек)."
+    }
+  ],
+  "key_numbers": [
+    "Fortnite: 19.02.2026 — Secure Boot + TPM + IOMMU обязательны для ВСЕХ турниров (ранее 27.02.2025 — только турниры Account Level 350+)",
+    "Fortnite: ~95% PC-игроков уже Windows 11-совместимы (оценка Epic, 2026-02-10)",
+    "Fortnite баны за читы: 1 год matchmaking-бана за 1-й случай (с апреля 2025), пожизненно за 2-й; судебное решение $175 000 против турнирного читера",
+    "Valorant: Win11 → обязательны TPM 2.0 + UEFI Secure Boot; Win10 минимум Build 19041+",
+    "Valorant/Vanguard VAN: RESTRICTION — чек-лист из 5 требований: TPM 2.0, UEFI, Secure Boot, IOMMU (+DMA Protection, DMAr), HVCI/VBS Memory Integrity",
+    "Valorant VAN 9002 — 7 обязательных Exploit Protection mitigations на «Use default»: CFG, DEP, Mandatory ASLR, Bottom-up ASLR, High-entropy ASLR, SEHOP, Validate heap integrity",
+    "Valorant: очередь с читером = бан 180 дней; VAN 152 = HWID-бан; VAN 61 = бан за скрипты/читы; VAN 138 = запуск в VM",
+    "Vanguard блокирует 3 конкретных storage-драйвера без DMAr: secnvme.sys, solidnvm.sys, asstahci64.sys",
+    "Call of Duty: TPM 2.0 + Secure Boot с Season 05 (август 2025), ОБЯЗАТЕЛЬНЫ для Black Ops 7 (бета и релиз); мин. Windows 10 22H2; проверка через Microsoft Azure Attestation",
+    "EA Javelin: публичный denylist ~30 позиций софта/драйверов; требует Windows 10 20H1 (10.0.19041)+; reWASD и Daemon Tools запрещены, одобрены PowerToys Keyboard Manager / Steam Input / Kanata / KMonad / KeyMapper",
+    "EAC: лимит одновременных инстансов игры обычно 1-3; cheat-detection данные удаляются в течение 30 дней",
+    "Microsoft vulnerable driver blocklist: включён по умолчанию с Windows 11 2022 Update, принудительно при HVCI/Smart App Control/S mode, обновляется квартально",
+    "CS2: с 19.08.2024 мульти-командные бинды игнорируются по умолчанию (cl_allow_multi_input_binds=0), hardware-assisted counter-strafing → кик из матча",
+    "CS2: Valve признала и откатила ложные VAC-баны дважды — 08.12.2025 и 22.01.2026",
+    "Intel 13/14 gen + Vanguard: Riot требует PL1 125W, PL2 253W (13900/14900), P-core множитель 55x→54/53x, MCE/Enhanced Turbo → disabled"
+  ],
+  "machine_spec_notes": [
+    "HARD_DENY_LIST (скрипт продукта НИКОГДА не выполняет, без опции и без 'advanced mode'): отключение Secure Boot; отключение/очистка TPM; переключение UEFI→Legacy/CSM; отключение IOMMU / Intel VT-d / AMD-Vi / DMA Protection / DMAr; bcdedit /set testsigning on; bcdedit /set nointegritychecks on; bcdedit /set debug on; отключение driver signature enforcement; включение Driver Verifier; любые правки BCD, затрагивающие measured boot; отключение UAC (EnableLUA=0); отключение Windows Defender; отключение Windows Exploit Protection mitigations (DEP/CFG/ASLR/SEHOP/heap integrity) системно или per-process; bcdedit /set nx AlwaysOff; правка MitigationOptions в Session Manager\\Kernel",
+    "CONDITIONAL_RULE_VBS (единственная ветвящаяся константа): if (Windows 11) OR (Windows 10 AND BIOSMode==UEFI AND TPM==2.0) → VBS/HVCI/Core Isolation НЕ ТРОГАТЬ (иначе VAN: RESTRICTION в Valorant/LoL); elif (Windows 10 AND (no UEFI OR no TPM 2.0)) → отключение VBS допустимо (сам Riot это предписывает при VAN 9005). Реализовать как detect-then-branch, не как глобальный тумблер",
+    "PROTECTED_SERVICES_WHITELIST (скрипт не останавливает/не отключает/не удаляет ни в каком режиме): vgc, vgk, EasyAntiCheat, EasyAntiCheat_EOS, BEService, BEDaisy, EAAntiCheat, EAAntiCheat.GameServiceLauncher, Ricochet/CODAntiCheat, Hyperion/RobloxPlayerBeta, а также Windows-компоненты: WinDefend, SecurityHealthService, TrustedInstaller, tbs (TPM Base Services), Measured Boot / Microsoft-Windows-Kernel-Boot ETW",
+    "GAME_FILES_RULE: скрипт не изменяет ни один файл в каталоге установки игры. Разрешено писать только в пользовательские конфиги вне каталога игры (Documents\\My Games\\..., %LOCALAPPDATA%\\<Game>\\Saved\\Config\\). Запрещено: d3d9.dll/dxgi.dll/winmm.dll-прокси, DLL-инжект, ReShade в Fortnite и PUBG, правка pak/vpk",
+    "THIRD_PARTY_DENY_LIST (не бандлить, не устанавливать, не рекомендовать в гайдах; детектить и выводить предупреждение — источник: публичный denylist EA Javelin + BattlEye FAQ): CPU-Z, Core Temp, HWiNFO, Process Explorer, EVGA Precision XOC/X1 LED Sync (WinRing0), MSI Command Center / Super Charger / Gaming App / Creator Center / Dragon Center, GIGABYTE Aorus Engine / OC Guru II / Xtreme Engine / RGB Fusion, ASRock RGBLED / A-Tuning, IObit Advanced SystemCare, Razer Synapse, Samsung Magician, Trident Z Lighting Control, Voicemod, SpeedFan, Daemon Tools, reWASD",
+    "MONITORING_ARCH_RULE: мониторинг FPS/температур только user-mode через Windows API / WMI / PDH / PresentMon или встроенные оверлеи самих игр. Запрещены любые зависимости от kernel-драйверов (WinRing0, inpoutx64, ntiolib, winio, alsysio, glckio, atillk, gpcidrv, asrdrv, eneio, msio, hwinfo64a, procexp*)",
+    "PRODUCT_ARCH_CONSTANT: продукт не содержит и не устанавливает собственный kernel-драйвер (.sys) ни в каком виде. Обоснование: Microsoft blocklist принудителен при HVCI по умолчанию на Win11 + EAC/BattlEye/Javelin отдельно блокируют драйверы + Riot прямо пишет про непредсказуемые взаимодействия с драйвером Vanguard",
+    "PREFLIGHT_CHECK (обязательный модуль перед применением и перед запуском игры, все проверки read-only): msinfo32-эквивалент → BIOS Mode (ожидание UEFI), Secure Boot State (On); tpmtool getdeviceinformation → TPM Present=true, Version=2.0, Is Initialized=true, Ready For Attestation=true; get-tpm → TpmPresent/TpmReady/TpmEnabled/TpmOwned/AutoProvisioning=true; VBS state; Memory Integrity state; IOMMU/VT-d state; наличие secnvme.sys/solidnvm.sys/asstahci64.sys; наличие AppCompatFlags\\Layers для exe античит-игр; наличие процессов из THIRD_PARTY_DENY_LIST",
+    "PER_GAME_PROFILE_MATRIX (обязательная структура данных, не единый профиль): Valorant/LoL → keep TPM+SecureBoot+IOMMU+HVCI+ExploitProtection default, no VM, no compatibility mode, no OC на 13/14 gen; Fortnite → keep SecureBoot+TPM+IOMMU, no ReShade, выгружать оверлеи; Rust/PUBG/Tarkov/DayZ (BattlEye) → Low Latency Mode ≠ Ultra, no macro tools, no ReShade в PUBG; CS2 → cl_allow_multi_input_binds остаётся 0, no null-binds, no exec_async-трюки; CoD → keep TPM+SecureBoot, Win10 22H2+, не трогать TPM/PCR; Battlefield 6/FC/Apex (Javelin) → keep Defender + SecureBoot, denylist-детект, только одобренные ремапперы; Roblox → keep UAC+TPM+SecureBoot",
+    "OVERLAY_UNLOAD_RULE: лаунчер продукта обязан иметь режим 'полная выгрузка перед запуском античит-игры' (никаких оверлеев, хуков, hotkey-хуков, мониторинга) — прямо соответствует рекомендации EAC ('temporarily close the conflicting software before launching the game') и Riot VAN 9101 ('remove any third-party software… even if it's related to other games')",
+    "FORBIDDEN_PRODUCT_FEATURES (иначе продукт классифицируется как cheat/ban-evasion tool → блокировка Stripe/PayPal и юридический риск): смена/спуфинг HWID, обход HWID-бана, unban-сервисы, макросы/anti-recoil, ремапперы типа reWASD, SOCD/null-cancel, FOV/zoom-моды, любые чтения/записи памяти игры, DLL-инжект, отключение античита",
+    "DISCLAIMER_TEXT_CONSTANTS (для карточки товара, Discord-правил и обязательного чекбокса при оплате; каждый пункт подкреплён цитируемым официальным источником): (1) 'Our tweaks are user-mode only. We do not install kernel drivers, do not modify game files, and do not interact with any anti-cheat.' (2) 'We never disable Secure Boot, TPM, IOMMU, Core Isolation or Windows Exploit Protection — these are required by Riot Vanguard, Easy Anti-Cheat, EA Javelin and Call of Duty.' (3) 'Anti-cheat vendors state they ban only for actual cheats — e.g. Valve: system hardware configurations and updated drivers do not trigger a VAC ban; BattlEye: we only ever ban for the use of actual cheats/hacks; Easy Anti-Cheat: blocking is not permanent.' (4) 'We cannot guarantee any outcome from a game publisher. Anti-cheat rules change (Fortnite added IOMMU on Feb 19, 2026; Call of Duty added TPM+Secure Boot in Aug 2025).' (5) 'Requirements: Windows 10 22H2 / Windows 11, UEFI + GPT, Secure Boot and TPM 2.0 enabled. Virtual machines and cloud gaming are not supported by Valorant.' (6) 'We do not sell cheats, macros, HWID spoofers, unban services or account services.'",
+    "AUTO_UPLOAD_CONTENT_RULES (жёсткие фильтры для авто-генерации текстов/озвучки/титров коротких видео — нарушение этих правил создаёт юридический и платёжный риск и повод для страйков): BANNED_PHRASES = ['undetected','bypass anticheat','anticheat bypass','ban-proof','100% ban safe','no ban guarantee','HWID spoof','unban','disable Secure Boot','disable TPM','disable Core Isolation','disable Defender','disable VBS','turn off anticheat','aim assist','no recoil','macro']; REQUIRED_OVERLAY на каждом видео = 'Tweaks only. No cheats. No kernel driver.'; REQUIRED_DESCRIPTION_LINE = ссылка на дисклеймер + 'Requires Secure Boot + TPM 2.0 enabled'; CLAIM_CAP = FPS-прирост указывать только диапазоном с указанием конфигурации и пометкой 'results vary', без абсолютных обещаний",
+    "SUPPORT_BOT_KB_CONSTANT: зашить таблицу кодов ошибок как справочник 'блок vs бан': VAN 9001/9002/9003/9004/9005/9006/RESTRICTION/9101/138 = БЛОК (устранимо), VAN 61/152 = БАН (не устранимо); BattlEye 'Blocked loading of file' = не бан; EAC 'blocked software' = не бан, 'Unknown file version' = проверить файлы; Javelin 'incompatible software/driver' = не бан, закрыть/обновить софт; VAC = бан, не апеллируется"
+  ],
+  "open_questions": [
+    "Есть ли у Riot Vanguard публичный denylist блокируемого софта (аналог списка EA Javelin)? НЕТ ДАННЫХ — Riot публикует только общее 'Vanguard will inform you what vulnerable vectors are being affected through a Windows notification'. Конкретика по MSI Afterburner / RivaTuner Statistics Server / Discord overlay / Overwolf с Vanguard официально не подтверждена — серая зона, low confidence",
+    "Блокирует ли EA Javelin именно MSI Afterburner / RTSS? В опубликованном denylist EA их НЕТ (проверено по тексту страницы: 0 упоминаний Afterburner/RivaTuner/RTSS). Но список помечен как неисчерпывающий ('this list isn't exhaustive'). Считать серой зоной",
+    "Распространит ли Epic требование Secure Boot + TPM + IOMMU с турниров на обычный Ranked/BR? НЕТ ДАННЫХ. Тренд 2025→2026 (с 'Level 350+ турниров' до 'всех турниров') указывает на расширение — планировать продукт так, будто требование станет всеобщим",
+    "Требуют ли Secure Boot/TPM игры вне охвата: Marvel Rivals, Delta Force (ACE-Guard), Dead by Daylight, Escape from Tarkov, Overwatch 2, GTA V/FiveM, Minecraft? НЕТ ДАННЫХ в собранных источниках. Нужен отдельный прогон",
+    "Официальный источник Roblox по требованию Secure Boot/TPM/UAC (Hyperion/Byfron)? Есть только practitioner-источник (документация AtlasOS). Официальную страницу Roblox получить не удалось (403). Medium confidence",
+    "Существуют ли ДОКУМЕНТИРОВАННЫЕ массовые баны конкретно за Windows-твикеры/debloat-дистрибутивы (AtlasOS, ReviOS, Optimizer, Hone)? НЕТ ДАННЫХ о таких инцидентах ни в одном официальном источнике. Все вендоры формулируют политику как 'бан только за читы'. Это вероятно МИФ, но подтвердить отсутствие невозможно — держать low confidence и не использовать как маркетинговое обещание",
+    "Влияет ли отключение VBS/HVCI на Windows 11 на VAN: RESTRICTION у ВСЕХ игроков или только у части? Riot формулирует как 'refer to the specific VAN: RESTRICTION error message you received' — т.е. набор требований индивидуален. Точный триггер не раскрыт. НЕТ ДАННЫХ о доле затронутых",
+    "Политика BattlEye/EAC по VM и песочницам (Sandboxie, Windows Sandbox, Hyper-V включён но не используется)? Официально подтверждено только для Valorant (VAN 138 + 'does not support virtual machines'). Для остальных НЕТ ДАННЫХ",
+    "Какова реальная доля целевой аудитории (13-24, слабые ПК/ноутбуки) с выключенными Secure Boot/TPM/IOMMU? НЕТ ДАННЫХ. Оценка Epic '~95% Fortnite PC players are Windows 11-compatible' — про совместимость железа, а не про фактически включённые настройки. Это ключевая неизвестная для support-нагрузки",
+    "Ricochet (CoD): публикует ли Activision список несовместимого софта? НЕТ ДАННЫХ — только общая формулировка про kernel-драйвер, мониторящий приложения"
+  ],
+  "risks": [
+    "ГЛАВНЫЙ БИЗНЕС-РИСК — НЕ БАНЫ, А БЛОКИРОВКА ЗАПУСКА: если продукт отключает Secure Boot/TPM/IOMMU/Core Isolation/Exploit Protection/Defender/UAC, клиент физически не сможет запустить Valorant, LoL, Black Ops 7, Battlefield 6, Roblox, турниры Fortnite. Это даёт вал возвратов, чарджбэков и отзывов 'сломало игру' — при отсутствии формального нарушения правил площадок. Вероятность: высокая при использовании стандартных шаблонов FPS-твиков",
+    "Конфликт требований между античитами делает единый глобальный профиль невозможным: BattlEye просит временно ОТКЛЮЧИТЬ Hardware-enforced Stack Protection (Core Isolation) для загрузки своего драйвера, а Vanguard при VAN: RESTRICTION ТРЕБУЕТ HVCI включённым. Аналогично VBS: Riot требует включённым на Win11 и предписывает отключить на Win10 без UEFI/TPM. Единый 'one-click optimize' гарантированно кого-то сломает",
+    "Требования меняются без предупреждения и только в сторону ужесточения: Fortnite добавил IOMMU для всех турниров 19.02.2026; CoD добавил TPM+Secure Boot в августе 2025 и сделал обязательным для BO7. Любой профиль твиков устаревает — нужен онлайн-обновляемый набор правил, иначе продукт превратится в источник блокировок",
+    "Любой kernel-драйвер в продукте = экзистенциальный риск: попадание в Microsoft vulnerable driver blocklist (включён по умолчанию на Win11, обновляется квартально) или в denylist EA Javelin / EAC / BattlEye делает продукт нерабочим у всей базы одновременно и навсегда закрепляет репутацию 'банит'. Плюс Microsoft прямо предупреждает о BSOD",
+    "Ассортиментный риск: IObit Advanced SystemCare — прямой аналог 'PC оптимизатора' — находится в ПУБЛИЧНОМ denylist EA Javelin (monitor_win10_x64.sys). Это прецедент: класс 'оптимизаторов с драйвером' уже в чёрных списках. Если продукт пойдёт этим путём, попадание в denylist — вопрос времени",
+    "Платёжный/юридический риск при дрейфе продукта в серую зону: HWID-спуфинг, unban-сервисы, макросы, anti-recoil, ремапперы класса reWASD, продажа аккаунтов. Epic в 2025-2026 системно судится (решение на $175 000, иски к продавцам читов и аккаунтов, пожизненные баны), Riot снимает ранговые награды. Stripe/PayPal закрывают такие мерчанты. Риск: критический, если апселл уйдёт в 'игровые аккаунты'",
+    "Риск ложных срабатываний вне контроля оператора: Valve дважды за 8 месяцев (12.2025, 01.2026) выдавала ошибочные VAC-баны. Клиенты будут приписывать это продукту. Нужны публичные доказательства отсутствия драйвера/инжекта (open-source манифест изменений, хеши, changelog реестровых правок) — иначе репутация не защищается",
+    "Аппаратный риск: любой 'CPU boost'/повышение power limits на Intel 13/14 gen ведёт к BSOD vgk.sys в Riot-играх — Riot официально предписывает ОТКЛЮЧАТЬ оверклок и снижать множители. Продукт, повышающий частоты/PL, будет ломать ПК клиентов с деградировавшими CPU",
+    "Риск для CS2-контента: null-bind/null-cancel конфиги и SOCD дают КИК из матчей на официальных серверах (Valve, 19.08.2024) и мульти-бинды игнорируются по умолчанию. Продажа таких 'про-конфигов' = гарантированные жалобы, даже без бана",
+    "Репутационный риск от копирования маркетинга debloat-проектов: заявление типа 'поддерживаем все античиты' (AtlasOS) опровергается их же FAQ (FIFA/EAFC требуют Defender, Roblox требует UAC+TPM+Secure Boot). Копирование такой формулировки = прямой повод для возвратов и обвинений в обмане",
+    "Support-нагрузка на одного оператора: 9 разных античитов × индивидуальные VAN/EAC/BE/Javelin коды ошибок + требования BIOS (TPM/Secure Boot/IOMMU/MBR→GPT) = тикеты, требующие BIOS-консультаций. Риск: без предзашитого KB и пре-флайт-чека один человек не справится, особенно с аудиторией 13-24 лет на ноутбуках",
+    "Юридический риск инструкций по BIOS: Riot и EA в своих же статьях снимают ответственность ('EA doesn't take responsibility for changes to your BIOS settings', 'Riot is not responsible for any issues that may result from modifying your BIOS'). Продукт, инструктирующий менять BIOS или конвертировать MBR→GPT, несёт риск 'вы убили мой ПК' — нужен аналогичный дисклеймер и отказ от автоматизации BIOS/диска"
+  ]
+}
