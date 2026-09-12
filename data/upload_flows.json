@@ -1,0 +1,105 @@
+{
+  "_meta": {
+    "purpose": "Шаги загрузки через браузер, описанные ДАННЫМИ. Интерфейсы загрузки меняются часто, и поломка селектора должна чиниться правкой этого файла, а не кода.",
+    "scope": "Автоматизация формы загрузки в профиле, где оператор залогинился САМ. Подмены фингерпринтов, скрытия CDP и обхода капчи здесь нет и не будет: это обход систем защиты площадки, а не автоматизация.",
+    "verification": "Селекторы площадок помечены verified=false, пока не проверены командой `cli browser-verify`. Считать их отправной точкой, а не истиной.",
+    "actions": {
+      "goto": "перейти по url",
+      "wait_for": "дождаться появления селектора",
+      "wait_for_hidden": "дождаться исчезновения селектора (индикатор обработки видео)",
+      "click": "клик по селектору",
+      "set_input_files": "передать файл в input[type=file]; значение берётся из value_from",
+      "fill": "вписать текст целиком",
+      "type_slow": "печатать посимвольно с задержкой — нужно редакторам, которые не видят programmatic fill",
+      "press": "нажать клавишу",
+      "expect_text": "проверить, что на странице есть текст (подтверждение публикации)",
+      "screenshot": "снимок экрана в артефакты прогона"
+    },
+    "value_from": ["video_path", "caption", "title", "hashtags_line", "thumbnail_path"]
+  },
+
+  "test_local": {
+    "verified": true,
+    "_note": "Локальный стенд для проверки самого движка шагов без обращения к площадкам.",
+    "steps": [
+      { "action": "goto", "url": "{start_url}" },
+      { "action": "wait_for", "selector": "#upload-form" },
+      { "action": "set_input_files", "selector": "#video", "value_from": "video_path" },
+      { "action": "fill", "selector": "#title", "value_from": "title" },
+      { "action": "type_slow", "selector": "#caption", "value_from": "caption", "delay_ms": 5 },
+      { "action": "click", "selector": "#submit" },
+      { "action": "wait_for", "selector": "#done" },
+      { "action": "expect_text", "text": "published" },
+      { "action": "screenshot", "name": "done" }
+    ]
+  },
+
+  "tiktok": {
+    "verified": false,
+    "url": "https://www.tiktok.com/tiktokstudio/upload",
+    "notes": [
+      "Требует залогиненную сессию в профиле аккаунта.",
+      "Обработка видео занимает время: между загрузкой файла и активной кнопкой публикации нужен wait_for_hidden на индикаторе.",
+      "Подпись вводится в contenteditable, а не в textarea — отсюда type_slow вместо fill.",
+      "При появлении капчи шаг падает и задача уходит в состояние needs_human. Это сознательное решение: обход капчи не делается."
+    ],
+    "steps": [
+      { "action": "goto", "url": "https://www.tiktok.com/tiktokstudio/upload" },
+      { "action": "wait_for", "selector": "input[type=file]", "timeout_ms": 30000 },
+      { "action": "set_input_files", "selector": "input[type=file]", "value_from": "video_path" },
+      { "action": "wait_for", "selector": "div[contenteditable=true]", "timeout_ms": 120000 },
+      { "action": "click", "selector": "div[contenteditable=true]" },
+      { "action": "press", "key": "Control+A" },
+      { "action": "press", "key": "Delete" },
+      { "action": "type_slow", "selector": "div[contenteditable=true]", "value_from": "caption", "delay_ms": 25 },
+      { "action": "screenshot", "name": "before_post" },
+      { "action": "click", "selector": "button:has-text('Post')", "optional": true },
+      { "action": "screenshot", "name": "after_post" }
+    ]
+  },
+
+  "youtube": {
+    "verified": false,
+    "url": "https://studio.youtube.com",
+    "notes": [
+      "Официальный путь для Shorts — Data API (см. publishers/youtube.py); браузер нужен только если квота проекта исчерпана.",
+      "Studio — SPA с частой сменой разметки, селекторы держать здесь.",
+      "Обязательный шаг: выбрать 'Not made for kids' — иначе видео теряет ссылки и комментарии."
+    ],
+    "steps": [
+      { "action": "goto", "url": "https://studio.youtube.com" },
+      { "action": "wait_for", "selector": "ytcp-button#create-icon", "timeout_ms": 30000 },
+      { "action": "click", "selector": "ytcp-button#create-icon" },
+      { "action": "click", "selector": "tp-yt-paper-item#text-item-0" },
+      { "action": "set_input_files", "selector": "input[type=file]", "value_from": "video_path" },
+      { "action": "wait_for", "selector": "ytcp-social-suggestions-textbox#title-textarea", "timeout_ms": 120000 },
+      { "action": "fill", "selector": "ytcp-social-suggestions-textbox#title-textarea div[contenteditable=true]", "value_from": "title" },
+      { "action": "fill", "selector": "ytcp-social-suggestions-textbox#description-textarea div[contenteditable=true]", "value_from": "caption" },
+      { "action": "click", "selector": "tp-yt-paper-radio-button[name=VIDEO_MADE_FOR_KIDS_NOT_MFK]" },
+      { "action": "screenshot", "name": "before_next" },
+      { "action": "click", "selector": "ytcp-button#next-button", "optional": true }
+    ]
+  },
+
+  "instagram": {
+    "verified": false,
+    "url": "https://www.instagram.com",
+    "notes": [
+      "Официальный путь — Graph API, но у аккаунта без показов квоты API нет вообще, поэтому браузер здесь не альтернатива, а единственный путь для новых аккаунтов.",
+      "Загрузка видео в веб-интерфейсе многошаговая: выбор файла, обрезка, фильтры, подпись.",
+      "Водяных знаков и чёрных полос быть не должно: площадка официально снижает видимость таких видео."
+    ],
+    "steps": [
+      { "action": "goto", "url": "https://www.instagram.com" },
+      { "action": "wait_for", "selector": "svg[aria-label='New post']", "timeout_ms": 30000 },
+      { "action": "click", "selector": "svg[aria-label='New post']" },
+      { "action": "set_input_files", "selector": "input[type=file]", "value_from": "video_path" },
+      { "action": "wait_for", "selector": "button:has-text('Next')", "timeout_ms": 60000 },
+      { "action": "click", "selector": "button:has-text('Next')" },
+      { "action": "click", "selector": "button:has-text('Next')", "optional": true },
+      { "action": "fill", "selector": "div[aria-label='Write a caption...']", "value_from": "caption" },
+      { "action": "screenshot", "name": "before_share" },
+      { "action": "click", "selector": "button:has-text('Share')", "optional": true }
+    ]
+  }
+}

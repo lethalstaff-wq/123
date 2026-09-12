@@ -16,7 +16,8 @@
     },
     "handle_note": "handle_pattern подставляет {geo}/{n}/{game}. Ники проверять на занятость перед регистрацией; не делать 20 ников по одному шаблону с цифрами — это самый явный признак сетки.",
     "geo_adaptation": "Игровые слоты привязаны не к жёсткой игре, а к game_rank — месту игры в geos.json.top_games этого гео. Канал про Fortnite в Германии, где в топе CS2, слабее канала про CS2: и хуков больше, и аудитория есть. target_game в шаблоне остаётся как запас, если у гео меньше игр.",
-    "game_slots": "Слоты 1-12 — игровые: игра берётся по game_rank из geos.top_games этого гео, а угол подачи у каждого свой (FPS, инпут-лаг, конфиги, фризы, слабый ПК, настройки про, 1% low, одна настройка, диагностика, разное железо, мифы, быстрые победы). Слоты 13-20 — тематические, без привязки к игре."
+    "game_slots": "Слоты 1-12 — игровые: игра берётся по game_rank из geos.top_games этого гео, а угол подачи у каждого свой (FPS, инпут-лаг, конфиги, фризы, слабый ПК, настройки про, 1% low, одна настройка, диагностика, разное железо, мифы, быстрые победы). Слоты 13-20 — тематические, без привязки к игре.",
+    "instagram_caveat": "Сеть безликих каналов структурно не проходит критерий оригинальности Instagram. Варианты: экранное присутствие в Reels, либо понижение Instagram в приоритете площадок."
   },
   "platform_codes": {
     "tiktok": "tt",
@@ -668,12 +669,13 @@
         ],
         "handle_pattern": "{game}.fpslab",
         "bio": "{game} fps fixes daily · {cta}",
-        "persona": "faceless",
+        "persona": "voice",
         "posts_per_day": 3,
         "publish_mode": "kit",
         "game_rank": 1,
         "theme_pattern": "{game}: FPS и настройки",
-        "bio_pattern": "{game} fps fixes daily · {cta}"
+        "bio_pattern": "{game} fps fixes daily · {cta}",
+        "persona_note": "Instagram считает оригинальными только видео с экранным присутствием автора (Meta, 15.03.2026). Для Reels минимум — голос за кадром и собственные кадры экрана/рук, а не чистая нарезка чужого геймплея."
       },
       {
         "theme": "Valorant: инпут-лаг и отклик",
@@ -685,12 +687,13 @@
         ],
         "handle_pattern": "{game}.latency",
         "bio": "less input lag in {game} · {cta}",
-        "persona": "faceless",
+        "persona": "voice",
         "posts_per_day": 3,
         "publish_mode": "kit",
         "game_rank": 2,
         "theme_pattern": "{game}: инпут-лаг и отклик",
-        "bio_pattern": "less input lag in {game} · {cta}"
+        "bio_pattern": "less input lag in {game} · {cta}",
+        "persona_note": "Instagram считает оригинальными только видео с экранным присутствием автора (Meta, 15.03.2026). Для Reels минимум — голос за кадром и собственные кадры экрана/рук, а не чистая нарезка чужого геймплея."
       },
       {
         "theme": "CS2: конфиги и параметры запуска",
@@ -703,12 +706,13 @@
         ],
         "handle_pattern": "{game}.cfgs",
         "bio": "{game} configs & launch options · {cta}",
-        "persona": "faceless",
+        "persona": "voice",
         "posts_per_day": 3,
         "publish_mode": "api",
         "game_rank": 3,
         "theme_pattern": "{game}: конфиги и параметры запуска",
-        "bio_pattern": "{game} configs & launch options · {cta}"
+        "bio_pattern": "{game} configs & launch options · {cta}",
+        "persona_note": "Instagram считает оригинальными только видео с экранным присутствием автора (Meta, 15.03.2026). Для Reels минимум — голос за кадром и собственные кадры экрана/рук, а не чистая нарезка чужого геймплея."
       },
       {
         "theme": "Rust: фризы и стабильность кадра",
@@ -720,12 +724,13 @@
         ],
         "handle_pattern": "{game}.smooth",
         "bio": "stop the stutter in {game} · {cta}",
-        "persona": "faceless",
+        "persona": "voice",
         "posts_per_day": 2,
         "publish_mode": "kit",
         "game_rank": 4,
         "theme_pattern": "{game}: фризы и стабильность кадра",
-        "bio_pattern": "stop the stutter in {game} · {cta}"
+        "bio_pattern": "stop the stutter in {game} · {cta}",
+        "persona_note": "Instagram считает оригинальными только видео с экранным присутствием автора (Meta, 15.03.2026). Для Reels минимум — голос за кадром и собственные кадры экрана/рук, а не чистая нарезка чужого геймплея."
       },
       {
         "theme": "Dead by Daylight: на слабом ПК",
@@ -737,12 +742,13 @@
         ],
         "handle_pattern": "{game}.lowend",
         "bio": "{game} on low-end PCs · {cta}",
-        "persona": "faceless",
+        "persona": "voice",
         "posts_per_day": 3,
         "publish_mode": "kit",
         "game_rank": 5,
         "theme_pattern": "{game}: на слабом ПК",
-        "bio_pattern": "{game} on low-end PCs · {cta}"
+        "bio_pattern": "{game} on low-end PCs · {cta}",
+        "persona_note": "Instagram считает оригинальными только видео с экранным присутствием автора (Meta, 15.03.2026). Для Reels минимум — голос за кадром и собственные кадры экрана/рук, а не чистая нарезка чужого геймплея."
       },
       {
         "theme": "Warzone: настройки про-игроков",
@@ -755,12 +761,13 @@
         ],
         "handle_pattern": "{game}.procfg",
         "bio": "what {game} pros actually change · {cta}",
-        "persona": "faceless",
+        "persona": "voice",
         "posts_per_day": 2,
         "publish_mode": "kit",
         "game_rank": 6,
         "theme_pattern": "{game}: настройки про-игроков",
-        "bio_pattern": "what {game} pros actually change · {cta}"
+        "bio_pattern": "what {game} pros actually change · {cta}",
+        "persona_note": "Instagram считает оригинальными только видео с экранным присутствием автора (Meta, 15.03.2026). Для Reels минимум — голос за кадром и собственные кадры экрана/рук, а не чистая нарезка чужого геймплея."
       },
       {
         "theme": "Apex Legends: до/после по 1% low",
@@ -772,12 +779,13 @@
         ],
         "handle_pattern": "{game}.frames",
         "bio": "{game} frametimes, measured · {cta}",
-        "persona": "faceless",
+        "persona": "voice",
         "posts_per_day": 2,
         "publish_mode": "kit",
         "game_rank": 7,
         "theme_pattern": "{game}: до/после по 1% low",
-        "bio_pattern": "{game} frametimes, measured · {cta}"
+        "bio_pattern": "{game} frametimes, measured · {cta}",
+        "persona_note": "Instagram считает оригинальными только видео с экранным присутствием автора (Meta, 15.03.2026). Для Reels минимум — голос за кадром и собственные кадры экрана/рук, а не чистая нарезка чужого геймплея."
       },
       {
         "theme": "Roblox: разбор одной настройки",
@@ -789,12 +797,13 @@
         ],
         "handle_pattern": "{game}.onefix",
         "bio": "one {game} setting per video · {cta}",
-        "persona": "faceless",
+        "persona": "voice",
         "posts_per_day": 3,
         "publish_mode": "kit",
         "game_rank": 8,
         "theme_pattern": "{game}: разбор одной настройки",
-        "bio_pattern": "one {game} setting per video · {cta}"
+        "bio_pattern": "one {game} setting per video · {cta}",
+        "persona_note": "Instagram считает оригинальными только видео с экранным присутствием автора (Meta, 15.03.2026). Для Reels минимум — голос за кадром и собственные кадры экрана/рук, а не чистая нарезка чужого геймплея."
       },
       {
         "theme": "Minecraft: диагностика просадок",
@@ -806,12 +815,13 @@
         ],
         "handle_pattern": "{game}.diag",
         "bio": "why {game} drops frames · {cta}",
-        "persona": "faceless",
+        "persona": "voice",
         "posts_per_day": 2,
         "publish_mode": "kit",
         "game_rank": 9,
         "theme_pattern": "{game}: диагностика просадок",
-        "bio_pattern": "why {game} drops frames · {cta}"
+        "bio_pattern": "why {game} drops frames · {cta}",
+        "persona_note": "Instagram считает оригинальными только видео с экранным присутствием автора (Meta, 15.03.2026). Для Reels минимум — голос за кадром и собственные кадры экрана/рук, а не чистая нарезка чужого геймплея."
       },
       {
         "theme": "GTA V: тест на разном железе",
@@ -823,12 +833,13 @@
         ],
         "handle_pattern": "{game}.tested",
         "bio": "{game} on every GPU · {cta}",
-        "persona": "faceless",
+        "persona": "voice",
         "posts_per_day": 2,
         "publish_mode": "kit",
         "game_rank": 10,
         "theme_pattern": "{game}: тест на разном железе",
-        "bio_pattern": "{game} on every GPU · {cta}"
+        "bio_pattern": "{game} on every GPU · {cta}",
+        "persona_note": "Instagram считает оригинальными только видео с экранным присутствием автора (Meta, 15.03.2026). Для Reels минимум — голос за кадром и собственные кадры экрана/рук, а не чистая нарезка чужого геймплея."
       },
       {
         "theme": "Marvel Rivals: мифы об оптимизации",
@@ -840,12 +851,13 @@
         ],
         "handle_pattern": "{game}.myths",
         "bio": "testing {game} fps claims · {cta}",
-        "persona": "faceless",
+        "persona": "voice",
         "posts_per_day": 2,
         "publish_mode": "kit",
         "game_rank": 11,
         "theme_pattern": "{game}: мифы об оптимизации",
-        "bio_pattern": "testing {game} fps claims · {cta}"
+        "bio_pattern": "testing {game} fps claims · {cta}",
+        "persona_note": "Instagram считает оригинальными только видео с экранным присутствием автора (Meta, 15.03.2026). Для Reels минимум — голос за кадром и собственные кадры экрана/рук, а не чистая нарезка чужого геймплея."
       },
       {
         "theme": "PUBG: быстрые победы",
@@ -857,12 +869,13 @@
         ],
         "handle_pattern": "{game}.quick",
         "bio": "15-second {game} fixes · {cta}",
-        "persona": "faceless",
+        "persona": "voice",
         "posts_per_day": 3,
         "publish_mode": "kit",
         "game_rank": 12,
         "theme_pattern": "{game}: быстрые победы",
-        "bio_pattern": "15-second {game} fixes · {cta}"
+        "bio_pattern": "15-second {game} fixes · {cta}",
+        "persona_note": "Instagram считает оригинальными только видео с экранным присутствием автора (Meta, 15.03.2026). Для Reels минимум — голос за кадром и собственные кадры экрана/рук, а не чистая нарезка чужого геймплея."
       },
       {
         "theme": "Laptop gaming reels",
@@ -886,9 +899,10 @@
         ],
         "handle_pattern": "lowend.fps",
         "bio": "Weak PC, real tests · {cta}",
-        "persona": "faceless",
+        "persona": "voice",
         "posts_per_day": 1,
-        "publish_mode": "kit"
+        "publish_mode": "kit",
+        "persona_note": "Instagram считает оригинальными только видео с экранным присутствием автора (Meta, 15.03.2026). Для Reels минимум — голос за кадром и собственные кадры экрана/рук, а не чистая нарезка чужого геймплея."
       },
       {
         "theme": "Mini PC reels",
@@ -899,9 +913,10 @@
         ],
         "handle_pattern": "mini.pc.gaming",
         "bio": "Mini PCs · {cta}",
-        "persona": "faceless",
+        "persona": "voice",
         "posts_per_day": 1,
-        "publish_mode": "kit"
+        "publish_mode": "kit",
+        "persona_note": "Instagram считает оригинальными только видео с экранным присутствием автора (Meta, 15.03.2026). Для Reels минимум — голос за кадром и собственные кадры экрана/рук, а не чистая нарезка чужого геймплея."
       },
       {
         "theme": "Myth busting reels",
@@ -925,9 +940,10 @@
         ],
         "handle_pattern": "pro.settings",
         "bio": "Pro configs · save for later · {cta}",
-        "persona": "faceless",
+        "persona": "voice",
         "posts_per_day": 1,
-        "publish_mode": "kit"
+        "publish_mode": "kit",
+        "persona_note": "Instagram считает оригинальными только видео с экранным присутствием автора (Meta, 15.03.2026). Для Reels минимум — голос за кадром и собственные кадры экрана/рук, а не чистая нарезка чужого геймплея."
       },
       {
         "theme": "Stutter diagnosis reels",
@@ -951,9 +967,10 @@
         ],
         "handle_pattern": "frametime.asmr",
         "bio": "Clean frametimes only · {cta}",
-        "persona": "faceless",
+        "persona": "voice",
         "posts_per_day": 2,
-        "publish_mode": "kit"
+        "publish_mode": "kit",
+        "persona_note": "Instagram считает оригинальными только видео с экранным присутствием автора (Meta, 15.03.2026). Для Reels минимум — голос за кадром и собственные кадры экрана/рук, а не чистая нарезка чужого геймплея."
       },
       {
         "theme": "Gear line (коврики)",
@@ -964,9 +981,10 @@
         ],
         "handle_pattern": "pads.gg",
         "bio": "Custom pads + settings · {cta}",
-        "persona": "faceless",
+        "persona": "voice",
         "posts_per_day": 1,
-        "publish_mode": "kit"
+        "publish_mode": "kit",
+        "persona_note": "Instagram считает оригинальными только видео с экранным присутствием автора (Meta, 15.03.2026). Для Reels минимум — голос за кадром и собственные кадры экрана/рук, а не чистая нарезка чужого геймплея."
       }
     ]
   }

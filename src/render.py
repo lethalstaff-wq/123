@@ -232,11 +232,22 @@ def build_command(plan: VideoPlan, assets: Sequence[Asset], out_path: Path,
         # звук первого клипа; если у источника его нет — тишина, но дорожка есть,
         # потому что файл вообще без аудиопотока хуже, чем тихий
         cmd += ["-map", "0:a?", "-af", "aresample=44100"]
+    # Ограничения площадки: у Instagram жёсткие потолки (300 МБ, 25 Mbps, AAC 48 кГц),
+    # а moov в начале файла требуется явно — иначе контейнер отклоняется при публикации.
+    name = getattr(plan.platform, "value", str(plan.platform))
+    vlimits = platform_limits().get(name, {}).get("video", {})
+    max_mbps = float(vlimits.get("max_bitrate_mbps", 0) or 0)
+    audio_hz = str(platform_limits().get(name, {}).get("audio", {}).get("sample_rate_hz", 44100))
     cmd += [
         "-t", f"{plan.target_duration_s:.2f}",
         "-c:v", "libx264", "-preset", "veryfast", "-crf", str(rng.choice([20, 21, 22])),
         "-pix_fmt", "yuv420p", "-movflags", "+faststart",
-        "-c:a", "aac", "-b:a", "128k", "-ar", "44100",
+    ]
+    if max_mbps:
+        cap = f"{int(max_mbps * 1000 * 0.8)}k"          # 80% от потолка как запас
+        cmd += ["-maxrate", cap, "-bufsize", f"{int(max_mbps * 1000 * 1.6)}k"]
+    cmd += [
+        "-c:a", "aac", "-b:a", "128k", "-ar", audio_hz,
         str(out_path),
     ]
     return cmd
@@ -271,6 +282,14 @@ def render(plan: VideoPlan, assets: Sequence[Asset], music: Asset | None = None)
          "-frames:v", "1", "-q:v", "3", str(thumb)],
         capture_output=True, check=False,
     )
+    max_bytes = int(platform_limits().get(
+        getattr(plan.platform, "value", ""), {}).get("video", {}).get("max_bytes", 0) or 0)
+    size = out_path.stat().st_size
+    if max_bytes and size > max_bytes:
+        raise RenderError(
+            f"{plan.plan_id}: файл {size / 1e6:.0f} МБ превышает лимит площадки "
+            f"{max_bytes / 1e6:.0f} МБ — снизь длительность или подними crf")
+
     digest = hashlib.sha256(out_path.read_bytes()).hexdigest()
     return RenderResult(
         plan_id=plan.plan_id, video_path=str(out_path),

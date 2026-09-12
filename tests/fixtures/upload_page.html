@@ -1,0 +1,23 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Локальный стенд загрузки</title>
+<h1>Fake upload</h1>
+<form id="upload-form" onsubmit="return false">
+  <input type="file" id="video" accept="video/*"><br>
+  <input type="text" id="title" placeholder="title"><br>
+  <textarea id="caption" placeholder="caption"></textarea><br>
+  <button id="submit" type="button">Post</button>
+</form>
+<div id="result"></div>
+<script>
+  document.getElementById('submit').addEventListener('click', () => {
+    const f = document.getElementById('video').files[0];
+    const t = document.getElementById('title').value;
+    const c = document.getElementById('caption').value;
+    if (!f || !t || !c) { document.getElementById('result').textContent = 'missing fields'; return; }
+    const d = document.createElement('div');
+    d.id = 'done';
+    d.textContent = 'published: ' + f.name + ' | ' + t + ' | ' + c.length + ' chars';
+    document.getElementById('result').appendChild(d);
+  });
+</script>

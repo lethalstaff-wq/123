@@ -1,0 +1,377 @@
+{
+  "dimension": "delivery_licensing",
+  "summary": "Авто-выдача для подписки на Windows-твикер собирается дёшево (реально $15-35/мес из бюджета $50-200), но узкое место не платёжка и не лицензии, а ДОВЕРИЕ БИНАРНИКА. Проверено по официальным докам Microsoft: твикер-утилита попадает не в «ложные срабатывания», а в ОПУБЛИКОВАННЫЕ КРИТЕРИИ Microsoft — новая категория «Tampering software» прямо включает отключение защитного ПО, несанкционированные изменения реестра, остановку критических служб, манипуляцию системными компонентами (kernel-драйверы/службы) и вмешательство в обновления безопасности; а «Unwanted software / lack of choice» включает «exaggerated claims about your device's health» (т.е. маркетинг «+50 FPS» сам по себе — критерий). Подпись кода снимает только SmartScreen-warning «неизвестный издатель», но НЕ снимает сигнатурные и драйверные детекты: FanControl подписан и всё равно ловит HackTool:Win32/Winring0 и VulnerableDriver:WinNT/Winring0.G (56 issue в одном репо, 2022-2026). Блок-лист уязвимых драйверов включён по умолчанию с Windows 11 2022 Update и обязателен при HVCI/Smart App Control — значит любой MSR/kernel-доступ в продукте = риск невозможности запуска у части клиентов. Самая дешёвая легальная подпись — Microsoft Trusted Signing (переименован в Artifact Signing) $9.99/мес Basic (5000 подписей), но: индивидуальным разработчикам доступно ТОЛЬКО из США и Канады; организации — из UK/EU/US/CA/AU/NZ/JP/KR/SG/CH/NO/IL. Оператору из СНГ путь один — UK Ltd (юрлицо), иначе остаются коммерческие CA (DigiCert $44-62/мес) или обходной путь конкурентов: Hone (прямой аналог) вообще не решает проблему сам, а раздаётся через Overwolf-инсталлятор и Epic Games Store, т.е. репутацию берёт у платформы-дистрибьютора. По лицензиям: KeyAuth Seller $4.99/мес (HWID-lock, Discord-бот, Seller API) или самопис на Cloudflare Workers ($0-5/мес); Cryptolens/Devolens отпадает (от €299/мес). Discord-роль после оплаты технически тривиальна: OAuth2 scope guilds.join + бот с CREATE_INSTANT_INVITE + roles[] в Add Guild Member (MANAGE_ROLES), лимит 50 req/s. Возвраты: в UK/EU право отказа 14 дней теряется только при явном согласии + подтверждении до начала поставки (Consumer Contracts Regs 2013, reg 37) — эту галочку обязательно ставить в чекауте.",
+  "findings": [
+    {
+      "claim": "Microsoft Trusted Signing (с 2026 переименован в Artifact Signing) стоит $9.99/мес Basic (квота 5 000 подписей/мес) и $99.99/мес Premium (100 000 подписей/мес), овередж $0.005 за подпись. Это самый дешёвый способ получить публично доверенную подпись кода.",
+      "evidence": "Официальный Azure Retail Prices API, запрос 2026-09-12: productName 'Trusted Signing', skuName Basic retailPrice 9.99, skuName Premium retailPrice 99.99, meterName 'Signature Overage' retailPrice 0.005, unitOfMeasure '1/Month', effectiveStartDate 2024-06-01. Квоты 5 000 / 100 000 подписей подтверждены страницей azure.microsoft.com/en-us/pricing/details/artifact-signing/ (цены на самой странице скрыты за 'Request a quote').",
+      "source": "https://prices.azure.com/api/retail/prices?currencyCode=USD&$filter=serviceName eq 'Trusted Signing' (Azure Retail Prices API) + https://azure.microsoft.com/en-us/pricing/details/artifact-signing/",
+      "source_date": "запрос 2026-09-12; effectiveStartDate 2024-06-01",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Заложить в спеку константу COST_SIGNING_BASIC_USD_MONTH=9.99, SIGN_QUOTA_MONTH=5000. Для одного релиза в день с 3-5 бинарниками квоты Basic хватает с 30-кратным запасом."
+    },
+    {
+      "claim": "КРИТИЧНО ДЛЯ ОПЕРАТОРА ИЗ СНГ: Artifact Signing для индивидуальных разработчиков доступен только резидентам США и Канады. Организации — США, Канада, EU, UK, Австралия, Новая Зеландия, Япония, Южная Корея, Сингапур, Швейцария, Норвегия, Израиль. Проверка личности/организации занимает 1-20 рабочих дней.",
+      "evidence": "Дословно: 'Public Trust certificates are available to organizations in the United States, Canada, the European Union, the United Kingdom, Australia, New Zealand, Japan, South Korea, Singapore, Switzerland, Norway, and Israel. Individual developers must be located in the United States or Canada.' + 'Processing time: Processing your identity validation request takes from 1 to 20 business days'. Для individual validation требуется Azure billing account с Account Type = Individual, имя/адрес берутся из него и попадают в сертификат.",
+      "source": "Microsoft Learn, 'Quickstart: Set up Artifact Signing', https://learn.microsoft.com/en-us/azure/artifact-signing/quickstart",
+      "source_date": "ms.date 2026-05-21, updated_at 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Единственный законный путь к $9.99/мес — UK Ltd (позиционирование уже UK). Без юрлица подпись = DigiCert $44+/мес или отказ от подписи. В спеку: флаг SIGNING_PROVIDER in {artifact_signing_uk_ltd, commercial_ca, none} и ветка UX-предупреждения для none."
+    },
+    {
+      "claim": "Artifact Signing выдаёт короткоживущие сертификаты: обновляются ежедневно, валидны 72 часа, ключи в FIPS 140-3 Level 3 HSM, экспорт ключей невозможен. Обязателен RFC 3161 таймстамп, иначе подпись умрёт через 3 дня; Microsoft даёт TSA http://timestamp.acs.microsoft.com.",
+      "evidence": "Дословно: 'Artifact Signing certificates are renewed daily and are valid for only 72 hours'; 'Artifact Signing does not support importing or exporting private keys and certificates'; 'Artifact Signing provides a generally available TSA endpoint at http://timestamp.acs.microsoft.com. We recommend that all Artifact Signing subscribers use this TSA endpoint'.",
+      "source": "Microsoft Learn, 'Artifact Signing certificate management', https://learn.microsoft.com/en-us/azure/artifact-signing/concept-certificate-management",
+      "source_date": "ms.date 2026-01-06, updated_at 2026-08-06",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "В CI-скрипте подписи ОБЯЗАТЕЛЬНО signtool /tr http://timestamp.acs.microsoft.com /td sha256. Нельзя пиннить thumbprint сертификата в своём updater — для пиннинга использовать durable identity EKU с префиксом 1.3.6.1.4.1.311.97."
+    },
+    {
+      "claim": "РИСК: Microsoft активно мониторит подписантов Artifact Signing и при подтверждённом подписании malware ИЛИ PUA отзывает сертификаты и приостанавливает аккаунт. Твикер-утилита по собственным критериям Microsoft может квалифицироваться как PUA/Tampering software — то есть вы подписываете продукт сервисом, который вас за этот же продукт может отключить.",
+      "evidence": "Дословно: 'if it's determined that a subscriber signed code that was malware or a potentially unwanted application (PUA) as defined in How Microsoft identifies malware and potentially unwanted applications, revocation actions can be isolated to revoking only the certificate that signed the malware or PUA' и 'For a confirmed case of misuse or abuse, Artifact Signing immediately takes the necessary steps to mitigate and remediate any threats, including targeted or broad certificate revocation and account suspension.'",
+      "source": "Microsoft Learn, 'Artifact Signing certificate management' (разделы Short-lived certificates, Active monitoring)",
+      "source_date": "ms.date 2026-01-06, updated_at 2026-08-06",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Заранее иметь план Б на подпись (второй CA) и не ставить в продукт функции, прямо перечисленные в критериях Tampering software (отключение Defender и т.п.). В спеку: конфиг SIGNING_FALLBACK_CA и мониторинг отзыва (проверять CRL/OCSP своего же сертификата)."
+    },
+    {
+      "claim": "Microsoft опубликовал категорию 'Tampering software', которая описывает ровно то, что делают игровые твикеры: отключение/удаление защитного ПО, злоупотребление настройками ОС (firewall, DNS, safe mode), манипуляция системными компонентами (kernel-драйверы, системные службы), повышение привилегий, вмешательство в обновления безопасности, остановка критических служб, НЕСАНКЦИОНИРОВАННЫЕ ИЗМЕНЕНИЯ РЕЕСТРА, влияющие на безопасность устройства.",
+      "evidence": "Дословный список из раздела 'Tampering software': 'Disabling or uninstalling security software', 'Abusing operating system features and settings' (Firewall abuse, DNS manipulation, Safe mode exploitation), 'Manipulating system components: Tools and threats that target critical system components, such as kernel drivers or system services', 'Privilege escalation', 'Interfering with security updates', 'Disrupting critical services', 'Unauthorized registry changes: Modifications to the Windows Registry or system settings that impact the security posture of the device', 'Tampering with boot processes'.",
+      "source": "Microsoft Learn, 'How Microsoft identifies malware and potentially unwanted applications', https://learn.microsoft.com/en-us/defender-xdr/criteria",
+      "source_date": "ms.date 2026-01-29, updated_at 2026-09-10",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Это НЕ ложное срабатывание, а политика. В спеку продукта: жёсткий запрет-лист функций (не отключать Defender/Windows Update/firewall, не грузить свои kernel-драйверы, не менять boot-конфигурацию), иначе детект неустраним ни подписью, ни аппеляциями. Все твики делать через документированные API/политики и с откатом."
+    },
+    {
+      "claim": "Маркетинг твикера тоже кодифицирован как критерий 'unwanted software': запрещены 'exaggerated claims about your device's health' и 'misleading or inaccurate claims about files, registry entries, or other items on your device', особенно в связке с требованием оплаты за 'исправление' проблем.",
+      "evidence": "Дословно из раздела 'Lack of choice': 'Display exaggerated claims about your device's health.', 'Make misleading or inaccurate claims about files, registry entries, or other items on your device.', 'Display claims in an alarming manner about your device's health and require payment or certain actions in exchange for fixing the purported problems.'",
+      "source": "Microsoft Learn, https://learn.microsoft.com/en-us/defender-xdr/criteria",
+      "source_date": "ms.date 2026-01-29, updated_at 2026-09-10",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "В самом приложении (не в TikTok-креативах) не показывать сканер 'у вас 2847 проблем' и не обещать конкретный прирост FPS в UI. Это напрямую повышает вероятность классификации как unwanted software. В спеку контент-правил лендинга/UI: запрет alarm-паттернов внутри бинарника."
+    },
+    {
+      "claim": "PUA-категория 'Poor industry reputation' создаёт каскад: если один вендор AV задетектил ваш билд, это само по себе основание для классификации у Microsoft. Плюс категории 'Bundling software' и 'Evasion software' (ПО, ведущее себя иначе при наличии AV) — последнее убивает любую попытку анти-детект-логики.",
+      "evidence": "Дословно: 'Poor industry reputation: Trusted security providers detect this software with their security products... Microsoft and other organizations in the security industry continuously exchange knowledge about files they analyze'; 'Evasion software: Software that actively tries to evade detection by security products, including software that behaves differently in the presence of security products'; 'Bundling software: Software that offers to install other software that isn't developed by the same entity'.",
+      "source": "Microsoft Learn, https://learn.microsoft.com/en-us/defender-xdr/criteria",
+      "source_date": "ms.date 2026-01-29, updated_at 2026-09-10",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Никакого пакера/крипта/обфускации в релизных билдах и никакого 'если AV — веди себя иначе': это переводит продукт из спорной зоны в гарантированный PUA. В спеку сборки: релиз без packer'а, без self-modifying loader, без бандла сторонних установщиков."
+    },
+    {
+      "claim": "Официальный механизм SmartScreen: репутация считается по URL, файлу, приложению И сертификату; при отсутствии репутации показывается предупреждение. Отдельного официального утверждения, что EV-сертификат даёт мгновенную репутацию, в актуальной документации Microsoft (2026) НЕ найдено — распространённое 'EV сразу снимает SmartScreen' следует считать мифом/непроверенным.",
+      "evidence": "Дословно: 'It also provides reputation checks for apps, checking downloaded programs and the digital signature used to sign a file. If a URL, a file, an app, or a certificate has an established reputation, users don't see any warnings. If there's no reputation, the item is marked as a higher risk and presents a warning to the user.' Дифференциации OV/EV в тексте нет.",
+      "source": "Microsoft Learn, 'Microsoft Defender SmartScreen overview', https://learn.microsoft.com/en-us/windows/security/operating-system-security/virus-and-threat-protection/microsoft-defender-smartscreen/",
+      "source_date": "ms.date 2026-04-23, updated_at 2026-04-25",
+      "kind": "myth_debunk",
+      "confidence": "medium",
+      "actionable": "Не платить премию за EV ради 'мгновенного SmartScreen'. Стратегия: одна стабильная схема подписи + один стабильный домен загрузки + не менять сертификат/домен (репутация накапливается на них). В спеку: DOWNLOAD_DOMAIN фиксирован, релизы только с него, без рандомных редиректов и файлхостингов."
+    },
+    {
+      "claim": "Подпись кода НЕ устраняет AV-детекты: FanControl (подписанный, популярный, open-source) за 2022-2026 собрал 56 issue по детектам, включая HackTool:Win32/Winring0 (2025-03-11, 314 комментариев), VulnerableDriver:WinNT/Winring0.G (2025-09-18), WinRing0x64.sys alert (2025-09-20), блокировку LibreHardwareMonitorLib.dll Defender'ом (2026-04-20), Bitdefender (2024-02-06), блокировку Updater.exe Defender'ом (2023-11-22) и Norton (2025-02-19).",
+      "evidence": "GitHub Rem0o/FanControl.Releases, поиск по issue: total_count 56. Конкретные: #3016 'FanControl tracked as virus by Windows Defender - HackTool:Win32/Winring0' (2025-03-11, 314 comments); #3498 'VulnerableDriver:WinNT/Winring0.G v237' (2025-09-18); #3530 'WinRing0x64.sys Windows defender ALERT' (2025-09-20); #4002 'MS Defender blocks LibreHardwareMonitorLib.dll' (2026-04-20); #2297 'Bitdefender identifies FanControl as threat' (2024-02-06); #1242 'Windows Defender can remove FanControl.sys' (2022-11-03); #2133 'Updater.exe Blocked by Windows Defender' (2023-11-22); #2980 'Updater.exe false positive (Norton Antivirus)' (2025-02-19).",
+      "source": "https://github.com/Rem0o/FanControl.Releases/issues/3016 , /3498 , /3530 , /4002 , /2297 , /2133 , /2980",
+      "source_date": "2022-11-03 — 2026-04-20",
+      "kind": "practitioner_report",
+      "confidence": "high",
+      "actionable": "Планировать детекты как ПОСТОЯННЫЙ операционный процесс, а не как разовую проблему. В спеку: (1) ежедневный автоскан своих релизных артефактов, (2) шаблон авто-ответа в Discord/FAQ с точным именем детекта, (3) очередь авто-сабмитов в WDSI при новом детекте, (4) метрика detection_rate по версии."
+    },
+    {
+      "claim": "Отдельный компонент риска — updater. У двух независимых проектов именно апдейтер/exe-обёртка ловит generic-детекты: winutil — 'Exe wrapper from christitustech.com is flagged by MS Defender for TrojanDownloader:PowerShell/Ploprolo.gen!A' (2024-07-03), 'WinUtil shortcut is detected as malware downloader by Sophos' (2023-09-12); FanControl — Updater.exe у Defender и Norton.",
+      "evidence": "GitHub ChrisTitusTech/winutil issues: #2255 (2024-07-03, 5 комментариев), #1020 (2023-09-12), #2484 'script is being blocked by windows antivirus' (2024-07-30). GitHub Rem0o/FanControl.Releases: #2133, #2980.",
+      "source": "https://github.com/ChrisTitusTech/winutil/issues/2255 , /1020 , /2484",
+      "source_date": "2023-09-12 — 2024-07-30",
+      "kind": "practitioner_report",
+      "confidence": "high",
+      "actionable": "Не делать self-updater, который качает и запускает PowerShell/скрипты (классический TrojanDownloader-паттерн). Обновление: подписанный MSI/EXE с того же домена, скачивание пользователем или через штатный механизм; апдейтер подписывать тем же сертификатом."
+    },
+    {
+      "claim": "Детекты срабатывают не только на скачивании, но и В МОМЕНТ ПРИМЕНЕНИЯ твика: winutil #2907 'BitDefender detected virus when applying WPFTweaksBlockAdobeNet' (2024-10-10), #2920 'Avast detects a trojan when debloating an ISO with Microwin' (2024-10-11).",
+      "evidence": "GitHub ChrisTitusTech/winutil issues #2907 (2024-10-10, 2 комментария), #2920 (2024-10-11, 2 комментария).",
+      "source": "https://github.com/ChrisTitusTech/winutil/issues/2907 , /2920",
+      "source_date": "2024-10-10 / 2024-10-11",
+      "kind": "practitioner_report",
+      "confidence": "high",
+      "actionable": "Каждый твик в продукте должен иметь поле av_risk (low/med/high) и предупреждение в UI. Твики типа блокировки доменов через hosts-файл — отдельная высокорисковая категория, выносить в opt-in."
+    },
+    {
+      "claim": "Блок-лист уязвимых драйверов Microsoft включён ПО УМОЛЧАНИЮ начиная с Windows 11 2022 Update, а также принудительно активен при memory integrity (HVCI), Smart App Control или S mode; HVCI включён по умолчанию на большинстве новых устройств Windows 11. Обновляется ежеквартально плюс через месячные обновления Windows. В блок-лист попадают драйверы с 'поведением, которое не является злонамеренным, но обходит модель безопасности Windows'.",
+      "evidence": "Дословно: 'Since the Windows 11 2022 update, the vulnerable driver blocklist is enabled by default for all devices'; 'the vulnerable driver blocklist is also enforced when either memory integrity, also known as hypervisor-protected code integrity (HVCI), Smart App Control, or S mode is active... HVCI is on by-default for most new Windows 11 devices'; 'The blocklist is updated quarterly'; критерий: 'Behaviors that aren't malicious but circumvent the Windows Security Model and an attacker could exploit to elevate privileges in the Windows kernel'.",
+      "source": "Microsoft Learn, 'Microsoft recommended driver block rules', https://learn.microsoft.com/en-us/windows/security/application-security/application-control/app-control-for-business/design/microsoft-recommended-driver-block-rules",
+      "source_date": "ms.date 2026-05-01, updated_at 2026-05-04",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "НЕ включать в продукт kernel-драйвер для MSR/железного доступа (WinRing0-класс) — он либо уже заблокирован, либо будет. Все 'аппаратные' твики — только через WMI/PowerCfg/официальные API. В спеку: запрет на компонент типа *.sys в дистрибутиве."
+    },
+    {
+      "claim": "Smart App Control принимает только RSA-подписи (ECC не поддерживается) и только сертификаты 'доверенных провайдеров'; Trusted Signing назван предпочтительным способом подписи. Неподписанное/малорепутационное ПО на устройствах с включённым SAC просто не запускается.",
+      "evidence": "Дословно: 'Smart App Control allows applications signed with RSA-based digital certificates to run on protected devices. It does not currently support elliptic-curve cryptography (ECC).'; 'Code can be signed with any certificate, but Smart App Control only considers certificates issued by trusted providers.'; 'Trusted Signing (formerly Azure Code Signing) is the preferred way to sign your app.'",
+      "source": "Microsoft Learn, 'Sign your app for Smart App Control compliance', https://learn.microsoft.com/en-us/windows/apps/develop/smart-app-control/code-signing-for-smart-app-control",
+      "source_date": "ms.date 2022-09-20, updated_at 2026-02-10",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Ключ RSA (не ECC). В спеку установщика: детект включённого Smart App Control и честное сообщение пользователю, если запуск невозможен — иначе это молчаливый провал онбординга и чарджбэк."
+    },
+    {
+      "claim": "Требования CA/Browser Forum (Code Signing Baseline Requirements v3.11.0 от 2026-06-16): приватные ключи ВСЕХ code signing сертификатов (не только EV) с 2023-06-01 обязаны генерироваться и использоваться в аппаратном крипто-модуле; максимальный срок действия сертификата с 2026-03-01 не превышает 460 дней.",
+      "evidence": "Дословно из BR: 'CAs SHALL ensure that the Subscriber's Private Key is generated, stored, and used in a suitable Hardware Crypto Module' (эффективно с 2023-06-01, §6.2.7.4.2); EV — FIPS 140-2 level 2 с 2021-06-01; 'the validity period MUST NOT exceed 460 days' для сертификатов, выданных после 2026-03-01 (§6.2.3.2).",
+      "source": "CA/Browser Forum, Code Signing Baseline Requirements, https://cabforum.org/working-groups/code-signing/requirements/",
+      "source_date": "версия 3.11.0, 2026-06-16",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Многолетние 'дешёвые' сертификаты больше не существуют — считать подпись ПОДПИСКОЙ (renew ≤460 дней) и облачным HSM. Это выравнивает Artifact Signing ($9.99/мес) против токенных CA по удобству и делает токен-вариант проигрышным для одиночки без офиса."
+    },
+    {
+      "claim": "Цена подписи у премиального CA: DigiCert — $44/мес и $62/мес за сертификат при автопродлении каждые 12 месяцев (≈$528 и ≈$744/год), FIPS 140-2 Level 2 хранилище ключей (KeyLocker) включено. SSL.com не публикует цены на своих страницах продуктов; подтверждает, что 'Private keys cannot be exported. Must be stored on a FIPS 140-2 validated hardware token, eSigner cloud HSM, or supported cloud HSM' и предлагает IV (для физлиц), OV, EV, Sole Proprietor EV.",
+      "evidence": "digicert.com/signing/code-signing-certificates: '$44 / month / certificate', '$62 / month / certificate', 'Your subscription will automatically renew every 12 months until you cancel', 'FIPS 140-2 Level 2-compliant key storage (KeyLocker)'. ssl.com/certificates/code-signing/: перечислены IV / OV / EV / Sole Proprietor EV, цитата про хранение ключей; цены на странице отсутствуют.",
+      "source": "https://www.digicert.com/signing/code-signing-certificates ; https://www.ssl.com/certificates/code-signing/",
+      "source_date": "получено 2026-09-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Диапазон для бюджета: подпись $10/мес (Artifact Signing Basic, нужно юрлицо в разрешённом гео) … $44-62/мес (DigiCert). SSL.com IV (Individual Validation) — потенциальный вариант для физлица без юрлица, но цена — нет данных, запросить у вендора."
+    },
+    {
+      "claim": "Официальный процесс оспаривания детекта: WDSI submission portal (aka.ms/wdsi, microsoft.com/wdsi/filesubmission), для SmartScreen — отдельные формы report-unsafe-site / report-exploit-guard. Приоритет разбора отдаётся распространённым файлам и аутентифицированным корпоративным клиентам с Software Assurance ID — то есть заявка одиночного инди-разработчика стоит в очереди последней.",
+      "evidence": "Дословно: 'Microsoft prioritizes unprocessed submissions as follows: Files that are prevalent and might affect many devices receive higher priority. Submissions from authenticated customers, especially enterprise customers with valid Software Assurance IDs (SAIDs), receive higher priority. Submissions marked as high priority by SAID holders receive immediate attention.' Также: 'Microsoft systems scan your submission immediately and provide the latest available determination before an analyst reviews the case.' Для SmartScreen: 'Report an unsafe site' / 'submit a network protection detection'.",
+      "source": "Microsoft Learn, 'Address false positives/negatives in Microsoft Defender for Endpoint', https://learn.microsoft.com/en-us/defender-endpoint/defender-endpoint-false-positives-negatives (+ https://www.microsoft.com/wdsi/filesubmission/)",
+      "source_date": "ms.date 2026-09-01, updated_at 2026-09-11",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Автоматизировать сабмит при каждом релизе (proactive, до жалоб) — субмиссия сама 'начинает строить репутацию' (цитата из criteria: 'Submissions help ensure that unknown or suspicious software is scanned by the system to start establishing reputation'). В спеку: шаг release_pipeline.submit_to_wdsi, SLA на разбор — нет данных, планировать 1-14 дней (low confidence)."
+    },
+    {
+      "claim": "KeyAuth: Tester — бесплатно (до 10 пользователей), Developer — $2.99/мес (до 10 000 пользователей), Seller — $4.99/мес (добавляет чат-румы, Discord/Telegram-боты, Seller API). Даёт HWID-lock, гибкие сроки/триалы/подписки. ВАЖНО: вендор прямо пишет, что НЕ даёт обфускацию/анти-дебаг/DRM внутри бинарника — только серверную проверку.",
+      "evidence": "keyauth.cc: 'Tester: Free (10 users max)'; 'Developer: $2.99/month (10,000 users)'; 'Seller: $4.99/month (includes Chatrooms, Discord/Telegram Bots, Seller API)'; 'NOT Included: Code obfuscation/packing, anti-debug/anti-tamper inside your binaries, or DRM for compiled code'; заявленные метрики: ~50ms, 99.99% uptime, 300+ edge locations, 200k+ accounts, 6M+ licenses. Seller API документирован как отдельный продукт для Seller Plan.",
+      "source": "https://keyauth.cc/ ; https://docs.keyauth.cc/ ; https://docs.keyauth.cc/seller-api",
+      "source_date": "получено 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "$4.99/мес закрывает лицензии + Discord-бот + API генерации ключей. Оговорка по риску: KeyAuth широко используется в чит-сцене, поэтому его клиентские интеграции исторически знакомы AV — наличие его характерных паттернов в бинарнике может тянуть детект по 'poor industry reputation' (не подтверждено данными в этой сессии, low confidence)."
+    },
+    {
+      "claim": "Cryptolens (перебрендирован в Devolens) вне бюджета: Free €0 — 10 активных лицензий и прямо 'no production use'; Business €299/мес (5 000 лицензий, 1 000 000 API-вызовов); Scale €699/мес (10 000 лицензий); Enterprise — custom. Включены node-locked, floating, offline activation, subscription/usage-based модели.",
+      "evidence": "devolens.com/pricing: таблица Free €0 / Business €299 / Scale €699 / Enterprise custom; 'Cryptolens is our comprehensive software licensing system... Devolens is a newly created brand name'. cryptolens.io/pricing/ отдаёт 301 на devolens.com/pricing.",
+      "source": "https://devolens.com/pricing (редирект с https://cryptolens.io/pricing/)",
+      "source_date": "получено 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Исключить из архитектуры: минимальный платный тариф €299/мес превышает весь инфраструктурный бюджет."
+    },
+    {
+      "claim": "Keygen: бесплатный Dev-тариф — 100 активных лицензированных пользователей (ALU) и 10 релизов; есть self-hosted Keygen CE бесплатно и платный Keygen EE по фиксированной цене. Конкретные цены облачных тарифов (Std 1-5, Ent 1-3) грузятся динамически и недоступны — нет данных.",
+      "evidence": "keygen.sh/pricing/: 'Free Tier (Dev): 100 active licensed users (ALUs) and 10 product releases'; 'Keygen CE (community edition) - free'; 'flat-rate singleplayer Keygen EE license'; 'We charge a fair, flat monthly or yearly fee' с 'no percentage of revenue'; сами суммы на странице не отрендерены ('Loading plans…').",
+      "source": "https://keygen.sh/pricing/",
+      "source_date": "получено 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "medium",
+      "actionable": "Keygen CE (self-host) — реальная альтернатива самопису, если нужен готовый лицензионный сервер на своём VPS без процента от выручки. Цены Keygen Cloud уточнить отдельно."
+    },
+    {
+      "claim": "Polar даёт готовые лицензионные ключи как 'benefit' покупки: лимит активаций по устройствам (с само-деактивацией клиентом), usage-лимиты, автоистечение по времени с момента покупки, кастомный префикс ключа (MYAPP_*), ротация ключа с сохранением статуса/лимитов. API: POST /v1/customer-portal/license-keys/activate (нужен только при лимите активаций) и /v1/customer-portal/license-keys/validate (рекомендуется вызывать каждую сессию).",
+      "evidence": "polar.sh/docs/features/benefits/license-keys: 'sell software license keys without dealing with sales tax or hosting an API to validate them in real-time'; endpoints '/v1/customer-portal/license-keys/activate' и '/v1/customer-portal/license-keys/validate'; rotation 'generates a new key string on the same license key record' с сохранением status/usage limits/expiry/activations. Цены Polar на странице не указаны — нет данных.",
+      "source": "https://polar.sh/docs/features/benefits/license-keys",
+      "source_date": "получено 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Готовая схема для спеки: activation_limit=1..2 устройства, validate при каждом старте приложения, rotation как замена ручному 'сбросу HWID' в поддержке. Комиссию Polar уточнить отдельно."
+    },
+    {
+      "claim": "Whop как платформа авто-выдачи: API отдаёт membership по ID ИЛИ по license key, вебхуки payment.succeeded и membership.activated, есть Software Access Addendum в ToS (лицензирование софта разрешено), и endpoint 'Resync Membership Access', который 'заново валидирует Discord-связь (повторно добавляет в сервер и переназначает роли при необходимости)'. Точные комиссии Whop в этой сессии получить не удалось — нет данных.",
+      "evidence": "docs.whop.com: 'Retrieves a membership by ID or license key'; 'Whop sends a webhook to your server when something happens in your business, like payment.succeeded or membership.activated'; Resync Membership Access: 're-validates their Discord link (re-adding them to the server and re-assigning roles if needed)'. whop.com/tos: 'Using Whop is free, but fees may apply to certain transactions and services as described in our Buyer Terms and Seller Terms' + отдельная политика 'Prohibited Products & Services' (страница не открылась). whop.com/pricing резолвится в профиль пользователя, не в прайс.",
+      "source": "https://docs.whop.com/developer/api/getting-started ; https://docs.whop.com/llms.txt ; https://docs.whop.com/api-reference/memberships/resync-membership-access.md ; https://whop.com/tos/",
+      "source_date": "получено 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "medium",
+      "actionable": "Whop закрывает связку 'оплата → membership → license key → Discord роль' без своего кода — это самый короткий путь к запуску. Обязательно проверить (а) точный % комиссии, (б) политику Prohibited Products на предмет 'game optimization software' и 'game accounts' до того, как строить весь funnel на Whop."
+    },
+    {
+      "claim": "Sellix в этой сессии недоступен: домены sellix.io / www.sellix.io / docs.sellix.io не резолвятся через окружение (DNS EAI_AGAIN, CONNECT tunnel 502). Данных по тарифам, serials-выдаче и Discord-интеграции Sellix — нет.",
+      "evidence": "WebFetch: 'getaddrinfo EAI_AGAIN sellix.io', 'getaddrinfo EAI_AGAIN docs.sellix.io'; curl: 'CONNECT tunnel failed, response 502' для всех трёх хостов.",
+      "source": "собственная проверка окружения (WebFetch/curl), 2026-09-12",
+      "kind": "practitioner_report",
+      "confidence": "low",
+      "actionable": "Не включать Sellix в спеку без независимой проверки живости сервиса и его актуальных комиссий. Если Sellix недоступен/закрылся — прямые аналоги для проверки: SellAuth (sellauth.com, в этой сессии отдал 503), Whop, Shoppy."
+    },
+    {
+      "claim": "Самописная выдача роли в Discord: нужен OAuth2 scope guilds.join, бот ОБЯЗАН уже быть в сервере и иметь право CREATE_INSTANT_INVITE; в том же вызове PUT /guilds/{guild.id}/members/{user.id} можно передать roles[] (требует MANAGE_ROLES), nick (MANAGE_NICKNAMES). Для отзыва доступа — Modify Guild Member (PATCH) или удаление роли.",
+      "evidence": "docs.discord.com: scope 'guilds.join' — 'allows /guilds/{guild.id}/members/{user.id} to be used for joining users to a guild'; 'In order to add a user to a guild, your bot has to already belong to that guild'; Add Guild Member требует 'CREATE_INSTANT_INVITE permission' и Bot-токен того же приложения; параметр access_token 'must be an oauth2 access token granted with the guilds.join to the bot's application'; roles — array of snowflakes, permission MANAGE_ROLES. Также scope 'role_connections.write' (нельзя с Implicit grant).",
+      "source": "https://docs.discord.com/developers/topics/oauth2 ; https://docs.discord.com/developers/resources/guild",
+      "source_date": "получено 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Точная спека авто-выдачи: 1) checkout → 2) webhook оплаты → 3) OAuth2 redirect с scope=identify+guilds.join → 4) сохранить discord_user_id + refresh_token → 5) PUT add guild member с roles=[PREMIUM_ROLE_ID] → 6) при cancel/expire — снять роль. Хранить refresh_token, чтобы восстанавливать доступ без повторного OAuth."
+    },
+    {
+      "claim": "Лимиты Discord API для автоматизации: глобально 50 запросов в секунду на бота; per-route лимиты не хардкодить; IP блокируется при превышении 10 000 невалидных запросов (401/403/429) за 10 минут. Interaction-эндпоинты не входят в глобальный лимит.",
+      "evidence": "docs.discord.com/developers/topics/rate-limits: 'All bots can make up to 50 requests per second to our API'; 'rate limits should not be hard coded into your app'; 'IP addresses that make too many invalid HTTP requests are automatically and temporarily restricted... Currently, this limit is 10,000 per 10 minutes'; для увеличения лимитов — https://dis.gd/rate-limit.",
+      "source": "https://docs.discord.com/developers/topics/rate-limits",
+      "source_date": "получено 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "В спеку бота: очередь с бэкоффом по заголовкам X-RateLimit-*, счётчик 4xx с автостопом при приближении к 10 000/10 мин, идемпотентность выдачи роли (повторный вебхук не должен слать второй запрос)."
+    },
+    {
+      "claim": "Правила Discord (в силе с 2025-09-29) прямо запрещают продажу игровых читов/хаков (Rule 24, как нарушение IP) и продажу Discord-аккаунтов/серверов/инвайт-ссылок (Rule 16), а также malware (Rule 20) и инструменты спама/массовой регистрации аккаунтов (Rule 13).",
+      "evidence": "discord.com/guidelines, Effective September 29, 2025. Rule 24: 'Do not share content that violates anyone's intellectual property or other rights. This includes sharing or selling game cheats or hacks.' Rule 16: 'Do not sell or purchase Discord assets, including accounts, usernames, servers, server permissions, or custom server invite links.' Rule 20: запрет malware/phishing. Rule 13: запрет продажи спамботов, raid-тулов, 'account-creation tools, token generators, CAPTCHA-solving services'.",
+      "source": "https://discord.com/guidelines",
+      "source_date": "effective 2025-09-29",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Discord-сервер — единая точка отказа всей выдачи. Риски: (1) продажа игровых аккаунтов в том же сервере = нарушение прав правообладателя (Rule 24-класс) и почти гарантированный бан сервера; (2) любой дрейф продукта в сторону работы с памятью игры = 'cheat' по Rule 24; (3) закупка новорег-аккаунтов и автоматизация в Discord попадает под Rule 13/16. В спеку: выдача НЕ должна зависеть только от Discord — ключ обязательно дублируется на email и в web-кабинет."
+    },
+    {
+      "claim": "Возвраты, UK/EU: право отказа в 14 дней теряется ТОЛЬКО если поставка цифрового контента началась после того, как потребитель дал явное согласие И подтвердил, что теряет право отмены. Без этих двух галочек 'no refunds' не действует.",
+      "evidence": "The Consumer Contracts (Information, Cancellation and Additional Charges) Regulations 2013, reg. 37(1)-(2): consumer loses the right when 'supply of the digital content has begun after the consumer has given the consent and acknowledgement required by paragraph (1)', где требуется 'express consent' и 'the consumer has acknowledged that the right to cancel the contract under regulation 29(1) will be lost'. Paddle Buyer Terms формулирует то же: 'You have the right to withdraw from the Agreement for any reason within 14 days of completing a Transaction', но не применяется, если 'you started downloading, streaming, using or benefiting from the Product'.",
+      "source": "https://www.legislation.gov.uk/uksi/2013/3134/regulation/37 ; https://www.paddle.com/legal/checkout-buyer-terms",
+      "source_date": "SI 2013/3134 (действующая редакция); Paddle terms получено 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "В чекауте обязательный чекбокс: 'I consent to immediate access and acknowledge I lose my 14-day right to cancel'. Логировать timestamp+IP согласия — это единственное доказательство при диспуте. В спеку БД: таблица refund_waivers(order_id, consented_at, ip, ua, text_version)."
+    },
+    {
+      "claim": "Стоимость платёжного слоя (для самописной архитектуры на Stripe, UK): 1.5% + 20p стандартные UK-карты, 2.8% + 20p премиальные UK-карты, 2.5% + 20p карты EEA, 3.15% + 20p международные, +2% при конвертации валюты; диспут £20 (возвращается при выигрыше); Stripe Billing 0.7% от объёма на pay-as-you-go (или от £450/мес); Radar от £8/мес или £0.04 за проверенную транзакцию.",
+      "evidence": "stripe.com/gb/pricing: '1.5% + 20p', '2.8% + 20p', '2.5% + 20p' (EEA), '3.15% + 20p' (international), '2%' currency conversion, '£20.00' per dispute received / countered, Billing 'starting at £450.00 per month' или '0.7%' PAYG, Radar 'from £8.00 per month' или '£0.04 per screened transaction'.",
+      "source": "https://stripe.com/gb/pricing",
+      "source_date": "получено 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Для подписки ~$7/мес при международной аудитории эффективная комиссия ≈3.15%+20p ≈ 6-7%; один диспут £20 съедает ~3 подписки. В спеку: Radar-правила и обязательный 3DS для новых карт; лимит на количество активаций с одного HWID/IP как анти-фрод; авто-отмена подписки и снятие роли при dispute.created."
+    },
+    {
+      "claim": "Merchant-of-Record альтернативы (без своего юрлица/VAT): Paddle — 5% + $0.50 за транзакцию, MoR с полной налоговой регистрацией, но 'If you're selling products under $10... contact us for custom pricing' (то есть дешёвая подписка требует индивидуального договора). Gumroad — 10% + $0.50 (30% при продаже через Discover), MoR с 2025-01-01.",
+      "evidence": "paddle.com/pricing: 'Pay-as-you-go pricing: 5% + 50¢ per checkout transaction', 'If you're selling products under $10 or require invoicing [contact us] for custom pricing', MoR 'full tax registration, filing and remittance'. gumroad.com/pricing: '10% + $0.50' per transaction, '30%' через Discover, 'As of January 1, 2025, Gumroad became a Merchant of Record'.",
+      "source": "https://www.paddle.com/pricing ; https://gumroad.com/pricing",
+      "source_date": "получено 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Для оператора из СНГ без юрлица MoR — практичный вход, но цену подписки держать ≥$10, иначе Paddle требует кастомный договор. В спеку прайсинга: PRICE_MIN_USD=9.99 как техническое ограничение платёжного слоя, не маркетинговое."
+    },
+    {
+      "claim": "Lemon Squeezy: получить актуальные комиссии и статус сервиса в этой сессии не удалось (lemonsqueezy.com и docs.lemonsqueezy.com отдают HTTP 403). Данных о ставке, наличии license-key API и о возможном сворачивании/миграции в Stripe — нет.",
+      "evidence": "WebFetch: HTTP 403 Forbidden для https://www.lemonsqueezy.com/, https://www.lemonsqueezy.com/pricing, https://www.lemonsqueezy.com/pricing/, https://docs.lemonsqueezy.com/, https://docs.lemonsqueezy.com/help/licensing/license-api, https://www.lemonsqueezy.com/blog.",
+      "source": "собственная проверка (WebFetch), 2026-09-12",
+      "kind": "practitioner_report",
+      "confidence": "low",
+      "actionable": "Не закладывать Lemon Squeezy в спеку без отдельной проверки: нужно подтвердить (а) принимает ли новых мерчантов, (б) ставку, (в) живо ли License API после интеграции со Stripe."
+    },
+    {
+      "claim": "Самописная выдача укладывается в $0-5/мес инфраструктуры: Cloudflare Workers Free — 100 000 запросов/день, 10 ms CPU на вызов, KV 100 000 чтений и 1 000 записей в день, 1 GB storage. Paid — от $5/мес: 10 млн запросов/мес (+$0.30 за млн), 30 млн CPU-ms, D1 включает 25 млрд чтений и 50 млн записей строк в месяц.",
+      "evidence": "developers.cloudflare.com/workers/platform/pricing/: Free '100,000 per day' requests, '10 milliseconds of CPU time per invocation', KV reads '100,000 / day', writes/deletes '1,000 / day', storage '1 GB'. Paid: '$5/month minimum', '10 million included per month +$0.30 per additional million', '30 million CPU milliseconds', D1 reads '25 billion / month included', D1 writes '50 million / month included'.",
+      "source": "https://developers.cloudflare.com/workers/platform/pricing/",
+      "source_date": "получено 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Референсная архитектура самописа: Workers + D1 ($5/мес) = license API (issue/validate/activate/deactivate) + webhook receiver + Discord-бот на interactions (webhook-режим, без gateway). При 5 000 активных подписчиков с валидацией 1 раз в сутки это ~150k запросов/мес — 1.5% от Paid-квоты."
+    },
+    {
+      "claim": "Прямой конкурент Hone (PC gaming optimizer) решает проблему репутации не подписью, а ДИСТРИБУЦИЕЙ: веб-инсталлятор поставляется через Overwolf, плюс присутствие в Epic Games Store; монетизация — freemium (Free: 10 оптимизаций, +1 за реферала до 15; Premium снимает лимит, добавляет Premium-оптимизации, пресеты, Boost-Ups, без рекламы, приоритетную поддержку); сообщество в Discord. Точные цены Premium на сайте не указаны — нет данных.",
+      "evidence": "hone.gg: 'The web installer is delivered through Overwolf'; доступен 'via the official Hone download page or Epic Games Store'; 'Free Plan: Includes 10 optimizations. Each referral adds one, up to 15 total'; 'Premium Plan: Removes the optimization limit and adds Premium-only optimizations, presets, Boost-Ups, no ads, and priority support'; Discord — discord.com/invite/hone.",
+      "source": "https://hone.gg/",
+      "source_date": "получено 2026-09-12",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Сильный ход для копирования: раздавать не свой .exe, а через платформу с уже накопленной репутацией (Overwolf/EGS) — это одновременно снимает SmartScreen, часть AV-детектов и даёт встроенный биллинг/инсталлятор. Проверить условия и revenue share Overwolf (на dev.overwolf.com страница монетизации не найдена — нет данных). Freemium с реферальной механикой (+1 оптимизация за реферала) — готовый паттерн для вирального TikTok-трафика."
+    },
+    {
+      "claim": "Поддержка без ручной работы, стоимость слоя документации: Mintlify даёт бесплатный старт ('your first month of credits on us'), Starter включает 5 seats, custom domain, web editor, auth, MCP server, API playground; AI Assistant/Agent на Pro — 10 000 кредитов/мес, $0.01 за кредит сверх, 25 кредитов за ответ, 'Free when the Assistant can't answer'. Точные $ за Starter/Pro на странице не отрендерились — нет данных.",
+      "evidence": "mintlify.com/pricing: 'Get started for free, your first month of credits on us'; Starter — '5 editor seats', 'Full platform, custom domain, web editor, authentication, MCP server, and API playground'; Pro — Assistant/Agent, '10,000 / month' credits, '$0.01 per credit for overages', '25 credits / answer', 'Free when the Assistant can't answer'.",
+      "source": "https://mintlify.com/pricing",
+      "source_date": "получено 2026-09-12",
+      "hidden": false,
+      "kind": "platform_docs",
+      "confidence": "medium",
+      "actionable": "Дешевле и надёжнее: статический docs-сайт (GitHub Pages/Cloudflare Pages, $0) + Discord slash-команды FAQ на том же Worker. AI-ответчик по 25 кредитов/ответ (~$0.25/ответ при овередже) экономически оправдан только если он заменяет реальные тикеты; иначе — детерминированный FAQ-бот по ключевым словам детектов (см. finding про AV)."
+    },
+    {
+      "claim": "Собственный мониторинг детектов упирается в лимит бесплатного VirusTotal API: 'at most 4 requests of any nature in any given 1 minute time frame'. Суточная квота free-тарифа и цены платных тарифов в документации не указаны — нет данных.",
+      "evidence": "docs.virustotal.com/docs/api-overview: 'By default it is limited to at most 4 requests of any nature in any given 1 minute time frame'; daily quota и цены платных планов на странице отсутствуют, предлагается 'contact VirusTotal' для private API key.",
+      "source": "https://docs.virustotal.com/docs/api-overview",
+      "source_date": "получено 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "medium",
+      "actionable": "В спеку: post-release job сканирует 3-8 артефактов раз в сутки (влезает в 4 req/min с паузами), пишет detection_count по вендорам в D1, при росте >0 триггерит (1) авто-сабмит в WDSI, (2) обновление FAQ-записи, (3) алерт оператору в Discord."
+    }
+  ],
+  "key_numbers": [
+    "Microsoft Trusted/Artifact Signing Basic: $9.99/мес, 5 000 подписей/мес (Azure Retail Prices API, 2026-09-12)",
+    "Microsoft Trusted/Artifact Signing Premium: $99.99/мес, 100 000 подписей/мес; овередж $0.005/подпись",
+    "Artifact Signing: сертификат валиден 72 часа, обновляется ежедневно, FIPS 140-3 L3 HSM, TSA http://timestamp.acs.microsoft.com",
+    "Artifact Signing identity validation: 1-20 рабочих дней; individual — только US/Canada; org — US/CA/EU/UK/AU/NZ/JP/KR/SG/CH/NO/IL",
+    "DigiCert code signing: $44/мес и $62/мес за сертификат (автопродление 12 мес) ≈ $528 и $744/год",
+    "CA/B Code Signing BR v3.11.0 (2026-06-16): макс. срок сертификата 460 дней с 2026-03-01; hardware crypto module для всех (не только EV) с 2023-06-01",
+    "KeyAuth: Free (10 users) / $2.99 мес (10 000 users) / $4.99 мес Seller (Discord-бот + Seller API)",
+    "Cryptolens/Devolens: Free 10 лицензий без production; Business €299/мес; Scale €699/мес",
+    "Keygen: Free Dev — 100 ALU + 10 релизов; Keygen CE — self-host бесплатно",
+    "Cloudflare Workers: Free 100 000 req/день, 10 ms CPU; Paid $5/мес — 10 млн req/мес, D1 25 млрд чтений/мес",
+    "Paddle: 5% + $0.50; продукты дешевле $10 — только по кастомному договору",
+    "Gumroad: 10% + $0.50 (30% через Discover); MoR с 2025-01-01",
+    "Stripe UK: 1.5%+20p UK standard / 2.8%+20p UK premium / 2.5%+20p EEA / 3.15%+20p international, +2% конвертация",
+    "Stripe UK dispute: £20 за диспут (возврат при выигрыше); Billing 0.7% PAYG; Radar £0.04/транзакция или от £8/мес",
+    "Discord API: 50 req/s глобально на бота; бан IP при 10 000 невалидных запросов / 10 мин",
+    "Discord Community Guidelines в силе с 2025-09-29 (Rule 24 — запрет продажи читов/хаков; Rule 16 — запрет продажи аккаунтов/серверов)",
+    "UK Consumer Contracts Regs 2013 reg 37: 14 дней отказа; теряется только при express consent + acknowledgement до начала поставки",
+    "Блок-лист уязвимых драйверов Windows: включён по умолчанию с Windows 11 2022 Update, обновляется ежеквартально + месячные апдейты",
+    "FanControl (подписанный проект): 56 issue по AV-детектам, 2022-11-03 … 2026-04-20; HackTool:Win32/Winring0 — 314 комментариев (2025-03-11)",
+    "VirusTotal public API: 4 запроса в минуту",
+    "Hone (конкурент): Free 10 оптимизаций, +1 за реферала до 15; раздача через Overwolf + Epic Games Store"
+  ],
+  "machine_spec_notes": [
+    "CONST COST_SIGNING_BASIC_USD_MONTH=9.99; SIGN_QUOTA_MONTH=5000; SIGN_OVERAGE_USD=0.005",
+    "CONST SIGNING_ELIGIBILITY: individual→{US,CA} only; org→{US,CA,EU,UK,AU,NZ,JP,KR,SG,CH,NO,IL}; иначе SIGNING_PROVIDER=commercial_ca|none",
+    "RULE: подписывать ВСЕ артефакты (main exe, updater, все DLL) одним сертификатом + обязательный RFC3161 timestamp (/tr http://timestamp.acs.microsoft.com /td sha256); ключ RSA, НЕ ECC (Smart App Control не поддерживает ECC)",
+    "RULE: cert renewal cycle ≤ 460 дней (CA/B BR), для Artifact Signing — прозрачно (daily renew), для коммерческих CA — планировать задачу renew",
+    "FORBID в дистрибутиве: любые *.sys / kernel-драйверы (WinRing0-класс), packer/crypt/обфускация релиза, self-updater качающий и исполняющий PowerShell, бандл сторонних установщиков, любое поведение 'иначе при наличии AV'",
+    "FORBID в функционале: отключение Defender/Windows Update/firewall, изменение boot-конфигурации, остановка служб безопасности — прямые пункты Microsoft 'Tampering software'",
+    "FORBID в UI бинарника: alarm-сканеры ('найдено N проблем'), гарантии конкретного прироста FPS — пункты 'exaggerated claims about your device's health'",
+    "SCHEMA: tweaks[] с полями {id, category, av_risk: low|med|high, requires_admin: bool, reversible: bool, rollback_action}; high-risk твики только opt-in с явным предупреждением",
+    "PIPELINE release: build → sign → timestamp → upload на фиксированный DOWNLOAD_DOMAIN → submit в WDSI (microsoft.com/wdsi/filesubmission) → VT scan (≤4 req/min) → записать detection_count в D1 → при detections>0 авто-обновить FAQ-запись и алерт в Discord",
+    "CONST DOWNLOAD_DOMAIN фиксирован навсегда (репутация SmartScreen копится на URL+сертификате); запрет раздачи релизов через файлообменники/рандомные редиректы",
+    "DELIVERY FLOW: payment webhook (payment.succeeded / checkout.session.completed) → issue license (idempotent по order_id) → email ключ → OAuth2 redirect scope=identify+guilds.join → PUT /guilds/{gid}/members/{uid} с roles=[PREMIUM_ROLE_ID] → сохранить discord_user_id + refresh_token",
+    "BOT REQUIREMENTS: бот уже в гильдии; права CREATE_INSTANT_INVITE (add member) + MANAGE_ROLES (roles[]); очередь с бэкоффом по X-RateLimit-*; hard-cap 50 req/s; авто-стоп при приближении к 10 000 4xx/10 мин",
+    "REVOCATION FLOW: subscription.deleted | invoice.payment_failed | dispute.created → деактивировать лицензию → снять Discord-роль (PATCH member) → пометить HWID",
+    "LICENSE POLICY: activation_limit=2 устройства (HWID), validate при каждом старте приложения, expiry=paid_until+grace_days, key rotation вместо ручного 'сброса HWID'",
+    "DB TABLE refund_waivers(order_id, consented_at, ip, user_agent, terms_version) — обязательное логирование согласия на утрату 14-дневного права отказа (UK/EU)",
+    "CONST PRICE_MIN_USD=9.99 если платёжный слой = Paddle (продукты <$10 требуют кастомного договора)",
+    "DUAL DELIVERY: ключ всегда доставляется и на email, и в web-кабинет — Discord не должен быть единственным каналом выдачи (риск бана сервера по Discord CG)",
+    "SUPPORT BOT: детерминированный FAQ по ключам детектов (HackTool:Win32/Winring0, VulnerableDriver, TrojanDownloader:PowerShell/*, SmartScreen 'unknown publisher') + slash-команды /license, /reset-device, /status; AI-ответчик только как fallback",
+    "INFRA BUDGET BASELINE: Cloudflare Workers+D1 $5 + KeyAuth Seller $4.99 (или self-host $0) + Artifact Signing $9.99 = ~$20/мес; максимум с DigiCert вместо Artifact Signing = ~$55/мес — оба внутри $50-200"
+  ],
+  "risks": [
+    "Продукт попадает не в 'ложные срабатывания', а в опубликованные критерии Microsoft: категория 'Tampering software' прямо перечисляет отключение защитного ПО, несанкционированные изменения реестра, остановку критических служб, манипуляцию kernel-драйверами и службами. Классификация как PUA/unwanted software устойчива и НЕ снимается подписью кода.",
+    "Замкнутый круг подписи: самый дешёвый вариант ($9.99/мес) — сервис Microsoft, который по собственной политике отзывает сертификаты и приостанавливает аккаунт подписанта за подписание PUA. То есть основной поставщик доверия одновременно является основным источником риска отключения.",
+    "Оператор из СНГ как физлицо НЕ имеет права на Artifact Signing (individual — только US/Canada). Без UK Ltd стоимость подписи растёт с $10 до $44-62/мес (DigiCert), а альтернативные CA цен публично не показывают.",
+    "Подпись не спасает от сигнатурных детектов: подписанный FanControl ловит HackTool:Win32/Winring0 и VulnerableDriver:*, включая события 2025-09 и 2026-04. Ожидаемая реальность — постоянный поток тикетов 'антивирус удалил файл', а не разовая проблема.",
+    "Любой kernel-драйвер для железного доступа (MSR, таймеры, вентиляторы) с высокой вероятностью попадёт в блок-лист уязвимых драйверов, который включён по умолчанию с Win11 2022 Update и принудительно активен при HVCI (включён по умолчанию на большинстве новых Win11) — часть платящих клиентов физически не сможет пользоваться продуктом.",
+    "Апелляции в Microsoft для инди-разработчика приоритезируются последними: приоритет отдаётся распространённым файлам и корпоративным клиентам с Software Assurance ID. Срок разбора официально не гарантирован — нет данных.",
+    "Discord как единственный канал выдачи — единая точка отказа. Правила от 2025-09-29 запрещают продажу читов/хаков (Rule 24) и продажу аккаунтов/серверов (Rule 16); планируемое расширение в игровые аккаунты создаёт прямое основание для бана сервера и потери всей базы подписчиков одновременно.",
+    "Дрейф продукта в сторону работы с памятью/процессом игры переводит его из 'оптимизатор' в 'cheat' по классификации Discord и анти-читов — это одновременно бан сервера, бан в платёжке и бан аккаунтов клиентов в играх.",
+    "Аудитория 13-24 года: высокая доля платежей с родительских карт → повышенный dispute rate. Один диспут в Stripe UK = £20 плюс потеря выручки; при подписке ~$7 это стоимость ~3-4 подписок. Порог отключения аккаунта платёжкой по dispute ratio — нет данных в этой сессии.",
+    "'No refunds' не работает в UK/EU без явного чекбокса согласия и подтверждения утраты права отмены до начала поставки (reg 37). Отсутствие логов согласия = проигранные диспуты и претензии.",
+    "Реселл и шаринг ключей: без лимита активаций по HWID один ключ обслуживает неограниченное число людей. При этом HWID-lock генерирует поток тикетов 'сменил железо' — без авто-ротации ключа (как в Polar) это ручная работа, которой оператор хотел избежать.",
+    "Использование лицензионных сервисов с чит-сценой в клиентской базе (KeyAuth и аналоги) может тянуть детект по критерию 'poor industry reputation' — не подтверждено данными, но правдоподобно (low confidence).",
+    "Sellix недоступен из окружения (DNS/proxy 502), Lemon Squeezy отдаёт 403, Whop не публикует комиссии по доступным URL — три из четырёх популярных платформ авто-выдачи невозможно верифицировать в этой сессии. Строить спеку на них без ручной проверки нельзя.",
+    "Cryptolens/Devolens (€299/мес минимум) и Stripe Billing (£450/мес на контракте) — ловушки бюджета: выглядят как 'стандартные' решения, но превышают весь инфраструктурный лимит.",
+    "Маркетинговые заявления ('+50 FPS') внутри самого бинарника формально соответствуют критерию 'exaggerated claims about your device's health' и повышают вероятность классификации как unwanted software независимо от техники."
+  ],
+  "open_questions": [
+    "Точная комиссия Whop для продавцов (% + фикс + payout fee) — whop.com/pricing резолвится в профиль пользователя, ToS ссылается на отдельные Seller Terms. Нужно проверить вручную в дашборде/у саппорта.",
+    "Политика Whop 'Prohibited Products & Services' — разрешены ли (а) game optimization software, (б) игровые аккаунты. Страница whop.com/prohibited-products отдала 404.",
+    "Статус Sellix: жив ли сервис, его тарифы, serials-выдача, Discord-интеграция. Домены недоступны из окружения (CONNECT 502).",
+    "Lemon Squeezy: актуальная ставка, принимает ли новых мерчантов, работает ли License API после интеграции со Stripe. Все URL — 403.",
+    "Цена SSL.com IV (Individual Validation) code signing — единственный найденный вариант публично доверенной подписи для ФИЗЛИЦА без юрлица; цены на сайте отсутствуют.",
+    "Есть ли у Artifact Signing требование к организации существовать 3+ года (было в ранних версиях Trusted Signing) — в актуальной документации (2026-05-21) такого пункта нет, подтверждения или опровержения нет данных.",
+    "Фактическая разница OV vs EV по SmartScreen в 2026: официального утверждения про 'мгновенную репутацию EV' в доках Microsoft не найдено. Нужен A/B практиков, а не маркетинг CA.",
+    "Revenue share и требования Overwolf к публикации приложения (страница монетизации dev.overwolf.com не найдена) — это ключ к стратегии конкурента Hone.",
+    "Суточная квота бесплатного VirusTotal API и цены платных тарифов — в документации не указаны.",
+    "Порог dispute ratio, после которого Stripe/Paddle отключают аккаунт (Visa VAMP/аналоги) — в этой сессии не проверено.",
+    "Цены облачных тарифов Keygen (Std/Ent) и фиксированная цена Keygen EE — грузятся динамически, не получены.",
+    "SLA Microsoft на разбор сабмита от неаутентифицированного инди-разработчика (дни/недели) — официально не публикуется."
+  ]
+}

@@ -1,0 +1,384 @@
+{
+  "dimension": "discord_funnel",
+  "summary": "Discord can be the product core AND the funnel, but three hard constraints shape the whole design. (1) Discord's native monetization (Premium Apps / SKUs / entitlements) is region-locked to US/EU/UK team owners aged 18+ with a verified app — a CIS solo operator is almost certainly ineligible, so payment must run through an external processor and role-granting must be done by your own bot via the REST API. (2) Invite-reward mechanics (\"invite 3 friends, get X\") are not merely risky — they are explicitly treated as a Discord Developer ToS violation; the largest invite-tracking bot (Invite Tracker) has DISABLED its invite-rewards and invite-gated-giveaway features for that exact reason, and Community Guidelines Rule 15 plus the Platform Manipulation explainer name \"join-for-join\", \"invite rewards\" and \"purchasing fake members\" as prohibited. (3) Mass welcome-DMs are spam under Rule 13; there is no published bot DM quota, only the global 50 req/s per bot and a 10,000-invalid-requests-per-10-minutes Cloudflare IP ban — so DMs must be strictly post-interaction and low-volume. The attribution architecture that works is unique evergreen invite codes (max_age=0, max_uses=0), one per channel×geo, resolved at join time by diffing cached invite `uses` on GUILD_MEMBER_ADD (needs GUILD_MEMBERS intent + MANAGE_GUILD/INVITES), persisted as discord_id→invite_code→geo/channel, then joined against the payment webhook's discord_id. Because TikTok gives one bio link, route every account through your own redirector (/r/{account_id}) that 302s to that account's dedicated invite code — this is the only clean way to get per-channel, per-geo attribution. Server structure that converts: Discord-native Onboarding (prompts with role_ids → auto-segment by game/hardware/language), a free zone with 1-2 genuinely working free tweaks plus a permanent #results/#reviews showcase, a single pinned checkout channel, and ticket-bot support gated to the paid role. On conversion benchmarks: there is NO credible public join→paid rate for gaming Discord communities — I found none and will not invent one; treat any number as low-confidence inference. Same for \"Discord converts better than a site for young audiences\" — no comparative study exists; the supporting evidence is demographic only (Discord 90M+ DAU, 90%+ of users play games, ~35% of web traffic is 18-24). Recommendation: ONE English-primary server with language roles from onboarding, not one server per language, because member count and the reviews wall are the social proof asset and splitting them destroys both.",
+  "findings": [
+    {
+      "claim": "Discord's native monetization (Premium Apps: SKUs, entitlements, user/guild subscriptions) is available only to team owners in the United States, European Union, and United Kingdom — a CIS-based operator is ineligible.",
+      "evidence": "Eligibility list states the app must belong to a developer team, 'Team owner must be at least 18 years old', 'Team must have verified emails and 2FA set up', app must be verified, use slash commands or approved Message Content intent, link ToS + Privacy Policy, and 'Premium Apps is not currently available outside of these regions' (US, EU, UK). Payout eligibility begins after the app's first $100.",
+      "source": "https://docs.discord.com/developers/monetization/enabling-monetization (Discord official developer docs)",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Do NOT build the funnel on Discord-native subscriptions. Payment goes through an external processor; your own bot grants the paid role via PUT /guilds/{guild_id}/members/{user_id}/roles/{role_id} on webhook. Only revisit Discord monetization if a UK/EU legal entity + 18+ team owner is available."
+    },
+    {
+      "claim": "Discord's monetization API primitives are SKU, Entitlement, and Subscription, with user-level and guild-level subscriptions plus durable/consumable one-time purchases; ENTITLEMENT_CREATE/UPDATE/DELETE gateway events fire on entitlement changes.",
+      "evidence": "'SKUs represent specific items or subscription options your app offers'; 'Subscriptions represent an ongoing agreement where a user commits to paying for an entitlement on a recurring basis'; purchase types = durable and consumable one-time, plus individual-user and guild-wide subscriptions. Gateway: 'Sent when an entitlement is created. The inner payload is an entitlement object' (and _UPDATE, _DELETE).",
+      "source": "https://docs.discord.com/developers/monetization/overview and https://docs.discord.com/developers/events/gateway-events.md",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Mirror this data model in your own DB even when using an external processor: sku_id, entitlement(user_id, sku_id, active, expires_at). Makes a later migration to Discord-native billing a config change, not a rewrite."
+    },
+    {
+      "claim": "Discord revenue share percentage for Premium Apps is not stated on the monetization docs pages that are publicly fetchable.",
+      "evidence": "'The document doesn't specify revenue share percentages or tax form requirements.' The store-management page also omits revenue share, payout thresholds, prohibited product types, and review process.",
+      "source": "https://docs.discord.com/developers/monetization/enabling-monetization and .../managing-your-store",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Нет данных on Discord's cut. Do not model it. Treat external processor fees as the only known cost line."
+    },
+    {
+      "claim": "Artificially inflating server membership is an explicit Community Guidelines violation (Rule 15) and the Platform Manipulation policy names the exact tactics: join-for-join, invite rewards, and purchasing fake members.",
+      "evidence": "Rule 15: 'Do not engage with our service in an inauthentic way.' Platform Manipulation explainer: 'artificially inflating server membership (for example, via \"join-for-join,\" \"invite rewards,\" purchasing fake members)'; also prohibits engagement that is 'purchased, induced (like promises of financial reward), fraudulent (for example, it involves fake accounts), or falsified'.",
+      "source": "https://discord.com/guidelines (Effective 2025-09-29, Last Updated 2025-08-29) and https://discord.com/safety/platform-manipulation-policy-explainer (Current Version 2024-03-15)",
+      "source_date": "2025-08-29 / 2024-03-15",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "HARD RULE for the spec: never buy Discord members, never run join-for-join, never gate rewards/giveaways on invite counts. Member count must come only from real traffic. Growth spikes from paid members are the single most likely cause of server removal."
+    },
+    {
+      "claim": "Invite-reward systems are treated as a Developer ToS violation in practice — the leading invite-tracking bot has permanently disabled invite rewards and invite-gated giveaway requirements.",
+      "evidence": "Invite Tracker docs, Invite Rewards & Roles section: 'Status: Currently disabled due to Discord Developer Terms of Service violations. The documentation states: \"This feature has been disabled...Discord views [this] as unsolicited advertisement.\" Giveaway entry requirements by invite count are similarly prohibited.'",
+      "source": "https://docs.invite-tracker.com/llms-full.txt (Invite Tracker official docs)",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Do not design any 'invite N friends → free week of premium' loop. This is the most commonly attempted growth hack in this niche and it is a confirmed enforcement target. Use invite codes ONLY for passive attribution, never as a user-facing reward mechanic."
+    },
+    {
+      "claim": "Buying or selling Discord accounts, servers, server permissions, or custom/vanity invite links is prohibited (Rule 16), and the ToS separately forbids transferring your account or vanity URL.",
+      "evidence": "Rule 16: 'Do not sell or purchase Discord assets, including accounts, usernames, servers, server permissions, or custom server invite links.' ToS: 'You agree not to license, sell, lend, or transfer your account, Discord username, vanity URL, or other unique identifier without our prior written approval.'",
+      "source": "https://discord.com/guidelines (2025-08-29) and https://discord.com/terms (Effective 2025-09-29)",
+      "source_date": "2025-08-29 / 2025-09-29",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Never buy an aged/established Discord server or vanity URL as a shortcut. Build the server on an account you own. This also compounds the separately-noted risk of the planned game-account resale line."
+    },
+    {
+      "claim": "Self-bots and user-bots are prohibited; each account must be a human (Rule 14). Unsolicited bulk messaging and client modification for spam are prohibited (Rule 13 + Platform Manipulation).",
+      "evidence": "Rule 14: 'Do not use self-bots or user-bots. Each account must be associated with a human, not a bot.' Rule 13: 'Do not send unsolicited bulk messages (or spam) to others', including 'facilitating spam through spambots, raid tools'. Platform Manipulation: 'Making modifications to the Discord client for the purpose of spam or any other reason is not allowed.'",
+      "source": "https://discord.com/guidelines (2025-08-29); https://discord.com/safety/platform-manipulation-policy-explainer (2024-03-15)",
+      "source_date": "2025-08-29",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "All automation must run through a registered Bot application with a bot token — never a user token. No 'promo account' scripts that join other servers and DM members; that is the fastest route to both account and server termination."
+    },
+    {
+      "claim": "Sharing or selling game cheats or hacks is prohibited (Rule 24), and Discord removes servers distributing them.",
+      "evidence": "Rule 24: 'Do not share content that violates anyone's intellectual property or other rights. This includes sharing or selling game cheats or hacks.' Platform Manipulation explainer confirms server-level removal for servers facilitating abuse.",
+      "source": "https://discord.com/guidelines (2025-08-29)",
+      "source_date": "2025-08-29",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Copy discipline is a survival requirement. Allowed vocabulary: Windows optimization, registry tweaks, power plan, driver config, in-game settings, latency reduction, 1% low stability. BANNED vocabulary anywhere in the server, product, or video copy: cheat, hack, bypass, spoofer, unlock, aimbot, no-recoil, anti-cheat. Add these as a hard denylist in the content generator and an AutoMod blocklist in the server."
+    },
+    {
+      "claim": "Discord enforcement acts at both account and server level; servers that facilitate abuse tooling are removed outright.",
+      "evidence": "Platform Manipulation explainer: enforcement against accounts includes 'Removal of accounts registered specifically for abuse' and action on spambots/self-bots; against servers, 'Removal of servers facilitating abuse, including those distributing spambots, server \"raid\" tools, account-creation tools, token generators, CAPTCHA-solving services.'",
+      "source": "https://discord.com/safety/platform-manipulation-policy-explainer (Current Version 2024-03-15)",
+      "source_date": "2024-03-15",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Single-server dependency is a single point of failure for the whole business. Mitigation: nightly export of member_id + paid status + license keys to your own DB; keep license validation server-side so a Discord ban does not brick paying customers; maintain a cold-standby guild template and an email/site fallback channel for existing subscribers."
+    },
+    {
+      "claim": "Discord minimum age is 13 globally (subject to higher local minimums) — the stated 13-24 target audience is partly minors, on a platform whose own ToS sets 13 as the floor.",
+      "evidence": "ToS: 'you confirm that you're at least 13 years old and meet the minimum age required by the laws in your country.' Effective Date: September 29, 2025.",
+      "source": "https://discord.com/terms",
+      "source_date": "2025-09-29",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Minors are a chargeback/refund vector (parent-initiated disputes on card payments). For the spec: log purchase IP + timestamp + Discord ID, require a checkout-time 'I am 18+ or have permission of a payer' checkbox, and prefer processors/methods with lower friendly-fraud exposure. Нет данных on UK distance-selling 14-day cooling-off application to instantly-delivered digital goods — must be checked before writing refund policy copy."
+    },
+    {
+      "claim": "Discord ToS bans scraping and commercializing data obtained from the service.",
+      "evidence": "'selling, licensing, or otherwise commercializing content or data obtained from our services'; prohibits 'scraping our services without our written consent' and use of 'any robot, spider, crawler, scraper, or other automatic device' for commercial data extraction.",
+      "source": "https://discord.com/terms (Effective 2025-09-29)",
+      "source_date": "2025-09-29",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Your bot may read and store data from YOUR OWN guild for operating the service (member IDs, invite attribution). Do not scrape competitor servers' member lists for outreach — that is both scraping and a spam-DM pipeline."
+    },
+    {
+      "claim": "Bot API limits: 50 requests/second global per bot; 10,000 invalid requests per 10 minutes triggers a Cloudflare IP ban. Per-route limits exist but are not fixed numbers and must be read from response headers.",
+      "evidence": "'All bots can make up to 50 requests per second to our API.' Invalid request limit (401/403/429): 'Currently, this limit is 10,000 per 10 minutes.' Guidance: 'rate limits should not be hard coded into your app' — parse X-RateLimit-Limit / X-RateLimit-Remaining.",
+      "source": "https://docs.discord.com/developers/topics/rate-limits (Discord official)",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Spec constants: GLOBAL_RPS_CAP=45 (10% safety margin under 50), INVALID_REQ_BUDGET=10000/600s with a circuit breaker at 1000/600s, mandatory 429 + X-RateLimit-Reset-After backoff with jitter, single shared token-bucket queue across all bot workers, and per-route buckets keyed by major param (guild_id/channel_id)."
+    },
+    {
+      "claim": "There is NO publicly documented bot DM rate limit or daily DM quota from Discord.",
+      "evidence": "Discord rate-limit docs: 'The provided content does not include specific limits for message creation, DM creation, or gateway identify operations.' The DM design-guidelines page contains only UI guidance, no limits. GitHub issue #5144 discusses only the 50 req/s global limit, not DMs.",
+      "source": "https://docs.discord.com/developers/topics/rate-limits; https://docs.discord.com/developers/discord-social-sdk/design-guidelines/direct-messages.md; https://github.com/discord/discord-api-docs/issues/5144",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Нет данных on an exact DM ceiling. Treat DM volume as governed by Rule 13 (spam) and account-level anti-abuse heuristics, not a published quota. Spec: welcome-DM is DISABLED by default; DMs only after an explicit user action (button click, ticket open, purchase). If a welcome-DM is used at all, cap at <=1 per new member, add a 2-5s inter-DM delay, hard-cap 200-400 DMs/day per bot (low confidence, self-imposed safety number, not a Discord figure), and abort the whole DM job on the first 50007 'Cannot send messages to this user' rate spike."
+    },
+    {
+      "claim": "Discord Onboarding is an official API-level feature that can auto-assign roles AND channels based on the user's answers to prompts — this is the correct segmentation gate, not a reaction-role bot.",
+      "evidence": "Guild Onboarding object: prompts[] (type MULTIPLE_CHOICE=0 or DROPDOWN=1), default_channel_ids, enabled, mode ONBOARDING_DEFAULT (0, 'Counts only Default Channels towards constraints') or ONBOARDING_ADVANCED (1, 'Counts Default Channels and Questions towards constraints'). Each prompt option carries channel_ids ('Channels to add members to') and role_ids ('Roles to assign'). Prompts support single_select, required, and in_onboarding flags. Welcome screen supports 'up to 5' channels.",
+      "source": "https://docs.discord.com/developers/resources/guild.md#guild-onboarding-object (Discord official)",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Spec: 4 required single_select onboarding prompts → (1) Language/region [EN/ES/PT/DE/TR/PL...] → language role; (2) Main game [Fortnite/Valorant/CS2/Rust/DBD/Apex/Warzone/Roblox/other] → game role, unlocks that game's channel; (3) Hardware [Laptop / Desktop GTX-era / Desktop RTX / Handheld] → hardware role; (4) Goal [More FPS / Less input lag / Stable 1% low / Fix stutter] → drives the pinned CTA variant. These 4 answers are the highest-value first-party data in the funnel and cost zero friction because Discord renders them natively at join."
+    },
+    {
+      "claim": "Guild feature flags confirm the gating primitives available: COMMUNITY (unlocks welcome screen, Membership Screening, discovery), WELCOME_SCREEN_ENABLED, MEMBER_VERIFICATION_GATE_ENABLED, VANITY_URL.",
+      "evidence": "COMMUNITY: 'guild can enable welcome screen, Membership Screening, stage channels and discovery'; MEMBER_VERIFICATION_GATE_ENABLED: 'guild has enabled Membership Screening'; VANITY_URL: 'guild has access to set a vanity URL'. Welcome screen: 'up to 5' channels.",
+      "source": "https://docs.discord.com/developers/resources/guild.md",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Enable COMMUNITY on day 1 (required for Onboarding + Welcome Screen + AutoMod + Discovery). Enable Membership Screening (rules-accept gate) — it is the cheapest raid/bot filter and costs one click. Welcome screen: exactly 5 slots → #start-here, #free-tweaks, #fps-results, #reviews, #get-access. Do NOT depend on VANITY_URL for attribution (boost-gated and single-value); per-channel invite codes are the attribution mechanism."
+    },
+    {
+      "claim": "Per-invite attribution is mechanically achievable: INVITE_CREATE / INVITE_DELETE carry code, inviter, uses, max_uses, max_age, expires_at; GUILD_MEMBER_ADD requires the GUILD_MEMBERS intent.",
+      "evidence": "INVITE_CREATE fields: channel_id, code, created_at, guild_id?, inviter?, max_age, max_uses, temporary, uses, expires_at; requires MANAGE_CHANNELS permission on the channel. GUILD_MEMBER_ADD: 'GUILD_MEMBERS intent will be required to receive this event'. Invite metadata object exposes uses, max_uses, max_age, temporary.",
+      "source": "https://docs.discord.com/developers/events/gateway-events.md and https://docs.discord.com/developers/resources/invite.md",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Spec the invite-diff algorithm explicitly: on READY, GET /guilds/{id}/invites → cache {code: uses}; on INVITE_CREATE add to cache; on INVITE_DELETE remove; on GUILD_MEMBER_ADD re-fetch guild invites, find the code whose uses incremented by 1, write row (discord_id, invite_code, joined_at, account_created_at). Enable privileged GUILD_MEMBERS intent in the dev portal (required) and grant the bot MANAGE_GUILD. Race condition: two joins within the same fetch window can be ambiguous — mark those rows attribution_confidence='ambiguous' rather than guessing."
+    },
+    {
+      "claim": "Evergreen per-channel invite codes must be created with max_age=0 and max_uses=0; the Invite object's max_age is 'duration (in seconds) after which the invite expires' and max_uses is 'max number of times this invite can be used'.",
+      "evidence": "Invite Metadata Object: uses = 'number of times this invite has been used'; max_uses = 'max number of times this invite can be used'; max_age = 'duration (in seconds) after which the invite expires'; temporary = membership is temporary.",
+      "source": "https://docs.discord.com/developers/resources/invite.md",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Spec: POST /channels/{channel_id}/invites with {max_age:0, max_uses:0, temporary:false, unique:true} for every (platform, geo, account) triple. 3 platforms × ~6 geos × 20 accounts = up to 360 codes. No documented per-guild invite cap was found (нет данных) — but generate lazily and store in a table, do not regenerate per video."
+    },
+    {
+      "claim": "Invite Tracker (third-party bot) provides ready-made per-member attribution, labeled campaign invites, CSV export, and retention %, with specific free/premium limits — but its free tier caps campaign labels at 1, making it unusable for a 20-channel-per-geo network without premium.",
+      "evidence": "Premium commands: /inviter <@user> ('Identify who invited a specific member'), /invitedlist <@user|invite_code|invite_label|filter_role>, /massban, /exportleaderboard <type> and /exportinvitedlist (CSV, 5-minute cooldown between exports). Invite Labels = custom-named invite codes with optional auto-role; limits: Free 1 label max, Premium unlimited. Auto Roles: Free 3 max, Premium unlimited. Analytics History: Free 30 days, Premium Forever. Blacklisted users 3/100, Honeypot trap channels 1/5, Hidden leaderboard users 3/100. Dashboard leaderboard shows top 50 with regular/bonus/left/fake breakdown, latest invited member, retention percentage, ranges 24h/7d/30d/all-time. Public leaderboard URL 3-32 chars. Fake-invite formula: 'regular - left - fake + bonus'; fake delay default 3 days, premium adjustable 0-300 days. Variable %invite_label% usable in join/leave messages.",
+      "source": "https://docs.invite-tracker.com/llms-full.txt (official bot docs)",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Two-track spec: (a) Phase 1 / MVP — Invite Tracker Premium as the attribution layer, use Invite Labels named exactly tt_uk_07, yt_de_03, ig_us_12 so the label IS the campaign key; pull /exportinvitedlist CSV on a cron (respect 5-min export cooldown) into your DB. (b) Phase 2 — replace with your own invite-diff bot (see previous finding) to remove the premium dependency, the 30-day free history cap, and to get real-time rather than CSV-batch attribution. Reuse their fake-invite formula and the 3-day account-age heuristic as a bot-traffic quality signal per channel: high fake% on a channel = the channel is pulling low-quality/bot traffic, deprioritize it."
+    },
+    {
+      "claim": "Ticket bots are a proven, massive-scale support primitive on Discord — Ticket Tool alone reports 4,630,000+ active servers and 435+ million tickets.",
+      "evidence": "'over 4,630,000+ active servers, and 435+ Million tickets to date'. Documentation covers panels, dashboard, transcripts categories, but premium pricing and ticket limits were not exposed on the fetched page.",
+      "source": "https://docs.tickettool.xyz/ (official docs)",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Support model for a one-person operation: ticket panel in #premium-support restricted to the PAID role only (free users get #free-help, a searchable FAQ, and nothing else). Enable transcripts so every resolved ticket becomes FAQ/knowledge-base material and later becomes the auto-reply corpus. Нет данных on Ticket Tool premium price — verify before budgeting."
+    },
+    {
+      "claim": "Whop exposes the exact API surface needed for automated Discord fulfillment: memberships retrievable by license key, membership lifecycle (cancel/pause/resume/restore/add free days), access resync, and webhooks.",
+      "evidence": "Docs index lists: Membership, List Memberships, Retrieve Membership ('Supports retrieval via ID or license key'), Cancel Membership, Pause/Resume Membership, Resync Membership Access, plus Webhook / List / Create / Update / Send Test Event endpoints, OAuth, and Access Token.",
+      "source": "https://docs.whop.com/llms.txt (official docs index)",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Fulfillment spec: processor webhook (membership.went_valid) → verify signature → look up discord_id from the buyer's OAuth-linked Discord account → PUT role → DM receipt + download link → write entitlement row. Reverse path on membership.went_invalid / refund / chargeback → DELETE role + revoke license key server-side. Use Resync Membership Access as the reconciliation cron (hourly) so a missed webhook cannot leave a payer without a role or a churned user with one."
+    },
+    {
+      "claim": "Whop's fee percentages, payout methods, and whether CIS-based sellers are supported are NOT documented on the publicly fetchable docs pages.",
+      "evidence": "Payouts overview page 'contains no specific information about platform fee percentages, payment processing fees, supported payout methods or geographic regions, payout timing or hold periods, reserve requirements.' Sellix (sellix.io, docs.sellix.io) was unreachable (DNS EAI_AGAIN) and sell.app's Discord-bot page returned 404.",
+      "source": "https://docs.whop.com/developer/payouts/overview.md; sellix.io / sell.app fetch failures",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Нет данных on Whop/Sellix/Sell.app fees and CIS payout eligibility. This is a blocking unknown for the business model — the operator must verify seller-country eligibility and payout rails BEFORE building the fulfillment bot, because the webhook schema differs per processor. Design the bot with a processor-agnostic adapter interface (one module per processor emitting a normalized {event, discord_id, sku, expires_at} envelope)."
+    },
+    {
+      "claim": "Discord's official scale and gaming skew are strong: 90M+ daily active users (Q4 2025), 90%+ of users play video games, ~40% of PC players start a game within an hour of opening Discord.",
+      "evidence": "discord.com/company: '90M+' DAU (Q4 2025, Discord Internal Data); '90%+' of users play video games (2025 Discord user survey data); '~40%' of PC players start a game within an hour (data averaged across all months of 2025).",
+      "source": "https://discord.com/company (Discord official)",
+      "source_date": "Q4 2025 / 2025",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Use in copy and in investor/self-justification math, not in conversion math. The operative implication: Discord users are already at the keyboard, in gaming context, minutes from launching a game — the highest-intent moment to sell an FPS tweak. Time premium-drop announcements and CTA pushes to evening local gaming hours per geo role."
+    },
+    {
+      "claim": "Discord audience age skews to the target band: ~35.5% of Discord web traffic is 18-24; 67.7% male; US 30.26% and UK 4.22% of users; ~280 minutes/month average; 32.6M+ servers; 36% of video gamers use Discord daily or weekly.",
+      "evidence": "DemandSage aggregation citing originals: '35.49% of Discord traffic comes from the age group of 18 to 24 years old' (SimilarWeb/Semrush); '67.7% of Discord users are male, while the remaining 32.3% are female' (Statista); US '30.26%', UK '4.22%' (Statista); '37% of people aged between 18 to 34 years have a Discord account in the United States' (Statista); 'Discord users spend an average of 280 minutes monthly' (Headphones Addict); 'Over 32.6 million Discord servers' (Statista); '36% of video gamers use Discord Daily or Weekly' (Statista). Article gives no 13-17 breakdown. NOTE: the same article cites '26.5 million daily active users' (Bank My Cell) which contradicts Discord's own 90M+ DAU — treat the aggregator's DAU/MAU figures as unreliable.",
+      "source": "https://www.demandsage.com/discord-statistics/",
+      "source_date": "2025 (cited originals)",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Geo prioritization for the channel network: US is ~7x the UK by Discord user share, so despite UK positioning, US/EN is the volume geo and UK is the premium-pricing/branding geo. No 13-17 data (нет данных) — do not size the under-18 segment. Always prefer discord.com/company figures over aggregators where they conflict."
+    },
+    {
+      "claim": "There is NO credible public benchmark for Discord-community join→paid-subscription conversion rate in gaming.",
+      "evidence": "No figure was found in any fetched source. Common Room's community-benchmarks page contains no conversion percentages, engagement rates, Discord metrics, or active-member percentages. Whop's Discord monetization blog URL 404'd. Free-trial benchmark aggregators (FirstPageSage, Userpilot) both 404'd.",
+      "source": "https://www.commonroom.io/resources/community-benchmarks/ (no data); whop.com/blog/discord-monetization/ (404); firstpagesage.com + userpilot.com trial-conversion reports (404)",
+      "source_date": "fetched 2026-09-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Нет данных. Do NOT hardcode a conversion assumption in the spec. Instead instrument the funnel so the real number is measured within 2 weeks: log every stage (invite_click → guild_join → onboarding_complete → get_access_channel_view → checkout_click → paid) and compute per-channel, per-geo. Treat any planning number as low-confidence placeholder: join→paid plausibly 0.5-3% for cold short-form gaming traffic at a $5-15 price point (LOW CONFIDENCE INFERENCE, no source). Kill/scale channel decisions must use measured data only."
+    },
+    {
+      "claim": "There is NO comparative study showing Discord converts better than a website for young/gaming audiences.",
+      "evidence": "No such study appeared in any fetched source. The only supporting evidence is demographic (Discord's 90M+ DAU, 90%+ gamers, 18-24 traffic skew) and structural, not conversion-comparative.",
+      "source": "No source found; see discord.com/company and demandsage.com for the demographic-only evidence",
+      "source_date": "fetched 2026-09-12",
+      "kind": "inference",
+      "confidence": "low",
+      "actionable": "Treat 'Discord converts better' as an untested hypothesis, not a premise. Spec an A/B at the redirector layer: 50% of each account's traffic → Discord invite, 50% → direct checkout page with a post-purchase auto-invite. Same UTM/campaign key both sides. Decide per geo after >=500 clicks per arm. The mechanisms plausibly favoring Discord for this audience (member count as social proof, a visible reviews/results wall, free working tweaks to de-risk trust, zero-friction identity — they already have an account) are real but unquantified; the mechanism favoring the site (fewer steps) is also real."
+    },
+    {
+      "claim": "Discord itself is actively building commerce inside servers, including game-brand shops with Discord-exclusive discounts — validating in-server purchase as a normal behavior for this audience.",
+      "evidence": "Discord blog posts: 'Bringing In-Game Commerce to Discord Communities' (Marvel Rivals Shop integration); 'Stock Up in the New Rust Shop! Enjoy a Discord-Only 20% Sale on Most Items until 5/21' (2026); 'Reward Your Play: Complete Quests. Earn Orbs. Get Sweet Stuff.' (2025); 'Checkpoint 3: Leveling Up Discord Quests with Orbs and Advanced Measurement' (2025).",
+      "source": "https://discord.com/blog/",
+      "source_date": "2025-2026",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Two of the target games (Rust, Marvel Rivals) already run official Discord shops — their players are conditioned to buy in Discord. Prioritize Rust and Marvel Rivals channels in the content network, and mirror the 'Discord-only X% sale' pattern: a role-gated discount code visible only in-server, which also makes the join step load-bearing rather than decorative."
+    },
+    {
+      "claim": "Recommended architecture: ONE English-primary server with language roles assigned at onboarding, NOT one server per language.",
+      "evidence": "Structural reasoning from documented primitives: Onboarding prompt options assign role_ids and channel_ids, so a single guild can present a language-specific channel set per member at zero friction; welcome screen is capped at 'up to 5' channels; member count and the reviews/results wall are the only social-proof assets and they are additive only within one guild. No source quantifies the trade-off.",
+      "source": "Inference from https://docs.discord.com/developers/resources/guild.md (onboarding + welcome screen) — no benchmark source found",
+      "source_date": "fetched 2026-09-12",
+      "kind": "inference",
+      "confidence": "medium",
+      "actionable": "Spec: 1 guild. Onboarding prompt 1 = language → role LANG_EN/ES/PT/DE/TR/PL. Channel overwrites: global channels (#announcements, #fps-results, #reviews, #get-access) visible to everyone in English; per-language #chat-xx and #help-xx visible only to that language role. Break this rule and split to a second guild ONLY if a single language exceeds roughly 25-30% of members and generates its own moderation load (low-confidence threshold, self-set). Operational cost of N servers for one operator: N× moderation, N× bot config, N× ban exposure, and social proof divided by N."
+    },
+    {
+      "claim": "Free-zone vs paid-zone structure that carries the conversion load: the free zone must deliver a real, working result, and the proof surfaces must be permanent channels rather than ephemeral chat.",
+      "evidence": "Structural design derived from documented Discord primitives (welcome screen 5 slots, onboarding role/channel assignment, per-role channel overwrites, ticket panels gated by role). No published A/B data for this niche.",
+      "source": "Inference; primitives from https://docs.discord.com/developers/resources/guild.md and https://docs.tickettool.xyz/",
+      "source_date": "fetched 2026-09-12",
+      "kind": "inference",
+      "confidence": "low",
+      "actionable": "Concrete channel map for the spec's guild-provisioning script: FREE — #start-here (rules+Membership Screening), #announcements, #free-tweaks (2-3 genuinely effective tweaks: power plan, GPU driver settings, in-game config per game), #fps-results (bot-posted before/after screenshots, slowmode 21600s, no free-text), #reviews (bot-relayed only, sourced from post-purchase form so it cannot be brigaded), #free-help, #chat. GATE — onboarding prompts. PAID (role-gated) — #premium-downloads, #premium-guides, #premium-changelog, #premium-support (ticket panel), #request-a-config, #per-game-<game> channels. COMMERCE — #get-access: locked, one pinned message, one button → redirector URL with member's discord_id + their invite_code campaign key attached, so checkout is attributable and the role grant needs no manual ID matching. Use channel rate_limit_per_user (documented range 0-21600 seconds) for slowmode on all showcase channels."
+    },
+    {
+      "claim": "Minimum-step TikTok→payment path: 5 steps Discord-first, 4 steps site-first; the one-bio-link constraint forces a self-hosted redirector for per-channel attribution.",
+      "evidence": "Derived from the documented invite mechanics (per-channel unique codes, max_age=0/max_uses=0, invite-diff attribution on GUILD_MEMBER_ADD) and the processor webhook surface (Whop memberships/webhooks). No source measures step-count drop-off for this funnel.",
+      "source": "Inference; mechanics from https://docs.discord.com/developers/resources/invite.md, https://docs.discord.com/developers/events/gateway-events.md, https://docs.whop.com/llms.txt",
+      "source_date": "fetched 2026-09-12",
+      "kind": "inference",
+      "confidence": "low",
+      "actionable": "Spec both arms. ARM A (Discord-first, 5 steps): TikTok video → bio link yourdomain/r/{account_id} → 302 to that account's unique Discord invite → join + onboarding (4 prompts) → #get-access pinned button (carries discord_id + campaign) → checkout → webhook → auto-role + DM receipt. ARM B (site-first, 4 steps): TikTok video → bio link yourdomain/c/{account_id} → checkout page (price + 3 before/after proofs + 1 CTA) → pay → Discord OAuth 'claim your access' → auto-join guild via OAuth guilds.join scope + role grant. Arm B removes the join step before payment but loses the free-zone trust build. The redirector is mandatory in both arms: it is the only place per-account/per-geo attribution can be captured, sets a first-party cookie, logs UA/geo, and lets you swap destination without editing 20 bios."
+    },
+    {
+      "claim": "Attribution join key must be discord_id, captured at checkout — not email — or the join→paid link breaks.",
+      "evidence": "Whop supports 'Retrieve Membership' via ID or license key and exposes OAuth; Discord role grant requires the user's snowflake ID. Invite attribution rows are keyed by discord_id from GUILD_MEMBER_ADD.",
+      "source": "https://docs.whop.com/llms.txt; https://docs.discord.com/developers/events/gateway-events.md",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Spec: checkout MUST capture discord_id, via Discord OAuth at checkout (preferred, zero typos) or a signed state token passed from the #get-access button. Never rely on the user typing their username. DB schema minimum: members(discord_id PK, invite_code, campaign_key, platform, geo, joined_at, account_age_days, onboarding_lang, onboarding_game, onboarding_hw, onboarding_goal, onboarding_completed_at, get_access_viewed_at, checkout_clicked_at, paid_at, sku, mrr, churned_at, refund_at, fake_flag). Every channel-kill decision reads from this one table."
+    },
+    {
+      "claim": "Auto-role limits differ sharply by tooling: Invite Tracker free caps auto-roles at 3; your own bot has no such cap.",
+      "evidence": "Invite Tracker limits table: 'Auto Roles: Free 3 max, Premium Unlimited'; 'Invite Labels: Free 1 max, Premium Unlimited'; 'Analytics History: Free 30 days, Premium Forever'.",
+      "source": "https://docs.invite-tracker.com/llms-full.txt",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "The role plan needs far more than 3 roles (6 language + 8-15 game + 4 hardware + PAID + TRIAL + LIFETIME + booster). Therefore: use Discord-native Onboarding for role assignment (unlimited, free, native) and confine third-party invite bots to attribution only. This also removes a third-party dependency from the revenue path."
+    },
+    {
+      "claim": "Statbot offers server analytics (messages, voice, games) plus Statdocks channel counters and Statroles (activity-based role grant/removal), but no pricing, retention window, invite-source tracking, or API/export details are published on its docs landing page.",
+      "evidence": "'Detailed statistics' incl. 'Message, Voice, Games'; 'Statdocks' custom channel counters, 'multiple counters in a single channel'; 'Statroles' that use 'a member's stats over a range of time to reward and remove roles'. Page does not specify join/leave analytics, retention, invite source tracking, data retention, pricing, or export.",
+      "source": "https://docs.statbot.net/ (official docs)",
+      "source_date": "fetched 2026-09-12",
+      "kind": "platform_docs",
+      "confidence": "medium",
+      "actionable": "Optional, not core. A member-count Statdock in the channel list is cheap social proof visible before join is complete. Нет данных on price. Skip if budget-constrained — your own bot already writes the metrics that matter."
+    }
+  ],
+  "key_numbers": [
+    "Discord DAU: 90M+ (Q4 2025, Discord internal data, discord.com/company)",
+    "90%+ of Discord users play video games (2025 Discord user survey)",
+    "~40% of PC players start a game within an hour of Discord (2025 average)",
+    "Discord web traffic aged 18-24: 35.49% (SimilarWeb/Semrush via DemandSage)",
+    "Discord user share: US 30.26%, UK 4.22% (Statista via DemandSage) — US ≈7.2x UK",
+    "Discord users: 67.7% male / 32.3% female (Statista)",
+    "Avg time on Discord: 280 minutes/month (Headphones Addict via DemandSage)",
+    "Total Discord servers: 32.6M+ (Statista); 36% of gamers use Discord daily/weekly (Statista)",
+    "Bot API global rate limit: 50 requests/second per bot (Discord docs) → spec cap 45 rps",
+    "Invalid-request Cloudflare ban threshold: 10,000 per 10 minutes (Discord docs)",
+    "Welcome screen: up to 5 channels (Discord Guild docs)",
+    "Channel slowmode (rate_limit_per_user) range: 0-21600 seconds (Discord docs)",
+    "Discord monetization payout eligibility: first $100 earned; team owner 18+; US/EU/UK only",
+    "Invite Tracker free tier: 1 invite label, 3 auto-roles, 30-day analytics history, 3 blacklist entries, 1 honeypot channel",
+    "Invite Tracker premium: unlimited labels/auto-roles, forever history, 100 blacklist, 5 honeypots, top-50 dashboard leaderboard with retention %",
+    "Invite Tracker fake-invite default account-age threshold: 3 days (premium adjustable 0-300 days)",
+    "Invite Tracker total-invites formula: regular - left - fake + bonus",
+    "Invite Tracker CSV export cooldown: 5 minutes minimum between exports",
+    "Invite Tracker public leaderboard URL length: 3-32 characters",
+    "Ticket Tool scale: 4,630,000+ active servers, 435+ million tickets to date",
+    "Discord minimum age: 13 (ToS effective 2025-09-29), subject to higher local minimums",
+    "Discord-only promo precedent: Rust Shop 20% Discord-exclusive sale (Discord blog, 2026)",
+    "Join→paid conversion for gaming Discord: НЕТ ДАННЫХ — placeholder 0.5-3% (LOW CONFIDENCE, no source)",
+    "Bot DM daily quota: НЕТ ДАННЫХ — self-imposed safety cap 200-400/day/bot (LOW CONFIDENCE, not a Discord figure)"
+  ],
+  "machine_spec_notes": [
+    "CONSTANT DISCORD_GLOBAL_RPS = 45 (documented cap 50; 10% safety margin). Single shared token bucket across all bot workers.",
+    "CONSTANT INVALID_REQUEST_CIRCUIT_BREAKER = 1000 per 600s (documented Cloudflare ban at 10000/600s). Halt all API traffic and alert on trip.",
+    "RULE: never hardcode per-route limits; always read X-RateLimit-Limit / X-RateLimit-Remaining / X-RateLimit-Reset-After and back off with jitter on 429.",
+    "CONSTANT INVITE_CREATE_PARAMS = {max_age: 0, max_uses: 0, temporary: false, unique: true} for every campaign invite. One code per (platform, geo, account) triple.",
+    "CONSTANT INVITE_CODE_NAMING = '{platform}_{geo}_{account_index}' e.g. tt_uk_07, yt_de_03, ig_us_12. Same string used as Invite Tracker label, redirector path segment, and DB campaign_key. Single key across all systems.",
+    "ALGORITHM invite_attribution: on READY GET /guilds/{id}/invites → cache {code: uses}; INVITE_CREATE → add; INVITE_DELETE → remove; GUILD_MEMBER_ADD → refetch, find code with uses+1, insert members row. If 2+ codes changed or none changed, set attribution_confidence='ambiguous' — never guess.",
+    "REQUIRED INTENTS/PERMS: privileged GUILD_MEMBERS intent (for GUILD_MEMBER_ADD), GUILD_INVITES, bot perms MANAGE_GUILD + MANAGE_CHANNELS + MANAGE_ROLES. Enable in dev portal before first run.",
+    "RULE: bot token only, never a user token. Self-bots violate Community Guidelines Rule 14 → account termination.",
+    "CONSTANT DM_POLICY: welcome_dm_enabled = false by default. DMs only after explicit user action (button click, ticket open, purchase). If enabled: max 1 DM per new member, 2-5s inter-DM delay, self-imposed cap 200-400/day/bot, abort entire job on first burst of error 50007.",
+    "DENYLIST (hard, applied to video captions, server channel names, product copy, AutoMod blocklist): cheat, cheats, hack, hacks, bypass, spoofer, spoof, unlock, aimbot, aim assist, no recoil, wallhack, anti-cheat, undetected, injector, DMA. Violates Community Guidelines Rule 24 → server removal.",
+    "FORBIDDEN FEATURES (do not implement under any flag): buying members, join-for-join, invite-count rewards, invite-gated giveaways, buying aged servers or vanity URLs. Community Guidelines Rules 15 & 16 + Platform Manipulation policy; Invite Tracker itself disabled invite rewards as a Developer ToS violation.",
+    "GUILD PROVISIONING SCRIPT: enable COMMUNITY feature; enable Membership Screening (MEMBER_VERIFICATION_GATE_ENABLED); set welcome screen to exactly 5 channels [#start-here, #free-tweaks, #fps-results, #reviews, #get-access]; set onboarding mode = ONBOARDING_ADVANCED (1).",
+    "ONBOARDING SPEC: 4 prompts, all type MULTIPLE_CHOICE(0), single_select=true, required=true, in_onboarding=true. P1 language → role_ids LANG_*; P2 main game (Fortnite/Valorant/CS2/Rust/DBD/Apex/Warzone/Roblox/Minecraft/GTA/Marvel Rivals/Delta Force/PUBG/LoL/OW2/Tarkov/Battlefield/other) → game role + channel_ids for that game's channel; P3 hardware (Laptop / Desktop GTX-era / Desktop RTX / Handheld) → hardware role; P4 goal (More FPS / Less input lag / Stable 1% low / Fix stutter) → selects pinned CTA variant. Store all 4 answers in members table — highest-value zero-friction first-party data in the funnel.",
+    "ROLE ASSIGNMENT: use native Discord Onboarding (unlimited roles, free) — NOT a third-party auto-role bot (Invite Tracker free caps auto-roles at 3).",
+    "SERVER TOPOLOGY: exactly 1 guild. Language handled by role + per-language channel permission overwrites, not separate servers. Split-to-second-guild trigger threshold: one language >25-30% of members AND its own moderation load (self-set, low confidence).",
+    "CHANNEL CONFIG: #fps-results and #reviews are bot-post-only with rate_limit_per_user = 21600 (documented max). #reviews content sourced from a post-purchase form and relayed by the bot so it cannot be brigaded.",
+    "#get-access CHANNEL: locked to everyone-read/no-send, exactly one pinned message, one button. Button URL = redirector with signed state carrying discord_id + campaign_key, so checkout is attributable and role grant needs no manual matching.",
+    "REDIRECTOR SERVICE (mandatory, own domain): GET /r/{account_index} → log {ts, account_index, platform, geo, ip_country, ua, referrer} → set first-party cookie → 302 to that account's Discord invite code. GET /c/{account_index} → same logging → 302 to checkout page. Reason: TikTok/IG bios allow one link; this is the only per-channel attribution point and lets destinations change without editing 20 bios.",
+    "AB TEST HARNESS: split each account's redirector traffic 50/50 between Arm A (Discord-first: /r/) and Arm B (site-first: /c/). Same campaign_key both arms. Minimum 500 clicks per arm per geo before a decision. Do not assume Discord converts better — no comparative data exists.",
+    "FUNNEL EVENT SCHEMA (log all 6 stages, per campaign_key and geo): invite_click → guild_join → onboarding_complete → get_access_view → checkout_click → paid. Derived rates computed nightly. Channel kill/scale decisions read ONLY measured data; no hardcoded conversion assumption anywhere in the spec.",
+    "DB TABLE members: discord_id PK, invite_code, campaign_key, platform, geo, joined_at, account_age_days, attribution_confidence, onboarding_lang, onboarding_game, onboarding_hw, onboarding_goal, onboarding_completed_at, get_access_viewed_at, checkout_clicked_at, paid_at, sku, mrr, churned_at, refund_at, fake_flag.",
+    "TRAFFIC QUALITY SIGNAL: compute per-campaign_key fake_rate using Invite Tracker's heuristic (account_age_days < 3) and left_rate. High fake_rate or high 24h-leave rate on a channel = low-quality/bot traffic; deprioritize that account rather than scaling it.",
+    "FULFILLMENT: processor webhook (e.g. membership.went_valid) → verify signature → resolve discord_id (Discord OAuth captured at checkout — never a typed username) → PUT /guilds/{gid}/members/{uid}/roles/{PAID_ROLE} → DM receipt + download link → insert entitlement row. Reverse on went_invalid/refund/chargeback → DELETE role + server-side license revoke.",
+    "RECONCILIATION CRON (hourly): call processor's membership-resync/list-memberships, diff against Discord role holders both directions. Fixes missed webhooks in both failure modes (payer without role, churned user with role). Non-optional for an unattended system.",
+    "PROCESSOR ABSTRACTION: one adapter module per processor emitting normalized {event_type, discord_id, sku, expires_at, license_key}. Whop/Sellix/Sell.app fees and CIS seller eligibility are НЕТ ДАННЫХ — must be verified before committing; abstraction keeps the switch cheap.",
+    "DO NOT BUILD ON Discord-native subscriptions/SKUs: Premium Apps restricted to US/EU/UK team owners, 18+, verified app, 2FA. Still mirror the SKU/Entitlement data model locally so a future migration is config-only.",
+    "DISASTER RECOVERY (server-ban risk is real — Discord removes servers at policy level): nightly export of members + entitlements + license keys to operator-controlled storage; license validation must be server-side and Discord-independent; maintain a cold-standby guild template and an out-of-band contact channel (email captured at checkout) for existing subscribers.",
+    "MINOR-PURCHASER CONTROLS (audience is 13-24, Discord floor is 13): log purchase IP + timestamp + discord_id; checkout checkbox '18+ or have the payer's permission'. UK/EU 14-day digital-goods cooling-off applicability is НЕТ ДАННЫХ — verify before generating refund-policy copy.",
+    "GEO PRIORITY for channel network (from Discord user share): US ≈30.3% >> UK ≈4.2%. Run US/EN as the volume geo and UK as the premium-price/branding geo; do not let UK positioning cap US channel count.",
+    "TIMING: schedule premium drops and CTA pushes to evening local gaming hours per language role (justified by '~40% of PC players start a game within an hour' — highest-intent window)."
+  ],
+  "risks": [
+    "Server removal for platform manipulation is the top existential risk: Community Guidelines Rule 15 + the Platform Manipulation explainer name 'join-for-join', 'invite rewards' and 'purchasing fake members' explicitly, and enforcement includes 'Removal of servers facilitating abuse'. A member-count spike from bought members is the most likely trigger for a business built on 20 channels/geo pushing traffic hard.",
+    "Invite-reward growth loops are a confirmed enforcement target, not a grey area — Invite Tracker permanently disabled that feature citing 'Discord Developer Terms of Service violations' and 'Discord views [this] as unsolicited advertisement'. Any 'invite friends for free premium' mechanic risks both the bot and the server.",
+    "Rule 24 ('sharing or selling game cheats or hacks') is a classification risk, not a factual one: Windows-level tweaks are not cheats, but a single video or channel name using cheat-adjacent vocabulary (bypass, undetected, no recoil, spoofer) can reclassify the whole server. With 20 auto-generated channels per geo, one bad auto-caption is enough.",
+    "Discord-native monetization is unavailable to a CIS operator (US/EU/UK team owners only, 18+, verified app), so the revenue path depends entirely on a third-party processor whose fees and CIS seller eligibility I could not verify (Whop payout docs silent; sellix.io DNS failure; sell.app 404). This is an unresolved blocking dependency.",
+    "Welcome-DM automation is a Rule 13 spam exposure with NO published quota to stay under — meaning there is no safe documented threshold, only anti-abuse heuristics. Bot DM automation is the highest-risk-per-unit-value component in the funnel; the correct default is off.",
+    "Single-server dependency: all customers, all support history, all social proof, and all fulfillment live in one guild that Discord can remove without appeal. No documented recovery path.",
+    "Invite-diff attribution has a genuine race condition under bursty traffic (two joins between invite fetches) — silently mis-attributing traffic would corrupt the channel kill/scale decisions the whole operation depends on. Must be flagged, not guessed.",
+    "Third-party attribution dependency: Invite Tracker free tier (1 invite label, 30-day history) cannot serve a multi-geo 20-channel network, so Phase 1 attribution depends on a paid third-party bot that could change limits, pricing, or be banned itself.",
+    "Attribution via CSV export has a documented 5-minute cooldown and is batch-only, so Phase 1 cannot support real-time creative decisions — a structural reason to build the own-bot invite-diff sooner rather than later.",
+    "Minor purchasers (audience starts at Discord's 13-year floor) create parent-initiated chargeback and friendly-fraud exposure on card rails, which in volume threatens processor account standing — the same processor the entire auto-fulfillment depends on.",
+    "Buying aged/established Discord servers or vanity URLs as a growth shortcut violates Rule 16 and the ToS transfer clause — relevant because it is a common tactic in this niche.",
+    "Planning risk: no public join→paid benchmark exists for gaming Discord communities and no study shows Discord outconverting a website for young audiences. Any financial model built on an assumed conversion rate is built on nothing; both must be measured, and the spec must not encode a guess.",
+    "Aggregator data conflicts with Discord's own figures (DemandSage cites 26.5M DAU vs Discord's official 90M+), so third-party Discord statistics used for geo/audience sizing may be materially stale or wrong.",
+    "Multi-language expansion inside one server increases channel and role sprawl against a documented welcome-screen cap of 5 channels, forcing hard editorial choices about which 5 surfaces a cold visitor sees — the single highest-leverage and most easily mismanaged config in the server."
+  ],
+  "open_questions": [
+    "What is Whop's (or the chosen processor's) actual platform + processing fee percentage, and does it support payouts to a CIS-resident seller? Docs pages fetched contain no fee or region data; sellix.io and sell.app were unreachable. This is a blocking unknown for the whole model.",
+    "What exactly is Discord's revenue share on Premium Apps? Not stated on the public monetization docs — and moot only if the operator stays ineligible (US/EU/UK).",
+    "Is there any published bot DM ceiling (per day, per minute, per recipient) or is it purely heuristic anti-abuse? Nothing documented; determines whether any DM automation is viable at all.",
+    "Is there a per-guild cap on the number of active invite codes? Not documented in the Invite resource. Matters at 300+ codes for a 20-channel × 6-geo × 3-platform network.",
+    "What are the hard caps on Guild Onboarding prompts and options per prompt? Docs specify the object but not the limits; welcome screen is documented at 5 channels, onboarding is not.",
+    "What are Discord's hard limits on roles, channels, and categories per guild? Not found in the fetched developer docs; support.discord.com is Cloudflare-blocked (403) and web.archive.org is blocked by egress policy.",
+    "What does Discord's latest transparency report show for servers removed under platform manipulation / deceptive practices? Figures exist only inside downloadable PDF/ZIP reports on discord.com/safety-transparency, not in page text — would let the server-ban risk be probability-weighted instead of qualitative.",
+    "What is Invite Tracker Premium's actual price and are there per-server or per-request API/export limits beyond the 5-minute export cooldown? Pricing lives at invite-tracker.com/premium, not fetched.",
+    "What is Ticket Tool premium pricing and its ticket/panel limits? Not exposed on the docs landing page. Same for Statbot pricing and data retention.",
+    "Does UK/EU distance-selling law grant a 14-day cooling-off right on instantly-delivered digital goods, and what waiver language is required at checkout? Not researched here; directly determines refund-policy copy and chargeback defensibility for a UK-positioned brand.",
+    "What is the real measured join→paid conversion for this specific funnel, per geo and per platform? No benchmark exists — must come from the instrumented funnel within the first 2 weeks of traffic.",
+    "Does Discord-first or site-first convert better for cold short-form gaming traffic? Untested; the redirector-level A/B is the only way to know.",
+    "Can Discord OAuth guilds.join scope reliably auto-add a buyer to the guild post-payment (Arm B of the funnel), and what are its rate limits? Not verified in the docs fetched.",
+    "Are there documented Discord Server Discovery eligibility thresholds (member count, activity, safety requirements) that would make Discovery a free organic traffic source on top of the paid channel network? The COMMUNITY guild feature mentions discovery but the requirements page was not reachable."
+  ]
+}
