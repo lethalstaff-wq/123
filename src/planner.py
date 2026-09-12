@@ -16,6 +16,7 @@ from zoneinfo import ZoneInfo
 
 from .config import (channel_grid, content_bank, geos, load_json, offers,
                      platform_limits, schedule, settings)
+from .claims import check_plan
 from .models import Asset, ChannelSlot, JobState, Platform, PublishMode, VideoPlan
 from .store import Store
 
@@ -271,10 +272,29 @@ def plan_days(store: Store, assets: list[Asset], days: int = 7,
                 seed = _seed_for(slot.slot_id, day, i)
                 fmt = pick_format(slot, seed)
                 seen_for_slot = used_hooks.setdefault(slot.slot_id, set())
-                hook = pick_hook(slot.geo, slot.target_game, fmt, seed,
-                                 exclude=frozenset(seen_for_slot))
+                # Валидатор обещаний — обязательный барьер: непроверяемая цифра в
+                # хуке стоит дороже, чем выигрыш от громкой формулировки (возвраты,
+                # разбор в комментариях, жалобы в платёжку). Не прошло — берём другой хук.
+                hook = caption = title = ""
+                tags: list[str] = []
+                rejected: list[str] = []
+                for attempt in range(5):
+                    candidate = pick_hook(slot.geo, slot.target_game, fmt, seed + attempt * 104729,
+                                          exclude=frozenset(seen_for_slot) | set(rejected))
+                    cap_text, ttl, tg = build_caption(slot, candidate, fmt, seed + attempt * 104729)
+                    verdict = check_plan(candidate, cap_text, ttl, fmt.get("beats", []),
+                                         game=slot.target_game)
+                    if verdict.ok:
+                        hook, caption, title, tags = candidate, cap_text, ttl, tg
+                        break
+                    rejected.append(candidate)
+                    store.log("warn", "planner.claims",
+                              f"{slot.slot_id}: хук отклонён валидатором", verdict.violations[:3])
+                if not hook:
+                    store.log("error", "planner.claims",
+                              f"{slot.slot_id}: не нашёл хук, проходящий валидатор — слот пропущен")
+                    continue
                 seen_for_slot.add(hook)
-                caption, title, tags = build_caption(slot, hook, fmt, seed)
                 window = windows[i % len(windows)]
                 sched = _schedule_time(day, window, geo["timezone"], seed,
                                        int(plat_limit.get("jitter_minutes", 25)))

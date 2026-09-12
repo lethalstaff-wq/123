@@ -143,6 +143,33 @@ def _resolve_game(tmpl: dict, geo: dict, taken: set[str]) -> str | None:
     return tmpl.get("target_game")
 
 
+def cmd_lint_content(args) -> int:
+    """Проверка всех запланированных текстов валидатором обещаний."""
+    from .claims import check_plan, disclaimer, never_does
+    st = _store()
+    rows = st._conn.execute(
+        "SELECT plan_id, slot_id, hook_text, caption, title, body_beats FROM plans"
+    ).fetchall()
+    bad = 0
+    for r in rows:
+        v = check_plan(r["hook_text"] or "", r["caption"] or "", r["title"] or "",
+                       json.loads(r["body_beats"] or "[]"))
+        if not v.ok:
+            bad += 1
+            if bad <= args.limit:
+                print(f"\n{r['plan_id']}")
+                print(f"  хук: {r['hook_text']}")
+                for p_ in v.violations:
+                    print(f"  ! {p_}")
+    print(f"\nпроверено: {len(rows)}, с нарушениями: {bad}")
+    if args.show_rules:
+        print(f"\nдисклеймер: {disclaimer()}")
+        print("продукт никогда не делает:")
+        for n in never_does():
+            print(f"  - {n}")
+    return 1 if bad else 0
+
+
 def cmd_slots(args) -> int:
     st = _store()
     rows = st.slots(geo=args.geo, platform=Platform(args.platform) if args.platform else None)
@@ -454,6 +481,11 @@ def build_parser() -> argparse.ArgumentParser:
     rg = sub.add_parser("report-geo", help="доля просмотров из целевого гео")
     rg.add_argument("--days", type=int, default=14); rg.add_argument("--limit", type=int, default=40)
     rg.set_defaults(fn=cmd_report_geo)
+
+    lc = sub.add_parser("lint-content", help="проверить тексты валидатором обещаний")
+    lc.add_argument("--limit", type=int, default=15)
+    lc.add_argument("--show-rules", action="store_true")
+    lc.set_defaults(fn=cmd_lint_content)
 
     sub.add_parser("status", help="сводка").set_defaults(fn=cmd_status)
     return p

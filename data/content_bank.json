@@ -9,7 +9,8 @@
       "{slang}": "локальный сленг из geos.slang"
     },
     "rule": "Хук на языке гео. Английский хук на арабское или индонезийское гео режет удержание — это главный рычаг гео-таргетинга, сильнее IP.",
-    "verification_status": "форматы расширяются агентом content_bank_research (прогон w67ujt0g0)"
+    "verification_status": "форматы расширяются агентом content_bank_research (прогон w67ujt0g0)",
+    "claim_safety": "Числа FPS в хуках всегда идут вместе с {gpu}: без контекста железа обещание непроверяемо и блокируется src/claims.py. Потолок прироста: 15% для среднего FPS, до 50% для 1% low — выше этого технически грамотная аудитория разносит канал в комментариях."
   },
   "games": [
     "Fortnite",
@@ -449,7 +450,7 @@
   "hooks": [
     {
       "lang": "en",
-      "text": "your {game} runs at {fps} fps because of ONE setting",
+      "text": "your {game} runs at {fps} fps because of ONE setting · {gpu}",
       "formats": [],
       "games": []
     },
@@ -461,9 +462,10 @@
     },
     {
       "lang": "en",
-      "text": "{fps} fps to {fps2} fps in {game} — same PC",
+      "text": "{fps} fps to {fps2} fps in {game} — same PC · {gpu}",
       "formats": [],
-      "games": []
+      "games": [],
+      "gain_cap_pct": 15
     },
     {
       "lang": "en",
@@ -503,7 +505,7 @@
     },
     {
       "lang": "en",
-      "text": "your laptop loses {fps} fps after 10 minutes. here's why",
+      "text": "your laptop loses {fps} fps after 10 minutes. here's why · {gpu}",
       "formats": [],
       "games": []
     },
@@ -569,7 +571,7 @@
     },
     {
       "lang": "en",
-      "text": "turning this on cost me {fps} fps",
+      "text": "turning this on cost me {fps} fps · {gpu}",
       "formats": [],
       "games": []
     },
@@ -629,7 +631,7 @@
     },
     {
       "lang": "es",
-      "text": "tu {game} va a {fps} fps por UNA opcion",
+      "text": "tu {game} va a {fps} fps por UNA opcion · {gpu}",
       "formats": [],
       "games": []
     },
@@ -641,9 +643,10 @@
     },
     {
       "lang": "es",
-      "text": "de {fps} a {fps2} fps en {game} — mismo PC",
+      "text": "de {fps} a {fps2} fps en {game} — mismo PC · {gpu}",
       "formats": [],
-      "games": []
+      "games": [],
+      "gain_cap_pct": 15
     },
     {
       "lang": "es",
@@ -689,7 +692,7 @@
     },
     {
       "lang": "pt",
-      "text": "seu {game} roda a {fps} fps por causa de UMA opcao",
+      "text": "seu {game} roda a {fps} fps por causa de UMA opcao · {gpu}",
       "formats": [],
       "games": []
     },
@@ -701,9 +704,10 @@
     },
     {
       "lang": "pt",
-      "text": "de {fps} para {fps2} fps no {game} — mesmo PC",
+      "text": "de {fps} para {fps2} fps no {game} — mesmo PC · {gpu}",
       "formats": [],
-      "games": []
+      "games": [],
+      "gain_cap_pct": 15
     },
     {
       "lang": "pt",
@@ -749,7 +753,7 @@
     },
     {
       "lang": "ar",
-      "text": "لعبتك {game} تشتغل على {fps} فريم بسبب إعداد واحد",
+      "text": "لعبتك {game} تشتغل على {fps} فريم بسبب إعداد واحد · {gpu}",
       "formats": [],
       "games": []
     },
@@ -761,9 +765,10 @@
     },
     {
       "lang": "ar",
-      "text": "من {fps} إلى {fps2} فريم في {game} بنفس الجهاز",
+      "text": "من {fps} إلى {fps2} فريم في {game} بنفس الجهاز · {gpu}",
       "formats": [],
-      "games": []
+      "games": [],
+      "gain_cap_pct": 15
     },
     {
       "lang": "ar",
@@ -809,7 +814,7 @@
     },
     {
       "lang": "id",
-      "text": "{game} kamu cuma {fps} fps gara-gara SATU setting",
+      "text": "{game} kamu cuma {fps} fps gara-gara SATU setting · {gpu}",
       "formats": [],
       "games": []
     },
@@ -821,9 +826,10 @@
     },
     {
       "lang": "id",
-      "text": "dari {fps} ke {fps2} fps di {game} — PC sama",
+      "text": "dari {fps} ke {fps2} fps di {game} — PC sama · {gpu}",
       "formats": [],
-      "games": []
+      "games": [],
+      "gain_cap_pct": 15
     },
     {
       "lang": "id",
@@ -869,7 +875,7 @@
     },
     {
       "lang": "tr",
-      "text": "{game} {fps} fps calisiyor cunku TEK bir ayar",
+      "text": "{game} {fps} fps calisiyor cunku TEK bir ayar · {gpu}",
       "formats": [],
       "games": []
     },
@@ -881,9 +887,10 @@
     },
     {
       "lang": "tr",
-      "text": "{game} icinde {fps} fps'den {fps2} fps'e — ayni PC",
+      "text": "{game} icinde {fps} fps'den {fps2} fps'e — ayni PC · {gpu}",
       "formats": [],
-      "games": []
+      "games": [],
+      "gain_cap_pct": 15
     },
     {
       "lang": "tr",
@@ -929,7 +936,7 @@
     },
     {
       "lang": "ru",
-      "text": "твой {game} идёт в {fps} fps из-за ОДНОЙ настройки",
+      "text": "твой {game} идёт в {fps} fps из-за ОДНОЙ настройки · {gpu}",
       "formats": [],
       "games": []
     },
@@ -941,9 +948,10 @@
     },
     {
       "lang": "ru",
-      "text": "с {fps} до {fps2} fps в {game} — тот же ПК",
+      "text": "с {fps} до {fps2} fps в {game} — тот же ПК · {gpu}",
       "formats": [],
-      "games": []
+      "games": [],
+      "gain_cap_pct": 15
     },
     {
       "lang": "ru",
@@ -989,7 +997,7 @@
     },
     {
       "lang": "fr",
-      "text": "ton {game} tourne a {fps} fps a cause d'UN reglage",
+      "text": "ton {game} tourne a {fps} fps a cause d'UN reglage · {gpu}",
       "formats": [],
       "games": []
     },
@@ -1001,9 +1009,10 @@
     },
     {
       "lang": "fr",
-      "text": "de {fps} a {fps2} fps sur {game} — meme PC",
+      "text": "de {fps} a {fps2} fps sur {game} — meme PC · {gpu}",
       "formats": [],
-      "games": []
+      "games": [],
+      "gain_cap_pct": 15
     },
     {
       "lang": "fr",
@@ -1049,7 +1058,7 @@
     },
     {
       "lang": "de",
-      "text": "dein {game} laeuft mit {fps} fps wegen EINER einstellung",
+      "text": "dein {game} laeuft mit {fps} fps wegen EINER einstellung · {gpu}",
       "formats": [],
       "games": []
     },
@@ -1061,9 +1070,10 @@
     },
     {
       "lang": "de",
-      "text": "von {fps} auf {fps2} fps in {game} — gleicher PC",
+      "text": "von {fps} auf {fps2} fps in {game} — gleicher PC · {gpu}",
       "formats": [],
-      "games": []
+      "games": [],
+      "gain_cap_pct": 15
     },
     {
       "lang": "de",
@@ -1109,7 +1119,7 @@
     },
     {
       "lang": "hi",
-      "text": "aapka {game} {fps} fps par chal raha hai sirf EK setting ki wajah se",
+      "text": "aapka {game} {fps} fps par chal raha hai sirf EK setting ki wajah se · {gpu}",
       "formats": [],
       "games": []
     },
@@ -1121,9 +1131,10 @@
     },
     {
       "lang": "hi",
-      "text": "{game} mein {fps} se {fps2} fps — same PC",
+      "text": "{game} mein {fps} se {fps2} fps — same PC · {gpu}",
       "formats": [],
-      "games": []
+      "games": [],
+      "gain_cap_pct": 15
     },
     {
       "lang": "hi",
@@ -1169,7 +1180,7 @@
     },
     {
       "lang": "vi",
-      "text": "{game} cua ban chi {fps} fps vi MOT cai setting",
+      "text": "{game} cua ban chi {fps} fps vi MOT cai setting · {gpu}",
       "formats": [],
       "games": []
     },
@@ -1181,9 +1192,10 @@
     },
     {
       "lang": "vi",
-      "text": "tu {fps} len {fps2} fps trong {game} — cung mot PC",
+      "text": "tu {fps} len {fps2} fps trong {game} — cung mot PC · {gpu}",
       "formats": [],
-      "games": []
+      "games": [],
+      "gain_cap_pct": 15
     },
     {
       "lang": "vi",
@@ -1229,7 +1241,7 @@
     },
     {
       "lang": "th",
-      "text": "{game} ของคุณได้แค่ {fps} fps เพราะการตั้งค่าเดียว",
+      "text": "{game} ของคุณได้แค่ {fps} fps เพราะการตั้งค่าเดียว · {gpu}",
       "formats": [],
       "games": []
     },
@@ -1241,9 +1253,10 @@
     },
     {
       "lang": "th",
-      "text": "จาก {fps} เป็น {fps2} fps ใน {game} เครื่องเดิม",
+      "text": "จาก {fps} เป็น {fps2} fps ใน {game} เครื่องเดิม · {gpu}",
       "formats": [],
-      "games": []
+      "games": [],
+      "gain_cap_pct": 15
     },
     {
       "lang": "th",
@@ -1289,7 +1302,7 @@
     },
     {
       "lang": "ja",
-      "text": "{game}が{fps}fpsなのは設定1つのせい",
+      "text": "{game}が{fps}fpsなのは設定1つのせい · {gpu}",
       "formats": [],
       "games": []
     },
@@ -1301,9 +1314,10 @@
     },
     {
       "lang": "ja",
-      "text": "同じPCで{game}が{fps}fpsから{fps2}fpsに",
+      "text": "同じPCで{game}が{fps}fpsから{fps2}fpsに · {gpu}",
       "formats": [],
-      "games": []
+      "games": [],
+      "gain_cap_pct": 15
     },
     {
       "lang": "ja",
@@ -1349,7 +1363,7 @@
     },
     {
       "lang": "ko",
-      "text": "{game}가 {fps}프레임인 이유는 설정 하나",
+      "text": "{game}가 {fps}프레임인 이유는 설정 하나 · {gpu}",
       "formats": [],
       "games": []
     },
@@ -1361,9 +1375,10 @@
     },
     {
       "lang": "ko",
-      "text": "같은 PC로 {game} {fps}에서 {fps2}프레임",
+      "text": "같은 PC로 {game} {fps}에서 {fps2}프레임 · {gpu}",
       "formats": [],
-      "games": []
+      "games": [],
+      "gain_cap_pct": 15
     },
     {
       "lang": "ko",

@@ -47,6 +47,31 @@ LANG_FALLBACK = {
 VERDICT_TO_PRIORITY = {"priority_1": 1, "priority_2": 2, "priority_3": 3, "skip": 9}
 
 
+def _clean_slang(items: list) -> list[str]:
+    """Достаёт из отчёта короткие сленговые слова, отбрасывая пояснения.
+
+    Агенты возвращают сленг с доказательствами: "beauty / what a beauty (EN-CA,
+    ПОДТВЕРЖДЕНО: Contiki, Narcity...)". В хук должно попасть только само слово,
+    иначе подстановка {slang} втащит в подпись абзац ресерча.
+    """
+    out: list[str] = []
+    for raw in items or []:
+        t = str(raw).strip()
+        if not t:
+            continue
+        t = re.split(r"[(\[—:]|\s[-–]\s", t)[0]          # отрезаем пояснение
+        t = t.split("/")[0].strip().strip('"\'«»')         # берём первый вариант
+        if not t or len(t) > 24:
+            continue
+        if len(t.split()) > 3:
+            continue
+        if re.search(r"(?i)подтвержд|источник|confirm|см\.", t):
+            continue
+        if t.lower() not in (x.lower() for x in out):
+            out.append(t)
+    return out[:15]
+
+
 def _lang_code(raw: str | None, geo: str) -> str:
     if not raw:
         return LANG_FALLBACK.get(geo, "en")
@@ -167,7 +192,7 @@ def build_geos(reports: dict[str, dict]) -> dict:
         tier, prices = _price_tier(mon)
         content_lang = _lang_code(lang.get("primary_content_language"), code)
         games = [g.get("game") for g in (r.get("top_games") or []) if g.get("game")]
-        slang = [s for s in (lang.get("slang_terms") or []) if s][:15]
+        slang = _clean_slang(lang.get("slang_terms") or [])
         geos.append({
             "code": code,
             "name": r.get("country") or code,

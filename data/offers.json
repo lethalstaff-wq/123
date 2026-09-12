@@ -1,50 +1,108 @@
 {
   "_meta": {
-    "purpose": "Оффер и CTA по ценовым тирам регионов. planner берёт primary_cta и cta-пул для подписей.",
-    "verification_status": "RESEARCH_PENDING — цены уточняются агентами saa_pricing/pricing_by_geo, античит-безопасные формулировки — агентом anticheat_safety"
+    "purpose": "Оффер, цены по гео и ГРАНИЦЫ ОБЕЩАНИЙ. Последнее — не юридическая формальность, а защита от возвратов: аудитория этой нишы технически грамотна и проверяет цифры.",
+    "source": "агенты tweaks_efficacy / saas_pricing / anticheat_safety / exmtweaks_teardown",
+    "enforced_by": "src/claims.py — проверка идёт до рендера и до публикации, нарушение блокирует материал"
   },
+
   "product": {
     "name": "PC tweaks subscription",
-    "core_promise_safe": "стабильнее FPS и меньше фризов на том же железе",
-    "forbidden_claims": [
-      "гарантированный +N FPS на любом ПК",
-      "работает как апгрейд видеокарты",
-      "любые формулировки, намекающие на преимущество в игре сверх настроек производительности",
-      "обещания, которые невозможно проверить у клиента"
+    "core_promise_safe": "стабильнее кадр и меньше фризов на том же железе",
+    "what_it_never_does": [
+      "не отключает Secure Boot",
+      "не отключает и не очищает TPM",
+      "не отключает IOMMU / VT-d / AMD-Vi",
+      "не трогает VBS/HVCI на системах, где античиты его требуют",
+      "не содержит и не устанавливает драйвер уровня ядра (.sys)",
+      "не изменяет файлы в каталоге установки игры",
+      "не останавливает и не удаляет службы античитов",
+      "не спуфит HWID и не обходит баны",
+      "не содержит макросов, anti-recoil, ремапперов и SOCD-биндов"
     ],
-    "required_disclaimer": "Результат зависит от конфигурации; продукт не модифицирует игровые файлы и не взаимодействует с античитами."
+    "why_these_bans": "Ни один мейджорный античит не банит за твики Windows. Но Valorant требует TPM 2.0 и Secure Boot, Fortnite с 19.02.2026 требует Secure Boot + TPM + IOMMU для турниров, Call of Duty требует TPM 2.0 + Secure Boot с аттестацией, EA Javelin требует Secure Boot и держит публичный denylist драйверов. Продукт, отключивший эти механизмы, лишает клиента возможности ЗАПУСТИТЬ игру — это возвраты, чарджбеки и потеря платёжки.",
+    "required_disclaimer": "Твики работают только в пользовательском режиме. Мы не устанавливаем драйверы уровня ядра, не изменяем файлы игр и не взаимодействуем с античитами. Результат зависит от конфигурации.",
+    "refund_shield": {
+      "_purpose": "Одновременно доказательство результата и основание отказать в необоснованном возврате.",
+      "protocol": "замер before/after в CapFrameX или PresentMon/FrameView: одна и та же сцена, 3 прогона, отчёт с avg FPS + 1% low + системной латентностью, автосохранение JSON",
+      "include_in": ["оффер", "онбординг", "карточку товара"]
+    }
   },
+
+  "claim_rules": {
+    "_purpose": "Валидатор обещаний. Цифры без контекста железа — главная причина, по которой такие проекты разносят в комментариях.",
+    "required_fields_for_numeric_claim": ["hardware_cpu_or_gpu", "game", "resolution_or_tool", "metric"],
+    "numeric_caps": {
+      "max_claimed_avg_fps_gain_pct": 15,
+      "max_claimed_1pct_low_gain_pct": 50,
+      "max_claimed_latency_reduction_ms": 20,
+      "max_claimed_latency_reduction_pct": 35,
+      "ping_reduction_claims_allowed": false
+    },
+    "blocklist_regex": [
+      "(?i)(\\+|плюс\\s*)\\d{2,}\\s*(fps|фпс)(?!.{0,40}(gtx|rtx|rx|ryzen|intel|core i|iris|mx\\d))",
+      "(?i)(x2|2x)\\s*fps|double your fps|удвой\\w*\\s+fps|в\\s*два\\s*раза\\s*больше\\s*fps",
+      "(?i)(lower|reduce|fix)\\s+(your\\s+)?ping|снизим?\\s+пинг|меньше\\s+пинга?|уменьшить\\s+пинг",
+      "(?i)registry\\s+clean|чистка\\s+реестра|registry\\s+optimi[sz]",
+      "(?i)defrag(ment)?\\s+(your\\s+)?ssd|дефрагментац\\w*\\s+ssd",
+      "(?i)ram\\s*(booster|cleaner)|очистка\\s+оперативк\\w*",
+      "(?i)guaranteed\\s+\\+?\\d+\\s*fps|гарантирован\\w*\\s+\\+?\\d+\\s*(fps|фпс)",
+      "(?i)works\\s+on\\s+any\\s+pc|на\\s+любом\\s+пк\\s+\\+"
+    ],
+    "allowlist_templates": [
+      "1% low +{X}% с открытыми Discord/браузером ({cpu}+{gpu}, {game}, {res}, CapFrameX) — X в диапазоне 5..50",
+      "системная латентность −{Y} ms при {fps} FPS на {gpu} (замер LDAT/Reflex Analyzer) — Y в диапазоне 1..20",
+      "{fps_before} → {fps_after} fps на {gpu} в {game} ({res})"
+    ],
+    "hardware_tier_gate": "Не показывать креативы с цифрами DLSS 4 MFG / '8x' / '1.7x' аудитории без RTX 40/50: это триггер разноса в комментариях. Для GTX 10/16 и RTX 30 использовать цифры Reflex на GTX 1660 Super (56→38 ms).",
+    "honest_tiers": {
+      "tier_a_measured_sellable": ["NVIDIA Reflex / Low Latency Mode при GPU-bound", "апскейлер + пресет (DLSS/FSR)", "XMP/EXPO", "ReBAR (только с A/B)", "undervolt + power limits", "Game Mode + разгрузка фона (1% low до +8.6% в CS2, до +48% при открытых Edge и Discord)"],
+      "tier_b_noise": ["HAGS", "план электропитания", "большинство debloat-скриптов"],
+      "tier_c_snake_oil": ["чистка реестра", "RAM-бустеры", "дефрагментация SSD", "сетевые твики для снижения пинга"]
+    },
+    "myth_busting_content_slots": [
+      "чистка реестра не даёт FPS (Malwarebytes: 'digital snake oil' + позиция Microsoft)",
+      "XMP не даёт +20-30 FPS — против распространённого TikTok-мифа",
+      "дефрагментация SSD не даёт FPS",
+      "реестровые твики не снижают пинг: пинг — это физика маршрута",
+      "DLSS 5 не ускоритель: NBA 2K27 в 4K на RTX 5090 даёт 128.4 → 62.7 FPS"
+    ]
+  },
+
   "by_price_tier": {
     "high": {
-      "regions_example": ["us", "uk", "de", "nordics", "au_nz", "ae"],
-      "monthly_usd": [7, 12],
-      "quarterly_usd": [18, 28],
-      "lifetime_usd": [35, 60],
+      "regions_example": ["us", "uk", "ae", "de", "nordics", "au_nz"],
+      "monthly_usd": [8.99, 12.0],
+      "anchor_note": "US: ставить $9.99 — найденный рыночный якорь; ниже выглядит подозрительно, выше требует бренда. UAE: $12 попадает в цену одного дневного пропуска в гейминг-кафе.",
+      "quarterly_usd": [19.99, 29.0],
+      "lifetime_usd": [35.0, 69.0],
       "primary_cta": "link in bio",
       "cta": ["link in bio", "free FPS checklist in bio", "join the Discord in bio"]
     },
     "mid": {
-      "regions_example": ["pl", "cee", "tr", "br", "mx", "sa", "th_my", "za"],
-      "monthly_usd": [4, 7],
-      "quarterly_usd": [10, 16],
-      "lifetime_usd": [20, 35],
+      "regions_example": ["ca", "pl", "cee", "tr", "br", "mx", "sa", "th_my", "za"],
+      "monthly_usd": [4.0, 6.99],
+      "anchor_note": "Канада: $6.99, не $4.99 — слишком низкая цена в этом тире читается как несерьёзная.",
+      "quarterly_usd": [10.0, 18.0],
+      "lifetime_usd": [20.0, 35.0],
       "primary_cta": "link in bio",
       "cta": ["link in bio", "free guide in bio", "Discord in bio"]
     },
     "low": {
       "regions_example": ["eg", "iq", "id", "ph", "vn", "in", "ng", "ke_tz"],
-      "monthly_usd": [2, 4],
-      "quarterly_usd": [5, 9],
-      "lifetime_usd": [10, 18],
+      "monthly_usd": [1.99, 3.5],
+      "anchor_note": "Египет: $2.5-3.5 (149 EGP). Нигерия: $2/мес, но главный SKU — lifetime $12: рекуррент по локальным рельсам плохо работает, 60-70% выручки даёт единоразовая покупка.",
+      "quarterly_usd": [4.5, 8.0],
+      "lifetime_usd": [10.0, 18.0],
       "primary_cta": "free guide in bio",
       "cta": ["free guide in bio", "Discord in bio", "comment FPS"],
-      "note": "Здесь монетизация подписки слабая: гео берётся ради охвата и социальных доказательств, деньги — с high/mid."
+      "note": "Монетизация подписки здесь слабая: гео берётся ради охвата, социальных доказательств и lifetime-продаж, а не ради MRR."
     }
   },
+
   "funnel_entry": {
-    "discord": { "best_for": ["us", "uk", "de", "fr", "es", "it", "pl", "br", "mx", "sa", "ae"], "why": "молодая геймерская аудитория уже живёт там; видно сообщество = доверие" },
-    "telegram": { "best_for": ["ru", "kz_uz", "ua_by", "iq", "eg"], "why": "де-факто мессенджер аудитории в этих регионах" },
-    "site": { "best_for": ["de", "jp", "kr", "nordics"], "why": "аудитория ждёт нормальный лендинг и понятную оплату" },
-    "whatsapp": { "best_for": ["sa", "eg", "maghreb", "id", "br"], "why": "основной мессенджер; но хуже масштабируется, чем Discord" }
+    "discord": { "best_for": ["us", "ca", "uk", "de", "fr", "es", "it", "pl", "br", "mx", "eg"], "why": "молодая геймерская аудитория уже там; видимое сообщество работает как доказательство" },
+    "site": { "best_for": ["ae", "de", "jp", "kr", "nordics"], "why": "аудитория ждёт нормальный лендинг и понятную оплату" },
+    "whatsapp": { "best_for": ["ng", "ke_tz", "sa", "maghreb", "id"], "why": "основной мессенджер региона; в Кении и Нигерии ресерч прямо ставит его выше Discord" },
+    "telegram": { "best_for": ["ru", "kz_uz", "ua_by", "iq"], "why": "де-факто мессенджер аудитории" }
   }
 }

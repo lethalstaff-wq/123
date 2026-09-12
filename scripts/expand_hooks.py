@@ -58,7 +58,13 @@ def main() -> int:
                 # старт низкий, прирост умеренный. "с 144 до 174" читается как вранье
                 # и бьёт по доверию сильнее, чем помогает CTR.
                 lo = rng.choice([f for f in fps if f <= 75])
-                hi = rng.choice([f for f in fps if lo + 10 <= f <= lo + 70] or [lo + 25])
+                # прирост ограничен потолком шаблона: 15% для среднего FPS,
+                # до 50% для 1% low. Иначе получаются обещания вида "24 -> 60 fps"
+                # (+150%), которые валидатор справедливо блокирует
+                cap = int(tmpl.get("gain_cap_pct", 15))
+                hi_max = int(lo * (1 + cap / 100))
+                candidates = [f for f in fps if lo < f <= hi_max]
+                hi = rng.choice(candidates) if candidates else lo + max(2, int(lo * cap / 100))
                 game = rng.choice(games)
                 text = (tmpl["text"]
                         .replace("{game}", game)
