@@ -8,3 +8,5 @@ downloads/
 *.mp4
 *.mov
 !assets/templates/*.mp4
+profiles/
+report/*.png

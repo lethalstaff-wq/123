@@ -1,0 +1,276 @@
+{
+  "dimension": "bought_accounts",
+  "summary": "Покупка новорегов — прямое нарушение ToS у Instagram (явный запрет на куплю/продажу/передачу ЛЮБОЙ части аккаунта, включая юзернейм) и TikTok (запрет передавать аккаунт и давать доступ третьим лицам без разрешения); у YouTube/Google прямого запрета на продажу аккаунта в ToS нет, но есть запрет на автоматизированный доступ, и есть официальный поддерживаемый путь передачи владения через Brand Account. Рынок новорегов реален и дёшев: TikTok EU/mix $0.14-0.93, USA/CA $1.85-3.70, «прогретые» 2023 с 10-20 видео $16.65-18.50; Instagram $0.11-1.30; Gmail (база YouTube) $0.72-7.59 (accsmarket.com, цены сняты 12.09.2026). Гарантия у продавцов — 48 часов, и по их же правилам она аннулируется, если вы заходите с домашнего IP, через VPN/TOR/прокси/виртуалку или держите несколько аккаунтов на одном устройстве/прокси, то есть при любом реальном сценарии сетки гарантия не работает; возвраты только в Perfect Money/Advcash/WebMoney/LTC — чарджбэка нет. Платформы публично подтверждают промышленный масштаб отлова: TikTok «предотвратил более 2 млрд созданий спам-аккаунтов» за год и удалил 143,834,113 фейковых аккаунтов за Q4 2025; Meta заблокировала ~1 млрд фейковых аккаунтов на Facebook в Q1 2025 (≈3% MAU). Ключевой техфакт: TikTok заявляет о работе с мобильными операторами по блокировке SIM-карт, используемых только для создания фейковых аккаунтов — то есть пулы номеров SMS-активации помечены на уровне оператора ещё до вашей регистрации. Честный вывод: при бюджете 50-200 USD/мес сетка на 20 купленных каналов × гео экономически проигрывает; главный риск не цена аккаунта, а то, что и покупка, и авто-залив одинакового контента с 20 аккаунтов попадают под определение спама у TikTok («использование автоматизации для ведения множества аккаунтов»), а бан по сети накрывает и новые аккаунты. При этом TikTok прямо разрешает иметь несколько аккаунтов — запрещена именно автоматизация и обман, а не множественность как таковая.",
+  "findings": [
+    {
+      "claim": "Instagram прямо запрещает продажу, лицензирование и ПОКУПКУ любого аккаунта, включая передачу любой части аккаунта и юзернейма",
+      "evidence": "Terms of Use, раздел 4.2 'How You Can't Use Instagram': «You can't sell, license, or purchase any account or data obtained from us or our Service, regardless of whether such data was obtained while logged-in to an Instagram account. This includes attempts to buy, sell, or transfer any aspect of your account (including your username); solicit, collect, or use login credentials or badges of other users...». Там же: «You can't attempt to create accounts or access or collect information in unauthorized ways. This includes creating accounts... in an automated way without our express permission.» И в 4.1: «We must not have previously disabled your account for violation of law or any of our policies» — то есть право пользоваться сервисом теряется после бана.",
+      "source": "Instagram Terms of Use (архивная версия текста, OpenTermsArchive/contrib-versions, Instagram/Terms of Service.md) — https://raw.githubusercontent.com/OpenTermsArchive/contrib-versions/main/Instagram/Terms%20of%20Service.md ; оригинал https://help.instagram.com/581066165581870/",
+      "source_date": "текст актуален на 2026-09 (проверено 2026-09-12); сам пункт 4.2 в этой формулировке действует с редакции 2021+",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Покупка IG-аккаунта нарушает ToS со стороны И покупателя, И продавца. У покупателя нет признаваемого прав собственности: Meta может удалить аккаунт в любой момент без компенсации. Для скрипта: IG-ветку сетки закладывать как самую высокорисковую и юридически самую однозначную."
+    },
+    {
+      "claim": "TikTok прямо запрещает передавать аккаунт другому лицу и давать доступ третьим лицам без разрешения платформы",
+      "evidence": "TikTok Terms of Service (US), раздел про безопасность аккаунта: «Do not give others access to your account, or transfer your account to anyone else, without our permission. We may revoke, reclaim, and/or reassign the username of your account in certain circumstances, such as, when you have not logged into your account for 180 days, if we ban your account...». EEA-версия, раздел 9: «These Terms, and any rights and permissions granted in them, cannot be transferred by you, but may be transferred by TikTok.»",
+      "source": "https://www.tiktok.com/legal/page/us/terms-of-service/en и https://www.tiktok.com/legal/page/eea/terms-of-service/en",
+      "source_date": "снято 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Покупка TikTok-аккаунта = нарушение ToS. Отдельный практический пункт: юзернейм может быть отобран после 180 дней без логина — купленные «аged» аккаунты, лежавшие без входа, уязвимы к реклейму юзернейма, а не только к бану."
+    },
+    {
+      "claim": "TikTok ЯВНО разрешает несколько аккаунтов на человека — запрещена не множественность, а автоматизация и обман",
+      "evidence": "Community Guidelines (редакция 2025-H2), раздел Integrity & Authenticity: «You can have multiple accounts—for example, for fan content or creative expression—but not to deceive others or break the rules.» Там же в Spam: «Using automation to run many accounts or send repetitive content», «Posting a large amount of irrelevant material», «Buying or selling followers or engagement for financial gain». И: «We strictly prohibit automation tools, scripts, or other tricks designed to bypass our systems. These can result in content removal, account bans, or other enforcement. If your account is restricted or banned, you may not create or use another account.»",
+      "source": "https://www.tiktok.com/community-guidelines/en/integrity-authenticity (текст извлечён напрямую из страницы)",
+      "source_date": "редакция 2025-H2, снято 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Это самый важный пункт для архитектуры. Легально: несколько собственных аккаунтов, зарегистрированных вами, с разным контентом. Нелегально по ToS: скриптовый залив одинаковых роликов на 20 аккаунтов — это дословно 'automation to run many accounts or send repetitive content'. Покупка аккаунтов не решает эту проблему, а добавляет вторую."
+    },
+    {
+      "claim": "Бан у TikTok распространяется на НОВЫЕ аккаунты, которые вы создадите, — санкция сетевая, а не поаккаунтная",
+      "evidence": "TikTok Community Guidelines, Deceptive Behavior: «If we find deceptive account behavior, we may: Ban your account; Ban additional or new accounts you create; Restrict your account, which could include limiting your ability to post new content, appear in top search results, or in the FYF». Раздел Circumvention: «Spreading violative content across multiple accounts», «Using a different account to continue violating policies after being banned».",
+      "source": "https://www.tiktok.com/community-guidelines/en/integrity-authenticity",
+      "source_date": "2025-H2, снято 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Экономика сетки ломается именно здесь: потеря не 1 аккаунта из 20, а кластера. В спеку скрипта — изоляция кластеров и остановка залива при первом бане в кластере, а не 'докупим ещё'."
+    },
+    {
+      "claim": "Meta ограничивает аккаунты по признаку связи с сетью нарушителей и по признаку автоматизированного создания",
+      "evidence": "Meta Community Standards, Account Integrity: «In order to maintain a safe environment and empower free expression, we restrict or remove accounts that are harmful to the community.» Перечислены основания: аккаунты «Created or repurposed to evade a previous account or entity removal», «Close linkage with a network of accounts or other entities that violate or evade our policies», и созданные «through automated means, such as scripting (unless the scripting activity occurs through authorized routes)».",
+      "source": "https://transparency.meta.com/policies/community-standards/account-integrity/",
+      "source_date": "снято 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "'Close linkage with a network' — прямое описание того, чем является сетка из 20 Reels-аккаунтов на одном фингерпринте/прокси-подсети. Для Instagram риск коллективного сноса сетки выше, чем у TikTok."
+    },
+    {
+      "claim": "У YouTube/Google прямого запрета на продажу аккаунта в ToS НЕТ, но есть официальный поддерживаемый путь передачи канала — через Brand Account",
+      "evidence": "YouTube Terms of Service (effective December 15, 2023) не содержит явной клаузулы о продаже/передаче аккаунта; содержит запрет на «automated means (such as robots, botnets or scrapers)» без разрешения, запрет на манипуляцию метриками («paying people or providing them with incentives»), и право на прекращение при «materially or repeatedly breach this Agreement». Отдельно Google Support описывает штатную операцию 'Move channel to your Google Account or to a different brand account' и управление владельцами/менеджерами через YouTube Studio Permissions; период ожидания не указан, требование — оба Brand Account связаны с одним Google-аккаунтом.",
+      "source": "https://www.youtube.com/static?template=terms ; https://support.google.com/youtube/answer/3056283",
+      "source_date": "ToS eff. 2023-12-15; support-страница снята 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "medium",
+      "actionable": "YouTube — единственная из трёх площадок, где смена владельца канала имеет легальный технический маршрут (Brand Account + добавление владельца). Но это релевантно для покупки СУЩЕСТВУЮЩЕГО канала, а не для закупки 20 новорег-Gmail: массовое создание Google-аккаунтов остаётся нарушением и упирается в phone-верификацию."
+    },
+    {
+      "claim": "Актуальные рыночные цены новорегов TikTok (accsmarket.com, крупнейший публичный шоп): $0.14-$5.55 за аккаунт, дифференциация по гео в 10-25x",
+      "evidence": "Каталог TikTok на 2026-09-12: Mix/EU IP с нативной почтой $0.141-$0.157; Poland IP $0.167; Bangladesh IP $0.222; Mix email-verified $0.463; Japan IP $0.574; France IP $0.925; Russia IP $1.15; USA IP $1.85 и $2.22 (нативная почта); Canada IP $1.85; Brazil IP $2.04; USA IP заполненный профиль $3.70; Mix премиум $5.55. У всех лотов гарантия '48h'.",
+      "source": "https://accsmarket.com/en/catalog/tiktok",
+      "source_date": "снято 2026-09-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Константы для спеки: цена TikTok-новорега по гео — UK/EU ~$0.15-0.95, US/CA ~$1.85-3.70. 20 каналов × 5 гео при US-ценах = $185-370 разово только за аккаунты, без прокси и SMS."
+    },
+    {
+      "claim": "«Прогретый»/aged на рынке означает три разных товара с разбросом цены в 50x, и дорогой сегмент — это аккаунты с уже залитыми видео",
+      "evidence": "Каталог TikTok Aged на 2026-09-12: Canada IP рег. 2024/2025 — $0.37; Canada IP 2024 — $0.555; Mix рег. окт-2025, профиль пустой — $0.925; Mix рег. фев-2022, email-verified — $1.24-$1.67; Brazil IP 2025 с аватаром — $1.85; Canada IP апр-2026 с аватаром — $1.85; Mix 2023 с аватарами — $8.33; 2023 с 10+ видео — $16.65; 2023 с 20+ видео — $18.50. Все с гарантией 48h.",
+      "source": "https://accsmarket.com/en/catalog/tiktok/tiktok-aged",
+      "source_date": "снято 2026-09-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Три тира: (1) 'aged' = просто старая дата регистрации, $0.37-1.85, никакой истории поведения; (2) +аватар/профиль $1.85-8.33; (3) +реальные видео $16.65-18.50. Тир 1 — это тот же новорег с другой датой, платить за 'возраст' без истории просмотров смысла мало."
+    },
+    {
+      "claim": "Цены Instagram-новорегов $0.11-$1.30; ключевая ось цены — наличие нативной почты и SMS-верификации, а не возраст",
+      "evidence": "Каталог Instagram на 2026-09-12: базовые email-verified от $0.111 (Mix IP, почта НЕ в комплекте, 2FA в комплекте); Turkey IP female $0.111; SMS-verified с аватаром $0.185; Outlook/Hotmail нативная почта $0.20; USA IP gmail-verified, почта НЕ в комплекте $0.276; премиум SMS+email verified $0.352; Ukraine IP нативная почта $0.37; EU female $0.555; inbox.lv нативная $0.629; Bangladesh IP $0.703; mail.ru SMS-verified $0.925; Canada IP $1.02; USA IP SMS-verified female нативная почта $1.11-$1.20; USA IP без почты $1.30. Гарантия 48h у всех.",
+      "source": "https://accsmarket.com/en/catalog/instagram",
+      "source_date": "снято 2026-09-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Лоты с пометкой 'email not in set' (напр. USA $0.276 и $1.30) — это аккаунты, где почту продавец оставляет себе. Такой аккаунт технически можно вернуть себе через восстановление; покупать их под долгий канал нельзя. Правило для скрипта-закупщика: фильтр 'email in set, native' = обязателен."
+    },
+    {
+      "claim": "Gmail (техническая база YouTube-канала) стоит $0.72-$7.59; цена растёт за 2FA + recovery email + USA IP",
+      "evidence": "Каталог Gmail на 2026-09-12: Mix IP базовый $0.722-$0.777; India IP с 2FA $0.833; USA IP $0.833; Mix SMS-confirmed +2FA $1.11 (3,697 в наличии); Mix с recovery email $1.30; мультистрановые 2FA+recovery $2.22 (1,079 шт); премиум 2FA+app password+SMS $2.59 (1,626 шт); USA IP 2FA+recovery email $6.48 (всего 22 шт); премиум $7.59. У большинства дешёвых лотов recovery email НЕ включён.",
+      "source": "https://accsmarket.com/en/catalog/gmail",
+      "source_date": "снято 2026-09-12",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Дефицит именно на USA IP + 2FA + recovery (22 шт против 3697 у mix) — прямой индикатор, что качественный US-сегмент под YouTube на рынке в реальном дефиците и стоит ~$6.5, а не $0.8. Для 20 YT-каналов × гео при честном тире — $130+/гео разово."
+    },
+    {
+      "claim": "Гарантия 48 часов у продавцов почти всегда неприменима: она аннулируется правилами самого магазина при любом реальном сценарии использования сетки",
+      "evidence": "Правила accsmarket: гарантируется «full validity of the account (within 48 hours after the purchase)», замена если «blocked, deleted, incorrect credentials» по вине магазина. Но: «THE GUARANTEE IS BEING CANCELED in case of the violation of paragraph 1.2» — куда входит вход с домашнего IP, использование VPN/TOR/прокси/виртуальных машин, несколько аккаунтов на одном устройстве/прокси. Отдельно: «If you logged into your account and did something there, and your account was blocked after, the problem is most likely on your side.» Возврат — только если замена невозможна, и только в Perfect Money, Advcash, WebMoney, Litecoin.",
+      "source": "https://accsmarket.com/en/rules",
+      "source_date": "снято 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Практический смысл: гарантия покрывает только 'аккаунт мёртв при первой проверке', и то при условиях, которые вы нарушите самим фактом работы через прокси. Оплата в крипте/Perfect Money = нет чарджбэка. В бюджет закладывать 100% списания стоимости аккаунтов, не рассчитывая на возвраты."
+    },
+    {
+      "claim": "Масштаб отлова фейковых аккаунтов у TikTok: >2 млрд предотвращённых регистраций спам-аккаунтов за год, 143.8 млн удалённых фейков за один квартал",
+      "evidence": "TikTok Transparency / Community Guidelines Enforcement: «Using automated technology, we also prevented over 2 billion spam accounts from being created», «Prevented over 2 billion spam accounts from being created, and removed over 1 billion videos posted by fake accounts. Prevented over 54 billion fake likes, and removed a further 8 billion fake likes. Prevented over 33 billion fake follow requests, and removed over 5 billion fake followers.» Квартальные цифры: Q4 2025 — 143,834,113 удалённых фейковых аккаунтов + 23,875,879 аккаунтов по подозрению в возрасте <13; Q2 2025 — 76,991,660 фейковых аккаунтов + 25,904,708 под-13. Q4 2025: 175 млн удалённых видео, proactive removal rate 99.1%, 93.4% удалено в первые 24ч.",
+      "source": "https://www.tiktok.com/transparency/en-us/community-guidelines-enforcement-2025-4/ (текст извлечён со страницы); квартальные цифры также в отчёте, отражены в https://www.brandsynario.com/tiktok-releases-q4-2025-community-guidelines-enforcement-report/",
+      "source_date": "отчёт за Q4 2025, снято 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Отношение 'предотвращено 2 млрд регистраций' к 'удалено ~144 млн постфактум' показывает, что основная масса фильтруется НА РЕГИСТРАЦИИ. Именно поэтому продавцы новорегов работают конвейером: до вас дошли те, кто прошёл первый фильтр, но остались в скоринге как подозрительные."
+    },
+    {
+      "claim": "TikTok блокирует SIM-карты, используемые исключительно для создания фейковых аккаунтов, совместно с мобильными операторами — то есть пулы номеров SMS-активации помечены на уровне оператора",
+      "evidence": "TikTok Transparency: «...together financial institutions, mobile networks, and tech companies to identify and block SIM cards used solely to create fake accounts and defraud users.» Независимо это подтверждает анти-фрод индустрия: Sift перечисляет среди сигналов риска «disposable domains, recently created addresses, and numbers from bulk SMS-verification services».",
+      "source": "https://www.tiktok.com/transparency/en-us/community-guidelines-enforcement-2025-4/ ; https://sift.com/blog/fake-account-detection-the-technical-signals-that-expose-fraudulent-signups/",
+      "source_date": "TikTok — отчёт Q4 2025; Sift — 2026-07-31",
+      "kind": "platform_docs",
+      "confidence": "high",
+      "actionable": "Это объясняет пункт (3) задания на уровне факта, а не слуха: аккаунт, зарегистрированный на номер из сервиса активации, несёт метку источника номера с момента регистрации — независимо от того, с какого IP вы позже зайдёте. Купленный 'PVA' — это аккаунт с меченым номером в истории."
+    },
+    {
+      "claim": "Meta: ~1 млрд фейковых аккаунтов заблокировано на Facebook за квартал, оценка распространённости ~3% MAU",
+      "evidence": "Meta Integrity Reports: Q1 2025 — действия против 1 млрд фейковых аккаунтов на Facebook; оценка ~3% worldwide MAU составляют фейковые аккаунты. Q3 2025 — 698 млн; Q4 2025 — 1.1 млрд. Meta также отдельно отчитывается о ликвидации covert influence operations (Q1 2025 — три сети: Иран, Китай, Румыния), подчёркивая, что они снимались «before they were able to build authentic audiences».",
+      "source": "https://transparency.meta.com/reports/integrity-reports-q1-2025/ ; https://transparency.meta.com/sr/Q1-2025-Adversarial-threat-report/ ; агрегировано Statista https://www.statista.com/statistics/1013474/facebook-fake-account-removal-quarter/",
+      "source_date": "Q1 2025 - Q4 2025, снято 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "medium",
+      "actionable": "Формулировка Meta 'before they were able to build authentic audiences' — ключевая для планирования: сети чаще всего снимают НА ЭТАПЕ РОСТА, то есть ровно тогда, когда канал начал давать трафик. Планировать LTV канала, а не 'аккаунт жив = ок'."
+    },
+    {
+      "claim": "Технические причины, почему массово созданные аккаунты помечены: фингерпринт устройства, IP-репутация подсети, одноразовые/шаблонные почты, velocity-кластеризация",
+      "evidence": "Sift (2026-07-31): платформы связывают аккаунты по (1) device intelligence — фингерпринт выявляет одно физическое/эмулированное устройство за десятками 'уникальных' аккаунтов даже при подменённых IP и заголовках; (2) network & IP reputation — известные proxy/VPN exit-ноды, датацентровые диапазоны, выдающие себя за резидентные, и IP-блоки со следами прошлых злоупотреблений; (3) email & phone risk — одноразовые домены, недавно созданные адреса, номера из bulk SMS-сервисов; (4) behavioral — скорость заполнения формы, нечеловеческие движения мыши, нелогичный порядок заполнения полей; (5) velocity & link analysis — флаг, когда 50+ новых аккаунтов делят фингерпринт, платёжный инструмент или адрес. Conbersa (2026-04): пять тех же векторов + куки/localStorage/пиксели; ссылается на исследование EFF — «84% of browsers have unique fingerprints». Fingerprint Inc. в 2025 выпустил Proximity Detection — связывание устройств по физической близости для выявления device farms.",
+      "source": "https://sift.com/blog/fake-account-detection-the-technical-signals-that-expose-fraudulent-signups/ ; https://www.conbersa.ai/learn/how-platforms-detect-multiple-accounts ; https://mobileidworld.com/fingerprint-announces-proximity-detection-to-combat-device-farms-and-multi-accounting-fraud/",
+      "source_date": "2026-07-31 / 2026-04 / 2025",
+      "kind": "industry_data",
+      "confidence": "high",
+      "actionable": "Подтверждается практикой в части device+IP+phone; шаблонные почты — подтверждается прямо (в каталогах видно, что целые партии идут на inbox.lv, outlook/hotmail, mail.ru — т.е. домен почты сам по себе маркер партии). Для спеки: если аккаунты одной партии имеют почты одного домена и соседние IP регистрации, они между собой связаны ДО того, как вы их купили."
+    },
+    {
+      "claim": "Единственный найденный количественный практический замер сравнивает не в пользу покупки: 9/12 выживших у самостоятельно зарегистрированных против 2/9 у купленных aged",
+      "evidence": "Тред BlackHatWorld 'Are aged accounts still valuable in 2025?' (стр. 4): участник сообщает success rate с новыми самостоятельно созданными аккаунтами 9/12, против 2/9 у купленных aged. Там же общий вывод участников: «Aged accounts can still help, but platform detection has gotten stricter... Setup quality, IP/proxy hygiene, and activity patterns matter just as much, if not more, than age alone» и «From 2024-2025, Facebook tightened the algorithm to scan based on behavior, not just account age».",
+      "source": "https://www.blackhatworld.com/seo/are-aged-accounts-still-valuable-in-2025.1732201/page-4 (прямой доступ отдаёт HTTP 403; цитаты получены через индекс поисковой выдачи)",
+      "source_date": "тред 2025, страница 4",
+      "kind": "practitioner_report",
+      "confidence": "low",
+      "actionable": "n=21, один аноним, самоотчёт, не верифицируемо напрямую. Использовать как направление, не как коэффициент. Но это единственная публичная количественная точка сравнения, и она указывает в сторону самостоятельной регистрации."
+    },
+    {
+      "claim": "Смена IP и устройства у купленного аккаунта — главное событие риска; частые смены сами по себе становятся сигналом",
+      "evidence": "Практика/вендоры анти-детект: TikTok не полагается на один сигнал, а триангулирует device identifiers и OS-level patterns, IP reputation, datacenter patterns, повторные логины из разных стран. «Constantly changing network identity can trigger a cycle where TikTok repeatedly re-verifies you, and repeated verification challenges themselves can become another risk signal.» Признаки IP-проблем: 'This device is not allowed to access TikTok', невозможность зайти с одной сети при доступе с другой. Продавец, чей заявленный регион не совпадает с местом входа, флагается: «A seller claiming to operate from Los Angeles but consistently logging in from a data center in another country will get flagged».",
+      "source": "https://multilogin.com/blog/mobile/can-tiktok-ip-ban-you/ ; https://www.influencers-time.com/tiktok-real-ip-verification-what-sellers-must-know-now/ ; https://www.ipfoxy.com/blog/docs/TikTok-...",
+      "source_date": "2025-2026; multilogin-материал датирован 2026",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Источники — вендоры анти-детект-браузеров и прокси, у них конфликт интересов (продают решение проблемы), поэтому medium. Но фактура согласуется с официальным Sift/Conbersa. Ожидаемое поведение: первый вход с гео, отличного от IP регистрации, = верификационный челлендж; провал челленджа при отсутствии доступа к почте/номеру = потеря аккаунта."
+    },
+    {
+      "claim": "Риск повторного отъёма аккаунта продавцом реален и структурно заложен в товар: во многих лотах почта не передаётся",
+      "evidence": "В каталоге accsmarket значительная часть Instagram и Gmail лотов имеет пометку 'Email not in set' / 'No recovery email' (напр. Instagram USA IP gmail-verified $0.276, USA IP $1.30; большинство дешёвых Gmail до $1.11). Практика: покупатель, купивший Instagram без оригинальной почты, чей аккаунт затем вернул исходный владелец, имеет «very limited recovery options». Рекомендуемая профилактика — перевод почты и телефона на свои, удаление recovery-опций продавца, письменное соглашение с warranty period 30-90 дней, мониторинг 90 дней.",
+      "source": "https://accsmarket.com/en/catalog/instagram ; https://accsmarket.com/en/catalog/gmail ; https://www.quora.com/What-do-I-do-I-bought-an-Instagram-account-without-the-original-email...",
+      "source_date": "снято 2026-09-12; Quora-тред без точной даты",
+      "kind": "practitioner_report",
+      "confidence": "medium",
+      "actionable": "Жёсткое правило закупки для скрипта: не покупать лоты без 'email in set, native'. Иначе продавец сохраняет канал восстановления, а вы вложились в контент на чужой актив."
+    },
+    {
+      "claim": "Экономика self-registration: SMS-номер $0.05-$0.30, прокси $2/GB или ~$59/прокси/мес — то есть себестоимость своей регистрации сопоставима с ценой покупки в дорогих гео и выше в дешёвых",
+      "evidence": "SMS-активация 2026: Smspva от $0.05 за номер; SMS-Man от $0.05 за активацию; VirtSMS non-VoIP для TikTok от $0.30. Крупнейший игрок SMS-Activate закрылся навсегда в декабре 2025 — рынок в перетряске. Прокси: мобильные от $2/GB или $59/прокси/мес (Proxidize), pay-as-you-go мобильные ~$9/GB у части провайдеров; резидентные бюджетные $1-3/GB, mid-market $3-8/GB, малообъёмные планы 50GB — $125-200/мес.",
+      "source": "https://smspva.com/ ; https://sms-man.com/ ; https://virtsms.com/tiktok ; https://www.yoobfriv.com/sms-activation-services-in-2026-pricing-breakdown-across-7-platforms/ ; https://proxidize.com/mobile-proxy-pricing/ ; https://dataimpulse.com/blog/residential-proxy-pricing-comparison/",
+      "source_date": "2025-2026, снято 2026-09-12",
+      "kind": "industry_data",
+      "confidence": "medium",
+      "actionable": "Ключевая арифметика: аккаунт сам по себе — самая дешёвая часть ($0.15-2). Дорогая часть — сетевая инфраструктура: 20 каналов × 3 платформы × 5 гео = 300 идентичностей; при $59/мес за мобильный прокси даже 5 прокси = $295/мес, что уже ВЫШЕ всего бюджета 50-200 USD/мес. Именно инфраструктура, а не аккаунты, делает схему нерентабельной при этом бюджете."
+    },
+    {
+      "claim": "Реальная доля мёртвых и помеченных купленных аккаунтов — публичных верифицированных цифр НЕТ",
+      "evidence": "Ни один официальный источник (TikTok Transparency, Meta Integrity Reports, YouTube) не публикует статистику выживаемости купленных аккаунтов. Вендорские материалы (Pixelscan, 2025-09-19) констатируют «cheap TikTok accounts are widely available, but most are low quality», но не квантифицируют 'most' и не дают ни ban rate, ни сроков прогрева, ни окон гарантии. Единственные косвенные индикаторы: индустриальный стандарт гарантии 48h (то есть продавцы сами ожидают отсева в первые двое суток) и единичный самоотчёт 2/9.",
+      "source": "https://pixelscan.net/blog/how-to-buy-tiktok-account/ (2025-09-19); https://accsmarket.com/en/rules",
+      "source_date": "2025-09-19 / 2026-09-12",
+      "kind": "inference",
+      "confidence": "low",
+      "actionable": "НЕТ ДАННЫХ на точную цифру. Рабочий диапазон для планирования (low confidence, оценка по косвенным признакам, НЕ измерено): 10-30% мёртвых/невалидных при первой проверке в первые 48ч; 40-70% отвала в первые 30 дней при заливе через автоматизацию с прокси; <20% доживают до 90 дней с сохранённым охватом. Эти числа обязательно помечать как оценку в спеке, а не как измеренную константу."
+    },
+    {
+      "claim": "Дублирование одного ролика на 20 каналов бьёт по контентной политике отдельно от политики аккаунтов",
+      "evidence": "TikTok Community Guidelines: «Unoriginal Content and Intellectual Property Rights: We don't allow content that violates intellectual property rights, including reposts of copyrighted or trademarked material without permission»; и отдельно: «Content is also ineligible for the FYF if it includes unoriginal or reused material without anything new.» То есть даже без бана контент выпадает из For You Feed — трафика просто не будет.",
+      "source": "https://www.tiktok.com/community-guidelines/en/integrity-authenticity",
+      "source_date": "2025-H2, снято 2026-09-12",
+      "kind": "official_policy",
+      "confidence": "high",
+      "actionable": "Даже при 100% выживаемости аккаунтов идентичный ролик на 20 каналах даёт околонулевой охват: FYF-ineligible. Ограничение для спеки: уникализация на уровне монтажа/озвучки/первых 3 секунд — обязательна, иначе сетка экономически бессмысленна независимо от банов."
+    },
+    {
+      "claim": "Юридически покупка аккаунта в большинстве юрисдикций не преступление, но она не создаёт права собственности",
+      "evidence": "Общий консенсус разборов: buying/selling социальных аккаунтов не является уголовным преступлением в большинстве стран; последствия — договорные/платформенные. При этом «Instagram can suspend or permanently delete an account at any time for violating the Terms of Use, meaning even if you pay for it, Instagram doesn't legally recognize your ownership». Уголовный риск возникает при сопутствующем составе — мошенничество, кража аккаунтов, выдача себя за другое лицо.",
+      "source": "https://swapsocials.com/is-buying-selling-instagram-accounts-illegal/ ; https://techbullion.com/instagram-policies-against-buying-instagram-accounts-or-followers-and-the-legal-implications/",
+      "source_date": "2025",
+      "kind": "practitioner_report",
+      "confidence": "low",
+      "actionable": "Источники — коммерческие блоги маркетплейсов аккаунтов, конфликт интересов явный, отсюда low. Практический вывод устойчив независимо от источника: у покупателя нет ни правового титула, ни апелляционного рычага при бане."
+    },
+    {
+      "claim": "Миф: 'старый аккаунт = доверие алгоритма, поэтому aged дороже и безопаснее'",
+      "evidence": "Практики 2025-2026 фиксируют обратное: «From 2024-2025, Facebook tightened the algorithm to scan based on behavior, not just account age, meaning that old accounts with a dirty activity history, unusual IP/device, or sensitive products will still be flagged quickly» и «Setup quality, IP/proxy hygiene, and activity patterns matter just as much, if not more, than age alone». Со стороны платформы возраст вообще не фигурирует в перечне сигналов Sift/Conbersa — там device, IP, contact, behavior, velocity. Плюс TikTok ToS: username может быть реклеймнут после 180 дней без логина, то есть 'лежавший' aged аккаунт несёт собственный риск.",
+      "source": "https://www.blackhatworld.com/seo/are-aged-accounts-still-valuable-in-2025.1732201/page-4 ; https://sift.com/blog/fake-account-detection-the-technical-signals-that-expose-fraudulent-signups/ ; https://www.tiktok.com/legal/page/us/terms-of-service/en",
+      "source_date": "2025-2026",
+      "kind": "myth_debunk",
+      "confidence": "medium",
+      "actionable": "Не переплачивать за 'aged' без истории поведения (тир $0.37-1.85 — это тот же новорег). Платить имеет смысл только за тир с реальными видео и просмотрами ($16-18+), но там нет объёма для сетки на 300 идентичностей."
+    },
+    {
+      "claim": "Безопасная альтернатива, укладывающаяся в бюджет: меньше каналов, свои регистрации с реальных устройств, бренд как якорь трафика",
+      "evidence": "Опорные факты: (а) TikTok прямо разрешает несколько аккаунтов при отсутствии обмана и автоматизации; (б) YouTube даёт легальный механизм Brand Account с несколькими владельцами — можно вести несколько каналов из одного аккаунта без покупки Gmail-новорегов; (в) детект строится на device+IP+phone+velocity, а не на количестве аккаунтов как таковом — значит 3-5 аккаунтов с реальных устройств и реальных номеров не создают velocity-кластера; (г) Meta снимает сети именно на этапе набора аудитории, поэтому равномерное вложение в 300 каналов статистически хуже, чем концентрация.",
+      "source": "https://www.tiktok.com/community-guidelines/en/integrity-authenticity ; https://support.google.com/youtube/answer/3056283 ; https://sift.com/blog/fake-account-detection-the-technical-signals-that-expose-fraudulent-signups/ ; https://transparency.meta.com/reports/integrity-reports-q1-2025/",
+      "source_date": "2025-2026",
+      "kind": "inference",
+      "confidence": "medium",
+      "actionable": "Рекомендуемая конфигурация под $50-200/мес: 1 основной бренд-аккаунт на платформу + 2-4 вспомогательных, зарегистрированных лично с реальных устройств и своих номеров, разнесённых по времени (не в один день); уникализированный контент; трафик заворачивать на Discord/сайт как на актив, который нельзя забанить. Бюджет: $0 на аккаунты, $20-60/мес на монтаж/хостинг, остальное — в контент. Это уступает 300 каналам по теоретическому охвату и выигрывает по ожидаемому выжившему охвату."
+    }
+  ],
+  "key_numbers": [
+    "TikTok новорег: EU/Mix $0.141-0.157, Poland $0.167, Bangladesh $0.222, Japan $0.574, France $0.925, Russia $1.15, USA $1.85-3.70, Canada $1.85, Brazil $2.04 (accsmarket, 2026-09-12)",
+    "TikTok aged: 2024-2025 CA $0.37-0.555; 2022 mix $1.24-1.67; 2023 +аватар $8.33; 2023 +10 видео $16.65; 2023 +20 видео $18.50",
+    "Instagram новорег: от $0.111 (Turkey/Mix), SMS+аватар $0.185, Outlook native $0.20, USA gmail-verified $0.276, EU female $0.555, USA SMS native $1.11-1.20, Canada $1.02, USA без почты $1.30",
+    "Gmail/Google (база YouTube): mix $0.722-0.833, SMS+2FA $1.11, +recovery email $1.30, 2FA+recovery $2.22, премиум $2.59, USA IP 2FA+recovery $6.48 (в наличии всего 22 шт против 3697 у mix)",
+    "Aged YouTube каналы: $3-7.50 (2005-09, <1000 просмотров), $10 (1000-90k просмотров), $3.75 (2012-2018), $39.80 (500+ подписчиков) — вендорские блоги, low confidence",
+    "Гарантия продавцов: 48 часов; аннулируется при использовании домашнего IP, VPN/TOR/прокси/VM, нескольких аккаунтов на одном устройстве/прокси; возврат только Perfect Money/Advcash/WebMoney/LTC",
+    "TikTok: >2,000,000,000 предотвращённых созданий спам-аккаунтов за год; >1 млрд удалённых видео от фейковых аккаунтов; >54 млрд предотвращённых фейк-лайков; >33 млрд предотвращённых фейк-подписок",
+    "TikTok Q4 2025: 143,834,113 удалённых фейковых аккаунтов + 23,875,879 под-13; 175 млн удалённых видео; proactive rate 99.1%; 93.4% в первые 24ч",
+    "TikTok Q2 2025: 76,991,660 удалённых фейковых аккаунтов + 25,904,708 под-13; 189 млн удалённых видео (0.7% загруженного)",
+    "Meta Facebook: Q1 2025 — ~1 млрд фейковых аккаунтов заблокировано, ~3% MAU; Q3 2025 — 698 млн; Q4 2025 — 1.1 млрд",
+    "TikTok username реклеймится после 180 дней без логина (ToS)",
+    "SMS-верификация 2026: $0.05 (Smspva, SMS-Man) - $0.30 (VirtSMS non-VoIP для TikTok); SMS-Activate закрылся в декабре 2025",
+    "Прокси: мобильные $2/GB или ~$59/прокси/мес; residential бюджет $1-3/GB, mid $3-8/GB; 50GB план $125-200/мес",
+    "Практический замер (n=21, low confidence): самостоятельная регистрация 9/12 выжили, купленные aged 2/9",
+    "Velocity-порог в анти-фрод практике: флаг при 50+ новых аккаунтах с общим фингерпринтом/платёжным инструментом/адресом (Sift, 2026-07-31)",
+    "84% браузеров имеют уникальный фингерпринт (EFF, цит. по Conbersa 2026-04)",
+    "Multi-step identity fraud вырос с 10% атак в 2024 до 28% в 2025 (Sumsub, цит. Sift)"
+  ],
+  "machine_spec_notes": [
+    "ПРАВИЛО: закупка аккаунтов Instagram нарушает ToU §4.2 напрямую (buy/sell/transfer any aspect of account). Закупка TikTok нарушает ToS (transfer your account to anyone else without our permission). У YouTube прямого запрета нет, есть легальный Brand Account transfer. Если спека всё же включает закупку — пометить IG-ветку как highest legal risk.",
+    "ПРАВИЛО ЗАКУПКИ (если закупка всё же): отбрасывать любые лоты с 'email not in set' / 'no recovery email' — продавец сохраняет канал восстановления. Обязательный фильтр: email in set + native.",
+    "КОНСТАНТА: budget_account_cost_usd = {tiktok: {eu:0.16, uk:0.95, us:1.85, ca:1.85, br:2.04}, instagram: {eu:0.55, us:1.20}, gmail_yt: {mix:1.11, us_full:6.48}}",
+    "КОНСТАНТА (ОЦЕНКА, low confidence, не измерено): dead_on_arrival_rate=0.10-0.30 (48ч); churn_30d=0.40-0.70 при автозаливе через прокси; survival_90d<0.20. Помечать как assumption, пересчитывать по факту.",
+    "ПРАВИЛО: guarantee_window_hours=48, но guarantee_effective=false при работе через прокси/VM — в бюджете списывать 100% стоимости аккаунтов, возвраты не планировать. Оплата в крипте = no chargeback path.",
+    "ЛИМИТ: расчёт 20 каналов × 3 платформы × 5 гео = 300 идентичностей. При $59/мес за мобильный прокси и минимум 5 прокси инфраструктура = $295/мес > верхней границы бюджета $200. Спека должна отсекать конфигурацию по бюджету ДО закупки аккаунтов.",
+    "ПРАВИЛО КОНТЕНТА (независимо от аккаунтов): идентичный ролик на нескольких каналах = FYF-ineligible по TikTok CG ('unoriginal or reused material without anything new'). Обязательна уникализация: разный монтаж/озвучка/первые 3 секунды/хук. Без этого охват ~0 даже без банов.",
+    "ПРАВИЛО ОСТАНОВКИ: TikTok банит 'additional or new accounts you create' при обнаружении deceptive behavior. Скрипт должен изолировать кластеры и при первом бане в кластере ОСТАНАВЛИВАТЬ залив по всему кластеру, а не докупать аккаунты.",
+    "ФЛАГ: номера из bulk SMS-сервисов помечены на уровне оператора (TikTok заявляет о совместной блокировке SIM с мобильными операторами). Номер регистрации — неустранимый атрибут аккаунта, смена IP его не чинит.",
+    "ФЛАГ: почтовый домен партии (inbox.lv / outlook / mail.ru / hotmail) — маркер принадлежности к одной закупочной партии; аккаунты одной партии связаны между собой ДО покупки. Не смешивать в один кластер аккаунты одной партии.",
+    "РЕКОМЕНДУЕМАЯ КОНФИГУРАЦИЯ под бюджет $50-200/мес: 1 бренд-аккаунт на платформу + 2-4 вспомогательных, собственная регистрация с реальных устройств и реальных номеров, разнос регистраций по датам, уникальный контент, воронка на Discord/сайт как на неотчуждаемый актив. account_purchase_budget = $0.",
+    "НЕТ ДАННЫХ: официальной статистики выживаемости купленных аккаунтов не публикует ни одна платформа. Любую цифру выживаемости в спеке помечать как assumption с датой и источником оценки."
+  ],
+  "open_questions": [
+    "Нет публичных измеренных данных о выживаемости купленных новорегов по гео и платформам — потребуется собственный пилот (например, 10 аккаунтов × 2 гео) с логированием, чтобы получить реальные коэффициенты вместо оценок.",
+    "Неизвестно, насколько по-разному TikTok обрабатывает UK-гео против US/EU при первом логине с несовпадающим IP — источников с разбивкой по UK не найдено.",
+    "Не найдено данных, как YouTube Shorts относится к сети из нескольких каналов под одним владельцем Brand Account при идентичном контенте — политика reused content задокументирована для монетизации, но не для охвата Shorts.",
+    "Неясно, применяет ли Meta к Reels ту же FYF-логику 'unoriginal content ineligible', что TikTok — прямой формулировки в Community Standards не найдено.",
+    "Не найдено кейсов судебных/платёжных последствий (Stripe/PayPal) конкретно за продажу подписки, продвигаемой через купленные аккаунты — риск здесь оценочный.",
+    "Рынок SMS-верификации перетряхнуло закрытием SMS-Activate в декабре 2025; надёжность и долговечность преемников (HeroSMS и др.) не подтверждена независимыми источниками.",
+    "Неизвестна реальная доля лотов на accsmarket, которые фактически являются ARP (Real User Profiles, угнанные у реальных пользователей) — это отдельный правовой риск, отличный от обычного новорега."
+  ],
+  "risks": [
+    "Покупка аккаунтов Instagram нарушает ToU §4.2 напрямую и для покупателя, и для продавца; Meta не признаёт права собственности покупателя и может удалить аккаунт в любой момент без компенсации.",
+    "Покупка TikTok-аккаунта нарушает ToS ('Do not... transfer your account to anyone else, without our permission'); юзернейм может быть реклеймнут после 180 дней бездействия.",
+    "Сетевой характер санкций: TikTok прямо заявляет, что при выявлении deceptive behavior банит и новые аккаунты, которые вы создадите; Meta ограничивает аккаунты за 'close linkage with a network of accounts... that evade our policies'. Риск потерять кластер, а не единицу.",
+    "Авто-залив одинакового контента с множества аккаунтов дословно подпадает под спам-определение TikTok ('using automation to run many accounts or send repetitive content') — это нарушение независимо от того, куплены аккаунты или зарегистрированы самостоятельно.",
+    "Гарантия продавца 48ч по его же правилам аннулируется при работе через прокси/VPN/VM и при нескольких аккаунтах на одном устройстве — то есть при любом реальном сценарии сетки. Оплата в Perfect Money/крипте исключает чарджбэк.",
+    "Лоты без нативной почты позволяют продавцу вернуть аккаунт через восстановление после того, как вы вложились в контент.",
+    "Номер SMS-активации в истории аккаунта — неустранимая метка; TikTok заявляет о блокировке SIM, используемых только для создания фейковых аккаунтов, совместно с мобильными операторами.",
+    "Часть лотов на рынке — ARP/'Real User Profiles', то есть аккаунты реальных людей, потерявших к ним доступ. Это уже не серая зона, а работа с чужой учётной записью со всеми вытекающими.",
+    "Потеря аккаунта = потеря всей аудитории и всего залитого контента без апелляционного рычага. Единственная защита — увод аудитории на собственный актив (Discord/сайт/почтовая база) как можно раньше.",
+    "Финансовый: при бюджете $50-200/мес инфраструктура под 300 идентичностей (прокси $59/мес × N) выходит за верхнюю границу бюджета ещё до закупки аккаунтов — схема нерентабельна арифметически, а не только по рискам."
+  ]
+}
