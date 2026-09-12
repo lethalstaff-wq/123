@@ -286,5 +286,28 @@
     "LOW-MEDIUM: no verified data exists for the four platforms most native to this niche (Sellix, Shoppy, Whop, Payhip). Building the spec on assumed fees or assumed policy for any of them would inject fabricated constants into the auto-delivery system.",
     "LOW: micropayment pricing on PayPal applies account-wide once granted (5%/6% + fixed). If the catalog mixes a £4 monthly plan with a £60 annual plan, opting in makes the high-ticket transactions materially worse.",
     "LOW: US tax compliance for a foreign-owned Delaware LLC (Form 5472 + 1120, with substantial penalties for non-filing) is not covered by the $500 Atlas fee and is an easy thing for a solo non-US operator to miss entirely."
-  ]
+  ],
+  "geo_blockers": {
+    "_purpose": "Страны, где привычная схема «оплата -> роль в Discord» или привычная платёжка физически не работает. Проверять ДО запуска гео, а не после первых продаж.",
+    "tr": {
+      "discord": "Заблокирован в Турции с 09.10.2024, на сентябрь 2026 блокировка не снята. Схема «оплата -> роль в Discord» здесь неработоспособна: выдавать лицензионным ключом на почту.",
+      "paypal": "Недоступен в Турции с 2016 года.",
+      "papara": "Главный локальный кошелёк геймеров: лицензия аннулирована Центробанком Турции 30.10.2025, с 27.05.2025 под управлением TMSF. Строить на нём нельзя.",
+      "local_acquirers": "iyzico, PayTR, Shopier требуют турецкого юрлица.",
+      "entry_point": "сайт + WhatsApp",
+      "price_model": "только lifetime в лирах: подписочная культура слабая из-за инфляции, люди не фиксируют ежемесячный отток",
+      "market_proof": "MTRX Optimizer продаёт lifetime за 199 TL (около $4.3) и отдельный тариф для интернет-кафе за 500 TL — спрос подтверждён деньгами",
+      "bonus": "Roblox разблокирован 18.06.2026 после 680 дней — свежий недообслуженный сегмент"
+    },
+    "ru": {
+      "payments": "Россия заблокирована как страна покупателя у Lemon Squeezy и входит в список стран, которым платёжки не дают платить",
+      "entry_point": "Telegram"
+    },
+    "iq": {
+      "payments": "В списке заблокированных стран покупателя. Высокое проникновение TikTok при невозможности оплатить — ловушка по расходу показов."
+    },
+    "ng": {
+      "payments": "Paystack и Flutterwave требуют регистрации CAC, BVN и нигерийского банковского счёта — оператору из СНГ недоступно. Stripe нигерийских мерчантов не онбордит."
+    }
+  }
 }

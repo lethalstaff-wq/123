@@ -98,7 +98,7 @@
         3.6,
         19.9
       ],
-      "entry_point": "discord",
+      "entry_point": "site",
       "cta_language": "pt",
       "payment_methods": [
         "Pix — ОБЯЗАТЕЛЕН, без него гео не запускать. 93% взрослых бразильцев, 62% используют как основной метод оплаты, 200 млн MAU (BCB via Wikipedia/Pix, Q1 2026). Мгновенное зачисление, необратимость, доступен подросткам через Nubank/PicPay/Mercado Pago. Ожидаемая доля в обороте BR: 65-80%",
@@ -294,7 +294,7 @@
       "price_points_usd": [
         2.49
       ],
-      "entry_point": "discord",
+      "entry_point": "whatsapp",
       "cta_language": "tr",
       "payment_methods": [
         "Кредитная/дебетовая карта с 3D Secure — обязательна, 100% ставка. Турецкие эмитенты почти всегда требуют 3DS, что резко снижает чарджбеки (ответственность смещается на эмитента).",
@@ -361,7 +361,7 @@
       "price_points_usd": [
         6.3
       ],
-      "entry_point": "discord",
+      "entry_point": "site",
       "cta_language": "en",
       "payment_methods": [
         "Visa / Mastercard DEBIT — обязательно и в первую очередь. UK дебетово-ориентирован: карты используют 73% онлайн-покупателей, дебетовые карты — 22% транзакций (Worldpay Global Payments Report 2025). У подростков 13-17 это чаще всего карты детских банков (GoHenry, Revolut <18, Monzo/Starling для подростков) — они работают как обычные Visa Debit, но лимитированы по сумме, что ещё раз аргументирует цену ниже £30.",
@@ -737,7 +737,7 @@
       "price_points_usd": [
         8.6
       ],
-      "entry_point": "discord",
+      "entry_point": "site",
       "cta_language": "de",
       "payment_methods": [
         "PayPal — ОБЯЗАТЕЛЕН, без него рынок закрыт. 28,5-28,7% всех e-commerce транзакций в DE, доля растёт (+0,8 п.п. г/г, EHI Online-Payment 2025). Для 13-24 это ещё и единственный способ заплатить с родительского аккаунта.",

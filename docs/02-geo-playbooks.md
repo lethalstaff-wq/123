@@ -8,17 +8,17 @@
 
 | Страна | Приоритет | Язык | Топ-3 игры | Цена/мес | Точка приёма |
 |---|---|---|---|---|---|
-| `br` Бразилия (Brazil) | priority_1 | pt | Free Fire / Free Fire MAX, Fortnite, GTA V… | $ 19,90 (high) | discord |
+| `br` Бразилия (Brazil) | priority_1 | pt | Free Fire / Free Fire MAX, Fortnite, GTA V… | $ 19,90 (high) | site |
 | `ca` Канада (Canada) — двухъязычный кла… | priority_1 | en | Fortnite, Valorant, Counter-Strike 2 | $6.99 (mid) | discord |
 | `sa` Саудовская Аравия (KSA) | priority_1 | ar | Call of Duty, Fortnite, PUBG | $21 (high) | site |
-| `tr` Türkiye / Turkey (UTC+3, без перех… | priority_1 | tr | VALORANT, Counter-Strike 2, FiveM / GTA V … | $2.49 (low) | discord |
-| `uk` Великобритания + Ирландия (UK & IE… | priority_1 | en | EA Sports FC 26 / FC 25, Fortnite, Call of… | $6.3-6.7 (mid) | discord |
+| `tr` Türkiye / Turkey (UTC+3, без перех… | priority_1 | tr | VALORANT, Counter-Strike 2, FiveM / GTA V … | $2.49 (low) | whatsapp |
+| `uk` Великобритания + Ирландия (UK & IE… | priority_1 | en | EA Sports FC 26 / FC 25, Fortnite, Call of… | $6.3-6.7 (mid) | site |
 | `us` США (United States of America) | priority_1 | en | Fortnite, Valorant, Counter-Strike 2 | $8.99-11.99 (high) | discord |
 | `za` South Africa (ЮАР) | priority_1 | en | Roblox, Valorant, Fortnite | $10-15 (high) | discord |
 | `ae` United Arab Emirates (ОАЭ) | priority_2 | en | Fortnite, Valorant, Call of Duty: Warzone … | $12 (high) | site |
 | `au_nz` Австралия + Новая Зеландия (класте… | priority_2 | en | Fortnite, Valorant, CS2 | $8.99 (high) | discord |
 | `cee` Кластер CEE-5: Румыния, Чехия, Вен… | priority_2 | en | Counter-Strike 2, Fortnite, League of Lege… | $5.99 (mid) | discord |
-| `de` Германия / Австрия / Швейцария (DA… | priority_2 | de | Minecraft, Fortnite, FIFA / EA SPORTS FC | 8,60 USD (high) | discord |
+| `de` Германия / Австрия / Швейцария (DA… | priority_2 | de | Minecraft, Fortnite, FIFA / EA SPORTS FC | 8,60 USD (high) | site |
 | `es` Испания (Spain) — отдельно от LATA… | priority_2 | es | EA SPORTS FC 26, Fortnite, GTA V / GTA Onl… | 6,5 USD (mid) | discord |
 | `fr` Франция (France, République frança… | priority_2 | fr | EA Sports FC 26, Fortnite, Call of Duty: B… | 8 USD (high) | discord |
 | `gulf_small` Кувейт + Катар + Бахрейн + Оман (к… | priority_2 | en | Fortnite, Call of Duty: Warzone / CoD, EA … | $8.99 (high) | site |

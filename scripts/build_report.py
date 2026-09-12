@@ -628,6 +628,27 @@ def s_product() -> str:
                f'<h3>Доказательная база по античитам</h3><div class="findings">{"".join(fnd)}</div>')
 
 
+def _geo_blockers() -> str:
+    """Гео, где привычная схема выдачи или платёжка физически не работают."""
+    gb = R.d("payments.json").get("geo_blockers", {})
+    rows = []
+    for code, info in gb.items():
+        if code.startswith("_"):
+            continue
+        bits = "; ".join(f"<b>{e(k)}</b> — {e(str(v)[:260])}"
+                         for k, v in info.items() if not k.startswith("_"))
+        rows.append(f'<tr><td class="rowlab">{e(R.NAMES_RU.get(code, code))}</td>'
+                    f'<td class="small">{bits}</td></tr>')
+    if not rows:
+        return ""
+    return (f'<h3>Где привычная схема не работает</h3>'
+            f'<div class="tablewrap"><table><thead><tr><th>Гео</th><th>Что именно сломано</th></tr>'
+            f'</thead><tbody>{"".join(rows)}</tbody></table></div>'
+            f'<p class="small">Проверять до запуска гео, а не после первых продаж. Самый дорогой '
+            f'пример: в Турции Discord заблокирован с октября 2024, то есть схема «оплатил — получил '
+            f'роль в Discord» там не работает в принципе.</p>')
+
+
 def s_payments() -> str:
     pay = R.d("payments.json")
     rails = pay.get("rails", {})
@@ -681,7 +702,8 @@ def s_payments() -> str:
                + f'<h3>Страны, которым платёжки не дают платить</h3>'
                  f'<div class="quote">{e(" · ".join(blocked.get("codes") or []))}</div>'
                  f'<p class="small">{e(blocked.get("traffic_rule"))}</p>'
-                 f'<div class="callout"><h4>Стиль маркетинга — часть комплаенса</h4>'
+               + _geo_blockers()
+               + f'<div class="callout"><h4>Стиль маркетинга — часть комплаенса</h4>'
                  f'<p>Stripe прямо называет запрещёнными «outrageous claims», «deceptive testimonials», '
                  f'«high-pressure upselling» и «suspicious remote technical support». То есть валидатор '
                  f'обещаний защищает не репутацию, а сам платёжный рельс.</p></div>')

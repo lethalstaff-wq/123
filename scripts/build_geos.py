@@ -148,12 +148,22 @@ def _price_tier(mon: dict) -> tuple[str, list[float]]:
     return tier, sorted(set(monthly))[:6]
 
 
+NEGATION = (
+    "не использовать", "не использов", "заблокирован", "недоступен", "не доступен",
+    "не работает", "нельзя", "не подходит", "а не ", "вместо ", "не как", "не ставить",
+    "исключить", "не брать", "отказ от",
+)
+
+
 def _entry_point(funnel: dict) -> str:
     """Куда вести трафик в этом гео.
 
-    Ищем, что упомянуто РАНЬШЕ в описании воронки, а не что раньше стоит в нашем
-    списке: отчёт вида "ГЛАВНЫЙ ВХОД: WhatsApp (а не Discord, потому что...)"
-    при наивном порядке проверок давал Discord.
+    Две ловушки, обе встречались в реальных отчётах:
+    1. Порядок. «ГЛАВНЫЙ ВХОД: WhatsApp (а не Discord)» — наивная проверка по
+       своему списку давала Discord. Поэтому берём то, что упомянуто РАНЬШЕ.
+    2. Отрицание. «Discord НЕ использовать ни как точку входа» — упоминание есть,
+       но смысл обратный. Поэтому вокруг каждого попадания смотрим окно текста
+       на отрицание и такие попадания выбрасываем.
     """
     t = str(funnel.get("entry_point") or "").lower()
     if not t:
@@ -162,17 +172,22 @@ def _entry_point(funnel: dict) -> str:
         "discord": ("discord", "дискорд"),
         "telegram": ("telegram", "телеграм"),
         "whatsapp": ("whatsapp", "вотсап", "ватсап"),
-        "site": ("site", "сайт", "лендинг", "landing", ".gg домен", "домен"),
-        "dm": ("dm", "личк", "direct message"),
+        "site": ("site", "сайт", "лендинг", "landing"),
+        "dm": ("директ", "личк", "direct message"),
     }
     hits = []
     for target, keys in aliases.items():
         for k in keys:
             i = t.find(k)
-            if i >= 0:
-                hits.append((i, target))
+            while i >= 0:
+                window = t[max(0, i - 60):i + 60]
+                if not any(n in window for n in NEGATION):
+                    hits.append((i, target))
+                    break
+                i = t.find(k, i + 1)
+            if any(h[1] == target for h in hits):
                 break
-    return min(hits)[1] if hits else "discord"
+    return min(hits)[1] if hits else "site"
 
 
 def _compact(text: str, limit: int = 40) -> str:
